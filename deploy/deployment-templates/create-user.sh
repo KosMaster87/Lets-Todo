@@ -5,54 +5,55 @@
 # Creates isolated users with proper directory structure for deployment
 # ============================================================================
 
-set -euo pipefail
+create_system_user() {
+    set -euo pipefail
 
-# Colors for output
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+    # Colors for output
+    RED='\033[0;31m'
+    GREEN='\033[0;32m'
+    YELLOW='\033[1;33m'
+    BLUE='\033[0;34m'
+    NC='\033[0m' # No Color
 
-# Function for error handling
-error_exit() {
-  echo -e "${RED}❌ Error: $1${NC}" >&2
-  exit 1
-}
+    # Function for error handling
+    error_exit() {
+      echo -e "${RED}❌ Error: $1${NC}" >&2
+      exit 1
+    }
 
-# Check for root privileges
-if [ "$(id -u)" != "0" ]; then
-  error_exit "This script must be run as root!"
-fi
+    # Check for root privileges
+    if [ "$(id -u)" != "0" ]; then
+      error_exit "This script must be run as root!"
+    fi
 
-# Input validation
-validate_input() {
-  if [[ -z "$USERNAME" ]]; then
-    error_exit "Username cannot be empty"
-  fi
-  
-  if [[ ! "$USERNAME" =~ ^[a-z_][a-z0-9_-]{3,15}$ ]]; then
-    error_exit "Invalid username (only lowercase letters, numbers, hyphens, 4-16 characters)"
-  fi
-}
+    # Input validation
+    validate_input() {
+      if [[ -z "$USERNAME" ]]; then
+        error_exit "Username cannot be empty"
+      fi
+      
+      if [[ ! "$USERNAME" =~ ^[a-z_][a-z0-9_-]{3,15}$ ]]; then
+        error_exit "Invalid username (only lowercase letters, numbers, hyphens, 4-16 characters)"
+      fi
+    }
 
-# Interactive user configuration
-echo -e "${BLUE}🔧 Multi-User Server Setup${NC}"
-echo -e "${YELLOW}This script creates users with proper isolation for deployment${NC}"
-echo ""
+    # Interactive user configuration
+    echo -e "${BLUE}🔧 Multi-User Server Setup${NC}"
+    echo -e "${YELLOW}This script creates users with proper isolation for deployment${NC}"
+    echo ""
 
-read -p "Username (recommended: dev2k): " USERNAME
-validate_input
+    read -p "Username (recommended: dev2k): " USERNAME
+    validate_input
 
-read -p "Is this an admin user? (y/n): " IS_ADMIN
+    read -p "Is this an admin user? (y/n): " IS_ADMIN
 
-# Group configuration
-if [ "$IS_ADMIN" = "y" ]; then
-  USER_GROUPS="sudo"
-  echo -e "${YELLOW}ℹ️  User will be added to sudo group${NC}"
-else
-  read -p "Additional groups (comma-separated, empty for none): " USER_GROUPS
-fi
+    # Group configuration
+    if [ "$IS_ADMIN" = "y" ]; then
+      USER_GROUPS="sudo"
+      echo -e "${YELLOW}ℹ️  User will be added to sudo group${NC}"
+    else
+      read -p "Additional groups (comma-separated, empty for none): " USER_GROUPS
+    fi
 
 # Directory structure setup
 BASE_DIR="/opt/${USERNAME}-space"
@@ -143,4 +144,10 @@ echo "2. Test SSH login: ssh ${USERNAME}@your-server-ip"
 echo "3. Change password on first login"
 echo "4. Run deployment: ./deploy-app.sh"
 
-echo -e "\n${GREEN}🎉 Multi-user setup completed!${NC}"
+    echo -e "\n${GREEN}🎉 Multi-user setup completed!${NC}"
+}
+
+# Only run if called directly (not when sourced)
+if [ "${BASH_SOURCE[0]}" == "${0}" ]; then
+    create_system_user "$@"
+fi

@@ -11,6 +11,20 @@ import dotenv from "dotenv";
  * Dynamisches Laden der Environment-Datei basierend auf NODE_ENV
  */
 const NODE_ENV = process.env.NODE_ENV || "development";
+
+// Environment name mapping (deployment uses short names)
+const envMapping = {
+  feat: "feature",
+  stage: "staging",
+  prod: "production",
+  development: "development",
+  feature: "feature",
+  staging: "staging",
+  production: "production",
+};
+
+const actualEnv = envMapping[NODE_ENV] || NODE_ENV;
+
 const envFiles = {
   development: "config/env/.env.development",
   feature: "config/env/.env.feature",
@@ -18,7 +32,7 @@ const envFiles = {
   production: "config/env/.env.production",
 };
 
-const envFile = envFiles[NODE_ENV] || "config/env/.env.development";
+const envFile = envFiles[actualEnv] || "config/env/.env.development";
 dotenv.config({ path: envFile });
 
 console.log(`🔧 Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
@@ -27,9 +41,9 @@ console.log(`🔧 Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`)
  * Environment-Detection basierend auf NODE_ENV
  */
 function detectEnvironment() {
-  // Explizit gesetztes NODE_ENV verwenden
-  if (process.env.NODE_ENV && envFiles[process.env.NODE_ENV]) {
-    return process.env.NODE_ENV;
+  // Use mapped environment name
+  if (actualEnv && envFiles[actualEnv]) {
+    return actualEnv;
   }
 
   // Development als Fallback für lokale Entwicklung

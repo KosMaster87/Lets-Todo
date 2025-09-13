@@ -21,7 +21,7 @@ setup_pm2_process() {
     sudo -u dev2k bash -c "pm2 delete $APP_NAME" 2>/dev/null || true
     
     # Create PM2 ecosystem file for this environment
-    cat > "ecosystem.$ENV_TYPE.config.js" << EOF
+    cat > "ecosystem.$ENV_TYPE.config.cjs" << EOF
 module.exports = {
   apps: [{
     name: '$APP_NAME',
@@ -51,7 +51,7 @@ EOF
     chown -R dev2k:dev2k "/opt/dev2k-space/home/logs"
     
     # Set proper ownership
-    chown dev2k:dev2k "ecosystem.$ENV_TYPE.config.js"
+    chown dev2k:dev2k "ecosystem.$ENV_TYPE.config.cjs"
     
     # Start PM2 process as dev2k user
     echo "▶️  Starting $APP_NAME with PM2..."
@@ -59,7 +59,7 @@ EOF
         cd '$TARGET_DIR'
         export NODE_ENV=$ENV_TYPE
         export PORT=$PORT
-        pm2 start ecosystem.$ENV_TYPE.config.js
+        pm2 start ecosystem.$ENV_TYPE.config.cjs
     "
     
     if [ $? -eq 0 ]; then

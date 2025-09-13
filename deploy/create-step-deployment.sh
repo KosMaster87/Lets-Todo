@@ -65,9 +65,19 @@ echo "📋 Copying template files:"
 for template_file in "$TEMPLATE_SRC"/*; do
     if [ -f "$template_file" ]; then
         template_name=$(basename "$template_file")
-        echo "  ✅ $template_name -> ${template_name}.sh"
-        cp "$template_file" "$DEPLOY_DIR/templates/${template_name}.sh"
-        chmod +x "$DEPLOY_DIR/templates/${template_name}.sh"
+        
+        # Handle different file extensions properly
+        if [[ "$template_name" == *.sh ]]; then
+            # Already has .sh extension, keep it as-is
+            target_name="$template_name"
+        else
+            # No .sh extension, add it
+            target_name="${template_name}.sh"
+        fi
+        
+        echo "  ✅ $template_name -> ${target_name}"
+        cp "$template_file" "$DEPLOY_DIR/templates/${target_name}"
+        chmod +x "$DEPLOY_DIR/templates/${target_name}"
     fi
 done
 
@@ -208,10 +218,19 @@ if [ ! -d "$SCRIPT_DIR/templates" ]; then
     exit 1
 fi
 
-# Source all template files
+# Source all template files (skip interactive templates like create-user.sh)
 for template_file in "$SCRIPT_DIR/templates"/*.sh; do
     if [ -f "$template_file" ]; then
         template_name=$(basename "$template_file" .sh)
+        
+        # Skip interactive templates that shouldn't auto-run
+        case "$template_name" in
+            "create-user"|"firewall-cloud"|"firewall-selfhosted"|"transfer-keys")
+                log_info "Skipping interactive template: $template_name (run manually if needed)"
+                continue
+                ;;
+        esac
+        
         log_info "Loading template: $template_name"
         source "$template_file"
     fi
@@ -271,7 +290,7 @@ deploy_single_environment() {
     # Step 5: Database Setup
     if type setup_database >/dev/null 2>&1; then
         log_step "STEP 5: Database Setup"
-        setup_database "$env" "$DB_ROOT_PASSWORD" "$DB_USER" "$DB_PASSWORD"
+        setup_database "$env" "$domain" "$port" "$target_dir"
     else
         log_warning "setup_database function not found in templates"
     fi
@@ -314,8 +333,14 @@ log_success "🎉 MODULAR DEPLOYMENT COMPLETED FOR: $ENVIRONMENT"
 echo ""
 echo "📋 Summary:"
 echo "✅ All deployment steps executed using modular templates"
-echo "✅ Templates loaded: $(ls -1 "$SCRIPT_DIR/templates" | wc -l) files"
+echo "✅ Templates loaded: $(ls -1 "$SCRIPT_DIR/templates" | grep -E '\.(sh)$' | wc -l) files"
 echo "✅ Environment(s) deployed: $ENVIRONMENT"
+echo ""
+echo "🔧 Optional Manual Steps (run if needed):"
+echo "   ./templates/create-user.sh         # Create system users"
+echo "   ./templates/firewall-cloud.sh      # Configure cloud firewall"  
+echo "   ./templates/firewall-selfhosted.sh # Configure self-hosted firewall"
+echo "   ./templates/transfer-keys.sh       # Transfer SSH keys"
 
 EOF
 

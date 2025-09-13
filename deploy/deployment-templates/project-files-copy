@@ -27,6 +27,7 @@ copy_project_files() {
     cp -r "$PROJECT_DIR/config" "$TARGET_DIR/"
     cp -r "$PROJECT_DIR/middleware" "$TARGET_DIR/"
     cp -r "$PROJECT_DIR/routing" "$TARGET_DIR/"
+    cp -r "$PROJECT_DIR/scripts" "$TARGET_DIR/"
     
     # Remove example environment files (should not be deployed)
     echo "🧹 Removing example environment files..."
