@@ -1,0 +1,65 @@
+#!/bin/bash
+
+# ============================================================================
+# Node.js Dependencies Template
+# Installs Node.js dependencies for the deployment environment
+# ============================================================================
+
+install_nodejs_dependencies() {
+    local ENV_TYPE="$1"
+    local TARGET_DIR="$2"
+    
+    echo "📦 Installing Node.js dependencies for $ENV_TYPE environment..."
+    
+    cd "$TARGET_DIR"
+    
+    # Check if package.json exists
+    if [ ! -f "package.json" ]; then
+        echo "❌ package.json not found in $TARGET_DIR"
+        return 1
+    fi
+    
+    # Install dependencies as dev2k user
+    echo "🔧 Installing npm dependencies..."
+    sudo -u dev2k bash -c "
+        cd '$TARGET_DIR'
+        export NODE_ENV=$ENV_TYPE
+        npm install --production
+    "
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ Node.js dependencies installed successfully for $ENV_TYPE"
+    else
+        echo "❌ Failed to install Node.js dependencies for $ENV_TYPE"
+        return 1
+    fi
+    
+    # Verify critical modules
+    echo "🔍 Verifying critical dependencies..."
+    local missing_modules=()
+    
+    if [ ! -d "node_modules/express" ]; then
+        missing_modules+=("express")
+    fi
+    
+    if [ ! -d "node_modules/mysql2" ]; then
+        missing_modules+=("mysql2")
+    fi
+    
+    if [ ! -d "node_modules/cors" ]; then
+        missing_modules+=("cors")
+    fi
+    
+    if [ ${#missing_modules[@]} -gt 0 ]; then
+        echo "⚠️  Missing critical modules: ${missing_modules[*]}"
+        echo "🔧 Attempting to install missing modules..."
+        
+        sudo -u dev2k bash -c "
+            cd '$TARGET_DIR'
+            export NODE_ENV=$ENV_TYPE
+            npm install ${missing_modules[*]} --save
+        "
+    fi
+    
+    echo "✅ Dependencies verification completed for $ENV_TYPE"
+}

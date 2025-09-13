@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# ============================================================================
+# PM2 Setup Template
+# Configures and starts PM2 processes for the specified environment
+# ============================================================================
+
+setup_pm2_process() {
+    local ENV_TYPE="$1"
+    local TARGET_DIR="$2"
+    local PORT="$3"
+    
+    echo "🚀 Setting up PM2 process for $ENV_TYPE environment..."
+    
+    cd "$TARGET_DIR"
+    
+    # Stop existing process if running
+    local APP_NAME="lets-todo-$ENV_TYPE"
+    echo "🛑 Stopping existing $APP_NAME process if running..."
+    sudo -u dev2k bash -c "pm2 stop $APP_NAME" 2>/dev/null || true
+    sudo -u dev2k bash -c "pm2 delete $APP_NAME" 2>/dev/null || true
+    
+    # Create PM2 ecosystem file for this environment
+    cat > "ecosystem.$ENV_TYPE.config.js" << EOF
+module.exports = {
+  apps: [{
+    name: '$APP_NAME',
+    script: './server.js',
+    instances: 1,
+    exec_mode: 'cluster',
+    env: {
+      NODE_ENV: '$ENV_TYPE',
+      PORT: $PORT,
+      PM2_SERVE_PATH: '$TARGET_DIR',
+      PM2_SERVE_PORT: $PORT
+    },
+    error_file: '/opt/dev2k-space/home/logs/pm2/$APP_NAME-error.log',
+    out_file: '/opt/dev2k-space/home/logs/pm2/$APP_NAME-out.log',
+    log_file: '/opt/dev2k-space/home/logs/pm2/$APP_NAME-combined.log',
+    time: true,
+    autorestart: true,
+    watch: false,
+    max_memory_restart: '1G',
+    restart_delay: 4000
+  }]
+};
+EOF
+    
+    # Create log directory
+    mkdir -p "/opt/dev2k-space/home/logs/pm2"
+    chown -R dev2k:dev2k "/opt/dev2k-space/home/logs"
+    
+    # Set proper ownership
+    chown dev2k:dev2k "ecosystem.$ENV_TYPE.config.js"
+    
+    # Start PM2 process as dev2k user
+    echo "▶️  Starting $APP_NAME with PM2..."
+    sudo -u dev2k bash -c "
+        cd '$TARGET_DIR'
+        export NODE_ENV=$ENV_TYPE
+        export PORT=$PORT
+        pm2 start ecosystem.$ENV_TYPE.config.js
+    "
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ PM2 process $APP_NAME started successfully"
+        
+        # Show process status
+        echo "📊 PM2 Process Status:"
+        sudo -u dev2k bash -c "pm2 status $APP_NAME"
+        
+        # Save PM2 configuration
+        sudo -u dev2k bash -c "pm2 save"
+        
+        # Test if application is responding
+        sleep 3
+        echo "🔍 Testing application response on port $PORT..."
+        if curl -s "http://localhost:$PORT/health" > /dev/null 2>&1; then
+            echo "✅ Application is responding on port $PORT"
+        else
+            echo "⚠️  Application may not be responding yet (normal for first startup)"
+        fi
+        
+    else
+        echo "❌ Failed to start PM2 process $APP_NAME"
+        return 1
+    fi
+    
+    echo "✅ PM2 setup completed for $ENV_TYPE environment"
+}
+
+setup_pm2_startup() {
+    echo "🔧 Configuring PM2 startup script..."
+    
+    # Generate startup script
+    sudo -u dev2k bash -c "pm2 startup" | grep "sudo" | bash
+    
+    # Save current PM2 processes
+    sudo -u dev2k bash -c "pm2 save"
+    
+    echo "✅ PM2 startup configuration completed"
+}
