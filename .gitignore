@@ -17,6 +17,13 @@ config/env/.env.development
 deploy/package/
 deploy/*.tar.gz
 deploy/*.zip
+# Dynamic deployment packages and directories
+deploy/*-package/
+deploy/simple-package/
+deploy/modular-package/
+deploy/step-by-step-package/
+deploy/lets-todo-*deployment_*.tar.gz
+deploy/lets-todo-*deployment_*.zip
 
 # IDE/Editor
 .vscode/

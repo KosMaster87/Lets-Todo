@@ -11,24 +11,180 @@ Comprehensive deployment guide for the Let's Todo API across multiple environmen
 | **Staging**     | `lets-todo-api-stage.dev2k.org` | 3004 | Pre-production testing        |
 | **Development** | `127.0.0.1:3000`                | 3000 | Local development             |
 
-## 🎯 Quick Deployment (TL;DR)
+## ⚡ Quick Deployment Steps
+
+**Complete First-Time Setup:**
 
 ```bash
-# 1. Create deployment package
-./deploy/create-deployment-package.sh
+# 1. Create deployment package (local)
+./deploy/create-deployment-package-clean.sh
 
-# 2. Copy to server
-scp lets-todo-deployment_*.tar.gz server:/tmp/
+# 2. Upload to server
+scp lets-todo-deployment_*.tar.gz root@YOUR_SERVER_IP:/tmp/
 
-# 3. Deploy on server
-tar -xzf lets-todo-deployment_*.tar.gz
-chmod +x deploy.sh && ./deploy.sh
+# 3. On server as ROOT
+cd /tmp && tar -xzf lets-todo-deployment_*.tar.gz
+# List and enter the extracted directory
+ls -la | grep lets-todo-deployment
+cd $(ls -d lets-todo-deployment_[0-9]* | head -1)  # Robust directory selection
+./deploy-root.sh        # Nginx setup
+./setup-ssl.sh          # SSL certificates + Database setup (automated)
 
-# 4. Setup SSL certificates
-./setup-ssl.sh
+# 4. Switch to dev2k user (aber bleibe im deployment ordner!)
+su - dev2k
+# Navigate to the ALREADY EXTRACTED deployment directory (don't extract again!)
+cd /tmp/$(ls -d lets-todo-deployment_[0-9]* | head -1)  # Go to directory extracted by root
+./deploy-app.sh     # PM2 setup (database already configured by root)
+
+# 5. Back to root for PM2 startup
+exit
+~/pm2-startup.sh    # PM2 auto-start setup
 ```
 
+**Updates Only:**
+
+````bash
+# For application updates only (as dev2k)
+# Don't extract - go to already extracted directory!
+cd /tmp/$(ls -d lets-todo-deployment_[0-9]* | head -1)  # Robust directory selection
+./deploy-app.sh
+```## 🎯
+
+````
+
 **🎉 Done!** Your API is live at `https://lets-todo-api.dev2k.org`
+
+---
+
+## 🚀 Detailed Deployment Process
+
+### Multi-User Server Architecture
+
+This deployment uses a **two-user security model** for better isolation and security:
+
+- **ROOT user**: System administration (Nginx, SSL, firewall, user management)
+- **dev2k user**: Application deployment (PM2, Node.js processes, app files)
+
+#### User Directory Structure
+
+```
+
+/opt/dev2k-space/
+├── home/ # User home directory (.bashrc, .pm2, .nvm, etc.)
+├── data/ # Application data (uploads, databases)
+└── logs/ # Application logs
+
+/opt/dev2admin-space/ # Optional: For admin user
+├── home/ # Admin home directory
+├── data/ # Shared data access
+└── logs/ # Shared log access
+
+```
+
+#### Security Benefits
+
+1. **Process Isolation**: App processes run as non-root user
+2. **File System Isolation**: Separate home directories per user
+3. **Principle of Least Privilege**: Each user has minimal required permissions
+4. **Audit Trail**: Clear separation of system vs application changes
+
+#### User Setup Scripts
+
+Ready-to-use scripts are available for server setup:
+
+```bash
+# Create users with proper isolation
+./scripts/create-user.sh       # Interactive user creation with directory structure
+
+# Transfer SSH keys for passwordless login
+./scripts/transfer-keys.sh     # Automated SSH key transfer and testing
+
+# Firewall configuration
+./scripts/firewall-cloud.sh    # For cloud servers (IONOS, AWS, etc.)
+./scripts/firewall-selfhosted.sh # For self-hosted servers
+```
+
+**🎯 Complete Server Setup Workflow:**
+
+1. Run `./scripts/create-user.sh` on server (as root)
+2. Run `./scripts/transfer-keys.sh` from local machine
+3. Test SSH: `ssh username@server-ip`
+4. Run `./scripts/firewall-cloud.sh` (as root)
+5. Deploy application: `./deploy-app.sh` (as user)### Step-by-Step User Separation
+
+The deployment process is designed with proper user separation for security:
+
+- **ROOT user**: System configuration (Nginx, SSL certificates)
+- **dev2k user**: Application deployment (PM2, Node.js app)
+
+### 1. Create & Upload Deployment Package
+
+```bash
+# Local machine
+./deploy/create-deployment-package-clean.sh
+scp lets-todo-deployment_*.tar.gz root@YOUR_SERVER_IP:/tmp/
+```
+
+### 2. Extract Package (as root)
+
+```bash
+# On server as root
+ssh root@YOUR_SERVER_IP
+cd /tmp
+tar -xzf lets-todo-deployment_*.tar.gz
+# ⚠️  WICHTIG: Package erstellt automatisch einen Ordner!
+# Beispiel: lets-todo-deployment_20250913_145217/
+ls -la | grep lets-todo-deployment_
+cd $(ls -d lets-todo-deployment_[0-9]* | head -1)  # Robust directory selection
+```
+
+### 3. Root Deployment - Nginx & Database Setup
+
+```bash
+# As root - Complete system setup
+./deploy-root.sh    # HTTP-only Nginx configuration for certbot
+./setup-ssl.sh      # SSL certificates + Database setup (automated)
+```
+
+**What this step does:**
+
+- **deploy-root.sh**: Creates HTTP-only Nginx configurations for all domains
+- **deploy-root.sh**: Sets up webroot directory for certbot challenges
+- **deploy-root.sh**: Enables sites and reloads Nginx
+- **setup-ssl.sh**: Requests SSL certificates for all domains via certbot
+- **setup-ssl.sh**: Updates Nginx configurations with full HTTPS support
+- **setup-ssl.sh**: Enables HTTPS redirects and security headers
+- **setup-ssl.sh**: Configures proxy settings for each environment (ports 3002, 3003, 3004)
+- **setup-ssl.sh**: Installs Node.js dependencies (npm install)
+- **setup-ssl.sh**: Creates databases and tables for all environments as root user
+
+### 4. Application Deployment
+
+```bash
+# Switch to dev2k user (aber bleibe im deployment ordner!)
+su - dev2k
+cd /tmp/$(ls -d lets-todo-deployment_[0-9]* | head -1)  # ⚠️ WICHTIG: Muss vom entpackten Ordner aus laufen!
+./deploy-app.sh
+```
+
+**What deploy-app.sh does:**
+
+- **Database Already Setup**: Database was configured by root user in step 3
+- Copies application files to `~/projects/lets-todo-api`
+- Excludes system files (nginx configs, root scripts)
+- Installs Node.js dependencies
+- Starts PM2 processes for all environments (prod:3002, feat:3003, stage:3004)
+- **PM2 Startup Script**: Erstellt automatisch `~/pm2-startup.sh` für root
+- Shows PM2 startup instructions
+
+### 5. PM2 Startup (as root)
+
+```bash
+# Exit back to root
+exit
+# Execute the PM2 startup script that was created
+~/pm2-startup.sh
+```
 
 ---
 
@@ -141,8 +297,9 @@ The `create-deployment-package.sh` script creates a complete deployment package 
 
 **Generated Scripts:**
 
-- **`deploy.sh`**: Main deployment script (installs, configures, starts)
-- **`setup-ssl.sh`**: SSL certificate automation with Let's Encrypt
+- **`deploy-root.sh`**: Root deployment (Nginx HTTP-only setup)
+- **`deploy-app.sh`**: Application deployment (PM2 & app files for dev2k user)
+- **`setup-ssl.sh`**: SSL certificate automation + HTTPS configuration
 
 ### Package Customization
 
@@ -319,6 +476,139 @@ sudo certbot renew --force-renewal
 openssl x509 -in /etc/letsencrypt/live/lets-todo-api.dev2k.org/cert.pem -noout -dates
 ```
 
+---
+
+## 🔥 Firewall Configuration
+
+### Important Security Notice
+
+Proper firewall configuration is **critical** for server security. The setup differs between cloud providers and self-hosted servers.
+
+### Cloud Servers (IONOS, AWS, DigitalOcean, etc.)
+
+```bash
+#!/bin/bash
+# firewall-cloud.sh - For cloud providers with web consoles
+
+# Reset UFW
+sudo ufw --force reset
+
+# Default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# SSH Access Rules
+sudo ufw allow from YOUR_SERVER_IP to any port 22 proto tcp comment "Cloud Console Fallback"
+sudo ufw allow from YOUR_HOME_IPV4 to any port 22 proto tcp comment "Home IPv4 SSH"
+sudo ufw allow from YOUR_HOME_IPV6_SUBNET to any port 22 proto tcp comment "Home IPv6 SSH"
+
+# Web traffic
+sudo ufw allow 80,443/tcp comment "HTTP/HTTPS"
+
+# Block all high ports (application ports) - only accessible via Nginx proxy
+sudo ufw deny 3000:65535/tcp comment "Block direct app access"
+sudo ufw allow from 127.0.0.1 to any port 3000:65535 comment "Allow localhost"
+
+# Enable firewall
+sudo ufw --force enable
+sudo ufw status numbered
+```
+
+**Why include server IP for cloud providers?**
+
+- Web consoles (IONOS, AWS Console) often use server's own IP for emergency access
+- **Without this rule → You'll be locked out of web console!**
+- This is standard practice for cloud hosting
+
+### Self-Hosted Servers
+
+```bash
+#!/bin/bash
+# firewall-selfhosted.sh - For your own hardware
+
+# Reset UFW
+sudo ufw --force reset
+
+# Default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# SSH Access Rules (NO server IP needed)
+sudo ufw allow from YOUR_HOME_IPV4 to any port 22 proto tcp comment "Home IPv4 SSH"
+sudo ufw allow from YOUR_HOME_IPV6_SUBNET to any port 22 proto tcp comment "Home IPv6 SSH"
+
+# Optional: Allow from local network
+# sudo ufw allow from 192.168.1.0/24 to any port 22 proto tcp comment "Local Network"
+
+# Web traffic
+sudo ufw allow 80,443/tcp comment "HTTP/HTTPS"
+
+# Block all high ports (application ports) - only accessible via Nginx proxy
+sudo ufw deny 3000:65535/tcp comment "Block direct app access"
+sudo ufw allow from 127.0.0.1 to any port 3000:65535 comment "Allow localhost"# Enable firewall
+sudo ufw --force enable
+sudo ufw status numbered
+```
+
+### Find Your IP Addresses
+
+```bash
+# Your public IPv4
+curl -4 ifconfig.me
+
+# Your public IPv6
+curl -6 ifconfig.me
+
+# Your server's public IP (run on server)
+curl -4 ifconfig.me
+
+# Local network range (common)
+ip route | grep 192.168
+```
+
+### Firewall Scripts
+
+Ready-to-use scripts are available in the `scripts/` directory:
+
+```bash
+# For cloud servers (IONOS, AWS, DigitalOcean, etc.)
+./scripts/firewall-cloud.sh
+
+# For self-hosted servers
+./scripts/firewall-selfhosted.sh
+```
+
+**⚠️ Important:** Edit the scripts first to set your actual IP addresses!
+
+```bash
+# Test SSH access
+ssh -v user@your-server-ip
+
+# Test web access
+curl -I http://your-domain.com
+curl -I https://your-domain.com
+
+# Test blocked ports (should fail)
+curl -I http://your-server-ip:3002
+
+# Check UFW logs
+sudo tail -f /var/log/ufw.log
+```
+
+### Security Best Practices
+
+1. **Always have multiple SSH access routes** (IPv4 + IPv6 + console)
+2. **Test firewall rules before disconnecting**
+3. **Use key-based SSH authentication** (disable password auth)
+4. **Regularly update UFW rules** when your IP changes
+5. **Monitor UFW logs** for suspicious activity
+
+**⚠️ Warning:**
+
+- **Cloud servers:** Include server IP for console access
+- **Self-hosted:** Only include your home IPs
+- **Test thoroughly** before applying in production!
+
 ### Nginx Security Configuration
 
 The deployment includes security headers and configurations:
@@ -361,6 +651,10 @@ mysql -u root -p -e "SELECT 1;"
 
 # Check database user permissions
 mysql -u root -p -e "SHOW GRANTS FOR 'your_user'@'localhost';"
+
+# ⚠️ IMPORTANT: Run database setup from project root (where node_modules exists)
+# WRONG: cd scripts/ && node setup-dev-db.js  ❌ (ERR_MODULE_NOT_FOUND)
+# CORRECT: node scripts/setup-dev-db.js       ✅ (from project root)
 ```
 
 #### **PM2 Process Won't Start**
@@ -535,13 +829,17 @@ sudo certbot certificates | grep "Expiry Date"
 # 1. Create new deployment package
 ./deploy/create-deployment-package.sh
 
-# 2. Zero-downtime deployment
-pm2 reload lets-todo-api-prod
+# 2. Upload to server
+scp lets-todo-deployment_*.tar.gz root@217.154.113.51:/tmp/
 
-# 3. Rolling update (if needed)
-pm2 stop lets-todo-api-stage
-# Update files
-pm2 start ecosystem.config.cjs --only lets-todo-api-stage
+# 3. For application updates only (as dev2k)
+sudo su - dev2k
+cd /tmp && tar -xzf lets-todo-deployment_*.tar.gz
+./deploy-app.sh    # Updates app and restarts PM2
+
+# 4. For system updates (as root)
+./deploy-root.sh   # Updates Nginx configs
+./setup-ssl.sh     # Updates SSL if needed
 ```
 
 ### Database Maintenance

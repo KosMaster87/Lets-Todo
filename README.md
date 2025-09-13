@@ -1,15 +1,45 @@
 # 🚀 Let's Todo API
 
-Professional Node.js Express API with multi-environment deployment, database-per-session architecture, and automated SSL setup.
+Professio### 🔗 Related Projects
+
+- **[Let's Todo Frontend →](../lets-todo-app)** - Vanilla JS SPA with automatic API integrationjs Express API with multi-environment deployment, database-per-session architecture, and automated SSL setup.
 
 ## ✨ Key Features
 
-- **🏗️ Multi-Environment**: Development, Feature, Staging, Production
-- **🗄️ Database-per-Session**: Isolated MySQL databases for each user/guest
-- **🔒 Secure Authentication**: Cookie-based sessions with bcrypt hashing
-- **⚡ Auto-Deployment**: PM2 + Nginx deployment packages
-- **🌐 SSL Ready**: Let's Encrypt integration
-- **📊 RESTful API**: Complete CRUD with session isolation
+- **🏗️ Multi-Environment**: Development, Feature, Staging, Production deployments
+- **🗄️ Database-per-Session**: Isolated MySQL databases for each user/guest session
+- **🔒 Secure Authentication**: Cookie-based sessions with bcrypt password hashing
+- **⚡ Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
+- **🌐 Production Ready**: Let's Encrypt SSL, rate limiting, security headers
+- **📊 RESTful API**: Complete CRUD operations with full session isolation
+- **👥 Multi-User Security**: Isolated server users (root/dev2k) with proper privilege separation
+- **🔥 Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
+- **🛠️ Server Management**: Automated user creation and SSH key management tools
+- **📚 Comprehensive Docs**: Detailed guides for development, deployment, and security
+
+## 📚 Documentation & Guides
+
+### 🚀 Deployment & Operations
+
+- **[Complete Deployment Guide](./DEPLOYMENT.md)** - Production setup, SSL, multi-environment
+- **[Security & Firewall Setup](./DEPLOYMENT.md#-firewall-configuration)** - Cloud vs Self-hosted protection
+- **[Multi-User Server Setup](./DEPLOYMENT.md#multi-user-server-architecture)** - Secure user isolation
+- **[Ready-to-use Scripts](./scripts/)** - Firewall, user creation, SSH key management
+
+### 🛠️ Development & Architecture
+
+- **[Development Setup Guide](./DEVELOPMENT.md)** - Database setup, debugging, testing tools
+- **[Architecture & Coding Standards](./copilot-instructions.md)** - Code structure, patterns, conventions
+
+### � Related Projects
+
+- **[Let's Todo Frontend →](../lets-todo-app)** - Vanilla JS SPA with automatic API integration🗄️ Database-per-Session\*\*: Isolated MySQL databases for each user/guest session
+- **🔒 Secure Authentication**: Cookie-based sessions with bcrypt password hashing
+- **⚡ Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
+- **🌐 Production Ready**: Let's Encrypt SSL, rate limiting, security headers
+- **📊 RESTful API**: Complete CRUD operations with full session isolation
+- **🔥 Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
+- **📚 Comprehensive Docs**: Detailed guides for development, deployment, and security
 
 ## 🚀 Quick Start
 
@@ -247,6 +277,28 @@ npm run dev  # Shows environment detection in logs
 ```
 
 **📚 Complete deployment guide with SSL, multi-environment setup, monitoring, and troubleshooting:** **[DEPLOYMENT.md](./DEPLOYMENT.md)**
+
+## 🔒 Security Features
+
+### Built-in Security
+
+- **Password Protection**: bcrypt hashing with configurable salt rounds
+- **SQL Injection Prevention**: All queries use prepared statements
+- **Session Isolation**: Complete database separation per user/guest
+- **Environment-aware Cookies**: Secure settings based on deployment environment
+
+### Infrastructure Security
+
+- **Firewall Protection**: Ready-to-use UFW scripts for cloud and self-hosted setups
+- **Rate Limiting**: Nginx-based API request limiting (10 req/sec with burst)
+- **SSL/TLS**: Automated Let's Encrypt certificate management
+- **Security Headers**: HSTS, X-Frame-Options, Content-Security-Policy
+
+### Network Architecture
+
+- **Reverse Proxy**: All app ports (3000+) blocked from direct internet access
+- **Port Isolation**: Applications only accessible via Nginx (ports 80/443)
+- **SSH Hardening**: IP-based access control for cloud and self-hosted servers
 
 ## �📚 Documentation
 
