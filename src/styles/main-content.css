@@ -1,0 +1,168 @@
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 300px;
+  padding: 2rem 0.5rem;
+}
+
+.main-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  flex: 1;
+}
+
+/* ------------------------------------ */
+
+.main-menu-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.app-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  color: white;
+  text-align: center;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #ccc, transparent);
+    opacity: 0.6;
+  }
+
+  &.app-header-title {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  &.app-header-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+}
+
+.app-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  text-align: center;
+  color: white;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #ccc, transparent);
+    opacity: 0.6;
+  }
+
+  &.app-footer-title {
+    font-weight: 500;
+  }
+
+  &.app-footer-subtitle {
+    font-size: 1rem;
+    opacity: 0.9;
+    font-weight: 300;
+  }
+}
+
+/* ----- Main-menu Btn Styles START ----- */
+
+.menu-btn {
+  background: rgb(239, 239, 239);
+  border: none;
+  border-radius: 1rem;
+  padding: 0.5rem;
+  gap: 0.6rem;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.258);
+  height: 5rem;
+}
+
+.btn-icon {
+  font-size: 2rem;
+  text-align: center;
+}
+
+.btn-content h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.2rem;
+  color: #333;
+}
+
+.btn-content p {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.guest-btn {
+  border-left: 4px solid #4caf50;
+}
+
+.guest-btn-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/badge.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.register-btn {
+  border-left: 4px solid #2196f3;
+}
+
+.register-btn-icon {
+  background-color: #2196f3;
+  mask: url("/assets/icons/app_registration.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.login-btn {
+  border-left: 4px solid #ff9800;
+}
+
+.login-btn-icon {
+  background-color: #ff9800;
+  mask: url("/assets/icons/login.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.option-btn {
+  border-left: 4px solid #000000;
+}
+
+.option-btn-icon {
+  background-color: #000000;
+  mask: url("/assets/icons/manufacturing.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* ----- Main-menu Btn Styles END ----- */

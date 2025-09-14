@@ -420,11 +420,6 @@
 
 /* Responsive improvements */
 @media (max-width: 280px) {
-  .main-container {
-    max-width: 260px;
-    padding: 0.8rem 0.3rem;
-  }
-
   .menu-btn {
     height: 4rem;
     padding: 0.3rem;
