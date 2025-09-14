@@ -43,6 +43,9 @@ const handlePopState = (event) => {
   const view = event.state?.view || extractViewFromURL();
   if (isValidView(view)) {
     setCurrentView(view);
+  } else {
+    // Fallback to main menu for invalid views
+    navigateToView(VIEWS.MAIN_MENU);
   }
 };
 
@@ -54,6 +57,10 @@ const loadInitialView = () => {
   if (isValidView(view)) {
     setCurrentView(view);
     updateDocumentTitle(view);
+  } else {
+    // Fallback to main menu for invalid URLs
+    console.warn(`Invalid view "${view}" detected, redirecting to main menu`);
+    navigateToView(VIEWS.MAIN_MENU);
   }
 };
 
