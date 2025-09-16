@@ -13,9 +13,51 @@ let isNavigationInitialized = false;
 export const initializeNavigation = () => {
   if (isNavigationInitialized) return;
 
+  // Handle route preservation first
+  // handleRoutePreservation();
+
   setupBrowserNavigation();
   loadInitialView();
+
+  // Set up route saving for future reloads
+  // setupRouteSaving();
+
   isNavigationInitialized = true;
+};
+
+/**
+ * Handles route preservation on initial load
+ */
+const handleRoutePreservation = () => {
+  const pendingRoute = localStorage.getItem("todoapp-pending-route");
+  if (
+    pendingRoute &&
+    window.location.pathname === "/" &&
+    pendingRoute !== "/"
+  ) {
+    localStorage.removeItem("todoapp-pending-route");
+    const view = pendingRoute.substring(1);
+    if (isValidView(view)) {
+      console.log(`🔄 Restoring route from reload: ${pendingRoute}`);
+      // Directly set the URL without navigation to avoid issues
+      const url = `/${view}`;
+      window.history.replaceState({ view }, "", url);
+    }
+  }
+};
+
+/**
+ * Sets up route saving for page reloads
+ */
+const setupRouteSaving = () => {
+  window.addEventListener("beforeunload", () => {
+    const currentPath = window.location.pathname;
+    // Only save non-root paths that are valid views
+    if (currentPath !== "/" && isValidView(currentPath.substring(1))) {
+      localStorage.setItem("todoapp-pending-route", currentPath);
+      console.log(`💾 Saved route for reload: ${currentPath}`);
+    }
+  });
 };
 
 /**
