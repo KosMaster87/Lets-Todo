@@ -28,56 +28,39 @@
   gap: 1.2rem;
 }
 
-/* Todo View Menu Buttons */
-.todo-view-save-btn {
-  border-left: 4px solid #4caf50;
-}
-
-.todo-view-save-btn-icon {
-  background-color: #4caf50;
-  mask: url("/assets/icons/save.svg") no-repeat center;
-  mask-size: contain;
-  width: 2rem;
-  height: 2rem;
-}
-
-.todo-view-back-btn {
-  border-left: 4px solid #2196f3;
-}
-
-.todo-view-back-btn-icon {
-  background-color: #2196f3;
-  mask: url("/assets/icons/arrow_back.svg") no-repeat center;
-  mask-size: contain;
-  width: 2rem;
-  height: 2rem;
-}
-
-/* Todo Display Styles */
 .todo-display {
   background: rgba(255, 255, 255, 0.95);
   border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   margin-top: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
 }
 
+.todo-display:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* todo - solid-line after-preudo */
 .todo-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1.5rem;
   padding-bottom: 1rem;
+  margin-bottom: 0.2rem;
   border-bottom: 2px solid #e0e0e0;
 }
 
-.todo-header h3 {
+.todo-title {
   color: #333;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   font-weight: 700;
-  margin: 0;
   text-align: center;
-  flex: 1;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.todo-title:hover {
+  color: #2196f3;
+  text-decoration: underline;
 }
 
 .todo-content-display {
@@ -136,7 +119,8 @@
   border: 2px solid #ff9800;
 }
 
-.action-icon {
+/* Todo View Specific Action Icons */
+.todo-view .action-icon {
   width: 1.6rem;
   height: 1.6rem;
 }
@@ -171,39 +155,6 @@
   mask-size: contain;
 }
 
-/* Todo Meta Information */
-.todo-meta-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 1rem;
-}
-
-.todo-creation-date {
-  font-style: italic;
-}
-
-.todo-status-badge {
-  padding: 0.3rem 0.8rem;
-  border-radius: 1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
-}
-
-.todo-status-badge.completed {
-  background-color: #e8f5e8;
-  color: #2e7d32;
-}
-
-.todo-status-badge.pending {
-  background-color: #fff3e0;
-  color: #f57c00;
-}
-
 /* Todo Placeholder */
 .todo-placeholder {
   background: rgba(255, 255, 255, 0.1);
@@ -228,4 +179,29 @@
 
 .todo-view-wrapper.edit-mode .edit-todo-icon {
   background-color: #ff9800;
+}
+
+/* Todo View Menu Buttons */
+.todo-view-save-btn {
+  border-left: 4px solid #4caf50;
+}
+
+.todo-view-save-btn-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/save.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.todo-view-back-btn {
+  border-left: 4px solid #2196f3;
+}
+
+.todo-view-back-btn-icon {
+  background-color: #2196f3;
+  mask: url("/assets/icons/arrow_back.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
 }

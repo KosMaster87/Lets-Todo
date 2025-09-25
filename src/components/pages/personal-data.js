@@ -41,10 +41,10 @@ export const renderPersonalDataPage = () => {
         </button>
 
         <button
-          class="menu-btn personalDataCancel-btn"
+          class="menu-btn personal-data-cancel-btn"
           id="personalDataCancelBtn"
         >
-          <div class="btn-icon personalDataCancel-btn-icon"></div>
+          <div class="btn-icon personal-data-cancel-btn-icon"></div>
           <div class="btn-content">
             <h3>Zurück</h3>
             <p>Zurück zu den Einstellungen</p>

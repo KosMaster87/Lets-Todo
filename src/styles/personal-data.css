@@ -1,5 +1,3 @@
-/* ----- Personal Data Menu Styles ----- */
-
 .personal-data-wrapper {
   display: flex;
   flex-direction: column;
@@ -68,7 +66,7 @@
   height: 2rem;
 }
 
-.personal-dataCancel-btn {
+.personal-data-cancel-btn {
   border-left: 4px solid #ff5722;
   background: rgba(255, 255, 255, 0.2);
   color: white;

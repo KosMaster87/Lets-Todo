@@ -32,8 +32,8 @@ export const renderOptionsPage = () => {
           </div>
         </button>
 
-        <button class="menu-btn optionsCancel-btn" id="optionsCancelBtn">
-          <div class="btn-icon optionsCancel-btn-icon"></div>
+        <button class="menu-btn options-cancel-btn" id="optionsCancelBtn">
+          <div class="btn-icon options-cancel-btn-icon"></div>
           <div class="btn-content">
             <h3>Zurück</h3>
             <p>Zurück zum Hauptmenü</p>

@@ -43,7 +43,7 @@ export const renderTodoViewPage = () => {
 
       <section class="todo-display">
         <div class="todo-header">
-          <h3 id="todoDisplayTitle">${escapeHtml(
+          <h3 class="todo-title" id="todoDisplayTitle">${escapeHtml(
             currentTodo.title || "Untitled"
           )}</h3>
         </div>

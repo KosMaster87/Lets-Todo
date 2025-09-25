@@ -103,7 +103,6 @@
 }
 
 .trash-todo-item:hover {
-  transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
@@ -134,11 +133,11 @@
 }
 
 .trash-wrapper .action-btn:hover {
-  transform: translateY(-1px);
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
 }
 
-.action-icon {
+/* Trash Specific Action Icons */
+.trash-wrapper .action-icon {
   width: 1rem;
   height: 1rem;
 }

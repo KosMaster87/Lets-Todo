@@ -1,18 +1,32 @@
+/* Base Styles */
 @import url("./base.css");
+@import url("./data-theme.css");
+
+/* Layout & Components */
 @import url("./main-content.css");
 @import url("./page-layouts.css");
-@import url("./components.css");
+@import url("./main-menu-btn.css");
 @import url("./form-group.css");
 @import url("./action-btn.css");
 
+/* Utility Styles */
+@import url("./loading-spinner.css");
+@import url("./toast-notification.css");
+@import url("./accessibility.css");
+
+/* Page Styles */
 @import url("./dashboard.css");
+@import url("./dashboard-stats.css");
 @import url("./login.css");
 @import url("./register.css");
 @import url("./options.css");
 
+/* User Management Pages */
 @import url("./personal-data.css");
 @import url("./change-password.css");
-@import url("./todo-view.css");
-@import url("./todos-list.css");
+
+/* Todo Application Pages */
 @import url("./todos.css");
+@import url("./todos-list.css");
+@import url("./todo-view.css");
 @import url("./trash.css");

@@ -9,6 +9,7 @@
   background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
 }
 
+/* Der Style der Menü-Buttons einer jeden Seite. */
 [data-theme="dark"] .menu-btn {
   background: var(--secondary-bg);
   color: var(--text-primary);
@@ -19,14 +20,15 @@
   color: var(--text-primary);
 }
 
-[data-theme="dark"] .todo-item {
+/* Der Style im Header einer jeder Seite. */
+[data-theme="dark"] .page-item {
   background: var(--secondary-bg);
 }
 
-[data-theme="dark"] .todo-title {
+[data-theme="dark"] .page-title {
   color: var(--text-primary);
 }
 
-[data-theme="dark"] .todo-description {
+[data-theme="dark"] .page-description {
   color: var(--text-secondary);
 }
