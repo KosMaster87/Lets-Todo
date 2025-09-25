@@ -1,6 +1,6 @@
 {
-  "name": "RESTful Notes App",
-  "short_name": "Notes",
+  "name": "RESTful Todos App",
+  "short_name": "Todos",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

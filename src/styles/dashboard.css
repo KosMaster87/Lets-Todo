@@ -46,11 +46,11 @@
   flex: 1;
 }
 
-.notes-list-dashboard-btn {
+.todos-list-dashboard-btn {
   border-left: 4px solid #2196f3;
 }
 
-.notes-list-dashboard-btn-icon {
+.todos-list-dashboard-btn-icon {
   background-color: #2196f3;
   mask: url("/assets/icons/notes.svg") no-repeat center;
   mask-size: contain;
@@ -58,11 +58,11 @@
   height: 2rem;
 }
 
-.create-note-dashboard-btn {
+.create-todo-dashboard-btn {
   border-left: 4px solid #4caf50;
 }
 
-.create-note-dashboard-btn-icon {
+.create-todo-dashboard-btn-icon {
   background-color: #4caf50;
   mask: url("/assets/icons/add_note.svg") no-repeat center;
   mask-size: contain;
@@ -82,18 +82,18 @@
   height: 2rem;
 }
 
-.dashboardCancel-btn {
+.dashboard-cancel-btn {
   border-left: 4px solid #ff5722;
   background: rgba(255, 255, 255, 0.2);
   color: white;
 }
 
-.dashboardCancel-btn .btn-content h3,
-.dashboardCancel-btn .btn-content p {
+.dashboard-cancel-btn .btn-content h3,
+.dashboard-cancel-btn .btn-content p {
   color: white;
 }
 
-.dashboardCancel-btn-icon {
+.dashboard-cancel-btn-icon {
   background-color: #ff5722;
   mask: url("/assets/icons/arrow_back.svg") no-repeat center;
   mask-size: contain;

@@ -29,10 +29,10 @@ export const renderDashboardPage = () => {
 
       <nav class="dashboard-menu">
         <button
-          class="menu-btn notes-list-dashboard-btn"
-          id="notesListDashboardBtn"
+          class="menu-btn todos-list-dashboard-btn"
+          id="todosListDashboardBtn"
         >
-          <div class="btn-icon notes-list-dashboard-btn-icon"></div>
+          <div class="btn-icon todos-list-dashboard-btn-icon"></div>
           <div class="btn-content">
             <h3>Todo-Liste</h3>
             <p>Alle deine gespeicherten Todos anzeigen</p>
@@ -40,10 +40,10 @@ export const renderDashboardPage = () => {
         </button>
 
         <button
-          class="menu-btn create-note-dashboard-btn"
-          id="createNoteDashboardBtn"
+          class="menu-btn create-todo-dashboard-btn"
+          id="createTodoDashboardBtn"
         >
-          <div class="btn-icon create-note-dashboard-btn-icon"></div>
+          <div class="btn-icon create-todo-dashboard-btn-icon"></div>
           <div class="btn-content">
             <h3>Todo erstellen</h3>
             <p>Ein neues Todo schreiben</p>
@@ -58,8 +58,8 @@ export const renderDashboardPage = () => {
           </div>
         </button>
 
-        <button class="menu-btn dashboardCancel-btn" id="dashboardCancelBtn">
-          <div class="btn-icon dashboardCancel-btn-icon"></div>
+        <button class="menu-btn dashboard-cancel-btn" id="dashboardCancelBtn">
+          <div class="btn-icon dashboard-cancel-btn-icon"></div>
           <div class="btn-content">
             <h3>Zurück zum Menü</h3>
             <p>Zum Hauptmenü zurückkehren</p>
@@ -69,11 +69,11 @@ export const renderDashboardPage = () => {
 
       <section class="dashboard-stats">
         <div class="stat-item">
-          <div class="stat-number dashboard-total-notes">${todos.length}</div>
+          <div class="stat-number dashboard-total-todos">${todos.length}</div>
           <div class="stat-label">Todos gesamt</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number dashboard-completed-notes">${getCompletedCount(
+          <div class="stat-number dashboard-completed-todos">${getCompletedCount(
             todos
           )}</div>
           <div class="stat-label">Erledigt</div>

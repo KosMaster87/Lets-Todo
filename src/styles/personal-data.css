@@ -1,0 +1,88 @@
+/* ----- Personal Data Menu Styles ----- */
+
+.personal-data-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+}
+
+.personal-data-intro {
+  text-align: center;
+  color: white;
+}
+
+.personal-data-intro h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.personal-data-intro p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.personal-data-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+}
+
+/* Personal Data Buttons */
+.reset-password-btn {
+  border-left: 4px solid #f44336;
+}
+
+.reset-password-btn-icon {
+  background-color: #f44336;
+  mask: url("/assets/icons/lock_reset.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.download-todos-btn {
+  border-left: 4px solid #2196f3;
+}
+
+.download-todos-btn-icon {
+  background-color: #2196f3;
+  mask: url("/assets/icons/download.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.upload-todos-btn {
+  border-left: 4px solid #ff9800;
+}
+
+.upload-todos-btn-icon {
+  background-color: #ff9800;
+  mask: url("/assets/icons/upload.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.personal-dataCancel-btn {
+  border-left: 4px solid #ff5722;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.personal-data-cancel-btn .btn-content h3,
+.personal-data-cancel-btn .btn-content p {
+  color: white;
+}
+
+.personal-data-cancel-btn-icon {
+  background-color: #ff5722;
+  mask: url("/assets/icons/arrow_back.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}

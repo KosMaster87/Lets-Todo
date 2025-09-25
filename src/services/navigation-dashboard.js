@@ -17,8 +17,8 @@ export const initializeDashboardNavigation = () => {
  */
 const setupDashboardNavigation = () => {
   const dashboardLinks = [
-    { id: "notesListDashboardBtn", view: VIEWS.NOTES_LIST },
-    { id: "createNoteDashboardBtn", view: VIEWS.NOTES },
+    { id: "todosListDashboardBtn", view: VIEWS.TODOS_LIST },
+    { id: "createTodoDashboardBtn", view: VIEWS.TODOS },
     { id: "trashDashboardBtn", view: VIEWS.TRASH },
     { id: "dashboardCancelBtn", view: VIEWS.MAIN_MENU },
   ];

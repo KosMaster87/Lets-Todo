@@ -3,6 +3,15 @@
 import { setCurrentView, saveSessionToStorage, setSession } from "../state.js";
 import { VIEWS, PAGE_TITLES, SESSION_TYPES } from "../utils/constants.js";
 import { setupDashboardEventListeners } from "./navigation-dashboard.js";
+import { setupRegisterEventListeners } from "./navigation-register.js";
+import { setupLoginEventListeners } from "./navigation-login.js";
+import { setupOptionsEventListeners } from "./navigation-options.js";
+import { setupPersonalDataEventListeners } from "./navigation-personal-data.js";
+import { setupChangePasswordEventListeners } from "./navigation-change-password.js";
+import { setupTodosListNavigation } from "./navigation-todos-list.js";
+import { setupTodosNavigation } from "./navigation-todos.js";
+import { setupTrashNavigation } from "./navigation-trash.js";
+import { setupTodoViewNavigation } from "./navigation-todo-view.js";
 
 let isNavigationInitialized = false;
 
@@ -13,51 +22,9 @@ let isNavigationInitialized = false;
 export const initializeNavigation = () => {
   if (isNavigationInitialized) return;
 
-  // Handle route preservation first
-  // handleRoutePreservation();
-
   setupBrowserNavigation();
   loadInitialView();
-
-  // Set up route saving for future reloads
-  // setupRouteSaving();
-
   isNavigationInitialized = true;
-};
-
-/**
- * Handles route preservation on initial load
- */
-const handleRoutePreservation = () => {
-  const pendingRoute = localStorage.getItem("todoapp-pending-route");
-  if (
-    pendingRoute &&
-    window.location.pathname === "/" &&
-    pendingRoute !== "/"
-  ) {
-    localStorage.removeItem("todoapp-pending-route");
-    const view = pendingRoute.substring(1);
-    if (isValidView(view)) {
-      console.log(`🔄 Restoring route from reload: ${pendingRoute}`);
-      // Directly set the URL without navigation to avoid issues
-      const url = `/${view}`;
-      window.history.replaceState({ view }, "", url);
-    }
-  }
-};
-
-/**
- * Sets up route saving for page reloads
- */
-const setupRouteSaving = () => {
-  window.addEventListener("beforeunload", () => {
-    const currentPath = window.location.pathname;
-    // Only save non-root paths that are valid views
-    if (currentPath !== "/" && isValidView(currentPath.substring(1))) {
-      localStorage.setItem("todoapp-pending-route", currentPath);
-      console.log(`💾 Saved route for reload: ${currentPath}`);
-    }
-  });
 };
 
 /**
@@ -66,6 +33,15 @@ const setupRouteSaving = () => {
 export const setupNavigationListeners = () => {
   setupMainMenuNavigation();
   setupDashboardEventListeners();
+  setupRegisterEventListeners();
+  setupLoginEventListeners();
+  setupOptionsEventListeners();
+  setupPersonalDataEventListeners();
+  setupChangePasswordEventListeners();
+  setupTodosListNavigation();
+  setupTodosNavigation();
+  setupTrashNavigation();
+  setupTodoViewNavigation();
   setupBackButtonNavigation();
 };
 

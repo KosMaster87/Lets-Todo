@@ -134,8 +134,8 @@ const saveUserPreferences = () => {
 };
 
 /**
- * Checks if a view is valid (for session restore).
- * @param {string} view - View name
+ * Checks if a view is valid.
+ * @param {string} view - View to check
  * @returns {boolean} Is valid
  */
 const isValidView = (view) => {
@@ -363,6 +363,16 @@ export const setTodos = (todos) => {
 };
 
 /**
+ * Sets the trashed todos.
+ * @param {Array} trashedTodos - New trashed todos array
+ */
+export const setTrashedTodos = (trashedTodos) => {
+  appState.trashedTodos = [...trashedTodos];
+  saveTrashedTodosToStorage();
+  notifyListeners();
+};
+
+/**
  * Adds a todo.
  * @param {Object} todo - Todo object
  */
@@ -446,6 +456,15 @@ export const restoreTodo = (todoId) => {
  */
 export const deleteTodoPermanently = (todoId) => {
   appState.trashedTodos = appState.trashedTodos.filter((t) => t.id !== todoId);
+  saveTrashedTodosToStorage();
+  notifyListeners();
+};
+
+/**
+ * Empties the entire trash by deleting all trashed todos permanently.
+ */
+export const emptyTrash = () => {
+  appState.trashedTodos = [];
   saveTrashedTodosToStorage();
   notifyListeners();
 };

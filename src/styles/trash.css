@@ -1,0 +1,210 @@
+/* ----- Trash Menu Styles ----- */
+
+.trash-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+}
+
+.trash-intro {
+  text-align: center;
+  color: white;
+}
+
+.trash-intro h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.trash-intro p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.trash-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Trash Menu Buttons */
+.empty-trash-btn {
+  border-left: 4px solid #f44336;
+}
+
+.empty-trash-btn-icon {
+  background-color: #f44336;
+  mask: url("/assets/icons/delete_forever.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.trash-filter-btn {
+  border-left: 4px solid #2196f3;
+}
+
+.trash-filter-btn-icon {
+  background-color: #2196f3;
+  mask: url("/assets/icons/filter_list.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.trash-cancel-btn {
+  border-left: 4px solid #ff5722;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.trash-cancel-btn .btn-content h3,
+.trash-cancel-btn .btn-content p {
+  color: white;
+}
+
+.trash-cancel-btn-icon {
+  background-color: #ff5722;
+  mask: url("/assets/icons/arrow_back.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Trash Todos Container */
+.trash-todos-container {
+  margin-top: 2rem;
+}
+
+.trash-todos-container h3 {
+  color: white;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.trash-todos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Trash Todo Items */
+.trash-todo-item {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 0.8rem;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border-left: 4px solid #f44336;
+}
+
+.trash-todo-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.trash-todo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.trash-todo-title {
+  color: #333;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.trash-todo-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.trash-wrapper .action-btn {
+  width: 2rem;
+  height: 2rem;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.trash-wrapper .action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+.action-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.restore-todo-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/restore_from_trash.svg") no-repeat center;
+  mask-size: contain;
+}
+
+.delete-forever-icon {
+  background-color: #f44336;
+  mask: url("/assets/icons/delete_forever.svg") no-repeat center;
+  mask-size: contain;
+}
+
+.trash-todo-content {
+  margin-bottom: 0.8rem;
+}
+
+.trash-todo-text {
+  color: #333;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin: 0;
+  opacity: 0.7;
+}
+
+.trash-todo-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #666;
+  opacity: 0.8;
+}
+
+.trash-todo-date {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.trash-todo-original-date {
+  color: #666;
+}
+
+/* Trash Todo Placeholder */
+.trash-todo-placeholder {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.8rem;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+  opacity: 0.7;
+}
+
+.trash-todo-placeholder p {
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.trash-placeholder-icon {
+  width: 4rem;
+  height: 4rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  margin: 0 auto 1rem;
+  border-radius: 50%;
+}

@@ -1,7 +1,15 @@
 // lets-todo-app/src/app.js
 
-import { appState, loadAllStoredData } from "./state.js";
+import {
+  appState,
+  loadAllStoredData,
+  addTodo,
+  getTodos,
+  getTrashedTodos,
+  setTrashedTodos,
+} from "./state.js";
 import { renderMainContent } from "./components/main-content.js";
+import { initializeAllSampleData } from "./utils/sample-data.js";
 // import { initializeTodoEvents } from "./services/todo-events.js";
 // import { initializeUserPreferences } from "./services/user-preferences.js";
 // import { initializeThemeSystem } from "./services/theme-system.js";
@@ -21,6 +29,18 @@ import {
  */
 const initializeApp = () => {
   loadAllStoredData();
+
+  // Add sample data if no todos exist
+  const currentTodos = getTodos();
+  const currentTrashedTodos = getTrashedTodos();
+
+  initializeAllSampleData(
+    addTodo,
+    setTrashedTodos,
+    currentTodos,
+    currentTrashedTodos
+  );
+
   // initializeUserPreferences();
   // initializeThemeSystem();
   // initializeSessionStatus();

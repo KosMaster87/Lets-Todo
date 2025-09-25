@@ -1,0 +1,9 @@
+/* Focus styles for accessibility */
+.menu-btn:focus,
+.action-btn:focus,
+input:focus,
+textarea:focus,
+button:focus {
+  outline: 2px solid #2196f3;
+  outline-offset: 2px;
+}

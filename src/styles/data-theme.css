@@ -1,0 +1,32 @@
+[data-theme="dark"] {
+  --primary-bg: #1a1a1a;
+  --secondary-bg: #2a2a2a;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+}
+
+[data-theme="dark"] body {
+  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+}
+
+[data-theme="dark"] .menu-btn {
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-content h3,
+[data-theme="dark"] .btn-content p {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .todo-item {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .todo-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .todo-description {
+  color: var(--text-secondary);
+}

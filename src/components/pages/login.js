@@ -6,7 +6,7 @@
  */
 export const renderLoginPage = () => {
   return `
-    <main class="login-wrapper hidden" data-view="login">
+    <main class="login-wrapper" data-view="login">
       <section class="login-intro">
         <h2>Willkommen zurück!</h2>
         <p>Bitte melde dich an, um auf deine Todos zuzugreifen.</p>
@@ -40,16 +40,16 @@ export const renderLoginPage = () => {
           <label for="loginRemember">Angemeldet bleiben</label>
         </div>
 
-        <button class="menu-btn loginSubmit-btn" id="loginSubmitBtn">
-          <div class="btn-icon loginSubmit-btn-icon"></div>
+        <button class="menu-btn login-submit-btn" id="loginSubmitBtn">
+          <div class="btn-icon login-submit-btn-icon"></div>
           <div class="btn-content">
             <h3>Anmelden</h3>
             <p>In dein Konto einloggen</p>
           </div>
         </button>
 
-        <button class="menu-btn loginCancel-btn" id="loginCancelBtn">
-          <div class="btn-icon loginCancel-btn-icon"></div>
+        <button class="menu-btn login-cancel-btn" id="loginCancelBtn">
+          <div class="btn-icon login-cancel-btn-icon"></div>
           <div class="btn-content">
             <h3>Abbrechen</h3>
             <p>Zurück zur Hauptseite</p>

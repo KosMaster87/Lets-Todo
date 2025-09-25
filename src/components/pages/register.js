@@ -6,7 +6,7 @@
  */
 export const renderRegisterPage = () => {
   return `
-    <main class="register-wrapper hidden" data-view="register">
+    <main class="register-wrapper" data-view="register">
       <section class="register-intro">
         <h2>Registriere dich jetzt</h2>
         <p>
@@ -56,16 +56,16 @@ export const renderRegisterPage = () => {
           >
         </div>
 
-        <button class="menu-btn registerSubmit-btn" id="registerSubmitBtn">
-          <div class="btn-icon registerSubmit-btn-icon"></div>
+        <button class="menu-btn register-submit-btn" id="registerSubmitBtn">
+          <div class="btn-icon register-submit-btn-icon"></div>
           <div class="btn-content">
             <h3>Registrieren</h3>
             <p>Neues Konto erstellen</p>
           </div>
         </button>
 
-        <button class="menu-btn registerCancel-btn" id="registerCancelBtn">
-          <div class="btn-icon registerCancel-btn-icon"></div>
+        <button class="menu-btn register-cancel-btn" id="registerCancelBtn">
+          <div class="btn-icon register-cancel-btn-icon"></div>
           <div class="btn-content">
             <h3>Abbrechen</h3>
             <p>Zurück zur Hauptseite</p>

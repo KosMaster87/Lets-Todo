@@ -4,9 +4,16 @@ import { getCurrentView } from "../state.js";
 import { VIEWS, PAGE_TITLES } from "../utils/constants.js";
 import { updateBodyClass as updateViewBodyClass } from "../services/navigation.js";
 import { renderMainMenuPage } from "./pages/main-menu.js";
+import { renderDashboardPage } from "./pages/dashboard.js";
 import { renderRegisterPage } from "./pages/register.js";
 import { renderLoginPage } from "./pages/login.js";
-import { renderDashboardPage } from "./pages/dashboard.js";
+import { renderOptionsPage } from "./pages/options.js";
+import { renderPersonalDataPage } from "./pages/personal-data.js";
+import { renderChangePasswordPage } from "./pages/change-password.js";
+import { renderTodosListPage } from "./pages/todos-list.js";
+import { renderTodosPage } from "./pages/todos.js";
+import { renderTrashPage } from "./pages/trash.js";
+import { renderTodoViewPage } from "./pages/todo-view.js";
 // import { renderNotifications } from "../components/notifications.js";
 
 /**
@@ -49,20 +56,27 @@ const getCurrentViewHTML = (currentView) => {
       return renderLoginPage();
     case VIEWS.DASHBOARD:
       return renderDashboardPage();
-    case VIEWS.NOTES_LIST:
-      return renderNotesListPage();
-    case VIEWS.NOTES:
-      return renderNotesPage();
-    case VIEWS.NOTE_VIEW:
-      return renderNoteViewPage();
-    case VIEWS.TRASH:
-      return renderTrashPage();
     case VIEWS.OPTIONS:
       return renderOptionsPage();
     case VIEWS.PERSONAL_DATA:
       return renderPersonalDataPage();
     case VIEWS.CHANGE_PASSWORD:
       return renderChangePasswordPage();
+    case VIEWS.TODOS_LIST:
+      return renderTodosListPage();
+    case VIEWS.TODOS:
+      return renderTodosPage();
+    case VIEWS.TRASH:
+      return renderTrashPage();
+    case VIEWS.TODO_VIEW:
+      return renderTodoViewPage();
+    // TODO: Implement additional views
+    // case VIEWS.TODOS:
+    //   return renderTodosPage();
+    // case VIEWS.TODO_VIEW:
+    //   return renderTodoViewPage();
+    // case VIEWS.TRASH:
+    //   return renderTrashPage();
     default:
       return renderMainMenuPage();
   }
