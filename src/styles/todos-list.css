@@ -52,9 +52,9 @@
   height: 1rem;
 }
 
-.todos-list .edit-todo-icon {
+.todos-list .done-todo-icon {
   background-color: #4caf50;
-  mask: url("/assets/icons/edit.svg") no-repeat center;
+  mask: url("/assets/icons/done.svg") no-repeat center;
   mask-size: contain;
 }
 

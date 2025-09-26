@@ -11,7 +11,6 @@ import { setupChangePasswordEventListeners } from "./navigation-change-password.
 import { setupTodosListNavigation } from "./navigation-todos-list.js";
 import { setupTodosNavigation } from "./navigation-todos.js";
 import { setupTrashNavigation } from "./navigation-trash.js";
-import { setupTodoViewNavigation } from "./navigation-todo-view.js";
 
 let isNavigationInitialized = false;
 
@@ -41,7 +40,6 @@ export const setupNavigationListeners = () => {
   setupTodosListNavigation();
   setupTodosNavigation();
   setupTrashNavigation();
-  setupTodoViewNavigation();
   setupBackButtonNavigation();
 };
 

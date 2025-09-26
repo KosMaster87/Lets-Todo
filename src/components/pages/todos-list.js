@@ -1,6 +1,7 @@
 // lets-todo-app/src/components/pages/todos-list.js
 
 import { getTodos } from "../../state.js";
+import { renderListActionButtons } from "../action-view.js";
 
 /**
  * Renders the todos list page.
@@ -73,38 +74,16 @@ export const renderTodosList = (todos) => {
       </div>
 
       <div class="todo-content-display">
-        ${escapeHtml(
-          (todo.content || todo.title || "Kein Inhalt vorhanden...").substring(
-            0,
-            150
-          )
-        )}${(todo.content || todo.title || "").length > 150 ? "..." : ""}
+        ${(() => {
+          const rawContent =
+            todo.content || todo.title || "Kein Inhalt vorhanden...";
+          const truncated = rawContent.substring(0, 150);
+          const hasMore = rawContent.length > 150;
+          return escapeHtml(truncated) + (hasMore ? "..." : "");
+        })()}
       </div>
 
-      <div class="todo-view-actions">
-        <button
-          class="action-btn bookmark-view-btn ${
-            todo.bookmarked ? "bookmarked" : ""
-          }"
-          title="Lesezeichen umschalten"
-        >
-          <div class="action-icon bookmark-view-icon"></div>
-        </button>
-
-        <button
-          class="action-btn share-todo-btn"
-          title="Todo teilen"
-        >
-          <div class="action-icon share-todo-icon"></div>
-        </button>
-
-        <button
-          class="action-btn copy-todo-btn"
-          title="Todo kopieren"
-        >
-          <div class="action-icon copy-todo-icon"></div>
-        </button>
-      </div>
+      ${renderListActionButtons(todo)}
 
       <div class="todo-meta-info">
         <span class="todo-creation-date">Erstellt: ${formatDate(

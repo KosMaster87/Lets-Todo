@@ -1,6 +1,7 @@
 // lets-todo-app/src/components/pages/todo-view.js
 
 import { getCurrentTodo } from "../../state.js";
+import { renderSingleActionButtons } from "../action-view.js";
 
 /**
  * Renders the todo view page.
@@ -24,7 +25,7 @@ export const renderTodoViewPage = () => {
       </section>
 
       <nav class="todo-view-menu">
-        <button class="menu-btn todo-view-back-btn" id="todoViewBackBtn">
+        <button class="menu-btn todo-view-back-btn" id="todosCancelBtn">
           <div class="btn-icon todo-view-back-btn-icon"></div>
           <div class="btn-content">
             <h3>Zurück zu Todos</h3>
@@ -32,7 +33,7 @@ export const renderTodoViewPage = () => {
           </div>
         </button>
 
-        <button class="menu-btn todo-view-save-btn" id="todoViewSaveBtn">
+        <button class="menu-btn todo-view-save-btn" id="todosSaveBtn">
           <div class="btn-icon todo-view-save-btn-icon"></div>
           <div class="btn-content">
             <h3>Todo speichern</h3>
@@ -43,7 +44,7 @@ export const renderTodoViewPage = () => {
 
       <section class="todo-display">
         <div class="todo-header">
-          <h3 class="todo-title" id="todoDisplayTitle">${escapeHtml(
+          <h3 class="todo-title" id="todoDisplayTitle" contenteditable="true" data-placeholder="Titel deiner Todo eingeben...">${escapeHtml(
             currentTodo.title || "Untitled"
           )}</h3>
         </div>
@@ -56,49 +57,7 @@ export const renderTodoViewPage = () => {
           )}
         </div>
 
-        <div class="todo-view-actions">
-          <button
-            class="action-btn bookmark-view-btn ${
-              currentTodo.bookmarked ? "bookmarked" : ""
-            }"
-            id="bookmarkViewBtn"
-            title="Lesezeichen umschalten"
-          >
-            <div class="action-icon bookmark-view-icon"></div>
-          </button>
-
-          <button
-            class="action-btn edit-todo-btn"
-            id="editTodoBtn"
-            title="Todo bearbeiten"
-          >
-            <div class="action-icon edit-todo-icon"></div>
-          </button>
-
-          <button
-            class="action-btn share-todo-btn"
-            id="shareTodoBtn"
-            title="Todo teilen"
-          >
-            <div class="action-icon share-todo-icon"></div>
-          </button>
-
-          <button
-            class="action-btn copy-todo-btn"
-            id="copyTodoBtn"
-            title="Todo kopieren"
-          >
-            <div class="action-icon copy-todo-icon"></div>
-          </button>
-
-          <button
-            class="action-btn delete-view-todo-btn"
-            id="deleteViewTodoBtn"
-            title="Todo löschen"
-          >
-            <div class="action-icon delete-view-todo-icon"></div>
-          </button>
-        </div>
+        ${renderSingleActionButtons(currentTodo)}
 
         <div class="todo-meta-info">
           <span class="todo-creation-date">Erstellt: ${formatDate(

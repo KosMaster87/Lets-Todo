@@ -77,12 +77,14 @@ export const renderSingleTrashTodo = (todo) => {
         <h4 class="trash-todo-title">${escapeHtml(
           todo.title || "Untitled"
         )}</h4>
+
         <div class="trash-todo-actions">
           <button class="action-btn restore-todo-btn" title="Todo wiederherstellen" data-todo-id="${
             todo.id
           }">
             <div class="action-icon restore-todo-icon"></div>
           </button>
+
           <button class="action-btn delete-forever-btn" title="Endgültig löschen" data-todo-id="${
             todo.id
           }">
@@ -90,15 +92,18 @@ export const renderSingleTrashTodo = (todo) => {
           </button>
         </div>
       </div>
+
       <div class="trash-todo-content">
         <p class="trash-todo-text">${escapeHtml(
           todo.content || todo.title || ""
         )}</p>
       </div>
+
       <div class="trash-todo-meta">
         <span class="trash-todo-date">Gelöscht: ${formatDate(
           todo.deletedAt || new Date()
         )}</span>
+
         <span class="trash-todo-original-date">Erstellt: ${formatDate(
           todo.created || new Date()
         )}</span>

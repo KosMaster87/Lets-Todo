@@ -119,6 +119,11 @@
   border: 2px solid #ff9800;
 }
 
+.action-btn.completed {
+  background: rgba(76, 175, 80, 0.2);
+  border: 2px solid #4caf50;
+}
+
 /* Todo View Specific Action Icons */
 .todo-view .action-icon {
   width: 1.6rem;
@@ -131,9 +136,9 @@
   mask-size: contain;
 }
 
-.edit-todo-icon {
+.done-todo-icon {
   background-color: #4caf50;
-  mask: url("/assets/icons/edit.svg") no-repeat center;
+  mask: url("/assets/icons/done.svg") no-repeat center;
   mask-size: contain;
 }
 
@@ -149,7 +154,7 @@
   mask-size: contain;
 }
 
-.delete-view-todo-icon {
+.delete-todo-icon {
   background-color: #f44336;
   mask: url("/assets/icons/delete.svg") no-repeat center;
   mask-size: contain;
@@ -177,7 +182,7 @@
   background: rgba(76, 175, 80, 0.05);
 }
 
-.todo-view-wrapper.edit-mode .edit-todo-icon {
+.todo-view-wrapper.edit-mode .done-todo-icon {
   background-color: #ff9800;
 }
 
