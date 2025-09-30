@@ -21,6 +21,7 @@ sudo mysql_secure_installation
 # - Reload privilege tables: Y
 
 # Test connection
+sudo mysql
 mysql -u root -p
 # Or without password: mysql -u root
 ```
