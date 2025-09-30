@@ -172,23 +172,23 @@ export const createCopyHandler = (getContentCallback) => {
 };
 
 /**
- * Handles content deletion functionality
+ * Handles content clearing functionality (for new todos being created)
  * @param {Function} getContentCallback - Function to get current content
  * @param {Function} clearContentCallback - Function to clear content
  * @param {Function} onDeleteCallback - Optional callback after deletion
  * @returns {Function} Event handler function
  */
-export const createDeleteHandler = (
+export const createContentClearHandler = (
   getContentCallback,
   clearContentCallback,
   onDeleteCallback
 ) => {
   return (event) => {
     event.preventDefault();
-
-    console.log("Delete handler called");
+    console.log("Content clear handler called");
+    
     const { title, content } = getContentCallback();
-    console.log("Delete handler content:", { title, content });
+    console.log("Content clear handler content:", { title, content });
 
     // Prüfe ob Content-Elemente existieren
     const titleElement = document.querySelector("#todoDisplayTitle");
@@ -225,6 +225,46 @@ export const createDeleteHandler = (
 
       if (onDeleteCallback) {
         onDeleteCallback();
+      }
+    }
+  };
+};
+
+/**
+ * Handles todo deletion functionality (moves todo to trash)
+ * @param {Function} getTodoIdCallback - Function to get current todo ID
+ * @param {Function} trashTodoCallback - Function to move todo to trash
+ * @param {Function} onDeleteCallback - Optional callback after deletion
+ * @returns {Function} Event handler function
+ */
+export const createDeleteHandler = (
+  getTodoIdCallback,
+  trashTodoCallback,
+  onDeleteCallback
+) => {
+  return (event) => {
+    event.preventDefault();
+
+    const todoId = getTodoIdCallback();
+
+    if (!todoId) {
+      showMessage("Kein Todo zum Löschen gefunden.", "error");
+      return;
+    }
+
+    if (
+      confirm("Möchten Sie diese Todo wirklich in den Papierkorb verschieben?")
+    ) {
+      try {
+        trashTodoCallback(todoId);
+        showMessage("Todo wurde in den Papierkorb verschoben!");
+
+        if (onDeleteCallback) {
+          onDeleteCallback();
+        }
+      } catch (error) {
+        console.error("Error deleting todo:", error);
+        showMessage("Fehler beim Löschen der Todo.", "error");
       }
     }
   };

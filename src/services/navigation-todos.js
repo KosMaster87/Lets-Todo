@@ -1,6 +1,11 @@
 // lets-todo-app/src/services/navigation-todos.js
 
-import { setCurrentView, addTodo } from "../state.js";
+import {
+  setCurrentView,
+  addTodo,
+  getCurrentTodo,
+  trashTodo,
+} from "../state.js";
 import { VIEWS } from "../utils/constants.js";
 import { navigateToView } from "./navigation.js";
 import {
@@ -10,6 +15,7 @@ import {
   createShareHandler,
   createCopyHandler,
   createDeleteHandler,
+  createContentClearHandler,
   showMessage,
 } from "./navigation-action-buttons.js";
 
@@ -124,11 +130,7 @@ function setupTodosActionButtons() {
     },
     delete: {
       elementId: "deleteTodoBtn",
-      handler: createDeleteHandler(
-        getContentForActions,
-        clearTodoContent,
-        resetBookmarkState
-      ),
+      handler: createTodoDeleteHandler(),
     },
   };
 
@@ -253,6 +255,43 @@ function clearTodoContent() {
 
   if (titleElement) titleElement.textContent = "Neue Todo";
   if (contentElement) contentElement.textContent = "";
+}
+
+/**
+ * Gets the current todo ID for action handlers
+ * @returns {string|null} Current todo ID or null
+ */
+function getCurrentTodoId() {
+  const currentTodo = getCurrentTodo();
+  return currentTodo ? currentTodo.id : null;
+}
+
+/**
+ * Handles todo deletion by moving to trash and navigating back
+ */
+function handleTodoTrash() {
+  // Navigate back to dashboard after successful deletion
+  navigateToView(VIEWS.DASHBOARD);
+}
+
+/**
+ * Creates appropriate delete handler based on context (new todo vs existing todo)
+ * @returns {Function} Appropriate delete handler
+ */
+function createTodoDeleteHandler() {
+  const currentTodo = getCurrentTodo();
+
+  // If we have a todo with an ID, it's an existing todo - move to trash
+  if (currentTodo && currentTodo.id) {
+    return createDeleteHandler(getCurrentTodoId, trashTodo, handleTodoTrash);
+  } else {
+    // If no todo or no ID, it's a new todo being created - clear content
+    return createContentClearHandler(
+      getContentForActions,
+      clearTodoContent,
+      resetBookmarkState
+    );
+  }
 }
 
 /**

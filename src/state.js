@@ -189,6 +189,48 @@ const saveSessionToStorage = () => {
 };
 
 /**
+ * Repairs todos by adding missing IDs and required fields
+ */
+const repairTodos = () => {
+  let hasChanges = false;
+
+  // Fix todos missing IDs
+  appState.todos = appState.todos.map((todo) => {
+    if (!todo.id) {
+      hasChanges = true;
+      return {
+        ...todo,
+        id: generateId(),
+        created: todo.created || new Date().toISOString(),
+        lastModified: todo.lastModified || new Date().toISOString(),
+      };
+    }
+    return todo;
+  });
+
+  // Fix trashed todos missing IDs
+  appState.trashedTodos = appState.trashedTodos.map((todo) => {
+    if (!todo.id) {
+      hasChanges = true;
+      return {
+        ...todo,
+        id: generateId(),
+        created: todo.created || new Date().toISOString(),
+        lastModified: todo.lastModified || new Date().toISOString(),
+      };
+    }
+    return todo;
+  });
+
+  // Save changes if any repairs were made
+  if (hasChanges) {
+    saveTodosToStorage();
+    saveTrashedTodosToStorage();
+    console.log("✅ Todo data repaired - missing IDs added");
+  }
+};
+
+/**
  * Loads all stored data at app start.
  */
 const loadAllStoredData = () => {
@@ -197,6 +239,9 @@ const loadAllStoredData = () => {
   loadUserPreferences();
   loadSessionFromStorage();
   saveUserPreferences();
+
+  // Repair any data issues
+  repairTodos();
 
   if (appState.userPreferences.theme) {
     document.body.setAttribute("data-theme", appState.userPreferences.theme);
@@ -373,11 +418,27 @@ export const setTrashedTodos = (trashedTodos) => {
 };
 
 /**
+ * Generates a unique ID
+ * @returns {string} Unique ID
+ */
+const generateId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2);
+};
+
+/**
  * Adds a todo.
  * @param {Object} todo - Todo object
  */
 export const addTodo = (todo) => {
-  appState.todos = [...appState.todos, todo];
+  // Ensure todo has an ID
+  const todoWithId = {
+    ...todo,
+    id: todo.id || generateId(),
+    created: todo.created || new Date().toISOString(),
+    lastModified: todo.lastModified || new Date().toISOString(),
+  };
+
+  appState.todos = [...appState.todos, todoWithId];
   saveTodosToStorage();
   notifyListeners();
 };

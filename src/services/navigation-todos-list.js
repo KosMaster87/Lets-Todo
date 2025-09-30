@@ -5,6 +5,7 @@ import {
   getTodos,
   setCurrentTodo,
   updateTodo,
+  trashTodo,
 } from "../state.js";
 import { VIEWS } from "../utils/constants.js";
 import { renderTodosList } from "../components/pages/todos-list.js";
@@ -135,12 +136,18 @@ function setupTodoActionsNavigation() {
       } else if (e.target.closest(".bookmark-view-btn")) {
         const todoId = e.target.closest(".todo-display").dataset.todoId;
         handleBookmarkToggle(todoId);
+      } else if (e.target.closest(".done-todo-btn")) {
+        const todoId = e.target.closest(".todo-display").dataset.todoId;
+        handleToggleDone(todoId);
       } else if (e.target.closest(".share-todo-btn")) {
         const todoId = e.target.closest(".todo-display").dataset.todoId;
         handleShareTodo(todoId);
       } else if (e.target.closest(".copy-todo-btn")) {
         const todoId = e.target.closest(".todo-display").dataset.todoId;
         handleCopyTodo(todoId);
+      } else if (e.target.closest(".delete-todo-btn")) {
+        const todoId = e.target.closest(".todo-display").dataset.todoId;
+        handleDeleteTodo(todoId);
       }
     });
   }
@@ -242,6 +249,56 @@ function fallbackCopy(text) {
   }
 
   document.body.removeChild(textArea);
+}
+
+/**
+ * Handles toggling done state for a todo
+ * @param {string} todoId - Todo ID
+ */
+function handleToggleDone(todoId) {
+  console.log("Toggle done for todo:", todoId);
+
+  const todos = getTodos();
+  const todo = todos.find((t) => t.id === todoId);
+
+  if (todo && updateTodo) {
+    const newCompletedState = !todo.completed;
+    updateTodo(todoId, {
+      completed: newCompletedState,
+      lastModified: new Date().toISOString(),
+    });
+
+    // Re-render to show updated state
+    renderTodosWithFilter();
+  }
+}
+
+/**
+ * Handles deleting (moving to trash) a todo from the list
+ * @param {string} todoId - Todo ID
+ */
+function handleDeleteTodo(todoId) {
+  console.log("Delete todo:", todoId);
+
+  if (!todoId) {
+    console.error("No todoId provided for delete");
+    return;
+  }
+
+  if (
+    confirm("Möchten Sie diese Todo wirklich in den Papierkorb verschieben?")
+  ) {
+    try {
+      trashTodo(todoId);
+
+      // Re-render todos list to remove the deleted item
+      renderTodosWithFilter();
+
+      console.log("Todo moved to trash successfully");
+    } catch (error) {
+      console.error("Error moving todo to trash:", error);
+    }
+  }
 }
 
 export { todosListFilterMode, renderTodosWithFilter };
