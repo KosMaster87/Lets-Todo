@@ -8,6 +8,7 @@ import {
   deleteTodoPermanently,
 } from "../state.js";
 import { VIEWS } from "../utils/constants.js";
+import { navigateToView } from "./navigation.js";
 import {
   renderTrashPlaceholder,
   renderSingleTrashTodo,
@@ -29,7 +30,7 @@ function setupTrashMenuNavigation() {
 
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
-      setCurrentView(VIEWS.DASHBOARD);
+      navigateToView(VIEWS.DASHBOARD);
     });
   }
 

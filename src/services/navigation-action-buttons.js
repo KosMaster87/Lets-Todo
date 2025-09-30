@@ -8,8 +8,12 @@
 /**
  * Sets up action buttons with configurable handlers
  * @param {Object} config - Configuration object with button definitions
+ * @param {boolean} suppressWarnings - Whether to suppress missing element warnings
  */
-export const setupActionButtons = (config) => {
+export const setupActionButtons = (config, suppressWarnings = false) => {
+  let configuredCount = 0;
+  let totalCount = Object.keys(config).length;
+
   Object.entries(config).forEach(([actionType, { elementId, handler }]) => {
     const element = document.getElementById(elementId);
     if (element) {
@@ -23,13 +27,22 @@ export const setupActionButtons = (config) => {
       element.addEventListener("click", handler);
       element._actionHandler = handler; // Speichere Referenz für spätere Entfernung
 
-      console.log(`Action button ${actionType} (${elementId}) configured`);
-    } else {
+      configuredCount++;
+      console.log(`✅ Action button ${actionType} (${elementId}) configured`);
+    } else if (!suppressWarnings) {
       console.warn(
-        `Action button element ${elementId} not found for ${actionType}`
+        `⚠️  Action button element ${elementId} not found for ${actionType}`
       );
     }
   });
+
+  if (configuredCount > 0) {
+    console.log(
+      `🎯 Action buttons setup complete: ${configuredCount}/${totalCount} configured`
+    );
+  } else {
+    console.log(`📋 No action buttons found to configure`);
+  }
 };
 
 /**

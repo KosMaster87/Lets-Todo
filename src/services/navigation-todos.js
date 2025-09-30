@@ -2,6 +2,7 @@
 
 import { setCurrentView, addTodo } from "../state.js";
 import { VIEWS } from "../utils/constants.js";
+import { navigateToView } from "./navigation.js";
 import {
   setupActionButtons,
   createBookmarkToggleHandler,
@@ -32,7 +33,7 @@ function setupTodosMenuNavigation() {
 
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
-      setCurrentView(VIEWS.DASHBOARD);
+      navigateToView(VIEWS.DASHBOARD);
     });
   }
 
@@ -69,6 +70,28 @@ function setupTodosContentEditableHandlers() {
  * Sets up action buttons using the central action-buttons service.
  */
 function setupTodosActionButtons() {
+  // Prüfe ob wir uns in einer Todo-Bearbeitungsansicht befinden
+  const isTodosView = document.querySelector('[data-view="todos"]');
+  const isTodoView = document.querySelector('[data-view="todo-view"]');
+
+  if (!isTodosView && !isTodoView) {
+    // console.log(
+    //   "📋 Skipping todos action buttons setup - not in todos/todo-view"
+    // );
+    return;
+  }
+
+  // Prüfe ob die Buttons existieren (können nach DOM-Update fehlen)
+  const bookmarkBtn = document.getElementById("bookmarkViewBtn");
+  const doneBtn = document.getElementById("doneTodoBtn");
+
+  if (!bookmarkBtn && !doneBtn) {
+    console.log(
+      "⏳ Action buttons not yet available in DOM - will retry later"
+    );
+    return;
+  }
+
   const actionButtonConfig = {
     bookmark: {
       elementId: "bookmarkViewBtn",
@@ -300,7 +323,7 @@ function handleSaveTodo(event) {
 
     // Navigate back to dashboard after short delay
     setTimeout(() => {
-      setCurrentView(VIEWS.DASHBOARD);
+      navigateToView(VIEWS.DASHBOARD);
     }, 1500);
   } catch (error) {
     showMessage("Fehler beim Speichern des Todos.", "error");

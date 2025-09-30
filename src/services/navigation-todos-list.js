@@ -8,6 +8,7 @@ import {
 } from "../state.js";
 import { VIEWS } from "../utils/constants.js";
 import { renderTodosList } from "../components/pages/todos-list.js";
+import { navigateToView } from "./navigation.js";
 
 let todosListFilterMode = "all";
 
@@ -113,7 +114,7 @@ function setupCancelButtonNavigation() {
   const cancelBtn = document.getElementById("todosListCancelBtn");
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
-      setCurrentView(VIEWS.DASHBOARD);
+      navigateToView(VIEWS.DASHBOARD);
     });
   }
 }
@@ -155,7 +156,7 @@ function handleOpenTodo(todoId) {
 
   if (todo) {
     setCurrentTodo(todo);
-    setCurrentView(VIEWS.TODO_VIEW);
+    navigateToView(VIEWS.TODO_VIEW);
   } else {
     console.error("Todo not found:", todoId);
   }
