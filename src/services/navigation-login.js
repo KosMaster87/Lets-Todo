@@ -1,7 +1,8 @@
 // lets-todo-app/src/services/navigation-login.js
 
-import { handleNavigationClick } from "./navigation.js";
+import { handleNavigationClick, navigateToView } from "./navigation.js";
 import { VIEWS } from "../utils/constants.js";
+import { setSession } from "../state.js";
 
 /**
  * Sets up login navigation buttons.
@@ -74,11 +75,8 @@ const handleLoginSubmit = (event) => {
     return;
   }
 
-  // TODO: Implement actual login logic
-  console.log("Login attempt:", { email, password, remember });
-
-  // For now, show a placeholder message
-  showLoginError("Login-Funktionalität wird noch implementiert.");
+  // Call login API
+  loginUser({ email, password, remember });
 };
 
 /**
@@ -120,12 +118,129 @@ const isValidEmail = (email) => {
 };
 
 /**
+ * Get API Base URL based on current environment
+ * @returns {string} API Base URL
+ */
+const getApiBase = () => {
+  const hostname = window.location.hostname;
+
+  // Local development
+  if (hostname === "127.0.0.1" || hostname === "localhost") {
+    return "http://127.0.0.1:3000/api";
+  }
+
+  // Production/VPS
+  if (hostname.includes("lets-todo-app-feat.dev2k.org")) {
+    return "https://lets-todo-api-feat.dev2k.org/api";
+  }
+
+  // Fallback to local
+  return "http://127.0.0.1:3000/api";
+};
+
+/**
+ * API Handler for HTTP requests with cookie support
+ */
+const apiHandler = (url, method, data = null) => {
+  url = url.replace(/([^:]\/)\/+/g, "$1");
+
+  const options = {
+    method: method,
+    cache: "no-cache",
+    credentials: "include", // Send cookies
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (data !== null) {
+    options.body = JSON.stringify(data);
+  }
+
+  return fetch(url, options)
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((err) => Promise.reject(err));
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("API Error:", error);
+      throw error;
+    });
+};
+
+/**
+ * Login user via API
+ * @param {Object} userData - User login data
+ */
+const loginUser = async (userData) => {
+  const API_BASE = getApiBase();
+
+  try {
+    showLoginLoading(true);
+
+    const result = await apiHandler(`${API_BASE}/login`, "POST", userData);
+
+    showLoginLoading(false);
+
+    // 🎯 WICHTIG: User-Session setzen
+    setSession({
+      sessionType: "user",
+      userId: result.userId,
+      userEmail: userData.email,
+      sessionId: `user_${result.userId}`,
+    });
+
+    showLoginSuccess("Login erfolgreich! Willkommen zurück!");
+
+    // Navigate to main menu after successful login
+    setTimeout(() => {
+      navigateToView(VIEWS.MAIN_MENU);
+    }, 1500);
+  } catch (error) {
+    showLoginLoading(false);
+
+    let errorMessage = "Login fehlgeschlagen. Bitte überprüfe deine Daten.";
+
+    if (error.error) {
+      errorMessage = error.error;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    showLoginError(errorMessage);
+  }
+};
+
+/**
+ * Shows login loading state
+ * @param {boolean} loading - Loading state
+ */
+const showLoginLoading = (loading) => {
+  const submitBtn = document.getElementById("loginSubmitBtn");
+  if (submitBtn) {
+    submitBtn.disabled = loading;
+    submitBtn.textContent = loading ? "Anmeldung läuft..." : "Anmelden";
+  }
+};
+
+/**
+ * Shows login success message.
+ * @param {string} message - Success message to display
+ */
+const showLoginSuccess = (message) => {
+  // TODO: Implement proper toast/success display system
+  alert(`✅ ${message}`);
+};
+
+/**
  * Shows login error message.
  * @param {string} message - Error message to display
  */
 const showLoginError = (message) => {
   // TODO: Implement proper toast/error display system
-  alert(message);
+  alert(`❌ ${message}`);
 };
 
 /**

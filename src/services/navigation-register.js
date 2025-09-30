@@ -1,6 +1,6 @@
 // lets-todo-app/src/services/navigation-register.js
 
-import { handleNavigationClick } from "./navigation.js";
+import { handleNavigationClick, navigateToView } from "./navigation.js";
 import { VIEWS } from "../utils/constants.js";
 
 /**
@@ -98,11 +98,8 @@ const handleRegisterSubmit = (event) => {
     return;
   }
 
-  // TODO: Implement actual registration logic
-  console.log("Registration attempt:", { email, password });
-
-  // For now, show a placeholder message
-  showRegisterError("Registrierungs-Funktionalität wird noch implementiert.");
+  // Call registration API
+  registerUser({ email, password });
 };
 
 /**
@@ -159,12 +156,126 @@ const isValidEmail = (email) => {
 };
 
 /**
+ * API Handler for HTTP requests with cookie support
+ * Based on your old code pattern
+ */
+const apiHandler = (url, method, data = null) => {
+  // Remove double slashes
+  url = url.replace(/([^:]\/)\/+/g, "$1");
+
+  const options = {
+    method: method,
+    cache: "no-cache",
+    credentials: "include", // Send cookies
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  if (data !== null) {
+    options.body = JSON.stringify(data);
+  }
+
+  return fetch(url, options)
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then((err) => Promise.reject(err));
+      }
+      return response.json();
+    })
+    .catch((error) => {
+      console.error("API Error:", error);
+      throw error;
+    });
+};
+
+/**
+ * Get API Base URL based on current environment
+ * @returns {string} API Base URL
+ */
+const getApiBase = () => {
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
+
+  // Local development
+  if (hostname === "127.0.0.1" || hostname === "localhost") {
+    return "http://127.0.0.1:3000/api";
+  }
+
+  // Production/VPS
+  if (hostname.includes("lets-todo-app-feat.dev2k.org")) {
+    return "https://lets-todo-api-feat.dev2k.org/api";
+  }
+
+  // Fallback to local
+  return "http://127.0.0.1:3000/api";
+};
+
+/**
+ * Register new user via API
+ * @param {Object} userData - User registration data
+ */
+const registerUser = async (userData) => {
+  const API_BASE = getApiBase();
+
+  try {
+    showRegisterLoading(true);
+
+    const result = await apiHandler(`${API_BASE}/register`, "POST", userData);
+
+    showRegisterLoading(false);
+    showRegisterSuccess(
+      "Registrierung erfolgreich! Du kannst dich jetzt anmelden."
+    );
+
+    // Navigate to login page after successful registration
+    setTimeout(() => {
+      navigateToView(VIEWS.LOGIN);
+    }, 2000);
+  } catch (error) {
+    showRegisterLoading(false);
+
+    let errorMessage =
+      "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
+
+    if (error.error) {
+      errorMessage = error.error;
+    } else if (error.message) {
+      errorMessage = error.message;
+    }
+
+    showRegisterError(errorMessage);
+  }
+};
+
+/**
+ * Shows register loading state
+ * @param {boolean} loading - Loading state
+ */
+const showRegisterLoading = (loading) => {
+  const submitBtn = document.getElementById("registerSubmitBtn");
+  if (submitBtn) {
+    submitBtn.disabled = loading;
+    submitBtn.textContent = loading ? "Registrierung läuft..." : "Registrieren";
+  }
+};
+
+/**
+ * Shows register success message.
+ * @param {string} message - Success message to display
+ */
+const showRegisterSuccess = (message) => {
+  // TODO: Implement proper toast/success display system
+  alert(`✅ ${message}`);
+};
+
+/**
  * Shows register error message.
  * @param {string} message - Error message to display
  */
 const showRegisterError = (message) => {
   // TODO: Implement proper toast/error display system
-  alert(message);
+  alert(`❌ ${message}`);
 };
 
 /**

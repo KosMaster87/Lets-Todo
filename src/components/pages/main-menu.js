@@ -1,10 +1,14 @@
 // lets-todo-app/src/components/pages/main-menu.js
 
+import { getSession } from "../../../state.js";
+
 /**
  * Renders the main menu page.
  * @returns {string} HTML string for the main menu page
  */
 export const renderMainMenuPage = () => {
+  const session = getSession();
+  const isLoggedIn = session && session.sessionType === "user";
   return `
       <section class="main-menu-intro">
         <header class="app-header">
@@ -19,35 +23,7 @@ export const renderMainMenuPage = () => {
       </section>
 
       <nav class="main-menu">
-        ${createMenuButton(
-          "guest-btn",
-          "guestBtn",
-          "Gast-Sitzung",
-          "Sofort loslegen ohne Registrierung",
-          null,
-          true
-        )}
-        ${createMenuButton(
-          "register-btn",
-          "registerBtn",
-          "Registrieren",
-          "Neues Konto erstellen",
-          "register"
-        )}
-        ${createMenuButton(
-          "login-btn",
-          "loginBtn",
-          "Anmelden",
-          "Mit bestehendem Konto einloggen",
-          "login"
-        )}
-        ${createMenuButton(
-          "option-btn",
-          "optionBtn",
-          "Optionen",
-          "Benutzereinstellungen verwalten",
-          "options"
-        )}
+        ${isLoggedIn ? renderLoggedInMenu(session) : renderGuestMenu()}
       </nav>
   `;
 };
@@ -82,5 +58,83 @@ const createMenuButton = (
         <p>${description}</p>
       </div>
     </button>
+  `;
+};
+
+/**
+ * Renders menu for guest (not logged in) users.
+ * @returns {string} HTML for guest menu
+ */
+const renderGuestMenu = () => {
+  return `
+    ${createMenuButton(
+      "guest-btn",
+      "guestBtn",
+      "Gast-Sitzung",
+      "Sofort loslegen ohne Registrierung",
+      null,
+      true
+    )}
+    ${createMenuButton(
+      "register-btn",
+      "registerBtn",
+      "Registrieren",
+      "Neues Konto erstellen",
+      "register"
+    )}
+    ${createMenuButton(
+      "login-btn",
+      "loginBtn",
+      "Anmelden",
+      "Mit bestehendem Konto einloggen",
+      "login"
+    )}
+    ${createMenuButton(
+      "options-btn",
+      "optionsBtn",
+      "Optionen",
+      "Benutzereinstellungen verwalten",
+      "options"
+    )}
+  `;
+};
+
+/**
+ * Renders menu for logged in users.
+ * @param {Object} session - User session data
+ * @returns {string} HTML for logged in user menu
+ */
+const renderLoggedInMenu = (session) => {
+  const username = session?.userData?.username || "Benutzer";
+
+  return `
+    ${createMenuButton(
+      "dashboard-btn",
+      "dashboardBtn",
+      "Dashboard",
+      `Willkommen zurück, ${username}!`,
+      "dashboard"
+    )}
+    ${createMenuButton(
+      "todos-btn",
+      "todosBtn",
+      "Meine Todos",
+      "Todo-Liste verwalten und bearbeiten",
+      "todos"
+    )}
+    ${createMenuButton(
+      "profile-btn",
+      "profileBtn",
+      "Profil",
+      "Benutzerdaten und Einstellungen",
+      "profile"
+    )}
+    ${createMenuButton(
+      "logout-btn",
+      "logoutBtn",
+      "Abmelden",
+      "Sitzung beenden und ausloggen",
+      "logout"
+    )}
   `;
 };
