@@ -31,9 +31,9 @@ router.post("/register", async (req, res) => {
   try {
     // 1) User in zentrale User-Tabelle eintragen
     const [result] = await userPool.query(
-      `INSERT INTO users (email, password_hash, db_name, created)
-       VALUES (?, ?, ?, ?)`,
-      [email, password_hash, dbName, created]
+      `INSERT INTO users (email, password_hash, db_name, created, updated)
+       VALUES (?, ?, ?, ?, ?)`,
+      [email, password_hash, dbName, created, created]
     );
 
     const userId = result.insertId;
