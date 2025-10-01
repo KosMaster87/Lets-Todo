@@ -1,6 +1,6 @@
 // lets-todo-app/src/components/pages/main-menu.js
 
-import { getSession } from "../../../state.js";
+import { getSession } from "./../../state.js";
 
 /**
  * Renders the main menu page.

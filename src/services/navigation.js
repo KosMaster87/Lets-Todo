@@ -5,6 +5,7 @@ import { VIEWS, PAGE_TITLES, SESSION_TYPES } from "../utils/constants.js";
 import { setupDashboardEventListeners } from "./navigation-dashboard.js";
 import { setupRegisterEventListeners } from "./navigation-register.js";
 import { setupLoginEventListeners } from "./navigation-login.js";
+import { initializeLogoutEvents } from "./navigation-logout.js";
 import { setupOptionsEventListeners } from "./navigation-options.js";
 import { setupPersonalDataEventListeners } from "./navigation-personal-data.js";
 import { setupChangePasswordEventListeners } from "./navigation-change-password.js";
@@ -34,6 +35,7 @@ export const setupNavigationListeners = () => {
   setupDashboardEventListeners();
   setupRegisterEventListeners();
   setupLoginEventListeners();
+  initializeLogoutEvents();
   setupOptionsEventListeners();
   setupPersonalDataEventListeners();
   setupChangePasswordEventListeners();

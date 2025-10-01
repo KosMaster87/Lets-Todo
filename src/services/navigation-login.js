@@ -2,7 +2,7 @@
 
 import { handleNavigationClick, navigateToView } from "./navigation.js";
 import { VIEWS } from "../utils/constants.js";
-import { setSession } from "../state.js";
+import { loginUser } from "./api-auth.js";
 
 /**
  * Sets up login navigation buttons.
@@ -76,7 +76,7 @@ const handleLoginSubmit = (event) => {
   }
 
   // Call login API
-  loginUser({ email, password, remember });
+  handleUserLogin({ email, password, remember });
 };
 
 /**
@@ -117,81 +117,19 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-/**
- * Get API Base URL based on current environment
- * @returns {string} API Base URL
- */
-const getApiBase = () => {
-  const hostname = window.location.hostname;
-
-  // Local development
-  if (hostname === "127.0.0.1" || hostname === "localhost") {
-    return "http://127.0.0.1:3000/api";
-  }
-
-  // Production/VPS
-  if (hostname.includes("lets-todo-app-feat.dev2k.org")) {
-    return "https://lets-todo-api-feat.dev2k.org/api";
-  }
-
-  // Fallback to local
-  return "http://127.0.0.1:3000/api";
-};
+// ✅ API logic moved to centralized api-auth.js service
 
 /**
- * API Handler for HTTP requests with cookie support
- */
-const apiHandler = (url, method, data = null) => {
-  url = url.replace(/([^:]\/)\/+/g, "$1");
-
-  const options = {
-    method: method,
-    cache: "no-cache",
-    credentials: "include", // Send cookies
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  if (data !== null) {
-    options.body = JSON.stringify(data);
-  }
-
-  return fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then((err) => Promise.reject(err));
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("API Error:", error);
-      throw error;
-    });
-};
-
-/**
- * Login user via API
+ * Handle user login using centralized API service
  * @param {Object} userData - User login data
  */
-const loginUser = async (userData) => {
-  const API_BASE = getApiBase();
-
+const handleUserLogin = async (userData) => {
   try {
     showLoginLoading(true);
 
-    const result = await apiHandler(`${API_BASE}/login`, "POST", userData);
+    const result = await loginUser(userData);
 
     showLoginLoading(false);
-
-    // 🎯 WICHTIG: User-Session setzen
-    setSession({
-      sessionType: "user",
-      userId: result.userId,
-      userEmail: userData.email,
-      sessionId: `user_${result.userId}`,
-    });
-
     showLoginSuccess("Login erfolgreich! Willkommen zurück!");
 
     // Navigate to main menu after successful login

@@ -323,6 +323,26 @@ export const getSessionType = () => appState.sessionType;
 export const getSessionId = () => appState.sessionId;
 
 /**
+ * Returns the complete session data.
+ * @returns {Object|null} Session object with all session data
+ */
+export const getSession = () => {
+  if (!appState.sessionType) {
+    return null;
+  }
+
+  return {
+    sessionType: appState.sessionType,
+    sessionId: appState.sessionId,
+    userId: appState.userId,
+    userData: {
+      email: appState.userEmail,
+      username: appState.userEmail ? appState.userEmail.split("@")[0] : null,
+    },
+  };
+};
+
+/**
  * Returns the user ID.
  * @returns {string|null} User ID
  */

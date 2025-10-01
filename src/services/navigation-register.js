@@ -2,6 +2,7 @@
 
 import { handleNavigationClick, navigateToView } from "./navigation.js";
 import { VIEWS } from "../utils/constants.js";
+import { registerUser } from "./api-auth.js";
 
 /**
  * Sets up register navigation buttons.
@@ -99,7 +100,45 @@ const handleRegisterSubmit = (event) => {
   }
 
   // Call registration API
-  registerUser({ email, password });
+  handleUserRegistration({ email, password });
+};
+
+/**
+ * Handle user registration using centralized API service
+ * @param {Object} userData - User registration data
+ */
+const handleUserRegistration = async (userData) => {
+  try {
+    showRegisterLoading(true);
+
+    const result = await registerUser(userData);
+
+    showRegisterLoading(false);
+    showRegisterSuccess(
+      "Registrierung erfolgreich! Du kannst dich jetzt anmelden."
+    );
+
+    // Navigate to login page after successful registration
+    setTimeout(() => {
+      navigateToView(VIEWS.LOGIN);
+    }, 2000);
+  } catch (error) {
+    showRegisterLoading(false);
+
+    let errorMessage =
+      "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
+
+    if (error.error) {
+      if (error.error.includes("already exists")) {
+        errorMessage = "Diese E-Mail-Adresse ist bereits registriert.";
+      } else {
+        errorMessage = error.error;
+      }
+    }
+
+    showRegisterError(errorMessage);
+    console.error("Registration error:", error);
+  }
 };
 
 /**
@@ -155,98 +194,7 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-/**
- * API Handler for HTTP requests with cookie support
- * Based on your old code pattern
- */
-const apiHandler = (url, method, data = null) => {
-  // Remove double slashes
-  url = url.replace(/([^:]\/)\/+/g, "$1");
-
-  const options = {
-    method: method,
-    cache: "no-cache",
-    credentials: "include", // Send cookies
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
-  if (data !== null) {
-    options.body = JSON.stringify(data);
-  }
-
-  return fetch(url, options)
-    .then((response) => {
-      if (!response.ok) {
-        return response.json().then((err) => Promise.reject(err));
-      }
-      return response.json();
-    })
-    .catch((error) => {
-      console.error("API Error:", error);
-      throw error;
-    });
-};
-
-/**
- * Get API Base URL based on current environment
- * @returns {string} API Base URL
- */
-const getApiBase = () => {
-  const hostname = window.location.hostname;
-  const protocol = window.location.protocol;
-
-  // Local development
-  if (hostname === "127.0.0.1" || hostname === "localhost") {
-    return "http://127.0.0.1:3000/api";
-  }
-
-  // Production/VPS
-  if (hostname.includes("lets-todo-app-feat.dev2k.org")) {
-    return "https://lets-todo-api-feat.dev2k.org/api";
-  }
-
-  // Fallback to local
-  return "http://127.0.0.1:3000/api";
-};
-
-/**
- * Register new user via API
- * @param {Object} userData - User registration data
- */
-const registerUser = async (userData) => {
-  const API_BASE = getApiBase();
-
-  try {
-    showRegisterLoading(true);
-
-    const result = await apiHandler(`${API_BASE}/register`, "POST", userData);
-
-    showRegisterLoading(false);
-    showRegisterSuccess(
-      "Registrierung erfolgreich! Du kannst dich jetzt anmelden."
-    );
-
-    // Navigate to login page after successful registration
-    setTimeout(() => {
-      navigateToView(VIEWS.LOGIN);
-    }, 2000);
-  } catch (error) {
-    showRegisterLoading(false);
-
-    let errorMessage =
-      "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
-
-    if (error.error) {
-      errorMessage = error.error;
-    } else if (error.message) {
-      errorMessage = error.message;
-    }
-
-    showRegisterError(errorMessage);
-  }
-};
+// ✅ API logic moved to centralized api-auth.js service
 
 /**
  * Shows register loading state
