@@ -69,10 +69,17 @@ router.post("/register", async (req, res) => {
     // WICHTIG: Pool für zukünftige Requests speichern
     userPools[`user_${userId}`] = pool;
 
-    res.status(201).json({ message: "User registriert" });
+    /**
+     * TODO: Personalisierte Erfolgs-Nachricht mit Username
+     * autoLogin: true,
+     * requiresEmailVerification: false
+     */
+    res.status(201).json({ message: "Simon says... User registered" });
   } catch (err) {
     if (err.code === "ER_DUP_ENTRY")
-      return res.status(409).json({ error: "Email bereits registriert" });
+      return res
+        .status(409)
+        .json({ error: "Simon says... Email already registered" });
     res.status(500).json({ error: err.message });
   }
 });
@@ -87,19 +94,25 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(400).json({ error: "Email und Passwort erforderlich" });
+    return res
+      .status(400)
+      .json({ error: "Simon says... Email and password required" });
 
   try {
     const [rows] = await userPool.query(`SELECT * FROM users WHERE email = ?`, [
       email,
     ]);
     if (!rows.length)
-      return res.status(401).json({ error: "Ungültige Zugangsdaten" });
+      return res
+        .status(401)
+        .json({ error: "Simon says... Invalid login details" });
 
     const user = rows[0];
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid)
-      return res.status(401).json({ error: "Ungültige Zugangsdaten" });
+      return res
+        .status(401)
+        .json({ error: "Simon says... Invalid login details" });
 
     // Eventuelle Gast-Session löschen
     if (req.cookies.guestId) {
@@ -129,7 +142,7 @@ router.post("/login", async (req, res) => {
     debugLog(`User-Login Cookie-Optionen:`, cookieOptions);
     res.cookie("userId", user.id, cookieOptions);
 
-    res.json({ message: "Login erfolgreich", userId: user.id });
+    res.json({ message: "Simon says... Login successful", userId: user.id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -144,7 +157,7 @@ router.post("/logout", (req, res) => {
   if (ENV.COOKIE_DOMAIN) clearCookieOptions.domain = ENV.COOKIE_DOMAIN;
   res.clearCookie("userId", clearCookieOptions);
   // guestId NICHT automatisch setzen!
-  res.json({ message: "Logout erfolgreich" });
+  res.json({ message: "Simon says... Logout successful" });
 });
 
 export default router;
