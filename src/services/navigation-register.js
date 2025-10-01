@@ -112,6 +112,46 @@ const handleUserRegistration = async (userData) => {
     showRegisterLoading(true);
 
     const result = await registerUser(userData);
+    /**
+     * result TODO
+     */
+    // Personalisierte Erfolgs-Nachricht
+    // showRegisterSuccess(`Willkommen ${result.username || email}! Registrierung erfolgreich.`);
+    // --------------------------
+
+    // Analytics Event senden
+    // analytics.track('user_registered', {
+    //   userId: result.userId,
+    //   email: userData.email,
+    //   registrationDate: result.createdAt,
+    //   userType: result.accountType || 'free'
+    // });
+    // --------------------------
+
+    // Direkt einloggen ohne nochmal Passwort eingeben - Bei bestehender Registrierung, direkt autologin.
+    // if (result.autoLogin) {
+    //   setSession({
+    //     sessionType: "user",
+    //     userId: result.userId,
+    //     userEmail: userData.email,
+    //     sessionId: `user_${result.userId}`,
+    //   });
+
+    //   navigateToView(VIEWS.DASHBOARD); // Direkt ins Dashboard!
+    // }
+
+    // --------------------------
+
+    // EmailVerification oder ProfileSetup Views je nach Bedarf
+    // if (result.requiresEmailVerification) {
+    //   navigateToView(VIEWS.EMAIL_VERIFICATION);
+    // } else if (result.requiresProfileSetup) {
+    //   navigateToView(VIEWS.PROFILE_SETUP);
+    // } else {
+    //   navigateToView(VIEWS.LOGIN);
+    // }
+
+    // --------------------------
 
     showRegisterLoading(false);
     showRegisterSuccess(

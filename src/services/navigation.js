@@ -90,7 +90,7 @@ const setupMainMenuNavigation = () => {
   const mainMenuLinks = [
     { id: "loginBtn", view: VIEWS.LOGIN },
     { id: "registerBtn", view: VIEWS.REGISTER },
-    { id: "optionBtn", view: VIEWS.OPTIONS },
+    { id: "optionsBtn", view: VIEWS.OPTIONS },
   ];
 
   mainMenuLinks.forEach(({ id, view }) => {

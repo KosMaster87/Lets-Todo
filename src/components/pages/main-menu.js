@@ -116,18 +116,11 @@ const renderLoggedInMenu = (session) => {
       "dashboard"
     )}
     ${createMenuButton(
-      "todos-btn",
-      "todosBtn",
-      "Meine Todos",
-      "Todo-Liste verwalten und bearbeiten",
-      "todos"
-    )}
-    ${createMenuButton(
-      "profile-btn",
-      "profileBtn",
-      "Profil",
-      "Benutzerdaten und Einstellungen",
-      "profile"
+      "options-btn",
+      "optionsBtn",
+      "Optionen",
+      "Benutzereinstellungen verwalten",
+      "options"
     )}
     ${createMenuButton(
       "logout-btn",

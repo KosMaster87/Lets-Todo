@@ -1,6 +1,4 @@
-/* ########################### */
-/* ### Common Action Icons ### */
-/* ########################### */
+/* Common Action Icons */
 
 .menu-btn {
   background: rgb(239, 239, 239);
@@ -68,11 +66,23 @@
   height: 2rem;
 }
 
-.option-btn {
+.logout-btn {
+  border-left: 4px solid #ff9800;
+}
+
+.logout-btn-icon {
+  background-color: #ff9800;
+  mask: url("/assets/icons/logout.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.options-btn {
   border-left: 4px solid #000000;
 }
 
-.option-btn-icon {
+.options-btn-icon {
   background-color: #000000;
   mask: url("/assets/icons/manufacturing.svg") no-repeat center;
   mask-size: contain;
