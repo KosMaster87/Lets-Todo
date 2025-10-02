@@ -1,8 +1,14 @@
 // lets-todo-app/src/services/api-auth.js
 
 import { getApiBase, apiHandler } from "./../utils/api-handler.js";
-import { setSession, clearSession } from "./../state.js";
+import {
+  setSession,
+  clearUserData,
+  setTodos,
+  setTrashedTodos,
+} from "./../state.js";
 import { navigateToView } from "./navigation.js";
+import { syncTodosWithServer } from "./api-todos.js";
 
 /**
  * Centralized authentication API service
@@ -51,7 +57,18 @@ export const loginUser = async (userData) => {
       sessionId: `user_${result.userId}`,
     });
 
-    console.log("✅ User logged in successfully:", result);
+    // 🔄 Todos und Trash vom Server laden
+    try {
+      const syncResult = await syncTodosWithServer();
+      setTodos(syncResult.todos);
+      setTrashedTodos(syncResult.trashedTodos);
+      console.log(
+        `✅ User logged in successfully with ${syncResult.todos.length} todos and ${syncResult.trashedTodos.length} trashed items loaded`
+      );
+    } catch (error) {
+      console.warn("⚠️ Login successful, but todo sync failed:", error);
+    }
+
     return result;
   } catch (error) {
     console.error("❌ Login failed:", error);
@@ -80,8 +97,8 @@ export const logoutUser = async () => {
       );
     }
 
-    // Clear local session data
-    clearSession();
+    // Clear ALL user data (session, todos, trash) but keep preferences
+    clearUserData();
 
     // Navigate back to main menu
     navigateToView("main-menu");
@@ -90,8 +107,8 @@ export const logoutUser = async () => {
   } catch (error) {
     console.error("❌ Logout error:", error);
 
-    // Even if server logout fails, clear local session
-    clearSession();
+    // Even if server logout fails, clear all user data locally
+    clearUserData();
     navigateToView("main-menu");
   }
 };

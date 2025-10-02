@@ -35,7 +35,7 @@ const appState = {
 };
 
 /**
- * Notifies all listeners about state changes.
+ * Notifies all state change listeners.
  * The "listener" parameter refers to the function to be called.
  */
 const notifyListeners = () => {
@@ -49,11 +49,12 @@ const notifyListeners = () => {
 };
 
 /**
- * Loads todos from LocalStorage.
+ * Loads todos from LocalStorage (session-aware)
  */
 const loadTodosFromStorage = () => {
   try {
-    const savedTodos = localStorage.getItem("todoapp-todos");
+    const key = getStorageKey("todos");
+    const savedTodos = localStorage.getItem(key);
     if (savedTodos) {
       appState.todos = JSON.parse(savedTodos);
     }
@@ -63,22 +64,47 @@ const loadTodosFromStorage = () => {
 };
 
 /**
- * Saves todos to LocalStorage.
+ * Gets the appropriate storage key based on session type
+ */
+const getStorageKey = (baseKey) => {
+  const sessionType = appState.sessionType || "guest";
+  return `todoapp-${sessionType}-${baseKey}`;
+};
+
+/**
+ * Saves todos to LocalStorage (session-aware)
  */
 const saveTodosToStorage = () => {
   try {
-    localStorage.setItem("todoapp-todos", JSON.stringify(appState.todos));
+    const key = getStorageKey("todos");
+    localStorage.setItem(key, JSON.stringify(appState.todos));
   } catch (error) {
     console.error("Error saving todos:", error);
   }
 };
 
 /**
- * Loads trashed todos from LocalStorage.
+ * Saves guest data specifically to guest storage
+ */
+const saveGuestDataToStorage = () => {
+  try {
+    localStorage.setItem("todoapp-guest-todos", JSON.stringify(appState.todos));
+    localStorage.setItem(
+      "todoapp-guest-trash",
+      JSON.stringify(appState.trashedTodos)
+    );
+  } catch (error) {
+    console.error("Error saving guest data:", error);
+  }
+};
+
+/**
+ * Loads trashed todos from LocalStorage (session-aware)
  */
 const loadTrashedTodosFromStorage = () => {
   try {
-    const savedTrash = localStorage.getItem("todoapp-trash");
+    const key = getStorageKey("trash");
+    const savedTrash = localStorage.getItem(key);
     if (savedTrash) {
       appState.trashedTodos = JSON.parse(savedTrash);
     }
@@ -88,14 +114,12 @@ const loadTrashedTodosFromStorage = () => {
 };
 
 /**
- * Saves trashed todos to LocalStorage.
+ * Saves trashed todos to LocalStorage (session-aware)
  */
 const saveTrashedTodosToStorage = () => {
   try {
-    localStorage.setItem(
-      "todoapp-trash",
-      JSON.stringify(appState.trashedTodos)
-    );
+    const key = getStorageKey("trash");
+    localStorage.setItem(key, JSON.stringify(appState.trashedTodos));
   } catch (error) {
     console.error("Error saving trashed todos:", error);
   }
@@ -393,16 +417,48 @@ export const setLoading = (loading) => {
 };
 
 /**
- * Sets the session data.
+ * Sets the session data and reloads session-specific data
  * @param {Object} sessionData - Session data object
  */
 export const setSession = (sessionData) => {
+  // Store old session type for comparison
+  const oldSessionType = appState.sessionType;
+
+  // Update session
   appState.sessionType = sessionData.sessionType || null;
   appState.sessionId = sessionData.sessionId || null;
   appState.userId = sessionData.userId || null;
   appState.userEmail = sessionData.userEmail || null;
+
+  // If session type changed, reload todos and trash for new session
+  if (oldSessionType !== appState.sessionType) {
+    console.log(
+      `🔄 Session changed from ${oldSessionType} to ${appState.sessionType}, reloading data...`
+    );
+    reloadSessionData();
+  }
+
   saveSessionToStorage();
   notifyListeners();
+};
+
+/**
+ * Reloads todos and trash data for current session type
+ */
+const reloadSessionData = () => {
+  try {
+    // Clear current data
+    appState.todos = [];
+    appState.trashedTodos = [];
+
+    // Load data for current session
+    loadTodosFromStorage();
+    loadTrashedTodosFromStorage();
+
+    console.log(`✅ Data reloaded for ${appState.sessionType} session`);
+  } catch (error) {
+    console.error("❌ Error reloading session data:", error);
+  }
 };
 
 /**
@@ -415,6 +471,65 @@ export const clearSession = () => {
   appState.userEmail = null;
   localStorage.removeItem("todoapp-session");
   notifyListeners();
+};
+
+/**
+ * Complete user logout: clears session AND all user data
+ * Restores guest data if it exists, otherwise initializes sample data
+ */
+export const clearUserData = () => {
+  try {
+    appState.sessionType = null;
+    appState.sessionId = null;
+    appState.userId = null;
+    appState.userEmail = null;
+    appState.notifications = [];
+    appState.error = null;
+    appState.currentTodo = null;
+    localStorage.removeItem("todoapp-session");
+    localStorage.removeItem("todoapp-user-todos");
+    localStorage.removeItem("todoapp-user-trash");
+
+    restoreGuestData();
+    notifyListeners();
+
+    console.log("✅ User logged out, guest data restored");
+  } catch (error) {
+    console.error("❌ Error during logout:", error);
+  }
+};
+
+/**
+ * Restores guest data or initializes sample data for guest session
+ */
+const restoreGuestData = () => {
+  try {
+    // Try to load existing guest data
+    const savedGuestTodos = localStorage.getItem("todoapp-guest-todos");
+    const savedGuestTrash = localStorage.getItem("todoapp-guest-trash");
+
+    if (savedGuestTodos && savedGuestTrash) {
+      // Restore existing guest data
+      appState.todos = JSON.parse(savedGuestTodos);
+      appState.trashedTodos = JSON.parse(savedGuestTrash);
+      console.log("✅ Guest data restored from storage");
+    } else {
+      // No guest data exists, initialize with sample data
+      appState.todos = [];
+      appState.trashedTodos = [];
+
+      // Initialize sample data (will be imported when needed)
+      console.log("✅ Fresh guest session initialized");
+    }
+
+    // Update localStorage with current state
+    saveGuestDataToStorage();
+  } catch (error) {
+    console.error("❌ Error restoring guest data:", error);
+    // Fallback: empty state
+    appState.todos = [];
+    appState.trashedTodos = [];
+  }
 };
 
 /**
@@ -446,10 +561,10 @@ const generateId = () => {
 };
 
 /**
- * Adds a todo.
+ * Adds a todo (with server sync for users)
  * @param {Object} todo - Todo object
  */
-export const addTodo = (todo) => {
+export const addTodo = async (todo) => {
   // Ensure todo has an ID
   const todoWithId = {
     ...todo,
@@ -458,22 +573,63 @@ export const addTodo = (todo) => {
     lastModified: todo.lastModified || new Date().toISOString(),
   };
 
+  // Add to local state first
   appState.todos = [...appState.todos, todoWithId];
   saveTodosToStorage();
   notifyListeners();
+
+  // Sync to server if user session
+  if (appState.sessionType === "user") {
+    try {
+      const { saveTodoToServer } = await import("./services/api-todos.js");
+      const serverResponse = await saveTodoToServer(todoWithId);
+
+      // Update local todo with server ID
+      if (serverResponse && serverResponse.id) {
+        const todoIndex = appState.todos.findIndex(
+          (t) => t.id === todoWithId.id
+        );
+        if (todoIndex !== -1) {
+          appState.todos[todoIndex].id = serverResponse.id;
+          saveTodosToStorage();
+          notifyListeners();
+          console.log(`✅ Todo synced to server with ID: ${serverResponse.id}`);
+        }
+      }
+    } catch (error) {
+      console.warn("⚠️ Failed to sync todo to server:", error);
+      // Todo is still saved locally
+    }
+  }
 };
 
 /**
- * Updates a todo.
- * @param {string} todoId - Todo ID
+ * Updates an existing todo (with server sync for users)
+ * @param {string} todoId - Todo ID to update
  * @param {Object} updates - Todo updates
  */
-export const updateTodo = (todoId, updates) => {
+export const updateTodo = async (todoId, updates) => {
+  // Update locally first
   appState.todos = appState.todos.map((todo) =>
     todo.id === todoId ? { ...todo, ...updates } : todo
   );
   saveTodosToStorage();
   notifyListeners();
+
+  // Sync to server if user session
+  if (appState.sessionType === "user") {
+    try {
+      const { updateTodoOnServer } = await import("./services/api-todos.js");
+      const updatedTodo = appState.todos.find((t) => t.id === todoId);
+      if (updatedTodo) {
+        await updateTodoOnServer(todoId, updatedTodo);
+        console.log("✅ Todo updated on server");
+      }
+    } catch (error) {
+      console.warn("⚠️ Failed to sync update to server:", error);
+      // Todo is still updated locally
+    }
+  }
 };
 
 /**
@@ -496,38 +652,120 @@ export const setCurrentTodo = (todo) => {
 };
 
 /**
- * Moves a todo to trash.
+ * Moves a todo to trash (with server sync for users)
  * @param {string} todoId - Todo ID to trash
  */
-export const trashTodo = (todoId) => {
-  const todo = appState.todos.find((t) => t.id === todoId);
+export const trashTodo = async (todoId) => {
+  console.log(`🔍 trashTodo called with ID: ${todoId}, type: ${typeof todoId}`);
+
+  // Convert todoId to number if it's a string (handles both number and string IDs)
+  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
+  console.log(`🔄 Converted ID: ${numericId}, type: ${typeof numericId}`);
+
+  const todo = appState.todos.find((t) => t.id == todoId || t.id === numericId);
+  console.log(`🔎 Found todo:`, todo);
   if (todo) {
-    appState.todos = appState.todos.filter((t) => t.id !== todoId);
+    // Move to trash locally first
+    appState.todos = appState.todos.filter(
+      (t) => t.id != todoId && t.id !== numericId
+    );
     appState.trashedTodos = [
       ...appState.trashedTodos,
       { ...todo, trashedAt: Date.now() },
     ];
     saveTodosToStorage();
     saveTrashedTodosToStorage();
+    console.log(
+      `🗑️ Todo ${todoId} moved to trash, notifying ${appState.listeners.length} listeners`
+    );
     notifyListeners();
+
+    // Sync to server if user session
+    if (appState.sessionType === "user") {
+      try {
+        const { trashTodoOnServer } = await import("./services/api-todos.js");
+        await trashTodoOnServer(numericId);
+        console.log("✅ Todo trashed on server");
+      } catch (error) {
+        console.warn("⚠️ Failed to sync trash to server:", error);
+        // Todo is still trashed locally
+      }
+    }
   }
 };
 
 /**
- * Restores a todo from trash.
+ * Restores a todo from trash (with server sync for users)
  * @param {string} todoId - Todo ID to restore
  */
-export const restoreTodo = (todoId) => {
-  const todo = appState.trashedTodos.find((t) => t.id === todoId);
+export const restoreTodo = async (todoId) => {
+  console.log(
+    `🔍 restoreTodo called with ID: ${todoId}, type: ${typeof todoId}`
+  );
+
+  // Convert todoId to handle both string and number types
+  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
+
+  const todo = appState.trashedTodos.find(
+    (t) => t.id == todoId || t.id === numericId
+  );
+  console.log(`🔎 Found trashed todo:`, todo);
   if (todo) {
+    // Restore locally first
     appState.trashedTodos = appState.trashedTodos.filter(
-      (t) => t.id !== todoId
+      (t) => t.id != todoId && t.id !== numericId
     );
-    const { trashedAt, ...restoredTodo } = todo;
-    appState.todos = [...appState.todos, restoredTodo];
+    appState.todos = [...appState.todos, { ...todo, trashedAt: undefined }];
     saveTodosToStorage();
     saveTrashedTodosToStorage();
     notifyListeners();
+
+    // Sync to server if user session
+    if (appState.sessionType === "user") {
+      try {
+        const { restoreTodoOnServer } = await import("./services/api-todos.js");
+        await restoreTodoOnServer(numericId);
+        console.log("✅ Todo restored on server");
+      } catch (error) {
+        console.warn("⚠️ Failed to sync restore to server:", error);
+        // Todo is still restored locally
+      }
+    }
+  }
+};
+
+/**
+ * Permanently deletes a todo from trash (with server sync for users)
+ * @param {string} todoId - Todo ID to delete permanently
+ */
+export const deleteTodo = async (todoId) => {
+  console.log(
+    `🔍 deleteTodo called with ID: ${todoId}, type: ${typeof todoId}`
+  );
+
+  // Convert todoId to handle both string and number types
+  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
+
+  // Delete locally first
+  appState.trashedTodos = appState.trashedTodos.filter(
+    (t) => t.id != todoId && t.id !== numericId
+  );
+  saveTrashedTodosToStorage();
+  notifyListeners();
+
+  // Sync to server if user session
+  if (appState.sessionType === "user") {
+    console.log(`🌐 Attempting to delete todo ${numericId} on server...`);
+    try {
+      const { deleteTodoFromServer } = await import("./services/api-todos.js");
+      const result = await deleteTodoFromServer(numericId);
+      console.log("✅ Todo deleted on server:", result);
+    } catch (error) {
+      console.error("❌ Failed to sync delete to server:", error);
+      // Todo is still deleted locally
+    }
+  } else {
+    console.log("👤 Guest session - no server sync needed");
   }
 };
 
@@ -536,7 +774,16 @@ export const restoreTodo = (todoId) => {
  * @param {string} todoId - Todo ID to delete permanently
  */
 export const deleteTodoPermanently = (todoId) => {
-  appState.trashedTodos = appState.trashedTodos.filter((t) => t.id !== todoId);
+  console.log(
+    `🔍 deleteTodoPermanently called with ID: ${todoId}, type: ${typeof todoId}`
+  );
+
+  // Convert todoId to handle both string and number types
+  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
+
+  appState.trashedTodos = appState.trashedTodos.filter(
+    (t) => t.id != todoId && t.id !== numericId
+  );
   saveTrashedTodosToStorage();
   notifyListeners();
 };
@@ -544,7 +791,36 @@ export const deleteTodoPermanently = (todoId) => {
 /**
  * Empties the entire trash by deleting all trashed todos permanently.
  */
-export const emptyTrash = () => {
+export const emptyTrash = async () => {
+  console.log(`🗑️ Emptying trash with ${appState.trashedTodos.length} todos`);
+
+  // For user sessions, delete each todo on server before emptying locally
+  if (appState.sessionType === "user" && appState.trashedTodos.length > 0) {
+    console.log("🌐 Deleting all trash todos on server...");
+
+    try {
+      const { deleteTodoFromServer } = await import("./services/api-todos.js");
+
+      // Delete all trashed todos on server
+      const deletePromises = appState.trashedTodos.map((todo) => {
+        const numericId =
+          typeof todo.id === "string" ? parseInt(todo.id, 10) : todo.id;
+        return deleteTodoFromServer(numericId);
+      });
+
+      await Promise.all(deletePromises);
+      console.log(
+        `✅ All ${appState.trashedTodos.length} trash todos deleted on server`
+      );
+    } catch (error) {
+      console.error("❌ Failed to delete some todos on server:", error);
+      // Continue with local empty anyway
+    }
+  } else {
+    console.log("👤 Guest session or empty trash - no server sync needed");
+  }
+
+  // Empty locally
   appState.trashedTodos = [];
   saveTrashedTodosToStorage();
   notifyListeners();
@@ -612,6 +888,31 @@ export const setError = (error) => {
   notifyListeners();
 };
 
+// === LISTENER FUNCTIONS ===
+
+/**
+ * Adds a state change listener.
+ * @param {Function} listener - Listener function
+ */
+export const addListener = (listener) => {
+  if (typeof listener !== "function") {
+    console.error("Listener must be a function");
+    return;
+  }
+  appState.listeners.push(listener);
+};
+
+/**
+ * Removes a state change listener.
+ * @param {Function} listener - Listener function to remove
+ */
+export const removeListener = (listener) => {
+  const index = appState.listeners.indexOf(listener);
+  if (index > -1) {
+    appState.listeners.splice(index, 1);
+  }
+};
+
 /**
  * Exports the central application state and relevant functions.
  */
@@ -626,4 +927,10 @@ export {
   saveSessionToStorage,
   loadAllStoredData,
   notifyListeners,
+  reloadSessionData,
 };
+
+// Initialize on load
+// if (typeof window !== "undefined") {
+//   window.addEventListener("load", loadAllStoredData);
+// }

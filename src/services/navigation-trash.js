@@ -5,7 +5,7 @@ import {
   getTrashedTodos,
   emptyTrash,
   restoreTodo,
-  deleteTodoPermanently,
+  deleteTodo,
 } from "../state.js";
 import { VIEWS } from "../utils/constants.js";
 import { navigateToView } from "./navigation.js";
@@ -132,13 +132,13 @@ function renderTrashWithFilter() {
   }
 }
 
-function handleEmptyTrash() {
+async function handleEmptyTrash() {
   if (
     confirm(
       "Möchten Sie wirklich alle gelöschten Todos endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     )
   ) {
-    emptyTrash();
+    await emptyTrash();
     showTrashMessage("Papierkorb wurde geleert!");
     renderTrashWithFilter(); // Re-render after emptying
   }
@@ -154,7 +154,7 @@ function handleRestoreTodo(todoId) {
   }
 }
 
-function handleDeleteForever(todoId) {
+async function handleDeleteForever(todoId) {
   console.log("Delete forever:", todoId);
 
   if (
@@ -162,7 +162,7 @@ function handleDeleteForever(todoId) {
       "Möchten Sie dieses Todo endgültig löschen? Diese Aktion kann nicht rückgängig gemacht werden."
     )
   ) {
-    deleteTodoPermanently(todoId);
+    await deleteTodo(todoId);
     showTrashMessage("Todo wurde endgültig gelöscht!");
     renderTrashWithFilter(); // Re-render after deletion
   }

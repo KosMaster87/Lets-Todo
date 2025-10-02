@@ -6,6 +6,8 @@ import {
   setCurrentTodo,
   updateTodo,
   trashTodo,
+  getCurrentView,
+  getSessionType,
 } from "../state.js";
 import { VIEWS } from "../utils/constants.js";
 import { renderTodosList } from "../components/pages/todos-list.js";
@@ -277,8 +279,14 @@ function handleToggleDone(todoId) {
  * Handles deleting (moving to trash) a todo from the list
  * @param {string} todoId - Todo ID
  */
-function handleDeleteTodo(todoId) {
+async function handleDeleteTodo(todoId) {
   console.log("Delete todo:", todoId);
+  console.log(
+    "Current session type:",
+    getCurrentView(),
+    "Session:",
+    getSessionType()
+  );
 
   if (!todoId) {
     console.error("No todoId provided for delete");
@@ -289,7 +297,7 @@ function handleDeleteTodo(todoId) {
     confirm("Möchten Sie diese Todo wirklich in den Papierkorb verschieben?")
   ) {
     try {
-      trashTodo(todoId);
+      await trashTodo(todoId);
 
       // Re-render todos list to remove the deleted item
       renderTodosWithFilter();
@@ -302,3 +310,4 @@ function handleDeleteTodo(todoId) {
 }
 
 export { todosListFilterMode, renderTodosWithFilter };
+

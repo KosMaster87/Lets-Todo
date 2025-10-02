@@ -182,7 +182,7 @@ function initializeBookmarkState() {
 
 function handleContentChange(event) {
   // Auto-save functionality could be added here
-  console.log("Content changed:", event.target.textContent);
+  // console.log("Content changed:", event.target.textContent);
 }
 
 function handlePlaceholderFocus(event) {

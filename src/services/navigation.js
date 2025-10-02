@@ -91,6 +91,7 @@ const setupMainMenuNavigation = () => {
     { id: "loginBtn", view: VIEWS.LOGIN },
     { id: "registerBtn", view: VIEWS.REGISTER },
     { id: "optionsBtn", view: VIEWS.OPTIONS },
+    { id: "dashboardBtnLoggedIn", view: VIEWS.DASHBOARD }, // ✅ Dashboard für User
   ];
 
   mainMenuLinks.forEach(({ id, view }) => {

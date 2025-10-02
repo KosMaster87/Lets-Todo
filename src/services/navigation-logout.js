@@ -34,6 +34,7 @@ const handleUserLogout = async () => {
     console.error("❌ Logout error:", error);
   }
 };
+
 /**
  * Initializes logout functionality for buttons with data-navigate="logout"
  */

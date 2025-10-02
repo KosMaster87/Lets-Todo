@@ -110,7 +110,7 @@ const renderLoggedInMenu = (session) => {
   return `
     ${createMenuButton(
       "dashboard-btn",
-      "dashboardBtn",
+      "dashboardBtnLoggedIn",
       "Dashboard",
       `Willkommen zurück, ${username}!`,
       "dashboard"
