@@ -31,9 +31,9 @@ router.post("/register", async (req, res) => {
   try {
     // 1) User in zentrale User-Tabelle eintragen
     const [result] = await userPool.query(
-      `INSERT INTO users (email, password_hash, db_name, created, updated)
-       VALUES (?, ?, ?, ?, ?)`,
-      [email, password_hash, dbName, created, created]
+      `INSERT INTO users (email, password_hash, db_name, created)
+       VALUES (?, ?, ?, ?)`,
+      [email, password_hash, dbName, created]
     );
 
     const userId = result.insertId;
@@ -62,8 +62,15 @@ router.post("/register", async (req, res) => {
         description TEXT,
         created BIGINT,
         updated BIGINT,
-        completed TINYINT
+        completed TINYINT,
+        trashed TINYINT(1) DEFAULT 0 COMMENT 'Indicates if todo is in trash',
+        trashed_at BIGINT DEFAULT NULL COMMENT 'Timestamp when todo was trashed'
       );
+    `);
+
+    // Add index for better performance on trash queries
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_todos_trashed ON todos (trashed, trashed_at)
     `);
 
     // WICHTIG: Pool für zukünftige Requests speichern

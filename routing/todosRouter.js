@@ -10,7 +10,42 @@ const router = Router();
 router.get("/", async (req, res) => {
   try {
     const [rows] = await req.pool.query(
-      `SELECT * FROM todos ORDER BY completed ASC, updated DESC`
+      `SELECT
+        id,
+        title,
+        description as content,
+        created,
+        updated as lastModified,
+        completed,
+        0 as bookmarked
+      FROM todos
+      WHERE trashed = 0 OR trashed IS NULL
+      ORDER BY completed ASC, updated DESC`
+    );
+    res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * GET /api/todos/trash - Alle gelöschten Todos abrufen
+ */
+router.get("/trash", async (req, res) => {
+  try {
+    const [rows] = await req.pool.query(
+      `SELECT
+        id,
+        title,
+        description as content,
+        created,
+        updated as lastModified,
+        completed,
+        0 as bookmarked,
+        trashed_at as trashedAt
+      FROM todos
+      WHERE trashed = 1
+      ORDER BY trashed_at DESC`
     );
     res.json(rows);
   } catch (err) {
@@ -131,7 +166,51 @@ router.patch("/:id", async (req, res) => {
 });
 
 /**
- * DELETE /api/todos/:id - Todo löschen
+ * POST /api/todos/:id/trash - Todo in Papierkorb verschieben
+ * @param {string} req.params.id - Todo-ID
+ */
+router.post("/:id/trash", async (req, res) => {
+  try {
+    const [result] = await req.pool.query(
+      `UPDATE todos SET trashed = 1, trashed_at = ?, updated = ? WHERE id = ?`,
+      [Date.now(), Date.now(), req.params.id]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Todo nicht gefunden" });
+    }
+    res.json({
+      message: "Todo in Papierkorb verschoben",
+      trashedId: req.params.id,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * POST /api/todos/:id/restore - Todo aus Papierkorb wiederherstellen
+ * @param {string} req.params.id - Todo-ID
+ */
+router.post("/:id/restore", async (req, res) => {
+  try {
+    const [result] = await req.pool.query(
+      `UPDATE todos SET trashed = 0, trashed_at = NULL, updated = ? WHERE id = ?`,
+      [Date.now(), req.params.id]
+    );
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Todo nicht gefunden" });
+    }
+    res.json({
+      message: "Todo wiederhergestellt",
+      restoredId: req.params.id,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+/**
+ * DELETE /api/todos/:id - Todo permanent löschen
  * @param {string} req.params.id - Todo-ID
  */
 router.delete("/:id", async (req, res) => {
@@ -143,7 +222,7 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ message: "Todo nicht gefunden" });
     }
     res.json({
-      message: "Todo erfolgreich gelöscht",
+      message: "Todo permanent gelöscht",
       deletedId: req.params.id,
     });
   } catch (err) {
