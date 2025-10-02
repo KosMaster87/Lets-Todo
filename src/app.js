@@ -7,6 +7,8 @@ import {
   getTodos,
   getTrashedTodos,
   setTrashedTodos,
+  addListener,
+  removeListener,
 } from "./state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
@@ -52,10 +54,12 @@ const initializeApp = () => {
 
 /**
  * Registers all state listeners for automatic UI updates.
- * Adds the main render function to the appState listeners array.
+ * Uses the clean listener API instead of direct array manipulation.
  */
 const registerStateListeners = () => {
-  appState.listeners.push(renderAllComponents);
+  console.log("📝 Registering state listeners using clean API");
+  addListener(renderAllComponents);
+  console.log("✅ Main render listener registered");
 };
 
 /**
