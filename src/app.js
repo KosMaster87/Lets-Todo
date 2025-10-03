@@ -9,14 +9,10 @@ import {
   setTrashedTodos,
   addListener,
   removeListener,
+  notifyListeners,
 } from "./state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
-// import { initializeTodoEvents } from "./services/todo-events.js";
-// import { initializeUserPreferences } from "./services/user-preferences.js";
-// import { initializeThemeSystem } from "./services/theme-system.js";
-// import { initializeSessionStatus } from "./services/session.js";
-// import { initializeSettingsEvents } from "./services/settings-events.js";
 import {
   initializeNavigation,
   setupNavigationListeners,
@@ -42,13 +38,9 @@ const initializeApp = () => {
     currentTodos,
     currentTrashedTodos
   );
-
-  // initializeUserPreferences();
-  // initializeThemeSystem();
-  // initializeSessionStatus();
   initializeNavigation();
   registerStateListeners();
-  renderAllComponents();
+  notifyListeners();
   // ScrollManager.init(appState);
 };
 
@@ -77,9 +69,6 @@ const renderAllComponents = () => {
  */
 const setupComponentEventListeners = () => {
   setupNavigationListeners();
-  // initializeTodoEvents();
-  // initializeSessionEvents();
-  // initializeSettingsEvents();
 };
 
 /**

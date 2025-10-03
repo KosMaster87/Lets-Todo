@@ -1,6 +1,7 @@
 // lets-todo-app/src/state.js
 
 import { VIEWS } from "./utils/constants.js";
+import { createListenerManager } from "./state/listeners.js";
 
 /**
  * Central application state for Let's Todo App
@@ -34,19 +35,15 @@ const appState = {
   },
 };
 
-/**
- * Notifies all state change listeners.
- * The "listener" parameter refers to the function to be called.
- */
-const notifyListeners = () => {
-  appState.listeners.forEach((listener) => {
-    try {
-      listener();
-    } catch (error) {
-      console.error("Error in state listener:", error);
-    }
-  });
-};
+// Create listener manager instance
+const listenerManager = createListenerManager(appState);
+const {
+  addListener,
+  removeListener,
+  notifyListeners,
+  getListenerCount,
+  clearAllListeners,
+} = listenerManager;
 
 /**
  * Loads todos from LocalStorage (session-aware)
@@ -888,30 +885,8 @@ export const setError = (error) => {
   notifyListeners();
 };
 
-// === LISTENER FUNCTIONS ===
-
-/**
- * Adds a state change listener.
- * @param {Function} listener - Listener function
- */
-export const addListener = (listener) => {
-  if (typeof listener !== "function") {
-    console.error("Listener must be a function");
-    return;
-  }
-  appState.listeners.push(listener);
-};
-
-/**
- * Removes a state change listener.
- * @param {Function} listener - Listener function to remove
- */
-export const removeListener = (listener) => {
-  const index = appState.listeners.indexOf(listener);
-  if (index > -1) {
-    appState.listeners.splice(index, 1);
-  }
-};
+// === LISTENER FUNCTIONS (using modular system) ===
+// Listeners are now managed by the listener manager created above
 
 /**
  * Exports the central application state and relevant functions.
@@ -928,9 +903,14 @@ export {
   loadAllStoredData,
   notifyListeners,
   reloadSessionData,
+  // Listener functions from modular system
+  addListener,
+  removeListener,
+  getListenerCount,
+  clearAllListeners,
 };
 
 // Initialize on load
-// if (typeof window !== "undefined") {
-//   window.addEventListener("load", loadAllStoredData);
-// }
+if (typeof window !== "undefined") {
+  window.addEventListener("load", loadAllStoredData);
+}
