@@ -6,6 +6,7 @@ import { PreferencesManager } from "./state/storage.js";
 import { SessionManager } from "./state/session-manager.js";
 import { TodoOperations } from "./state/todo-operations.js";
 import { UIStateManager } from "./state/ui-state-manager.js";
+import { AppInitializer } from "./state/app-initializer.js";
 import {
   TodosPersistence,
   TrashPersistence,
@@ -56,41 +57,7 @@ const {
 
 // === INITIALIZATION FUNCTIONS ===
 
-/**
- * Loads all stored data at app start using the modular persistence system.
- */
-const loadAllStoredData = () => {
-  // Load data using persistence modules
-  appState.todos = TodosPersistence.load(appState.sessionType);
-  appState.trashedTodos = TrashPersistence.load(appState.sessionType);
-  appState.userPreferences = PreferencesManager.load(appState.userPreferences);
-
-  // Load session data
-  SessionManager.loadFromStorage(appState, notifyListeners);
-
-  // Save preferences to ensure storage is up to date
-  PreferencesManager.save(appState.userPreferences);
-
-  // Repair any data issues
-  const repairResult = DataMaintenance.repairTodos(
-    appState.todos,
-    appState.trashedTodos
-  );
-  if (repairResult.hasChanges) {
-    appState.todos = repairResult.todos;
-    appState.trashedTodos = repairResult.trashedTodos;
-    TodosPersistence.save(appState.todos, appState.sessionType);
-    TrashPersistence.save(appState.trashedTodos, appState.sessionType);
-    console.log("✅ Todo data repaired - missing IDs added");
-  }
-
-  // Apply theme
-  if (appState.userPreferences.theme) {
-    document.body.setAttribute("data-theme", appState.userPreferences.theme);
-  }
-
-  console.log("✅ Stored data loaded successfully");
-};
+// === INITIALIZATION (Delegated to AppInitializer) ===
 
 // === GETTER FUNCTIONS ===
 
@@ -371,7 +338,7 @@ export const clearAllStoredData = () => {
  * @returns {void}
  */
 export const initializeStoredData = () => {
-  loadAllStoredData();
+  AppInitializer.initialize(appState, notifyListeners);
 };
 
 /**
@@ -379,7 +346,7 @@ export const initializeStoredData = () => {
  * @returns {void}
  */
 export const reinitializeStoredData = () => {
-  loadAllStoredData();
+  AppInitializer.initialize(appState, notifyListeners);
   notifyListeners();
 };
 
