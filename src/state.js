@@ -1,12 +1,15 @@
-// lets-todo-app/lets-todo-app/src/state.js
+// lets-todo-app/src/state.js
 
 import { VIEWS } from "./utils/constants.js";
 import { createListenerManager } from "./state/listeners.js";
+import { PreferencesManager } from "./state/storage.js";
+import { SessionManager } from "./state/session-manager.js";
+import { TodoOperations } from "./state/todo-operations.js";
 import {
-  PreferencesManager,
-  StorageManager,
-  StorageKeys,
-} from "./state/storage.js";
+  TodosPersistence,
+  TrashPersistence,
+  DataMaintenance,
+} from "./state/data-persistence.js";
 
 /**
  * Central application state for Let's Todo App
@@ -50,229 +53,42 @@ const {
   clearAllListeners,
 } = listenerManager;
 
-/**
- * Loads todos from storage (session-aware) using StorageManager
- */
-const loadTodosFromStorage = () => {
-  try {
-    const key = getStorageKey("todos");
-    const savedTodos = StorageManager.getLocalData(key);
-    if (savedTodos) {
-      appState.todos = savedTodos;
-    }
-  } catch (error) {
-    console.error("Error loading todos:", error);
-  }
-};
+// === INITIALIZATION FUNCTIONS ===
 
 /**
- * Gets the appropriate storage key based on session type
- */
-const getStorageKey = (baseKey) => {
-  const sessionType = appState.sessionType || "guest";
-  return `todoapp-${sessionType}-${baseKey}`;
-};
-
-/**
- * Saves todos to storage (session-aware) using StorageManager
- */
-const saveTodosToStorage = () => {
-  try {
-    const key = getStorageKey("todos");
-    StorageManager.setLocalData(key, appState.todos);
-  } catch (error) {
-    console.error("Error saving todos:", error);
-  }
-};
-
-/**
- * Saves guest data specifically to guest storage
- */
-const saveGuestDataToStorage = () => {
-  try {
-    StorageManager.setLocalData(StorageKeys.LOCAL.GUEST_TODOS, appState.todos);
-    StorageManager.setLocalData(
-      StorageKeys.LOCAL.GUEST_TRASH,
-      appState.trashedTodos
-    );
-  } catch (error) {
-    console.error("Error saving guest data:", error);
-  }
-};
-
-/**
- * Loads trashed todos from storage (session-aware) using StorageManager
- */
-const loadTrashedTodosFromStorage = () => {
-  try {
-    const key = getStorageKey("trash");
-    const savedTrash = StorageManager.getLocalData(key);
-    if (savedTrash) {
-      appState.trashedTodos = savedTrash;
-    }
-  } catch (error) {
-    console.error("Error loading trashed todos:", error);
-  }
-};
-
-/**
- * Saves trashed todos to storage (session-aware) using StorageManager
- */
-const saveTrashedTodosToStorage = () => {
-  try {
-    const key = getStorageKey("trash");
-    StorageManager.setLocalData(key, appState.trashedTodos);
-  } catch (error) {
-    console.error("Error saving trashed todos:", error);
-  }
-};
-
-/**
- * Loads all user preferences using the new storage system.
- */
-const loadUserPreferences = () => {
-  // Use new PreferencesManager to load preferences
-  const loadedPreferences = PreferencesManager.load(appState.userPreferences);
-  appState.userPreferences = loadedPreferences;
-};
-
-/**
- * Saves all user preferences using the new storage system.
- */
-const saveUserPreferences = () => {
-  // Use new PreferencesManager to save preferences
-  PreferencesManager.save(appState.userPreferences);
-};
-
-/**
- * Checks if a view is valid.
- * @param {string} view - View to check
- * @returns {boolean} Is valid
- */
-const isValidView = (view) => {
-  return Object.values(VIEWS).includes(view);
-};
-
-/**
- * Loads session data using StorageManager.
- */
-const loadSessionFromStorage = () => {
-  try {
-    const session = StorageManager.getSessionData(
-      StorageKeys.SESSION.AUTH_DATA
-    );
-    if (session) {
-      Object.assign(appState, {
-        sessionType: session.sessionType || null,
-        sessionId: session.sessionId || null,
-        userId: session.userId || null,
-        userEmail: session.userEmail || null,
-      });
-
-      if (session.lastView && isValidView(session.lastView)) {
-        appState.currentView = session.lastView;
-      }
-
-      notifyListeners();
-    }
-  } catch (error) {
-    console.error("Error loading session:", error);
-  }
-};
-
-/**
- * Saves session data using StorageManager.
- */
-const saveSessionToStorage = () => {
-  try {
-    const sessionData = {
-      sessionType: appState.sessionType,
-      sessionId: appState.sessionId,
-      userId: appState.userId,
-      userEmail: appState.userEmail,
-      lastView: getCurrentView(),
-      timestamp: Date.now(),
-    };
-    StorageManager.setSessionData(StorageKeys.SESSION.AUTH_DATA, sessionData);
-  } catch (error) {
-    console.error("Error saving session:", error);
-  }
-};
-
-/**
- * Repairs todos by adding missing IDs and required fields
- */
-const repairTodos = () => {
-  let hasChanges = false;
-
-  // Fix todos missing IDs
-  appState.todos = appState.todos.map((todo) => {
-    if (!todo.id) {
-      hasChanges = true;
-      return {
-        ...todo,
-        id: generateId(),
-        created: todo.created || new Date().toISOString(),
-        lastModified: todo.lastModified || new Date().toISOString(),
-      };
-    }
-    return todo;
-  });
-
-  // Fix trashed todos missing IDs
-  appState.trashedTodos = appState.trashedTodos.map((todo) => {
-    if (!todo.id) {
-      hasChanges = true;
-      return {
-        ...todo,
-        id: generateId(),
-        created: todo.created || new Date().toISOString(),
-        lastModified: todo.lastModified || new Date().toISOString(),
-      };
-    }
-    return todo;
-  });
-
-  // Save changes if any repairs were made
-  if (hasChanges) {
-    saveTodosToStorage();
-    saveTrashedTodosToStorage();
-    console.log("✅ Todo data repaired - missing IDs added");
-  }
-};
-
-/**
- * Loads all stored data at app start.
+ * Loads all stored data at app start using the modular persistence system.
  */
 const loadAllStoredData = () => {
-  loadTodosFromStorage();
-  loadTrashedTodosFromStorage();
-  loadUserPreferences();
-  loadSessionFromStorage();
-  saveUserPreferences();
+  // Load data using persistence modules
+  appState.todos = TodosPersistence.load(appState.sessionType);
+  appState.trashedTodos = TrashPersistence.load(appState.sessionType);
+  appState.userPreferences = PreferencesManager.load(appState.userPreferences);
+
+  // Load session data
+  SessionManager.loadFromStorage(appState, notifyListeners);
+
+  // Save preferences to ensure storage is up to date
+  PreferencesManager.save(appState.userPreferences);
 
   // Repair any data issues
-  repairTodos();
+  const repairResult = DataMaintenance.repairTodos(
+    appState.todos,
+    appState.trashedTodos
+  );
+  if (repairResult.hasChanges) {
+    appState.todos = repairResult.todos;
+    appState.trashedTodos = repairResult.trashedTodos;
+    TodosPersistence.save(appState.todos, appState.sessionType);
+    TrashPersistence.save(appState.trashedTodos, appState.sessionType);
+    console.log("✅ Todo data repaired - missing IDs added");
+  }
 
+  // Apply theme
   if (appState.userPreferences.theme) {
     document.body.setAttribute("data-theme", appState.userPreferences.theme);
   }
 
   console.log("✅ Stored data loaded successfully");
-};
-
-/**
- * Clears all stored data.
- */
-export const clearAllStoredData = () => {
-  try {
-    StorageManager.clearStorage("session");
-    StorageManager.clearStorage("local");
-    StorageManager.clearStorage("memory");
-    console.log("✅ All stored data cleared");
-  } catch (error) {
-    console.error("❌ Error clearing stored data:", error);
-  }
 };
 
 // === GETTER FUNCTIONS ===
@@ -333,24 +149,10 @@ export const getSessionType = () => appState.sessionType;
 export const getSessionId = () => appState.sessionId;
 
 /**
- * Returns the complete session data.
+ * Returns the complete session data using SessionManager.
  * @returns {Object|null} Session object with all session data
  */
-export const getSession = () => {
-  if (!appState.sessionType) {
-    return null;
-  }
-
-  return {
-    sessionType: appState.sessionType,
-    sessionId: appState.sessionId,
-    userId: appState.userId,
-    userData: {
-      email: appState.userEmail,
-      username: appState.userEmail ? appState.userEmail.split("@")[0] : null,
-    },
-  };
-};
+export const getSession = () => SessionManager.getSession(appState);
 
 /**
  * Returns the user ID.
@@ -376,7 +178,7 @@ export const isLoading = () => appState.loading;
  */
 export const getError = () => appState.error;
 
-// === SETTER FUNCTIONS ===
+// === STATE MANAGEMENT FUNCTIONS ===
 
 /**
  * Sets the current view.
@@ -386,7 +188,7 @@ export const setCurrentView = (view) => {
   if (appState.currentView !== view) {
     appState.previousView = appState.currentView;
     appState.currentView = view;
-    saveSessionToStorage();
+    SessionManager.saveToStorage(appState, getCurrentView);
     notifyListeners();
   }
 };
@@ -403,421 +205,7 @@ export const setLoading = (loading) => {
 };
 
 /**
- * Sets the session data and reloads session-specific data
- * @param {Object} sessionData - Session data object
- */
-export const setSession = (sessionData) => {
-  // Store old session type for comparison
-  const oldSessionType = appState.sessionType;
-
-  // Update session
-  appState.sessionType = sessionData.sessionType || null;
-  appState.sessionId = sessionData.sessionId || null;
-  appState.userId = sessionData.userId || null;
-  appState.userEmail = sessionData.userEmail || null;
-
-  // If session type changed, reload todos and trash for new session
-  if (oldSessionType !== appState.sessionType) {
-    console.log(
-      `🔄 Session changed from ${oldSessionType} to ${appState.sessionType}, reloading data...`
-    );
-    reloadSessionData();
-  }
-
-  saveSessionToStorage();
-  notifyListeners();
-};
-
-/**
- * Reloads todos and trash data for current session type
- */
-const reloadSessionData = () => {
-  try {
-    // Clear current data
-    appState.todos = [];
-    appState.trashedTodos = [];
-
-    // Load data for current session
-    loadTodosFromStorage();
-    loadTrashedTodosFromStorage();
-
-    console.log(`✅ Data reloaded for ${appState.sessionType} session`);
-  } catch (error) {
-    console.error("❌ Error reloading session data:", error);
-  }
-};
-
-/**
- * Clears the session data.
- */
-export const clearSession = () => {
-  appState.sessionType = null;
-  appState.sessionId = null;
-  appState.userId = null;
-  appState.userEmail = null;
-  StorageManager.removeData("session", StorageKeys.SESSION.AUTH_DATA);
-  notifyListeners();
-};
-
-/**
- * Complete user logout: clears session AND all user data
- * Restores guest data if it exists, otherwise initializes sample data
- */
-export const clearUserData = () => {
-  try {
-    appState.sessionType = null;
-    appState.sessionId = null;
-    appState.userId = null;
-    appState.userEmail = null;
-    appState.notifications = [];
-    appState.error = null;
-    appState.currentTodo = null;
-    StorageManager.removeData("session", StorageKeys.SESSION.AUTH_DATA);
-    StorageManager.removeData("local", "todoapp-user-todos");
-    StorageManager.removeData("local", "todoapp-user-trash");
-
-    restoreGuestData();
-    notifyListeners();
-
-    console.log("✅ User logged out, guest data restored");
-  } catch (error) {
-    console.error("❌ Error during logout:", error);
-  }
-};
-
-/**
- * Restores guest data or initializes sample data for guest session
- */
-const restoreGuestData = () => {
-  try {
-    // Try to load existing guest data
-    const savedGuestTodos = StorageManager.getLocalData(
-      StorageKeys.LOCAL.GUEST_TODOS
-    );
-    const savedGuestTrash = StorageManager.getLocalData(
-      StorageKeys.LOCAL.GUEST_TRASH
-    );
-
-    if (savedGuestTodos && savedGuestTrash) {
-      // Restore existing guest data
-      appState.todos = savedGuestTodos;
-      appState.trashedTodos = savedGuestTrash;
-      console.log("✅ Guest data restored from storage");
-    } else {
-      // No guest data exists, initialize with sample data
-      appState.todos = [];
-      appState.trashedTodos = [];
-
-      // Initialize sample data (will be imported when needed)
-      console.log("✅ Fresh guest session initialized");
-    }
-
-    // Update storage with current state
-    saveGuestDataToStorage();
-  } catch (error) {
-    console.error("❌ Error restoring guest data:", error);
-    // Fallback: empty state
-    appState.todos = [];
-    appState.trashedTodos = [];
-  }
-};
-
-/**
- * Sets the todos.
- * @param {Array} todos - New todos array
- */
-export const setTodos = (todos) => {
-  appState.todos = [...todos];
-  saveTodosToStorage();
-  notifyListeners();
-};
-
-/**
- * Sets the trashed todos.
- * @param {Array} trashedTodos - New trashed todos array
- */
-export const setTrashedTodos = (trashedTodos) => {
-  appState.trashedTodos = [...trashedTodos];
-  saveTrashedTodosToStorage();
-  notifyListeners();
-};
-
-/**
- * Generates a unique ID
- * @returns {string} Unique ID
- */
-const generateId = () => {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-};
-
-/**
- * Adds a todo (with server sync for users)
- * @param {Object} todo - Todo object
- */
-export const addTodo = async (todo) => {
-  // Ensure todo has an ID
-  const todoWithId = {
-    ...todo,
-    id: todo.id || generateId(),
-    created: todo.created || new Date().toISOString(),
-    lastModified: todo.lastModified || new Date().toISOString(),
-  };
-
-  // Add to local state first
-  appState.todos = [...appState.todos, todoWithId];
-  saveTodosToStorage();
-  notifyListeners();
-
-  // Sync to server if user session
-  if (appState.sessionType === "user") {
-    try {
-      const { saveTodoToServer } = await import("./services/api-todos.js");
-      const serverResponse = await saveTodoToServer(todoWithId);
-
-      // Update local todo with server ID
-      if (serverResponse && serverResponse.id) {
-        const todoIndex = appState.todos.findIndex(
-          (t) => t.id === todoWithId.id
-        );
-        if (todoIndex !== -1) {
-          appState.todos[todoIndex].id = serverResponse.id;
-          saveTodosToStorage();
-          notifyListeners();
-          console.log(`✅ Todo synced to server with ID: ${serverResponse.id}`);
-        }
-      }
-    } catch (error) {
-      console.warn("⚠️ Failed to sync todo to server:", error);
-      // Todo is still saved locally
-    }
-  }
-};
-
-/**
- * Updates an existing todo (with server sync for users)
- * @param {string} todoId - Todo ID to update
- * @param {Object} updates - Todo updates
- */
-export const updateTodo = async (todoId, updates) => {
-  // Update locally first
-  appState.todos = appState.todos.map((todo) =>
-    todo.id === todoId ? { ...todo, ...updates } : todo
-  );
-  saveTodosToStorage();
-  notifyListeners();
-
-  // Sync to server if user session
-  if (appState.sessionType === "user") {
-    try {
-      const { updateTodoOnServer } = await import("./services/api-todos.js");
-      const updatedTodo = appState.todos.find((t) => t.id === todoId);
-      if (updatedTodo) {
-        await updateTodoOnServer(todoId, updatedTodo);
-        console.log("✅ Todo updated on server");
-      }
-    } catch (error) {
-      console.warn("⚠️ Failed to sync update to server:", error);
-      // Todo is still updated locally
-    }
-  }
-};
-
-/**
- * Removes a todo.
- * @param {string} todoId - Todo ID to remove
- */
-export const removeTodo = (todoId) => {
-  appState.todos = appState.todos.filter((todo) => todo.id !== todoId);
-  saveTodosToStorage();
-  notifyListeners();
-};
-
-/**
- * Sets the current todo.
- * @param {Object|null} todo - Current todo
- */
-export const setCurrentTodo = (todo) => {
-  appState.currentTodo = todo;
-  notifyListeners();
-};
-
-/**
- * Moves a todo to trash (with server sync for users)
- * @param {string} todoId - Todo ID to trash
- */
-export const trashTodo = async (todoId) => {
-  console.log(`🔍 trashTodo called with ID: ${todoId}, type: ${typeof todoId}`);
-
-  // Convert todoId to number if it's a string (handles both number and string IDs)
-  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
-  console.log(`🔄 Converted ID: ${numericId}, type: ${typeof numericId}`);
-
-  const todo = appState.todos.find((t) => t.id == todoId || t.id === numericId);
-  console.log(`🔎 Found todo:`, todo);
-  if (todo) {
-    // Move to trash locally first
-    appState.todos = appState.todos.filter(
-      (t) => t.id != todoId && t.id !== numericId
-    );
-    appState.trashedTodos = [
-      ...appState.trashedTodos,
-      { ...todo, trashedAt: Date.now() },
-    ];
-    saveTodosToStorage();
-    saveTrashedTodosToStorage();
-    console.log(
-      `🗑️ Todo ${todoId} moved to trash, notifying ${appState.listeners.length} listeners`
-    );
-    notifyListeners();
-
-    // Sync to server if user session
-    if (appState.sessionType === "user") {
-      try {
-        const { trashTodoOnServer } = await import("./services/api-todos.js");
-        await trashTodoOnServer(numericId);
-        console.log("✅ Todo trashed on server");
-      } catch (error) {
-        console.warn("⚠️ Failed to sync trash to server:", error);
-        // Todo is still trashed locally
-      }
-    }
-  }
-};
-
-/**
- * Restores a todo from trash (with server sync for users)
- * @param {string} todoId - Todo ID to restore
- */
-export const restoreTodo = async (todoId) => {
-  console.log(
-    `🔍 restoreTodo called with ID: ${todoId}, type: ${typeof todoId}`
-  );
-
-  // Convert todoId to handle both string and number types
-  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
-
-  const todo = appState.trashedTodos.find(
-    (t) => t.id == todoId || t.id === numericId
-  );
-  console.log(`🔎 Found trashed todo:`, todo);
-  if (todo) {
-    // Restore locally first
-    appState.trashedTodos = appState.trashedTodos.filter(
-      (t) => t.id != todoId && t.id !== numericId
-    );
-    appState.todos = [...appState.todos, { ...todo, trashedAt: undefined }];
-    saveTodosToStorage();
-    saveTrashedTodosToStorage();
-    notifyListeners();
-
-    // Sync to server if user session
-    if (appState.sessionType === "user") {
-      try {
-        const { restoreTodoOnServer } = await import("./services/api-todos.js");
-        await restoreTodoOnServer(numericId);
-        console.log("✅ Todo restored on server");
-      } catch (error) {
-        console.warn("⚠️ Failed to sync restore to server:", error);
-        // Todo is still restored locally
-      }
-    }
-  }
-};
-
-/**
- * Permanently deletes a todo from trash (with server sync for users)
- * @param {string} todoId - Todo ID to delete permanently
- */
-export const deleteTodo = async (todoId) => {
-  console.log(
-    `🔍 deleteTodo called with ID: ${todoId}, type: ${typeof todoId}`
-  );
-
-  // Convert todoId to handle both string and number types
-  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
-
-  // Delete locally first
-  appState.trashedTodos = appState.trashedTodos.filter(
-    (t) => t.id != todoId && t.id !== numericId
-  );
-  saveTrashedTodosToStorage();
-  notifyListeners();
-
-  // Sync to server if user session
-  if (appState.sessionType === "user") {
-    console.log(`🌐 Attempting to delete todo ${numericId} on server...`);
-    try {
-      const { deleteTodoFromServer } = await import("./services/api-todos.js");
-      const result = await deleteTodoFromServer(numericId);
-      console.log("✅ Todo deleted on server:", result);
-    } catch (error) {
-      console.error("❌ Failed to sync delete to server:", error);
-      // Todo is still deleted locally
-    }
-  } else {
-    console.log("👤 Guest session - no server sync needed");
-  }
-};
-
-/**
- * Permanently deletes a todo from trash.
- * @param {string} todoId - Todo ID to delete permanently
- */
-export const deleteTodoPermanently = (todoId) => {
-  console.log(
-    `🔍 deleteTodoPermanently called with ID: ${todoId}, type: ${typeof todoId}`
-  );
-
-  // Convert todoId to handle both string and number types
-  const numericId = typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
-
-  appState.trashedTodos = appState.trashedTodos.filter(
-    (t) => t.id != todoId && t.id !== numericId
-  );
-  saveTrashedTodosToStorage();
-  notifyListeners();
-};
-
-/**
- * Empties the entire trash by deleting all trashed todos permanently.
- */
-export const emptyTrash = async () => {
-  console.log(`🗑️ Emptying trash with ${appState.trashedTodos.length} todos`);
-
-  // For user sessions, delete each todo on server before emptying locally
-  if (appState.sessionType === "user" && appState.trashedTodos.length > 0) {
-    console.log("🌐 Deleting all trash todos on server...");
-
-    try {
-      const { deleteTodoFromServer } = await import("./services/api-todos.js");
-
-      // Delete all trashed todos on server
-      const deletePromises = appState.trashedTodos.map((todo) => {
-        const numericId =
-          typeof todo.id === "string" ? parseInt(todo.id, 10) : todo.id;
-        return deleteTodoFromServer(numericId);
-      });
-
-      await Promise.all(deletePromises);
-      console.log(
-        `✅ All ${appState.trashedTodos.length} trash todos deleted on server`
-      );
-    } catch (error) {
-      console.error("❌ Failed to delete some todos on server:", error);
-      // Continue with local empty anyway
-    }
-  } else {
-    console.log("👤 Guest session or empty trash - no server sync needed");
-  }
-
-  // Empty locally
-  appState.trashedTodos = [];
-  saveTrashedTodosToStorage();
-  notifyListeners();
-};
-
-/**
- * Sets user preferences.
+ * Sets user preferences using PreferencesManager.
  * @param {Object} preferences - New preferences
  */
 export const setUserPreferences = (preferences) => {
@@ -825,7 +213,7 @@ export const setUserPreferences = (preferences) => {
     ...appState.userPreferences,
     ...preferences,
   };
-  saveUserPreferences();
+  PreferencesManager.save(appState.userPreferences);
 
   // Apply theme immediately
   if (preferences.theme) {
@@ -834,6 +222,142 @@ export const setUserPreferences = (preferences) => {
 
   notifyListeners();
 };
+
+/**
+ * Sets the error state.
+ * @param {string|null} error - Error message or null to clear
+ */
+export const setError = (error) => {
+  appState.error = error;
+  if (error) {
+    addNotification({
+      type: "error",
+      message: error,
+    });
+  }
+  notifyListeners();
+};
+
+// === SESSION MANAGEMENT (Delegated to SessionManager) ===
+
+/**
+ * Sets the session data and reloads session-specific data
+ * @param {Object} sessionData - Session data object
+ */
+export const setSession = (sessionData) => {
+  SessionManager.setSession(
+    appState,
+    sessionData,
+    notifyListeners,
+    getCurrentView
+  );
+};
+
+/**
+ * Clears the session data.
+ */
+export const clearSession = () => {
+  SessionManager.clearSession(appState, notifyListeners);
+};
+
+/**
+ * Complete user logout: clears session AND all user data
+ */
+export const clearUserData = () => {
+  SessionManager.clearUserData(appState, notifyListeners);
+};
+
+/**
+ * Saves current session data to storage
+ * Legacy export for compatibility with existing code
+ */
+export const saveSessionToStorage = () => {
+  SessionManager.saveToStorage(appState, getCurrentView);
+};
+
+// === TODO OPERATIONS (Delegated to TodoOperations) ===
+
+/**
+ * Adds a todo (with server sync for users)
+ * @param {Object} todo - Todo object
+ */
+export const addTodo = async (todo) => {
+  await TodoOperations.add(appState, todo, notifyListeners);
+};
+
+/**
+ * Updates an existing todo (with server sync for users)
+ * @param {string} todoId - Todo ID to update
+ * @param {Object} updates - Todo updates
+ */
+export const updateTodo = async (todoId, updates) => {
+  await TodoOperations.update(appState, todoId, updates, notifyListeners);
+};
+
+/**
+ * Removes a todo.
+ * @param {string} todoId - Todo ID to remove
+ */
+export const removeTodo = (todoId) => {
+  TodoOperations.remove(appState, todoId, notifyListeners);
+};
+
+/**
+ * Sets the current todo.
+ * @param {Object|null} todo - Current todo
+ */
+export const setCurrentTodo = (todo) => {
+  TodoOperations.setCurrentTodo(appState, todo, notifyListeners);
+};
+
+/**
+ * Moves a todo to trash (with server sync for users)
+ * @param {string} todoId - Todo ID to trash
+ */
+export const trashTodo = async (todoId) => {
+  await TodoOperations.trash(appState, todoId, notifyListeners);
+};
+
+/**
+ * Restores a todo from trash (with server sync for users)
+ * @param {string} todoId - Todo ID to restore
+ */
+export const restoreTodo = async (todoId) => {
+  await TodoOperations.restore(appState, todoId, notifyListeners);
+};
+
+/**
+ * Permanently deletes a todo from trash (with server sync for users)
+ * @param {string} todoId - Todo ID to delete permanently
+ */
+export const deleteTodo = async (todoId) => {
+  await TodoOperations.delete(appState, todoId, notifyListeners);
+};
+
+/**
+ * Empties the entire trash by deleting all trashed todos permanently.
+ */
+export const emptyTrash = async () => {
+  await TodoOperations.emptyTrash(appState, notifyListeners);
+};
+
+/**
+ * Sets the todos.
+ * @param {Array} todos - New todos array
+ */
+export const setTodos = (todos) => {
+  TodoOperations.setTodos(appState, todos, notifyListeners);
+};
+
+/**
+ * Sets the trashed todos.
+ * @param {Array} trashedTodos - New trashed todos array
+ */
+export const setTrashedTodos = (trashedTodos) => {
+  TodoOperations.setTrashedTodos(appState, trashedTodos, notifyListeners);
+};
+
+// === NOTIFICATION MANAGEMENT ===
 
 /**
  * Adds a notification.
@@ -863,44 +387,27 @@ export const removeNotification = (notificationId) => {
   notifyListeners();
 };
 
-/**
- * Sets the error state.
- * @param {string|null} error - Error message or null to clear
- */
-export const setError = (error) => {
-  appState.error = error;
-  if (error) {
-    addNotification({
-      type: "error",
-      message: error,
-    });
-  }
-  notifyListeners();
-};
-
-// === LISTENER FUNCTIONS (using modular system) ===
+// === DATA MANAGEMENT (Delegated to DataMaintenance) ===
 
 /**
- * Exports the central application state and relevant functions.
+ * Clears all stored data.
  */
-export {
-  appState,
-  loadTodosFromStorage,
-  saveTodosToStorage,
-  loadTrashedTodosFromStorage,
-  saveTrashedTodosToStorage,
-  loadUserPreferences,
-  saveUserPreferences,
-  saveSessionToStorage,
-  loadAllStoredData,
-  notifyListeners,
-  reloadSessionData,
-  // Listener functions from modular system
-  addListener,
-  removeListener,
-  getListenerCount,
-  clearAllListeners,
+export const clearAllStoredData = () => {
+  DataMaintenance.clearAll();
 };
+
+// === LISTENER FUNCTIONS (from modular system) ===
+
+// Export listener functions from the listener manager
+export { addListener, removeListener, getListenerCount, clearAllListeners };
+
+// === LEGACY EXPORTS FOR COMPATIBILITY ===
+
+/**
+ * Export internal functions that are still used by other modules
+ * These should be gradually phased out as we complete the refactoring
+ */
+export { appState, notifyListeners, loadAllStoredData };
 
 // Initialize on load
 if (typeof window !== "undefined") {
