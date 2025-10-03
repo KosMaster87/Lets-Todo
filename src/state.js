@@ -5,6 +5,7 @@ import { createListenerManager } from "./state/listeners.js";
 import { PreferencesManager } from "./state/storage.js";
 import { SessionManager } from "./state/session-manager.js";
 import { TodoOperations } from "./state/todo-operations.js";
+import { UIStateManager } from "./state/ui-state-manager.js";
 import {
   TodosPersistence,
   TrashPersistence,
@@ -180,17 +181,19 @@ export const getError = () => appState.error;
 
 // === STATE MANAGEMENT FUNCTIONS ===
 
+// === UI STATE MANAGEMENT (Delegated to UIStateManager) ===
+
 /**
  * Sets the current view.
  * @param {string} view - View name
  */
 export const setCurrentView = (view) => {
-  if (appState.currentView !== view) {
-    appState.previousView = appState.currentView;
-    appState.currentView = view;
-    SessionManager.saveToStorage(appState, getCurrentView);
-    notifyListeners();
-  }
+  UIStateManager.setCurrentView(
+    appState,
+    view,
+    getCurrentView,
+    notifyListeners
+  );
 };
 
 /**
@@ -198,29 +201,15 @@ export const setCurrentView = (view) => {
  * @param {boolean} loading - Loading state
  */
 export const setLoading = (loading) => {
-  if (appState.loading !== loading) {
-    appState.loading = loading;
-    notifyListeners();
-  }
+  UIStateManager.setLoading(appState, loading, notifyListeners);
 };
 
 /**
- * Sets user preferences using PreferencesManager.
+ * Sets user preferences using UIStateManager.
  * @param {Object} preferences - New preferences
  */
 export const setUserPreferences = (preferences) => {
-  appState.userPreferences = {
-    ...appState.userPreferences,
-    ...preferences,
-  };
-  PreferencesManager.save(appState.userPreferences);
-
-  // Apply theme immediately
-  if (preferences.theme) {
-    document.body.setAttribute("data-theme", preferences.theme);
-  }
-
-  notifyListeners();
+  UIStateManager.setUserPreferences(appState, preferences, notifyListeners);
 };
 
 /**
@@ -228,14 +217,7 @@ export const setUserPreferences = (preferences) => {
  * @param {string|null} error - Error message or null to clear
  */
 export const setError = (error) => {
-  appState.error = error;
-  if (error) {
-    addNotification({
-      type: "error",
-      message: error,
-    });
-  }
-  notifyListeners();
+  UIStateManager.setError(appState, error, addNotification, notifyListeners);
 };
 
 // === SESSION MANAGEMENT (Delegated to SessionManager) ===
@@ -357,23 +339,14 @@ export const setTrashedTodos = (trashedTodos) => {
   TodoOperations.setTrashedTodos(appState, trashedTodos, notifyListeners);
 };
 
-// === NOTIFICATION MANAGEMENT ===
+// === NOTIFICATION MANAGEMENT (Delegated to UIStateManager) ===
 
 /**
  * Adds a notification.
  * @param {Object} notification - Notification object
  */
 export const addNotification = (notification) => {
-  const newNotification = {
-    id: Date.now(),
-    type: "info",
-    message: "",
-    duration: 3000,
-    displayed: false,
-    ...notification,
-  };
-  appState.notifications = [...appState.notifications, newNotification];
-  notifyListeners();
+  UIStateManager.addNotification(appState, notification, notifyListeners);
 };
 
 /**
@@ -381,10 +354,7 @@ export const addNotification = (notification) => {
  * @param {number} notificationId - ID of the notification to remove
  */
 export const removeNotification = (notificationId) => {
-  appState.notifications = appState.notifications.filter(
-    (notification) => notification.id !== notificationId
-  );
-  notifyListeners();
+  UIStateManager.removeNotification(appState, notificationId, notifyListeners);
 };
 
 // === DATA MANAGEMENT (Delegated to DataMaintenance) ===
@@ -396,20 +366,24 @@ export const clearAllStoredData = () => {
   DataMaintenance.clearAll();
 };
 
+/**
+ * Initializes all stored data (called explicitly from app.js)
+ * @returns {void}
+ */
+export const initializeStoredData = () => {
+  loadAllStoredData();
+};
+
+/**
+ * Re-initializes all stored data (useful for testing or manual refresh)
+ * @returns {void}
+ */
+export const reinitializeStoredData = () => {
+  loadAllStoredData();
+  notifyListeners();
+};
+
 // === LISTENER FUNCTIONS (from modular system) ===
 
 // Export listener functions from the listener manager
 export { addListener, removeListener, getListenerCount, clearAllListeners };
-
-// === LEGACY EXPORTS FOR COMPATIBILITY ===
-
-/**
- * Export internal functions that are still used by other modules
- * These should be gradually phased out as we complete the refactoring
- */
-export { appState, notifyListeners, loadAllStoredData };
-
-// Initialize on load
-if (typeof window !== "undefined") {
-  window.addEventListener("load", loadAllStoredData);
-}

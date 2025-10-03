@@ -1,15 +1,13 @@
 // lets-todo-app/src/app.js
 
 import {
-  appState,
-  loadAllStoredData,
+  initializeStoredData,
   addTodo,
   getTodos,
   getTrashedTodos,
   setTrashedTodos,
   addListener,
   removeListener,
-  notifyListeners,
 } from "./state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
@@ -26,9 +24,13 @@ import {
  * and enables scroll management.
  */
 const initializeApp = () => {
-  loadAllStoredData();
+  // 1. Register listeners FIRST (so they receive notifications)
+  registerStateListeners();
 
-  // Add sample data if no todos exist
+  // 2. Load stored data AFTER listeners are registered
+  initializeStoredData();
+
+  // 3. Add sample data if no todos exist
   const currentTodos = getTodos();
   const currentTrashedTodos = getTrashedTodos();
 
@@ -38,10 +40,10 @@ const initializeApp = () => {
     currentTodos,
     currentTrashedTodos
   );
+
+  // 4. Initialize navigation
   initializeNavigation();
-  registerStateListeners();
-  notifyListeners();
-  // ScrollManager.init(appState);
+  // ScrollManager.init();
 };
 
 /**
