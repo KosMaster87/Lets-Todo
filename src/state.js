@@ -1,7 +1,12 @@
-// lets-todo-app/src/state.js
+// lets-todo-app/lets-todo-app/src/state.js
 
 import { VIEWS } from "./utils/constants.js";
 import { createListenerManager } from "./state/listeners.js";
+import {
+  PreferencesManager,
+  StorageManager,
+  StorageKeys,
+} from "./state/storage.js";
 
 /**
  * Central application state for Let's Todo App
@@ -46,14 +51,14 @@ const {
 } = listenerManager;
 
 /**
- * Loads todos from LocalStorage (session-aware)
+ * Loads todos from storage (session-aware) using StorageManager
  */
 const loadTodosFromStorage = () => {
   try {
     const key = getStorageKey("todos");
-    const savedTodos = localStorage.getItem(key);
+    const savedTodos = StorageManager.getLocalData(key);
     if (savedTodos) {
-      appState.todos = JSON.parse(savedTodos);
+      appState.todos = savedTodos;
     }
   } catch (error) {
     console.error("Error loading todos:", error);
@@ -69,12 +74,12 @@ const getStorageKey = (baseKey) => {
 };
 
 /**
- * Saves todos to LocalStorage (session-aware)
+ * Saves todos to storage (session-aware) using StorageManager
  */
 const saveTodosToStorage = () => {
   try {
     const key = getStorageKey("todos");
-    localStorage.setItem(key, JSON.stringify(appState.todos));
+    StorageManager.setLocalData(key, appState.todos);
   } catch (error) {
     console.error("Error saving todos:", error);
   }
@@ -85,10 +90,10 @@ const saveTodosToStorage = () => {
  */
 const saveGuestDataToStorage = () => {
   try {
-    localStorage.setItem("todoapp-guest-todos", JSON.stringify(appState.todos));
-    localStorage.setItem(
-      "todoapp-guest-trash",
-      JSON.stringify(appState.trashedTodos)
+    StorageManager.setLocalData(StorageKeys.LOCAL.GUEST_TODOS, appState.todos);
+    StorageManager.setLocalData(
+      StorageKeys.LOCAL.GUEST_TRASH,
+      appState.trashedTodos
     );
   } catch (error) {
     console.error("Error saving guest data:", error);
@@ -96,14 +101,14 @@ const saveGuestDataToStorage = () => {
 };
 
 /**
- * Loads trashed todos from LocalStorage (session-aware)
+ * Loads trashed todos from storage (session-aware) using StorageManager
  */
 const loadTrashedTodosFromStorage = () => {
   try {
     const key = getStorageKey("trash");
-    const savedTrash = localStorage.getItem(key);
+    const savedTrash = StorageManager.getLocalData(key);
     if (savedTrash) {
-      appState.trashedTodos = JSON.parse(savedTrash);
+      appState.trashedTodos = savedTrash;
     }
   } catch (error) {
     console.error("Error loading trashed todos:", error);
@@ -111,47 +116,32 @@ const loadTrashedTodosFromStorage = () => {
 };
 
 /**
- * Saves trashed todos to LocalStorage (session-aware)
+ * Saves trashed todos to storage (session-aware) using StorageManager
  */
 const saveTrashedTodosToStorage = () => {
   try {
     const key = getStorageKey("trash");
-    localStorage.setItem(key, JSON.stringify(appState.trashedTodos));
+    StorageManager.setLocalData(key, appState.trashedTodos);
   } catch (error) {
     console.error("Error saving trashed todos:", error);
   }
 };
 
 /**
- * Loads all user preferences from LocalStorage.
+ * Loads all user preferences using the new storage system.
  */
 const loadUserPreferences = () => {
-  try {
-    const savedPrefs = localStorage.getItem("todoapp-preferences");
-    if (savedPrefs) {
-      const preferences = JSON.parse(savedPrefs);
-      appState.userPreferences = {
-        ...appState.userPreferences,
-        ...preferences,
-      };
-    }
-  } catch (error) {
-    console.error("Error loading user preferences:", error);
-  }
+  // Use new PreferencesManager to load preferences
+  const loadedPreferences = PreferencesManager.load(appState.userPreferences);
+  appState.userPreferences = loadedPreferences;
 };
 
 /**
- * Saves all user preferences to LocalStorage.
+ * Saves all user preferences using the new storage system.
  */
 const saveUserPreferences = () => {
-  try {
-    localStorage.setItem(
-      "todoapp-preferences",
-      JSON.stringify(appState.userPreferences)
-    );
-  } catch (error) {
-    console.error("Error saving user preferences:", error);
-  }
+  // Use new PreferencesManager to save preferences
+  PreferencesManager.save(appState.userPreferences);
 };
 
 /**
@@ -164,14 +154,14 @@ const isValidView = (view) => {
 };
 
 /**
- * Loads session data from LocalStorage.
+ * Loads session data using StorageManager.
  */
 const loadSessionFromStorage = () => {
   try {
-    const savedSession = localStorage.getItem("todoapp-session");
-    if (savedSession) {
-      const session = JSON.parse(savedSession);
-
+    const session = StorageManager.getSessionData(
+      StorageKeys.SESSION.AUTH_DATA
+    );
+    if (session) {
       Object.assign(appState, {
         sessionType: session.sessionType || null,
         sessionId: session.sessionId || null,
@@ -191,7 +181,7 @@ const loadSessionFromStorage = () => {
 };
 
 /**
- * Saves session data to LocalStorage.
+ * Saves session data using StorageManager.
  */
 const saveSessionToStorage = () => {
   try {
@@ -203,7 +193,7 @@ const saveSessionToStorage = () => {
       lastView: getCurrentView(),
       timestamp: Date.now(),
     };
-    localStorage.setItem("todoapp-session", JSON.stringify(sessionData));
+    StorageManager.setSessionData(StorageKeys.SESSION.AUTH_DATA, sessionData);
   } catch (error) {
     console.error("Error saving session:", error);
   }
@@ -276,10 +266,9 @@ const loadAllStoredData = () => {
  */
 export const clearAllStoredData = () => {
   try {
-    localStorage.removeItem("todoapp-session");
-    localStorage.removeItem("todoapp-todos");
-    localStorage.removeItem("todoapp-trash");
-    localStorage.removeItem("todoapp-preferences");
+    StorageManager.clearStorage("session");
+    StorageManager.clearStorage("local");
+    StorageManager.clearStorage("memory");
     console.log("✅ All stored data cleared");
   } catch (error) {
     console.error("❌ Error clearing stored data:", error);
@@ -466,7 +455,7 @@ export const clearSession = () => {
   appState.sessionId = null;
   appState.userId = null;
   appState.userEmail = null;
-  localStorage.removeItem("todoapp-session");
+  StorageManager.removeData("session", StorageKeys.SESSION.AUTH_DATA);
   notifyListeners();
 };
 
@@ -483,9 +472,9 @@ export const clearUserData = () => {
     appState.notifications = [];
     appState.error = null;
     appState.currentTodo = null;
-    localStorage.removeItem("todoapp-session");
-    localStorage.removeItem("todoapp-user-todos");
-    localStorage.removeItem("todoapp-user-trash");
+    StorageManager.removeData("session", StorageKeys.SESSION.AUTH_DATA);
+    StorageManager.removeData("local", "todoapp-user-todos");
+    StorageManager.removeData("local", "todoapp-user-trash");
 
     restoreGuestData();
     notifyListeners();
@@ -502,13 +491,17 @@ export const clearUserData = () => {
 const restoreGuestData = () => {
   try {
     // Try to load existing guest data
-    const savedGuestTodos = localStorage.getItem("todoapp-guest-todos");
-    const savedGuestTrash = localStorage.getItem("todoapp-guest-trash");
+    const savedGuestTodos = StorageManager.getLocalData(
+      StorageKeys.LOCAL.GUEST_TODOS
+    );
+    const savedGuestTrash = StorageManager.getLocalData(
+      StorageKeys.LOCAL.GUEST_TRASH
+    );
 
     if (savedGuestTodos && savedGuestTrash) {
       // Restore existing guest data
-      appState.todos = JSON.parse(savedGuestTodos);
-      appState.trashedTodos = JSON.parse(savedGuestTrash);
+      appState.todos = savedGuestTodos;
+      appState.trashedTodos = savedGuestTrash;
       console.log("✅ Guest data restored from storage");
     } else {
       // No guest data exists, initialize with sample data
@@ -519,7 +512,7 @@ const restoreGuestData = () => {
       console.log("✅ Fresh guest session initialized");
     }
 
-    // Update localStorage with current state
+    // Update storage with current state
     saveGuestDataToStorage();
   } catch (error) {
     console.error("❌ Error restoring guest data:", error);
@@ -886,7 +879,6 @@ export const setError = (error) => {
 };
 
 // === LISTENER FUNCTIONS (using modular system) ===
-// Listeners are now managed by the listener manager created above
 
 /**
  * Exports the central application state and relevant functions.

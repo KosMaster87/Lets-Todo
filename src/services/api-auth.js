@@ -3,6 +3,7 @@
 import { getApiBase, apiHandler } from "./../utils/api-handler.js";
 import {
   setSession,
+  getSession,
   clearUserData,
   setTodos,
   setTrashedTodos,
@@ -97,17 +98,13 @@ export const logoutUser = async () => {
       );
     }
 
-    // Clear ALL user data (session, todos, trash) but keep preferences
     clearUserData();
-
-    // Navigate back to main menu
     navigateToView("main-menu");
 
     console.log("✅ User logged out successfully");
   } catch (error) {
     console.error("❌ Logout error:", error);
 
-    // Even if server logout fails, clear all user data locally
     clearUserData();
     navigateToView("main-menu");
   }
@@ -118,8 +115,7 @@ export const logoutUser = async () => {
  * @returns {boolean} Authentication status
  */
 export const isAuthenticated = () => {
-  // This could be expanded to check server-side validation
-  return Boolean(localStorage.getItem("todoapp-session"));
+  return Boolean(getSession());
 };
 
 /**
