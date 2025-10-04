@@ -2,16 +2,10 @@
 
 import { VIEWS } from "./utils/constants.js";
 import { createListenerManager } from "./state/listeners.js";
-import { PreferencesManager } from "./state/storage.js";
 import { SessionManager } from "./state/session-manager.js";
 import { TodoOperations } from "./state/todo-operations.js";
 import { UIStateManager } from "./state/ui-state-manager.js";
 import { AppInitializer } from "./state/app-initializer.js";
-import {
-  TodosPersistence,
-  TrashPersistence,
-  DataMaintenance,
-} from "./state/data-persistence.js";
 
 /**
  * Central application state for Let's Todo App
@@ -54,10 +48,6 @@ const {
   getListenerCount,
   clearAllListeners,
 } = listenerManager;
-
-// === INITIALIZATION FUNCTIONS ===
-
-// === INITIALIZATION (Delegated to AppInitializer) ===
 
 // === GETTER FUNCTIONS ===
 
@@ -145,8 +135,6 @@ export const isLoading = () => appState.loading;
  * @returns {string|null} Error message
  */
 export const getError = () => appState.error;
-
-// === STATE MANAGEMENT FUNCTIONS ===
 
 // === UI STATE MANAGEMENT (Delegated to UIStateManager) ===
 
@@ -324,14 +312,7 @@ export const removeNotification = (notificationId) => {
   UIStateManager.removeNotification(appState, notificationId, notifyListeners);
 };
 
-// === DATA MANAGEMENT (Delegated to DataMaintenance) ===
-
-/**
- * Clears all stored data.
- */
-export const clearAllStoredData = () => {
-  DataMaintenance.clearAll();
-};
+// === DATA PERSISTENCE (Delegated to DataPersistence) ===
 
 /**
  * Initializes all stored data (called explicitly from app.js)

@@ -32,7 +32,6 @@ export const SessionManager = {
     try {
       const session = SessionPersistence.load();
       if (session) {
-        // Apply session data to state
         Object.assign(appState, {
           sessionType: session.sessionType || null,
           sessionId: session.sessionId || null,
@@ -40,7 +39,6 @@ export const SessionManager = {
           userEmail: session.userEmail || null,
         });
 
-        // Apply last view if valid
         if (session.lastView && isValidView(session.lastView)) {
           appState.currentView = session.lastView;
         }
@@ -108,11 +106,8 @@ export const SessionManager = {
    */
   reloadSessionData(appState) {
     try {
-      // Clear current data
       appState.todos = [];
       appState.trashedTodos = [];
-
-      // Load data for current session
       appState.todos = TodosPersistence.load(appState.sessionType);
       appState.trashedTodos = TrashPersistence.load(appState.sessionType);
 
@@ -144,7 +139,6 @@ export const SessionManager = {
    */
   clearUserData(appState, notifyListeners) {
     try {
-      // Clear session state
       appState.sessionType = null;
       appState.sessionId = null;
       appState.userId = null;
@@ -153,15 +147,8 @@ export const SessionManager = {
       appState.error = null;
       appState.currentTodo = null;
 
-      // Clear storage
       SessionPersistence.clear();
 
-      // Clear user-specific storage but preserve guest data
-      import("./data-persistence.js").then(({ DataMaintenance }) => {
-        DataMaintenance.clearUserData();
-      });
-
-      // Restore guest data
       this.restoreGuestData(appState);
       notifyListeners();
 
@@ -177,16 +164,13 @@ export const SessionManager = {
    */
   restoreGuestData(appState) {
     try {
-      // Load existing guest data
       const guestData = TodosPersistence.loadGuestData();
 
       if (guestData.todos.length > 0 || guestData.trashedTodos.length > 0) {
-        // Restore existing guest data
         appState.todos = guestData.todos;
         appState.trashedTodos = guestData.trashedTodos;
         console.log("✅ Guest data restored from storage");
       } else {
-        // No guest data exists, initialize with empty state
         appState.todos = [];
         appState.trashedTodos = [];
         console.log("✅ Fresh guest session initialized");

@@ -2,11 +2,7 @@
 
 import { SessionManager } from "./session-manager.js";
 import { PreferencesManager } from "./storage.js";
-import {
-  TodosPersistence,
-  TrashPersistence,
-  DataMaintenance,
-} from "./data-persistence.js";
+import { TodosPersistence, TrashPersistence } from "./data-persistence.js";
 
 /**
  * Application Initializer
@@ -40,23 +36,7 @@ export const AppInitializer = {
       loadedData.trashedTodos = TrashPersistence.load(appState.sessionType);
     }
 
-    // 4. Repair any data issues
-    const repairResult = DataMaintenance.repairTodos(
-      loadedData.todos,
-      loadedData.trashedTodos
-    );
-
-    if (repairResult.hasChanges) {
-      loadedData.todos = repairResult.todos;
-      loadedData.trashedTodos = repairResult.trashedTodos;
-
-      // Save repaired data
-      TodosPersistence.save(loadedData.todos, appState.sessionType);
-      TrashPersistence.save(loadedData.trashedTodos, appState.sessionType);
-      console.log("🔧 Todo data repaired - missing IDs added");
-    }
-
-    // 5. Save preferences to ensure storage is up to date
+    // 4. Save preferences to ensure storage is up to date
     PreferencesManager.save(loadedData.userPreferences);
 
     console.log("✅ Application data initialization complete");
