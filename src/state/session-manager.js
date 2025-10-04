@@ -5,6 +5,7 @@ import {
   TodosPersistence,
   TrashPersistence,
 } from "./data-persistence.js";
+import { StorageManager } from "./storage.js";
 import { VIEWS } from "./../utils/constants.js";
 
 /**
@@ -57,6 +58,12 @@ export const SessionManager = {
    */
   saveToStorage(appState, getCurrentView) {
     try {
+      // Don't save session if user is logged out
+      if (!appState.sessionType) {
+        console.log("ℹ️ Skipping session save - user is logged out");
+        return;
+      }
+
       const sessionData = {
         sessionType: appState.sessionType,
         sessionId: appState.sessionId,
@@ -139,6 +146,9 @@ export const SessionManager = {
    */
   clearUserData(appState, notifyListeners) {
     try {
+      // Clear user data from localStorage before resetting app state
+      this.clearUserDataFromStorage();
+
       appState.sessionType = null;
       appState.sessionId = null;
       appState.userId = null;
@@ -152,9 +162,24 @@ export const SessionManager = {
       this.restoreGuestData(appState);
       notifyListeners();
 
-      console.log("✅ User logged out, guest data restored");
+      console.log("✅ User logged out, user data cleared, guest data restored");
     } catch (error) {
       console.error("❌ Error during logout:", error);
+    }
+  },
+
+  /**
+   * Clears all user-specific data from localStorage
+   */
+  clearUserDataFromStorage() {
+    try {
+      // Clear user todos and trash from localStorage
+      StorageManager.removeData("local", "todoapp-user-todos");
+      StorageManager.removeData("local", "todoapp-user-trash");
+
+      console.log("🧹 User data cleared from localStorage");
+    } catch (error) {
+      console.error("❌ Error clearing user data from storage:", error);
     }
   },
 

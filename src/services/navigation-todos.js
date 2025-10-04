@@ -3,6 +3,7 @@
 import {
   setCurrentView,
   addTodo,
+  updateTodo,
   getCurrentTodo,
   trashTodo,
 } from "../state.js";
@@ -341,24 +342,42 @@ function handleSaveTodo(event) {
     return;
   }
 
-  const todoData = {
-    title: title || "Neue Todo",
-    content: content,
-    created: new Date(),
-    completed: currentCompletedState,
-    bookmarked: currentBookmarkState,
-  };
+  // Check if we're editing an existing todo
+  const currentTodo = getCurrentTodo();
 
   try {
-    addTodo(todoData);
-    showMessage("Todo erfolgreich gespeichert!");
+    if (currentTodo && currentTodo.id) {
+      // Update existing todo
+      const updates = {
+        title: title || "Neue Todo",
+        content: content,
+        lastModified: new Date().toISOString(),
+        completed: currentCompletedState,
+        bookmarked: currentBookmarkState,
+      };
 
-    // Clear content after successful save
-    titleElement.textContent = "Neue Todo";
-    contentElement.textContent = "";
+      updateTodo(currentTodo.id, updates);
+      showMessage("Todo erfolgreich aktualisiert!");
+    } else {
+      // Create new todo
+      const todoData = {
+        title: title || "Neue Todo",
+        content: content,
+        created: new Date(),
+        completed: currentCompletedState,
+        bookmarked: currentBookmarkState,
+      };
 
-    // Reset bookmark state
-    resetBookmarkState();
+      addTodo(todoData);
+      showMessage("Neue Todo erfolgreich erstellt!");
+
+      // Clear content after successful save (only for new todos)
+      titleElement.textContent = "Neue Todo";
+      contentElement.textContent = "";
+
+      // Reset bookmark state
+      resetBookmarkState();
+    }
 
     // Navigate back to dashboard after short delay
     setTimeout(() => {

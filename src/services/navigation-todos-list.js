@@ -161,13 +161,21 @@ function setupTodoActionsNavigation() {
  */
 function handleOpenTodo(todoId) {
   const todos = getTodos();
-  const todo = todos.find((t) => t.id === todoId);
+  // Handle both string and number IDs
+  const todo = todos.find(
+    (t) => t.id == todoId || t.id === parseInt(todoId, 10)
+  );
 
   if (todo) {
     setCurrentTodo(todo);
     navigateToView(VIEWS.TODO_VIEW);
   } else {
-    console.error("Todo not found:", todoId);
+    console.error(
+      "Todo not found:",
+      todoId,
+      "Available todos:",
+      todos.map((t) => ({ id: t.id, type: typeof t.id }))
+    );
   }
 }
 
@@ -175,11 +183,14 @@ function handleBookmarkToggle(todoId) {
   console.log("Toggle bookmark for todo:", todoId);
 
   const todos = getTodos();
-  const todo = todos.find((t) => t.id === todoId);
+  // Handle both string and number IDs
+  const todo = todos.find(
+    (t) => t.id == todoId || t.id === parseInt(todoId, 10)
+  );
 
   if (todo && updateTodo) {
     const newBookmarkState = !todo.bookmarked;
-    updateTodo(todoId, { bookmarked: newBookmarkState });
+    updateTodo(todo.id, { bookmarked: newBookmarkState });
 
     // Re-render to show updated bookmark state
     renderTodosWithFilter();
@@ -190,7 +201,10 @@ function handleShareTodo(todoId) {
   console.log("Share todo:", todoId);
 
   const todos = getTodos();
-  const todo = todos.find((t) => t.id === todoId);
+  // Handle both string and number IDs
+  const todo = todos.find(
+    (t) => t.id == todoId || t.id === parseInt(todoId, 10)
+  );
 
   if (todo) {
     const shareText = `${todo.title || "Untitled"}\n\n${todo.content || ""}`;
@@ -214,7 +228,10 @@ function handleCopyTodo(todoId) {
   console.log("Copy todo:", todoId);
 
   const todos = getTodos();
-  const todo = todos.find((t) => t.id === todoId);
+  // Handle both string and number IDs
+  const todo = todos.find(
+    (t) => t.id == todoId || t.id === parseInt(todoId, 10)
+  );
 
   if (todo) {
     const copyText = `${todo.title || "Untitled"}\n\n${todo.content || ""}`;
@@ -261,11 +278,14 @@ function handleToggleDone(todoId) {
   console.log("Toggle done for todo:", todoId);
 
   const todos = getTodos();
-  const todo = todos.find((t) => t.id === todoId);
+  // Handle both string and number IDs
+  const todo = todos.find(
+    (t) => t.id == todoId || t.id === parseInt(todoId, 10)
+  );
 
   if (todo && updateTodo) {
     const newCompletedState = !todo.completed;
-    updateTodo(todoId, {
+    updateTodo(todo.id, {
       completed: newCompletedState,
       lastModified: new Date().toISOString(),
     });
@@ -310,4 +330,3 @@ async function handleDeleteTodo(todoId) {
 }
 
 export { todosListFilterMode, renderTodosWithFilter };
-

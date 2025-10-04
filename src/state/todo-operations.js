@@ -43,17 +43,19 @@ export const TodoOperations = {
         const { saveTodoToServer } = await import("../services/api-todos.js");
         const serverResponse = await saveTodoToServer(todoWithId);
 
-        // Update local todo with server ID
+        // Store server ID separately, keep our generated ID as primary
         if (serverResponse && serverResponse.id) {
           const todoIndex = appState.todos.findIndex(
             (t) => t.id === todoWithId.id
           );
           if (todoIndex !== -1) {
-            appState.todos[todoIndex].id = serverResponse.id;
+            // Keep our generated ID, store server ID separately
+            appState.todos[todoIndex].serverId = serverResponse.id;
+            appState.todos[todoIndex].lastModified = new Date().toISOString();
             TodosPersistence.save(appState.todos, appState.sessionType);
             notifyListeners();
             console.log(
-              `✅ Todo synced to server with ID: ${serverResponse.id}`
+              `✅ Todo synced to server with server ID: ${serverResponse.id}, keeping client ID: ${todoWithId.id}`
             );
           }
         }
@@ -84,9 +86,12 @@ export const TodoOperations = {
       try {
         const { updateTodoOnServer } = await import("../services/api-todos.js");
         const updatedTodo = appState.todos.find((t) => t.id === todoId);
-        if (updatedTodo) {
-          await updateTodoOnServer(todoId, updatedTodo);
-          console.log("✅ Todo updated on server");
+        if (updatedTodo && updatedTodo.serverId) {
+          // Use serverId for server communication
+          await updateTodoOnServer(updatedTodo.serverId, updatedTodo);
+          console.log(
+            `✅ Todo updated on server (server ID: ${updatedTodo.serverId})`
+          );
         }
       } catch (error) {
         console.warn("⚠️ Failed to sync update to server:", error);
@@ -118,21 +123,13 @@ export const TodoOperations = {
       `🔍 trashTodo called with ID: ${todoId}, type: ${typeof todoId}`
     );
 
-    // Convert todoId to number if it's a string (handles both number and string IDs)
-    const numericId =
-      typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
-    console.log(`🔄 Converted ID: ${numericId}, type: ${typeof numericId}`);
-
-    const todo = appState.todos.find(
-      (t) => t.id == todoId || t.id === numericId
-    );
+    // Find todo using flexible ID matching
+    const todo = appState.todos.find((t) => t.id == todoId);
     console.log(`🔎 Found todo:`, todo);
 
     if (todo) {
       // Move to trash locally first
-      appState.todos = appState.todos.filter(
-        (t) => t.id != todoId && t.id !== numericId
-      );
+      appState.todos = appState.todos.filter((t) => t.id != todoId);
       appState.trashedTodos = [
         ...appState.trashedTodos,
         { ...todo, trashedAt: Date.now() },
@@ -154,8 +151,24 @@ export const TodoOperations = {
           const { trashTodoOnServer } = await import(
             "../services/api-todos.js"
           );
-          await trashTodoOnServer(numericId);
-          console.log("✅ Todo trashed on server");
+          // Use serverId for server communication
+          const serverIdToUse =
+            todo.serverId ||
+            (typeof todoId === "string" ? parseInt(todoId, 10) : todoId);
+
+          if (isNaN(serverIdToUse)) {
+            console.warn(
+              `⚠️ Cannot trash todo on server: no valid server ID for client ID: ${todoId}`
+            );
+            console.log(
+              "ℹ️ Todo has been trashed locally, but server sync was skipped"
+            );
+          } else {
+            await trashTodoOnServer(serverIdToUse);
+            console.log(
+              `✅ Todo trashed on server (server ID: ${serverIdToUse})`
+            );
+          }
         } catch (error) {
           console.warn("⚠️ Failed to sync trash to server:", error);
           // Todo is still trashed locally
@@ -175,19 +188,14 @@ export const TodoOperations = {
       `🔍 restoreTodo called with ID: ${todoId}, type: ${typeof todoId}`
     );
 
-    // Convert todoId to handle both string and number types
-    const numericId =
-      typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
-
-    const todo = appState.trashedTodos.find(
-      (t) => t.id == todoId || t.id === numericId
-    );
+    // Find todo using flexible ID matching
+    const todo = appState.trashedTodos.find((t) => t.id == todoId);
     console.log(`🔎 Found trashed todo:`, todo);
 
     if (todo) {
       // Restore locally first
       appState.trashedTodos = appState.trashedTodos.filter(
-        (t) => t.id != todoId && t.id !== numericId
+        (t) => t.id != todoId
       );
       appState.todos = [...appState.todos, { ...todo, trashedAt: undefined }];
 
@@ -201,8 +209,24 @@ export const TodoOperations = {
           const { restoreTodoOnServer } = await import(
             "../services/api-todos.js"
           );
-          await restoreTodoOnServer(numericId);
-          console.log("✅ Todo restored on server");
+          // Use serverId for server communication
+          const serverIdToUse =
+            todo.serverId ||
+            (typeof todoId === "string" ? parseInt(todoId, 10) : todoId);
+
+          if (isNaN(serverIdToUse)) {
+            console.warn(
+              `⚠️ Cannot restore todo on server: no valid server ID for client ID: ${todoId}`
+            );
+            console.log(
+              "ℹ️ Todo has been restored locally, but server sync was skipped"
+            );
+          } else {
+            await restoreTodoOnServer(serverIdToUse);
+            console.log(
+              `✅ Todo restored on server (server ID: ${serverIdToUse})`
+            );
+          }
         } catch (error) {
           console.warn("⚠️ Failed to sync restore to server:", error);
           // Todo is still restored locally
@@ -222,29 +246,51 @@ export const TodoOperations = {
       `🔍 deleteTodo called with ID: ${todoId}, type: ${typeof todoId}`
     );
 
-    // Convert todoId to handle both string and number types
-    const numericId =
-      typeof todoId === "string" ? parseInt(todoId, 10) : todoId;
+    // Find the todo BEFORE deleting to get its serverId
+    const todoToDelete = appState.trashedTodos.find((t) => t.id == todoId);
+
+    if (!todoToDelete) {
+      console.warn(`⚠️ Todo with ID ${todoId} not found in trash`);
+      return;
+    }
 
     // Delete locally first
-    appState.trashedTodos = appState.trashedTodos.filter(
-      (t) => t.id != todoId && t.id !== numericId
-    );
+    appState.trashedTodos = appState.trashedTodos.filter((t) => t.id != todoId);
     TrashPersistence.save(appState.trashedTodos, appState.sessionType);
     notifyListeners();
 
     // Sync to server if user session
     if (appState.sessionType === "user") {
-      console.log(`🌐 Attempting to delete todo ${numericId} on server...`);
-      try {
-        const { deleteTodoFromServer } = await import(
-          "../services/api-todos.js"
+      // Use serverId for server communication, fallback to original logic for old todos
+      const serverIdToUse =
+        todoToDelete.serverId ||
+        (typeof todoId === "string" ? parseInt(todoId, 10) : todoId);
+
+      // Check if serverIdToUse is valid before making server request
+      if (isNaN(serverIdToUse)) {
+        console.warn(
+          `⚠️ Cannot delete todo on server: invalid server ID (${serverIdToUse}) for client ID: ${todoId}`
         );
-        const result = await deleteTodoFromServer(numericId);
-        console.log("✅ Todo deleted on server:", result);
-      } catch (error) {
-        console.error("❌ Failed to sync delete to server:", error);
-        // Todo is still deleted locally
+        console.log(
+          "ℹ️ Todo has been deleted locally, but server sync was skipped"
+        );
+      } else {
+        console.log(
+          `🌐 Attempting to delete todo ${serverIdToUse} on server...`
+        );
+        try {
+          const { deleteTodoFromServer } = await import(
+            "../services/api-todos.js"
+          );
+          const result = await deleteTodoFromServer(serverIdToUse);
+          console.log(
+            `✅ Todo deleted on server (server ID: ${serverIdToUse}):`,
+            result
+          );
+        } catch (error) {
+          console.error("❌ Failed to sync delete to server:", error);
+          // Todo is still deleted locally
+        }
       }
     } else {
       console.log("👤 Guest session - no server sync needed");
@@ -268,11 +314,12 @@ export const TodoOperations = {
           "../services/api-todos.js"
         );
 
-        // Delete all trashed todos on server
+        // Delete all trashed todos on server using serverId
         const deletePromises = appState.trashedTodos.map((todo) => {
-          const numericId =
-            typeof todo.id === "string" ? parseInt(todo.id, 10) : todo.id;
-          return deleteTodoFromServer(numericId);
+          const serverIdToUse =
+            todo.serverId ||
+            (typeof todo.id === "string" ? parseInt(todo.id, 10) : todo.id);
+          return deleteTodoFromServer(serverIdToUse);
         });
 
         await Promise.all(deletePromises);
