@@ -98,6 +98,8 @@ export const AppInitializer = {
       userPreferences: loadedData.userPreferences,
     });
 
+    notifyListeners();
+
     // Apply user preferences to UI
     this.applyUserPreferences(appState.userPreferences);
 
