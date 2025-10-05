@@ -24,6 +24,7 @@
 import { handleNavigationClick } from "./navigation.js";
 import { VIEWS } from "./../../utils/constants.js";
 import { getApiBase, apiHandler } from "./../../utils/api-handler.js";
+import { getSession } from "./../../state.js";
 
 /**
  * Sets up change password navigation buttons.
@@ -112,15 +113,46 @@ const setSubmitButtonState = (isLoading) => {
 };
 
 /**
- * Calls change password API endpoint.
+ * Validates session with server before sensitive operations.
+ * @async
+ * @function validateSessionWithServer
+ * @returns {Promise<boolean>} True if session is valid, false otherwise
+ */
+const validateSessionWithServer = async () => {
+  try {
+    const API_BASE = getApiBase();
+    const response = await apiHandler(`${API_BASE}/validate-session`, "GET");
+    return response.valid === true;
+  } catch (error) {
+    console.warn("Session validation failed:", error);
+    return false;
+  }
+};
+
+/**
+ * Calls change password API endpoint with hybrid session validation.
+ * Performs both client-side (fast) and server-side (secure) session checks
+ * before executing the password change request for enhanced security.
  * @async
  * @function callChangePasswordAPI
- * @param {string} currentPassword - User's current password
- * @param {string} newPassword - User's new password
- * @returns {Promise<Object>} API response object
- * @throws {Error} When API request fails
+ * @param {string} currentPassword - User's current password for verification
+ * @param {string} newPassword - User's new password to be set
+ * @returns {Promise<Object>} API response object containing success status and message
+ * @throws {Error} When no active session found (client-side check)
+ * @throws {Error} When session is expired or invalid (server-side check)
+ * @throws {Error} When API request fails or returns error
  */
 const callChangePasswordAPI = async (currentPassword, newPassword) => {
+  const session = getSession();
+  if (!session) {
+    throw new Error("No active session found. Please log in again.");
+  }
+
+  const isValidSession = await validateSessionWithServer();
+  if (!isValidSession) {
+    throw new Error("Session expired or invalid. Please log in again.");
+  }
+
   const API_BASE = getApiBase();
   return await apiHandler(`${API_BASE}/change-password`, "PUT", {
     currentPassword,
