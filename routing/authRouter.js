@@ -1,4 +1,5 @@
-// routing/authRouter.js
+// lets-todo-api/routing/authRouter.js
+
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import { userPool, corePool, userPools } from "../db.js";
@@ -165,6 +166,102 @@ router.post("/logout", (req, res) => {
   res.clearCookie("userId", clearCookieOptions);
   // guestId NICHT automatisch setzen!
   res.json({ message: "Simon says... Logout successful" });
+});
+
+/**
+ * PUT /api/change-password - User Passwort ändern
+ * Erfordert aktuelles Passwort zur Bestätigung
+ * @param {Object} req.body - Password-Change-Daten
+ * @param {string} req.body.currentPassword - Aktuelles Passwort zur Verifizierung
+ * @param {string} req.body.newPassword - Neues Passwort (wird gehasht)
+ */
+router.put("/change-password", async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+
+  // Debug: Log incoming request details
+  debugLog("Password change request:", {
+    body: { currentPassword: "***", newPassword: "***" },
+    cookies: req.cookies,
+    headers: {
+      "content-type": req.headers["content-type"],
+      cookie: req.headers.cookie || "NO COOKIE HEADER",
+    },
+  });
+
+  // Input-Validierung
+  if (!currentPassword || !newPassword) {
+    return res.status(400).json({
+      error: "Aktuelles und neues Passwort erforderlich",
+    });
+  }
+
+  if (newPassword.length < 6) {
+    return res.status(400).json({
+      error: "Neues Passwort muss mindestens 6 Zeichen lang sein",
+    });
+  }
+
+  // User-ID aus Cookie/Session extrahieren
+  const userId = req.cookies.userId;
+  debugLog(`Extracted userId from cookies: ${userId}`);
+
+  if (!userId) {
+    errorLog("No userId found in cookies:", req.cookies);
+    return res.status(401).json({
+      error: "Nicht authentifiziert - Bitte einloggen",
+    });
+  }
+
+  try {
+    // User-Daten aus Datenbank laden
+    const [rows] = await userPool.query(
+      `SELECT id, email, password_hash FROM users WHERE id = ?`,
+      [userId]
+    );
+
+    if (!rows.length) {
+      return res.status(404).json({
+        error: "User nicht gefunden",
+      });
+    }
+
+    const user = rows[0];
+
+    // Aktuelles Passwort verifizieren
+    const currentPasswordValid = await bcrypt.compare(
+      currentPassword,
+      user.password_hash
+    );
+
+    if (!currentPasswordValid) {
+      return res.status(401).json({
+        error: "Aktuelles Passwort ist falsch",
+      });
+    }
+
+    // Neues Passwort hashen
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+    // Passwort in Datenbank aktualisieren
+    await userPool.query(
+      `UPDATE users SET password_hash = ?, updated = ? WHERE id = ?`,
+      [newPasswordHash, Date.now(), userId]
+    );
+
+    debugLog(
+      `Password changed successfully for user ${userId} (${user.email})`
+    );
+
+    res.json({
+      message: "Simon says... Password successfully changed",
+      success: true,
+    });
+  } catch (err) {
+    errorLog(`Password change error for user ${userId}:`, err);
+    res.status(500).json({
+      error: "Server-Fehler beim Passwort-Update",
+    });
+  }
 });
 
 export default router;
