@@ -23,7 +23,7 @@ export const createListenerManager = (state) => {
     // Prevent duplicate listeners
     if (!state.listeners.includes(listener)) {
       state.listeners.push(listener);
-      console.log(`📝 Added state listener (${state.listeners.length} total)`);
+      // console.log(`📝 Added state listener (${state.listeners.length} total)`);
     } else {
       console.warn("Listener already registered, skipping duplicate");
     }
@@ -50,8 +50,6 @@ export const createListenerManager = (state) => {
    * Includes error handling for individual listener failures.
    */
   const notifyListeners = () => {
-    console.log(`📢 Notifying ${state.listeners.length} state listeners`);
-
     state.listeners.forEach((listener, index) => {
       try {
         listener();

@@ -41,8 +41,6 @@ export const initializeLogoutEvents = () => {
       handleUserLogout();
     }
   });
-
-  console.log("✅ Logout events initialized");
 };
 
 /**

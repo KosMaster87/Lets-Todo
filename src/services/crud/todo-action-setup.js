@@ -139,9 +139,9 @@ export const setupTodosActionButtons = (
   }
 
   if (!areActionButtonsAvailable()) {
-    console.log(
-      "⏳ Action buttons not yet available in DOM - will retry later"
-    );
+    // console.log(
+    //   "⏳ Action buttons not yet available in DOM - will retry later"
+    // );
     return;
   }
 

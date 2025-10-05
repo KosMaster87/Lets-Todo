@@ -61,7 +61,6 @@ export const StorageManager = {
   setSessionData(key, data) {
     try {
       sessionStorage.setItem(key, JSON.stringify(data));
-      console.log(`💾 Session data saved: ${key}`);
     } catch (error) {
       console.error(`❌ Failed to save session data: ${key}`, error);
     }
@@ -93,7 +92,6 @@ export const StorageManager = {
   setLocalData(key, data) {
     try {
       localStorage.setItem(key, JSON.stringify(data));
-      console.log(`💾 Local data saved: ${key}`);
     } catch (error) {
       console.error(`❌ Failed to save local data: ${key}`, error);
     }
@@ -157,7 +155,6 @@ export const StorageManager = {
           memoryStorage.delete(key);
           break;
       }
-      console.log(`🗑️ ${type} data removed: ${key}`);
     } catch (error) {
       console.error(`❌ Failed to remove ${type} data: ${key}`, error);
     }
@@ -180,7 +177,6 @@ export const StorageManager = {
           memoryStorage.clear();
           break;
       }
-      console.log(`🧹 ${type} storage cleared`);
     } catch (error) {
       console.error(`❌ Failed to clear ${type} storage`, error);
     }
@@ -194,7 +190,6 @@ export const StorageManager = {
  * Handles loading and saving user preferences using the new storage system
  */
 export const PreferencesManager = {
-
   /**
    * Load user preferences from localStorage
    * @param {Object} defaultPreferences - Default preferences to merge with
@@ -202,13 +197,15 @@ export const PreferencesManager = {
    */
   load(defaultPreferences = {}) {
     try {
-      const savedPrefs = StorageManager.getLocalData(StorageKeys.LOCAL.USER_PREFERENCES);
+      const savedPrefs = StorageManager.getLocalData(
+        StorageKeys.LOCAL.USER_PREFERENCES
+      );
       if (savedPrefs) {
         const mergedPrefs = {
           ...defaultPreferences,
           ...savedPrefs,
         };
-        console.log("✅ User preferences loaded from storage");
+        // console.log("✅ User preferences loaded from storage");
         return mergedPrefs;
       } else {
         console.log("ℹ️ No saved preferences found, using defaults");
@@ -226,8 +223,10 @@ export const PreferencesManager = {
    */
   save(preferences) {
     try {
-      StorageManager.setLocalData(StorageKeys.LOCAL.USER_PREFERENCES, preferences);
-      console.log("✅ User preferences saved to storage");
+      StorageManager.setLocalData(
+        StorageKeys.LOCAL.USER_PREFERENCES,
+        preferences
+      );
     } catch (error) {
       console.error("❌ Error saving user preferences:", error);
     }
@@ -238,10 +237,13 @@ export const PreferencesManager = {
    */
   clear() {
     try {
-      StorageManager.removeData(StorageTypes.LOCAL, StorageKeys.LOCAL.USER_PREFERENCES);
+      StorageManager.removeData(
+        StorageTypes.LOCAL,
+        StorageKeys.LOCAL.USER_PREFERENCES
+      );
       console.log("✅ User preferences cleared from storage");
     } catch (error) {
       console.error("❌ Error clearing user preferences:", error);
     }
-  }
+  },
 };

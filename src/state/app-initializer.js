@@ -18,7 +18,7 @@ export const AppInitializer = {
    * @returns {Object} Loaded data object
    */
   loadAllData(appState, notifyListeners) {
-    console.log("🚀 Starting application data initialization...");
+    // console.log("🚀 Starting application data initialization...");
 
     // 1. Load core data using persistence modules
     const loadedData = {
@@ -39,7 +39,7 @@ export const AppInitializer = {
     // 4. Save preferences to ensure storage is up to date
     PreferencesManager.save(loadedData.userPreferences);
 
-    console.log("✅ Application data initialization complete");
+    // console.log("✅ Application data initialization complete");
     return loadedData;
   },
 
@@ -51,7 +51,7 @@ export const AppInitializer = {
     // Apply theme to DOM
     if (userPreferences.theme) {
       document.body.setAttribute("data-theme", userPreferences.theme);
-      console.log(`🎨 Theme applied: ${userPreferences.theme}`);
+      // console.log(`🎨 Theme applied: ${userPreferences.theme}`);
     }
 
     // Apply language (if needed in future)
@@ -68,10 +68,8 @@ export const AppInitializer = {
    * @param {Function} notifyListeners - Function to notify state listeners
    */
   initialize(appState, notifyListeners) {
-    // Load all data
     const loadedData = this.loadAllData(appState, notifyListeners);
 
-    // Update app state with loaded data
     Object.assign(appState, {
       todos: loadedData.todos,
       trashedTodos: loadedData.trashedTodos,
@@ -79,10 +77,6 @@ export const AppInitializer = {
     });
 
     notifyListeners();
-
-    // Apply user preferences to UI
     this.applyUserPreferences(appState.userPreferences);
-
-    console.log("🎯 Complete application initialization finished");
   },
 };

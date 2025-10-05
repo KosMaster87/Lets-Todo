@@ -38,9 +38,9 @@ const initializeApp = () => {
       currentTrashedTodos
     );
   } else {
-    console.log(
-      `👤 User session detected - skipping sample data initialization`
-    );
+    // console.log(
+    //   `👤 User session detected - skipping sample data initialization`
+    // );
   }
 
   initializeNavigation();

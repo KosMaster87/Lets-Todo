@@ -58,9 +58,7 @@ export const SessionManager = {
    */
   saveToStorage(appState, getCurrentView) {
     try {
-      // Don't save session if user is logged out
       if (!appState.sessionType) {
-        console.log("ℹ️ Skipping session save - user is logged out");
         return;
       }
 
@@ -86,20 +84,17 @@ export const SessionManager = {
    * @param {Function} getCurrentView - Function to get current view
    */
   setSession(appState, sessionData, notifyListeners, getCurrentView) {
-    // Store old session type for comparison
     const oldSessionType = appState.sessionType;
 
-    // Update session
     appState.sessionType = sessionData.sessionType || null;
     appState.sessionId = sessionData.sessionId || null;
     appState.userId = sessionData.userId || null;
     appState.userEmail = sessionData.userEmail || null;
 
-    // If session type changed, reload todos and trash for new session
     if (oldSessionType !== appState.sessionType) {
-      console.log(
-        `🔄 Session changed from ${oldSessionType} to ${appState.sessionType}, reloading data...`
-      );
+      // console.log(
+      //   `🔄 Session changed from ${oldSessionType} to ${appState.sessionType}, reloading data...`
+      // );
       this.reloadSessionData(appState);
     }
 

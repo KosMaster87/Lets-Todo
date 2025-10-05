@@ -20,7 +20,7 @@ export const setupActionButtons = (config, suppressWarnings = false) => {
       element.addEventListener("click", handler);
       element._actionHandler = handler;
       configuredCount++;
-      console.log(`✅ Action button ${actionType} (${elementId}) configured`);
+      // console.log(`✅ Action button ${actionType} (${elementId}) configured`);
     } else if (!suppressWarnings) {
       console.warn(
         `⚠️  Action button element ${elementId} not found for ${actionType}`
@@ -28,13 +28,13 @@ export const setupActionButtons = (config, suppressWarnings = false) => {
     }
   });
 
-  if (configuredCount > 0) {
-    console.log(
-      `🎯 Action buttons setup complete: ${configuredCount}/${totalCount} configured`
-    );
-  } else {
-    console.log(`📋 No action buttons found to configure`);
-  }
+  // if (configuredCount > 0) {
+  //   console.log(
+  //     `🎯 Action buttons setup complete: ${configuredCount}/${totalCount} configured`
+  //   );
+  // } else {
+  //   console.log(`📋 No action buttons found to configure`);
+  // }
 };
 
 /**
