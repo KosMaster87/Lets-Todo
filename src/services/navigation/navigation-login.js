@@ -1,8 +1,8 @@
 // lets-todo-app/src/services/navigation-login.js
 
 import { handleNavigationClick, navigateToView } from "./navigation.js";
-import { VIEWS } from "../utils/constants.js";
-import { loginUser } from "./api-auth.js";
+import { VIEWS } from "./../../utils/constants.js";
+import { loginUser } from "./../api-auth.js";
 
 /**
  * Sets up login navigation buttons.
@@ -18,7 +18,6 @@ const setupLoginNavigation = () => {
     }
   });
 
-  // Setup login submit button with form handling
   const loginSubmitBtn = document.getElementById("loginSubmitBtn");
   if (loginSubmitBtn) {
     loginSubmitBtn.onclick = (e) => handleLoginSubmit(e);
@@ -27,9 +26,9 @@ const setupLoginNavigation = () => {
 
 /**
  * Sets up form-specific handlers for the login page.
+ * Handles form submission, input validation, and key events.
  */
 const setupLoginFormHandlers = () => {
-  // Setup form submission on Enter key
   const loginForm = document.querySelector(".login-menu");
   if (loginForm) {
     loginForm.addEventListener("keypress", (e) => {
@@ -40,7 +39,6 @@ const setupLoginFormHandlers = () => {
     });
   }
 
-  // Setup individual input validation if needed
   const emailInput = document.getElementById("loginEmail");
   const passwordInput = document.getElementById("loginPassword");
 
@@ -64,7 +62,6 @@ const handleLoginSubmit = (event) => {
   const password = document.getElementById("loginPassword")?.value;
   const remember = document.getElementById("loginRemember")?.checked;
 
-  // Basic validation
   if (!email || !password) {
     showLoginError("Bitte fülle alle Felder aus.");
     return;
@@ -75,7 +72,6 @@ const handleLoginSubmit = (event) => {
     return;
   }
 
-  // Call login API
   handleUserLogin({ email, password, remember });
 };
 
@@ -117,8 +113,6 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-// ✅ API logic moved to centralized api-auth.js service
-
 /**
  * Handle user login using centralized API service
  * @param {Object} userData - User login data
@@ -131,8 +125,6 @@ const handleUserLogin = async (userData) => {
 
     showLoginLoading(false);
     showLoginSuccess("Login erfolgreich! Willkommen zurück!");
-
-    // Navigate to main menu after successful login
     setTimeout(() => {
       navigateToView(VIEWS.MAIN_MENU);
     }, 1500);

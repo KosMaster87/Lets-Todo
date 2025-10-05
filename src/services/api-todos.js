@@ -1,11 +1,6 @@
 // lets-todo-app/src/services/api-todos.js
 
-import { getApiBase, apiHandler } from "../utils/api-handler.js";
-
-/**
- * Centralized Todos API service
- * Handles all todo-related API calls with server synchronization
- */
+import { getApiBase, apiHandler } from "./../utils/api-handler.js";
 
 /**
  * Loads all todos for current user from server
@@ -20,7 +15,7 @@ export const loadTodosFromServer = async () => {
     return todos;
   } catch (error) {
     console.error("❌ Failed to load todos from server:", error);
-    return []; // Fallback to empty array
+    return [];
   }
 };
 
@@ -111,7 +106,7 @@ export const loadTrashedTodosFromServer = async () => {
     return trashedTodos;
   } catch (error) {
     console.error("❌ Failed to load trashed todos from server:", error);
-    return []; // Fallback to empty array
+    return [];
   }
 };
 
@@ -185,6 +180,6 @@ export const syncTodosWithServer = async (localTodos = [], localTrash = []) => {
     return {
       todos: localTodos,
       trashedTodos: localTrash,
-    }; // Fallback to local data
+    };
   }
 };

@@ -1,8 +1,8 @@
 // lets-todo-app/src/components/main-content.js
 
-import { getCurrentView } from "../state.js";
-import { VIEWS, PAGE_TITLES } from "../utils/constants.js";
-import { updateBodyClass as updateViewBodyClass } from "../services/navigation.js";
+import { getCurrentView } from "./../state.js";
+import { VIEWS, PAGE_TITLES } from "./../utils/constants.js";
+import { updateBodyClass as updateViewBodyClass } from "./../services/navigation/navigation.js";
 import { renderMainMenuPage } from "./pages/main-menu.js";
 import { renderDashboardPage } from "./pages/dashboard.js";
 import { renderRegisterPage } from "./pages/register.js";
@@ -14,7 +14,6 @@ import { renderTodosListPage } from "./pages/todos-list.js";
 import { renderTodosPage } from "./pages/todos.js";
 import { renderTrashPage } from "./pages/trash.js";
 import { renderTodoViewPage } from "./pages/todo-view.js";
-// import { renderNotifications } from "../components/notifications.js";
 
 /**
  * Renders the main content based on the current view.

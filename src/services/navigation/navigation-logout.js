@@ -1,11 +1,6 @@
 // lets-todo-app/src/services/navigation-logout.js
 
-import { navigateToView } from "./navigation.js";
-import { logoutUser } from "./api-auth.js";
-
-/**
- * Handles user logout functionality
- */
+import { logoutUser } from "./../api-auth.js";
 
 /**
  * Shows logout loading state

@@ -24,6 +24,14 @@ export const renderPersonalDataPage = () => {
           </div>
         </button>
 
+        <button class="menu-btn change-password-btn" id="changePasswordBtn">
+          <div class="btn-icon change-password-btn-icon"></div>
+          <div class="btn-content">
+            <h3>Passwort ändern</h3>
+            <p>Aktuelles Passwort sicher ändern</p>
+          </div>
+        </button>
+
         <button class="menu-btn download-todos-btn" id="downloadTodosBtn">
           <div class="btn-icon download-todos-btn-icon"></div>
           <div class="btn-content">

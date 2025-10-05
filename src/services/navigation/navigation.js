@@ -1,7 +1,11 @@
 // lets-todo-app/src/services/navigation.js
 
-import { setCurrentView, saveSessionToStorage, setSession } from "../state.js";
-import { VIEWS, PAGE_TITLES, SESSION_TYPES } from "../utils/constants.js";
+import {
+  setCurrentView,
+  saveSessionToStorage,
+  setSession,
+} from "./../../state.js";
+import { VIEWS, PAGE_TITLES, SESSION_TYPES } from "./../../utils/constants.js";
 import { setupDashboardEventListeners } from "./navigation-dashboard.js";
 import { setupRegisterEventListeners } from "./navigation-register.js";
 import { setupLoginEventListeners } from "./navigation-login.js";
@@ -62,7 +66,6 @@ const handlePopState = (event) => {
   if (isValidView(view)) {
     setCurrentView(view);
   } else {
-    // Fallback to main menu for invalid views
     navigateToView(VIEWS.MAIN_MENU);
   }
 };
@@ -76,7 +79,6 @@ const loadInitialView = () => {
     setCurrentView(view);
     updateDocumentTitle(view);
   } else {
-    // Fallback to main menu for invalid URLs
     console.warn(`Invalid view "${view}" detected, redirecting to main menu`);
     navigateToView(VIEWS.MAIN_MENU);
   }
@@ -86,7 +88,6 @@ const loadInitialView = () => {
  * Sets up main menu navigation buttons.
  */
 const setupMainMenuNavigation = () => {
-  // Standard navigation buttons
   const mainMenuLinks = [
     { id: "loginBtn", view: VIEWS.LOGIN },
     { id: "registerBtn", view: VIEWS.REGISTER },
@@ -101,7 +102,6 @@ const setupMainMenuNavigation = () => {
     }
   });
 
-  // Guest button with special handling
   const guestBtn = document.getElementById("guestBtn");
   if (guestBtn) {
     guestBtn.onclick = (e) => handleGuestLogin(e);
@@ -133,7 +133,6 @@ const setupBackButtonNavigation = () => {
 const handleGuestLogin = (event) => {
   event.preventDefault();
 
-  // Set guest session
   setSession({
     sessionType: SESSION_TYPES.GUEST,
     sessionId: `guest_${Date.now()}`,
@@ -141,7 +140,6 @@ const handleGuestLogin = (event) => {
     userEmail: null,
   });
 
-  // Navigate to dashboard
   navigateToView(VIEWS.DASHBOARD);
 };
 
@@ -222,12 +220,10 @@ const isValidView = (view) => {
  * @param {string} view - View name
  */
 export const updateBodyClass = (view) => {
-  // Remove existing view classes
   document.body.className = document.body.className
     .split(" ")
     .filter((cls) => !cls.startsWith("view-"))
     .join(" ");
 
-  // Add new view class
   document.body.classList.add(`view-${view}`);
 };

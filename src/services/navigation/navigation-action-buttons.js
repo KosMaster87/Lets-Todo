@@ -1,11 +1,6 @@
 // lets-todo-app/src/services/action-buttons.js
 
 /**
- * Central service for action button functionality
- * Handles bookmark, share, copy, and delete actions across the application
- */
-
-/**
  * Sets up action buttons with configurable handlers
  * @param {Object} config - Configuration object with button definitions
  * @param {boolean} suppressWarnings - Whether to suppress missing element warnings
@@ -17,16 +12,13 @@ export const setupActionButtons = (config, suppressWarnings = false) => {
   Object.entries(config).forEach(([actionType, { elementId, handler }]) => {
     const element = document.getElementById(elementId);
     if (element) {
-      // Entferne vorherige Event-Listener um Duplikate zu vermeiden
       const existingHandler = element._actionHandler;
       if (existingHandler) {
         element.removeEventListener("click", existingHandler);
       }
 
-      // Füge neuen Event-Listener hinzu
       element.addEventListener("click", handler);
-      element._actionHandler = handler; // Speichere Referenz für spätere Entfernung
-
+      element._actionHandler = handler;
       configuredCount++;
       console.log(`✅ Action button ${actionType} (${elementId}) configured`);
     } else if (!suppressWarnings) {
@@ -185,12 +177,11 @@ export const createContentClearHandler = (
 ) => {
   return (event) => {
     event.preventDefault();
-    console.log("Content clear handler called");
-    
-    const { title, content } = getContentCallback();
-    console.log("Content clear handler content:", { title, content });
+    // console.log("Content clear handler called");
 
-    // Prüfe ob Content-Elemente existieren
+    const { title, content } = getContentCallback();
+    // console.log("Content clear handler content:", { title, content });
+
     const titleElement = document.querySelector("#todoDisplayTitle");
     const contentElement = document.querySelector("#todoContentDisplay");
 
@@ -311,7 +302,6 @@ export const fallbackCopy = (text) => {
 export const showMessage = (message, type = "success") => {
   console.log(`Action message (${type}):`, message);
 
-  // Create visual feedback
   const messageDiv = document.createElement("div");
   messageDiv.textContent = message;
 

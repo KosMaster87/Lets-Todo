@@ -1,11 +1,6 @@
 // lets-todo-app/src/utils/api-handler.js
 
 /**
- * Centralized API utilities for the Let's Todo App
- * Handles API base URL detection and HTTP request management
- */
-
-/**
  * Get API Base URL based on current environment
  * @returns {string} API Base URL
  */
@@ -36,19 +31,17 @@ export const getApiBase = () => {
  * @returns {Promise<Object>} API response data
  */
 export const apiHandler = (url, method, data = null) => {
-  // Remove double slashes from URL
   url = url.replace(/([^:]\/)\/+/g, "$1");
 
   const options = {
     method: method,
     cache: "no-cache",
-    credentials: "include", // Include cookies for authentication
+    credentials: "include",
     headers: {
       "Content-Type": "application/json",
     },
   };
 
-  // Add body for POST/PUT/PATCH requests
   if (data !== null) {
     options.body = JSON.stringify(data);
   }
@@ -56,7 +49,6 @@ export const apiHandler = (url, method, data = null) => {
   return fetch(url, options)
     .then((response) => {
       if (!response.ok) {
-        // Try to extract error message from response
         return response.json().then((err) => Promise.reject(err));
       }
       return response.json();
@@ -65,37 +57,4 @@ export const apiHandler = (url, method, data = null) => {
       console.error("API Error:", error);
       throw error;
     });
-};
-
-/**
- * Simple fetch wrapper for non-JSON responses
- * @param {string} url - API endpoint URL
- * @param {Object} options - Fetch options
- * @returns {Promise<Response>} Raw fetch response
- */
-export const simpleFetch = (url, options = {}) => {
-  // Default options for cookie support
-  const defaultOptions = {
-    credentials: "include",
-    ...options,
-  };
-
-  return fetch(url, defaultOptions);
-};
-
-/**
- * Helper function to build query parameters
- * @param {Object} params - Parameters object
- * @returns {string} Query string
- */
-export const buildQueryString = (params) => {
-  const queryParams = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== null && value !== undefined) {
-      queryParams.append(key, String(value));
-    }
-  });
-
-  return queryParams.toString();
 };

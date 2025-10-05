@@ -1,12 +1,6 @@
 // lets-todo-app/src/components/action-view.js
 
 /**
- * Renders action buttons for todos with configurable options.
- * This component provides a centralized way to render action buttons
- * across different views (list, create, edit).
- */
-
-/**
  * Renders action buttons for a todo item
  * @param {Object} options - Configuration options for the action buttons
  * @param {string} options.todoId - Todo ID (used for dynamic IDs in lists)

@@ -1,8 +1,8 @@
 // lets-todo-app/src/services/navigation-dashboard.js
 
 import { handleNavigationClick } from "./navigation.js";
-import { setCurrentTodo } from "./../state.js";
-import { VIEWS } from "./../utils/constants.js";
+import { setCurrentTodo } from "./../../state.js";
+import { VIEWS } from "./../../utils/constants.js";
 
 /**
  * Initializes and sets up dashboard navigation event listeners.
@@ -23,7 +23,6 @@ const setupDashboardNavigation = () => {
     { id: "dashboardCancelBtn", view: VIEWS.MAIN_MENU },
   ];
 
-  // Handle regular navigation buttons
   dashboardLinks.forEach(({ id, view }) => {
     const element = document.getElementById(id);
     if (element) {
@@ -31,11 +30,9 @@ const setupDashboardNavigation = () => {
     }
   });
 
-  // Special handler for "Todo erstellen" button
   const createTodoBtn = document.getElementById("createTodoDashboardBtn");
   if (createTodoBtn) {
     createTodoBtn.onclick = (e) => {
-      // Clear current todo to ensure we're creating a new one
       setCurrentTodo(null);
       handleNavigationClick(e, VIEWS.TODOS);
     };

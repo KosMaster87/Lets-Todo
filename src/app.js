@@ -7,15 +7,14 @@ import {
   getTrashedTodos,
   setTrashedTodos,
   addListener,
-  removeListener,
+  getSessionType,
 } from "./state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
 import {
   initializeNavigation,
   setupNavigationListeners,
-} from "./services/navigation.js";
-// import { ScrollManager } from "./utils/scroll-manager.js";
+} from "./services/navigation/navigation.js";
 
 /**
  * Initializes the entire Let's Todo application:
@@ -24,26 +23,27 @@ import {
  * and enables scroll management.
  */
 const initializeApp = () => {
-  // 1. Register listeners FIRST (so they receive notifications)
   registerStateListeners();
-
-  // 2. Load stored data AFTER listeners are registered
   initializeStoredData();
 
-  // 3. Add sample data if no todos exist
   const currentTodos = getTodos();
   const currentTrashedTodos = getTrashedTodos();
+  const sessionType = getSessionType();
 
-  initializeAllSampleData(
-    addTodo,
-    setTrashedTodos,
-    currentTodos,
-    currentTrashedTodos
-  );
+  if (sessionType !== "user") {
+    initializeAllSampleData(
+      addTodo,
+      setTrashedTodos,
+      currentTodos,
+      currentTrashedTodos
+    );
+  } else {
+    console.log(
+      `👤 User session detected - skipping sample data initialization`
+    );
+  }
 
-  // 4. Initialize navigation
   initializeNavigation();
-  // ScrollManager.init();
 };
 
 /**
@@ -51,9 +51,9 @@ const initializeApp = () => {
  * Uses the clean listener API instead of direct array manipulation.
  */
 const registerStateListeners = () => {
-  console.log("📝 Registering state listeners using clean API");
+  // console.log("📝 Registering state listeners using clean API");
   addListener(renderAllComponents);
-  console.log("✅ Main render listener registered");
+  // console.log("✅ Main render listener registered");
 };
 
 /**

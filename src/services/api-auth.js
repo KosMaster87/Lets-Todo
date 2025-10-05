@@ -8,13 +8,8 @@ import {
   setTodos,
   setTrashedTodos,
 } from "./../state.js";
-import { navigateToView } from "./navigation.js";
+import { navigateToView } from "./navigation/navigation.js";
 import { syncTodosWithServer } from "./api-todos.js";
-
-/**
- * Centralized authentication API service
- * Handles all authentication-related API calls
- */
 
 /**
  * Registers a new user

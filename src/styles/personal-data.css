@@ -42,6 +42,18 @@
   height: 2rem;
 }
 
+.change-password-btn {
+  border-left: 4px solid #9c27b0;
+}
+
+.change-password-btn-icon {
+  background-color: #9c27b0;
+  mask: url("/assets/icons/person_edit.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
 .download-todos-btn {
   border-left: 4px solid #2196f3;
 }

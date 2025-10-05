@@ -1,7 +1,7 @@
 // lets-todo-app/src/services/navigation-options.js
 
 import { handleNavigationClick } from "./navigation.js";
-import { VIEWS } from "../utils/constants.js";
+import { VIEWS } from "./../../utils/constants.js";
 
 /**
  * Sets up options navigation buttons.
