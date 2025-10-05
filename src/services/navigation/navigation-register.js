@@ -32,11 +32,6 @@ const setupRegisterNavigation = () => {
       element.onclick = (e) => handleNavigationClick(e, view);
     }
   });
-
-  const registerSubmitBtn = document.getElementById("registerSubmitBtn");
-  if (registerSubmitBtn) {
-    registerSubmitBtn.onclick = (e) => handleRegisterSubmit(e);
-  }
 };
 
 /**
