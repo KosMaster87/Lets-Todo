@@ -157,6 +157,38 @@ router.post("/login", async (req, res) => {
 });
 
 /**
+ * GET /api/validate-session - Session-Gültigkeit prüfen
+ * Überprüft ob die aktuelle Session noch gültig ist
+ */
+router.get("/validate-session", async (req, res) => {
+  const userId = req.cookies.userId;
+
+  if (!userId) {
+    return res.json({ valid: false, reason: "No session cookie found" });
+  }
+
+  try {
+    const [rows] = await userPool.query(
+      `SELECT id, email FROM users WHERE id = ?`,
+      [userId]
+    );
+
+    if (!rows.length) {
+      return res.json({ valid: false, reason: "User not found" });
+    }
+
+    res.json({
+      valid: true,
+      userId: userId,
+      email: rows[0].email,
+    });
+  } catch (err) {
+    errorLog("Session validation error:", err);
+    res.json({ valid: false, reason: "Database error" });
+  }
+});
+
+/**
  * POST /api/logout - User ausloggen
  * Löscht das userId Cookie
  */
@@ -164,7 +196,6 @@ router.post("/logout", (req, res) => {
   const clearCookieOptions = { path: "/" };
   if (ENV.COOKIE_DOMAIN) clearCookieOptions.domain = ENV.COOKIE_DOMAIN;
   res.clearCookie("userId", clearCookieOptions);
-  // guestId NICHT automatisch setzen!
   res.json({ message: "Simon says... Logout successful" });
 });
 
@@ -178,7 +209,6 @@ router.post("/logout", (req, res) => {
 router.put("/change-password", async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
-  // Debug: Log incoming request details
   debugLog("Password change request:", {
     body: { currentPassword: "***", newPassword: "***" },
     cookies: req.cookies,
@@ -188,7 +218,6 @@ router.put("/change-password", async (req, res) => {
     },
   });
 
-  // Input-Validierung
   if (!currentPassword || !newPassword) {
     return res.status(400).json({
       error: "Aktuelles und neues Passwort erforderlich",
@@ -243,10 +272,10 @@ router.put("/change-password", async (req, res) => {
     const newPasswordHash = await bcrypt.hash(newPassword, 10);
 
     // Passwort in Datenbank aktualisieren
-    await userPool.query(
-      `UPDATE users SET password_hash = ?, updated = ? WHERE id = ?`,
-      [newPasswordHash, Date.now(), userId]
-    );
+    await userPool.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [
+      newPasswordHash,
+      userId,
+    ]);
 
     debugLog(
       `Password changed successfully for user ${userId} (${user.email})`
