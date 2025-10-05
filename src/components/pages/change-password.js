@@ -15,7 +15,11 @@ export const renderChangePasswordPage = () => {
         </p>
       </section>
 
-      <nav class="change-password-menu">
+      <form class="change-password-menu change-password-form" id="changePasswordForm">
+        <!-- Error and Success Messages -->
+        <div class="change-password-error" id="changePasswordError" style="display: none;"></div>
+        <div class="change-password-success" id="changePasswordSuccess" style="display: none;"></div>
+
         <div class="form-group">
           <label for="currentPassword">Aktuelles Passwort</label>
           <input
@@ -70,7 +74,7 @@ export const renderChangePasswordPage = () => {
             <p>Zurück zu persönlichen Daten</p>
           </div>
         </button>
-      </nav>
+      </form>
     </main>
   `;
 };

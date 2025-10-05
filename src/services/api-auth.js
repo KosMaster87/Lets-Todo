@@ -3,7 +3,6 @@
 import { getApiBase, apiHandler } from "./../utils/api-handler.js";
 import {
   setSession,
-  getSession,
   clearUserData,
   setTodos,
   setTrashedTodos,
@@ -45,7 +44,6 @@ export const loginUser = async (userData) => {
   try {
     const result = await apiHandler(`${API_BASE}/login`, "POST", userData);
 
-    // 🎯 WICHTIG: User-Session setzen
     setSession({
       sessionType: "user",
       userId: result.userId,
@@ -53,7 +51,6 @@ export const loginUser = async (userData) => {
       sessionId: `user_${result.userId}`,
     });
 
-    // 🔄 Todos und Trash vom Server laden
     try {
       const syncResult = await syncTodosWithServer();
       setTodos(syncResult.todos);
@@ -84,7 +81,7 @@ export const logoutUser = async () => {
     try {
       await fetch(`${API_BASE}/logout`, {
         method: "POST",
-        credentials: "include", // Include cookies
+        credentials: "include",
       });
     } catch (error) {
       console.warn(
@@ -102,33 +99,5 @@ export const logoutUser = async () => {
 
     clearUserData();
     navigateToView("main-menu");
-  }
-};
-
-/**
- * Checks if user is currently authenticated
- * @returns {boolean} Authentication status
- */
-export const isAuthenticated = () => {
-  return Boolean(getSession());
-};
-
-/**
- * Validates current session with server
- * @returns {Promise<boolean>} Validation result
- */
-export const validateSession = async () => {
-  const API_BASE = getApiBase();
-
-  try {
-    const response = await fetch(`${API_BASE}/validate-session`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    return response.ok;
-  } catch (error) {
-    console.warn("Session validation failed:", error);
-    return false;
   }
 };
