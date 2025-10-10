@@ -10,43 +10,53 @@ setup_database() {
     local DOMAIN="$2"
     local PORT="$3"
     local PROJECT_DIR="$4"
-    
+
     echo "🗄️  Setting up database for $ENV_TYPE environment..."
-    
+
     # First ensure MySQL/MariaDB user exists with proper permissions
     echo "� Setting up database user permissions..."
-    
+
     # Create dev2k user if not exists (using sudo mysql without password)
     sudo mysql -e "
         CREATE USER IF NOT EXISTS 'dev2k'@'localhost' IDENTIFIED BY 'dev2k-passwort';
         GRANT ALL PRIVILEGES ON *.* TO 'dev2k'@'localhost';
         FLUSH PRIVILEGES;
     " 2>/dev/null
-    
+
     if [ $? -eq 0 ]; then
         echo "✅ Database user dev2k configured successfully"
     else
         echo "⚠️  Database user might already exist or need manual setup"
     fi
-    
+
     # Switch to project directory and run the Node.js setup script
     echo "🏗️  Running automated database setup script..."
     cd "$PROJECT_DIR"
-    
+
     # Set the environment and run the setup script
     export NODE_ENV="$ENV_TYPE"
-    
-    # Run the setup-dev-db.js script which handles:
+
+    # Run the setup-multi-env-db.js script which handles:
     # - Database creation (todos_users, todos_main)
     # - Table creation (users, todos)
     # - Test user creation for non-production environments
     # - Environment-specific configurations
-    node scripts/setup-dev-db.js
-    
+    node scripts/setup-multi-env-db.js
+
+    # Run database migrations
+    echo "🔄 Running database migrations..."
+    node scripts/add-last-login-column.js
+
+    if [ $? -eq 0 ]; then
+        echo "✅ Database migrations completed"
+    else
+        echo "⚠️  Migration might have failed or already applied"
+    fi
+
     if [ $? -eq 0 ]; then
         echo "✅ Database setup completed successfully for $ENV_TYPE"
         echo "📋 Created databases:"
-        echo "  - todos_users (user management)"  
+        echo "  - todos_users (user management)"
         echo "  - todos_main (todo data)"
         if [ "$ENV_TYPE" != "production" ]; then
             echo "  - Test user: test@${ENV_TYPE}.local"
@@ -60,6 +70,6 @@ setup_database() {
         echo "3. Check database permissions for user 'dev2k'"
         return 1
     fi
-    
+
     echo "✅ Database setup completed for $ENV_TYPE environment"
 }

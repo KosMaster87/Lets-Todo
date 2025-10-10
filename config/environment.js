@@ -97,6 +97,16 @@ const CONFIG = {
     // Logging
     DEBUG: Boolean(process.env.DEBUG) || true,
     LOG_LEVEL: process.env.LOG_LEVEL || "verbose",
+
+    // E-Mail Configuration
+    EMAIL_PROVIDER: process.env.EMAIL_PROVIDER || "",
+    EMAIL_USER: process.env.EMAIL_USER || "",
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+    EMAIL_HOST: process.env.EMAIL_HOST || "",
+    EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
+    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || false,
+    APP_NAME: process.env.APP_NAME || "Let's Todo",
+    FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5500",
   },
 
   feature: {
@@ -125,6 +135,17 @@ const CONFIG = {
     // Logging
     DEBUG: Boolean(process.env.DEBUG) || true,
     LOG_LEVEL: process.env.LOG_LEVEL || "debug",
+
+    // E-Mail Configuration
+    EMAIL_PROVIDER: process.env.EMAIL_PROVIDER || "",
+    EMAIL_USER: process.env.EMAIL_USER || "",
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+    EMAIL_HOST: process.env.EMAIL_HOST || "",
+    EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
+    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || false,
+    APP_NAME: process.env.APP_NAME || "Let's Todo",
+    FRONTEND_URL:
+      process.env.FRONTEND_URL || "https://lets-todo-app-feat.dev2k.org",
   },
 
   staging: {
@@ -150,6 +171,17 @@ const CONFIG = {
     // Logging
     DEBUG: Boolean(process.env.DEBUG) || false,
     LOG_LEVEL: process.env.LOG_LEVEL || "warn",
+
+    // E-Mail Configuration
+    EMAIL_PROVIDER: process.env.EMAIL_PROVIDER || "",
+    EMAIL_USER: process.env.EMAIL_USER || "",
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+    EMAIL_HOST: process.env.EMAIL_HOST || "",
+    EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
+    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production sollte SSL verwenden
+    APP_NAME: process.env.APP_NAME || "Let's Todo",
+    FRONTEND_URL:
+      process.env.FRONTEND_URL || "https://lets-todo-app-stage.dev2k.org",
   },
 
   production: {
@@ -175,6 +207,16 @@ const CONFIG = {
     // Logging
     DEBUG: Boolean(process.env.DEBUG) || false,
     LOG_LEVEL: process.env.LOG_LEVEL || "info",
+
+    // E-Mail Configuration
+    EMAIL_PROVIDER: process.env.EMAIL_PROVIDER || "",
+    EMAIL_USER: process.env.EMAIL_USER || "",
+    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
+    EMAIL_HOST: process.env.EMAIL_HOST || "",
+    EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
+    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production sollte SSL verwenden
+    APP_NAME: process.env.APP_NAME || "Let's Todo",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo.dev2k.org",
   },
 };
 

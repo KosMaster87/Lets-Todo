@@ -1,6 +1,13 @@
 /**
- * Database Setup Script
- * Erstellt Datenbanken für alle Environments (development, feature, staging, production)
+ * 🌐 MULTI-ENVIRONMENT Database Setup Script
+ * Erstellt Datenbanken für ALLE Environments basierend auf NODE_ENV:
+ *
+ * 🏠 development  → Lokale DBs (127.0.0.1)
+ * 🚀 feat        → Feature Server DBs
+ * 🎭 staging     → Staging Server DBs
+ * 🏭 production  → Production Server DBs
+ *
+ * Usage: NODE_ENV=development node scripts/setup-multi-env-db.js
  */
 
 import mysql from "mysql2/promise";
@@ -46,6 +53,25 @@ async function setupDatabase() {
     `);
     infoLog("Users-Tabelle erstellt");
 
+    // 3. Password-Reset-Tokens Tabelle erstellen
+    await connection.execute(`
+      CREATE TABLE IF NOT EXISTS password_reset_tokens (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        email VARCHAR(255) NOT NULL,
+        token VARCHAR(255) UNIQUE NOT NULL,
+        expires_at TIMESTAMP NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_used TINYINT(1) DEFAULT 0,
+        used_at TIMESTAMP NULL,
+        INDEX idx_token (token),
+        INDEX idx_email (email),
+        INDEX idx_expires (expires_at),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+    infoLog("Password-Reset-Tokens Tabelle erstellt");
+
     // 3. Test-Benutzer erstellen (für alle non-production Environments)
     if (ENVIRONMENT !== "production") {
       try {
@@ -81,7 +107,7 @@ async function setupDatabase() {
         // Environment-spezifische Test-Todos erstellen
         if (ENVIRONMENT === "development") {
           await connection.execute(`
-            INSERT IGNORE INTO todos (id, title, description, completed, created, updated) VALUES 
+            INSERT IGNORE INTO todos (id, title, description, completed, created, updated) VALUES
             (1, 'Welcome to Let\\'s Todo API', 'Diese Todo wurde automatisch vom Setup-Script erstellt', 0, ${Date.now()}, ${Date.now()}),
             (2, 'Test the API', 'Teste die verschiedenen Endpoints mit Thunder Client oder curl', 0, ${Date.now()}, ${Date.now()}),
             (3, 'Completed Example', 'Dies ist ein Beispiel einer erledigten Todo', 1, ${Date.now()}, ${Date.now()})

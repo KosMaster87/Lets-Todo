@@ -1,0 +1,8 @@
+[client]
+user = root
+password = YOUR_PASSWORD_HERE
+
+# Usage:
+# 1. Copy this file to ~/.my.cnf on the server
+# 2. Set proper permissions: chmod 600 ~/.my.cnf
+# 3. Then use: mysql (without -u and -p flags)

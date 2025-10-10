@@ -31,13 +31,13 @@ echo "📦 Copying application files..."
 cp "$PROJECT_ROOT"/{server.js,db.js,package.json,package-lock.json} "$DEPLOY_DIR/"
 
 # Copy directories
-cp -r "$PROJECT_ROOT"/{config,middleware,routing,scripts} "$DEPLOY_DIR/"
+cp -r "$PROJECT_ROOT"/{config,middleware,routing,scripts,services} "$DEPLOY_DIR/"
 
 # Remove example environment files from deployment package
 echo "🧹 Removing example environment files from deployment package..."
 find "$DEPLOY_DIR/config/env" -name "*.example" -type f -delete 2>/dev/null || true
 
-# Copy Nginx configurations  
+# Copy Nginx configurations
 cp -r "$PROJECT_ROOT/nginx" "$DEPLOY_DIR/"
 
 # Copy ecosystem config
@@ -65,7 +65,7 @@ echo "📋 Copying template files:"
 for template_file in "$TEMPLATE_SRC"/*; do
     if [ -f "$template_file" ]; then
         template_name=$(basename "$template_file")
-        
+
         # Handle different file extensions properly
         if [[ "$template_name" == *.sh ]]; then
             # Already has .sh extension, keep it as-is
@@ -74,7 +74,7 @@ for template_file in "$TEMPLATE_SRC"/*; do
             # No .sh extension, add it
             target_name="${template_name}.sh"
         fi
-        
+
         echo "  ✅ $template_name -> ${target_name}"
         cp "$template_file" "$DEPLOY_DIR/templates/${target_name}"
         chmod +x "$DEPLOY_DIR/templates/${target_name}"
@@ -107,7 +107,7 @@ BASE_PROJECT_DIR="/opt/dev2k-space/home/projects"
 
 # Domain configuration
 PROD_DOMAIN="lets-todo-api.dev2k.org"
-FEAT_DOMAIN="lets-todo-api-feat.dev2k.org" 
+FEAT_DOMAIN="lets-todo-api-feat.dev2k.org"
 STAGE_DOMAIN="lets-todo-api-stage.dev2k.org"
 ADMIN_EMAIL="konstantin.aksenov@dev2k.org"
 
@@ -222,7 +222,7 @@ fi
 for template_file in "$SCRIPT_DIR/templates"/*.sh; do
     if [ -f "$template_file" ]; then
         template_name=$(basename "$template_file" .sh)
-        
+
         # Skip interactive templates that shouldn't auto-run
         case "$template_name" in
             "create-user"|"firewall-cloud"|"firewall-selfhosted"|"transfer-keys")
@@ -230,7 +230,7 @@ for template_file in "$SCRIPT_DIR/templates"/*.sh; do
                 continue
                 ;;
         esac
-        
+
         log_info "Loading template: $template_name"
         source "$template_file"
     fi
@@ -248,13 +248,13 @@ deploy_single_environment() {
     local domain="${env_config[0]}"
     local port="${env_config[1]}"
     local target_dir="$BASE_PROJECT_DIR/lets-todo-$env"
-    
+
     log_step "DEPLOYING $env ENVIRONMENT"
     echo "🌐 Domain: $domain"
     echo "🔌 Port: $port"
     echo "📁 Target: $target_dir"
     echo ""
-    
+
     # Step 1: Nginx HTTP Setup
     if type setup_nginx_http >/dev/null 2>&1; then
         log_step "STEP 1: Nginx HTTP Setup"
@@ -262,7 +262,7 @@ deploy_single_environment() {
     else
         log_warning "setup_nginx_http function not found in templates"
     fi
-    
+
     # Step 2: SSL Certificates
     if type setup_ssl_cert >/dev/null 2>&1; then
         log_step "STEP 2: SSL Certificates"
@@ -270,7 +270,7 @@ deploy_single_environment() {
     else
         log_warning "setup_ssl_cert function not found in templates"
     fi
-    
+
     # Step 3: Project Files Copy
     if type copy_project_files >/dev/null 2>&1; then
         log_step "STEP 3: Project Files Copy"
@@ -278,7 +278,7 @@ deploy_single_environment() {
     else
         log_warning "copy_project_files function not found in templates"
     fi
-    
+
     # Step 4: Node.js Dependencies
     if type install_nodejs_dependencies >/dev/null 2>&1; then
         log_step "STEP 4: Node.js Dependencies"
@@ -286,7 +286,7 @@ deploy_single_environment() {
     else
         log_warning "install_nodejs_dependencies function not found in templates"
     fi
-    
+
     # Step 5: Database Setup
     if type setup_database >/dev/null 2>&1; then
         log_step "STEP 5: Database Setup"
@@ -294,7 +294,7 @@ deploy_single_environment() {
     else
         log_warning "setup_database function not found in templates"
     fi
-    
+
     # Step 6: PM2 Setup
     if type setup_pm2_process >/dev/null 2>&1; then
         log_step "STEP 6: PM2 Process Setup"
@@ -302,7 +302,15 @@ deploy_single_environment() {
     else
         log_warning "setup_pm2_process function not found in templates"
     fi
-    
+
+    # Step 7: Email Service Setup
+    if type setup_email_service >/dev/null 2>&1; then
+        log_step "STEP 7: Email Service Setup"
+        setup_email_service "$env" "$domain" "$port" "$target_dir"
+    else
+        log_warning "setup_email_service function not found in templates"
+    fi
+
     log_success "$env environment deployment completed!"
     echo ""
 }
@@ -317,7 +325,7 @@ case "$ENVIRONMENT" in
         deploy_single_environment "prod"
         deploy_single_environment "feat"
         deploy_single_environment "stage"
-        
+
         # Setup PM2 startup only once for all environments
         if type setup_pm2_startup >/dev/null 2>&1; then
             log_step "SETTING UP PM2 STARTUP"
@@ -338,7 +346,7 @@ echo "✅ Environment(s) deployed: $ENVIRONMENT"
 echo ""
 echo "🔧 Optional Manual Steps (run if needed):"
 echo "   ./templates/create-user.sh         # Create system users"
-echo "   ./templates/firewall-cloud.sh      # Configure cloud firewall"  
+echo "   ./templates/firewall-cloud.sh      # Configure cloud firewall"
 echo "   ./templates/firewall-selfhosted.sh # Configure self-hosted firewall"
 echo "   ./templates/transfer-keys.sh       # Transfer SSH keys"
 
@@ -370,11 +378,12 @@ ls -la "$DEPLOY_DIR/templates/" | grep -E "\.sh$" | awk '{print "   ✅ " $NF}'
 echo ""
 echo "🔧 All deployment steps implemented:"
 echo "1. ✅ Nginx HTTP-Setup (nginx-setup.sh)"
-echo "2. ✅ SSL Certificates (ssl-setup.sh)" 
+echo "2. ✅ SSL Certificates (ssl-setup.sh)"
 echo "3. ✅ Project Files Copy (project-files-copy.sh)"
 echo "4. ✅ Node.js Dependencies (nodejs-dependencies.sh)"
 echo "5. ✅ Database Setup (database-setup.sh)"
 echo "6. ✅ PM2 Process Setup (pm2-setup.sh)"
+echo "7. ✅ Email Service Setup (email-service-setup.sh)"
 echo ""
 echo "📊 Package contents:"
 tar -tzf "$PACKAGE_NAME" | head -20
