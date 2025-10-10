@@ -3,6 +3,7 @@
 import { getCurrentView } from "./../state.js";
 import { VIEWS, PAGE_TITLES } from "./../utils/constants.js";
 import { updateBodyClass as updateViewBodyClass } from "./../services/navigation/navigation.js";
+import { initializeResetPasswordConfirm } from "./../services/navigation/navigation-reset-password-confirm.js";
 import { renderMainMenuPage } from "./pages/main-menu.js";
 import { renderDashboardPage } from "./pages/dashboard.js";
 import { renderRegisterPage } from "./pages/register.js";
@@ -10,6 +11,8 @@ import { renderLoginPage } from "./pages/login.js";
 import { renderOptionsPage } from "./pages/options.js";
 import { renderPersonalDataPage } from "./pages/personal-data.js";
 import { renderChangePasswordPage } from "./pages/change-password.js";
+import { renderResetPasswordPage } from "./pages/reset-password.js";
+import { renderResetPasswordConfirmPage } from "./pages/reset-password-confirm.js";
 import { renderTodosListPage } from "./pages/todos-list.js";
 import { renderTodosPage } from "./pages/todos.js";
 import { renderTrashPage } from "./pages/trash.js";
@@ -17,25 +20,47 @@ import { renderTodoViewPage } from "./pages/todo-view.js";
 
 /**
  * Renders the main content based on the current view.
+ * @param {string} [urlParams] - Optional URL parameters (e.g., token for reset-password-confirm)
  */
-export const renderMainContent = () => {
+export const renderMainContent = (urlParams = null) => {
   const mainElement = document.getElementById("mainContent");
   const currentView = getCurrentView();
 
-  mainElement.innerHTML = createMainContentHTML(currentView);
+  // console.log("🖼️ renderMainContent called");
+  // console.log("📋 Current View:", currentView);
+  // console.log("📋 URL Params passed:", urlParams);
+  // console.log("📋 Global URL Params:", window.currentUrlParams);
+
+  // Fallback zu globalen URL-Parametern wenn nicht direkt übergeben
+  const params = urlParams || window.currentUrlParams || null;
+  // console.log("📋 Final params:", params);
+
+  mainElement.innerHTML = createMainContentHTML(currentView, params);
   updatePageTitle(currentView);
   updateBodyClass(currentView);
+
+  // Spezielle Initialisierung für Reset-Password-Confirm
+  if (currentView === VIEWS.RESET_PASSWORD_CONFIRM && params) {
+    // console.log(
+    //   "🚀 Calling initializeResetPasswordConfirm with token:",
+    //   params.token
+    // );
+    initializeResetPasswordConfirm(params.token);
+  } else if (currentView === VIEWS.RESET_PASSWORD_CONFIRM) {
+    console.log("⚠️ Reset-Password-Confirm view detected but NO params found!");
+  }
 };
 
 /**
  * Creates the main content HTML structure.
  * @param {string} currentView - The current view name
+ * @param {Object} [urlParams] - Optional URL parameters
  * @returns {string} HTML string for the main content
  */
-const createMainContentHTML = (currentView) => {
+const createMainContentHTML = (currentView, urlParams = null) => {
   return `
       <div class="page-content">
-        ${getCurrentViewHTML(currentView)}
+        ${getCurrentViewHTML(currentView, urlParams)}
       </div>
   `;
 };
@@ -43,9 +68,10 @@ const createMainContentHTML = (currentView) => {
 /**
  * Returns the HTML for the currently selected view.
  * @param {string} currentView - The current view name
+ * @param {Object} [urlParams] - Optional URL parameters
  * @returns {string} HTML string for the current view
  */
-const getCurrentViewHTML = (currentView) => {
+const getCurrentViewHTML = (currentView, urlParams = null) => {
   switch (currentView) {
     case VIEWS.MAIN_MENU:
       return renderMainMenuPage();
@@ -61,6 +87,10 @@ const getCurrentViewHTML = (currentView) => {
       return renderPersonalDataPage();
     case VIEWS.CHANGE_PASSWORD:
       return renderChangePasswordPage();
+    case VIEWS.RESET_PASSWORD:
+      return renderResetPasswordPage();
+    case VIEWS.RESET_PASSWORD_CONFIRM:
+      return renderResetPasswordConfirmPage(urlParams?.token || "");
     case VIEWS.TODOS_LIST:
       return renderTodosListPage();
     case VIEWS.TODOS:
@@ -69,13 +99,6 @@ const getCurrentViewHTML = (currentView) => {
       return renderTrashPage();
     case VIEWS.TODO_VIEW:
       return renderTodoViewPage();
-    // TODO: Implement additional views
-    // case VIEWS.TODOS:
-    //   return renderTodosPage();
-    // case VIEWS.TODO_VIEW:
-    //   return renderTodoViewPage();
-    // case VIEWS.TRASH:
-    //   return renderTrashPage();
     default:
       return renderMainMenuPage();
   }

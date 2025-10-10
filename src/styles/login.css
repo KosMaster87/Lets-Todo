@@ -64,3 +64,36 @@
   width: 2rem;
   height: 2rem;
 }
+
+.login-forgot-password {
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.link-button:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

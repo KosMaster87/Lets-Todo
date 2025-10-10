@@ -113,7 +113,7 @@ export const SessionManager = {
       appState.todos = TodosPersistence.load(appState.sessionType);
       appState.trashedTodos = TrashPersistence.load(appState.sessionType);
 
-      console.log(`✅ Data reloaded for ${appState.sessionType} session`);
+      // console.log(`✅ Data reloaded for ${appState.sessionType} session`);
     } catch (error) {
       console.error("❌ Error reloading session data:", error);
     }

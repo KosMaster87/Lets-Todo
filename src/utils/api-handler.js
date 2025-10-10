@@ -54,7 +54,22 @@ export const apiHandler = (url, method, data = null) => {
       return response.json();
     })
     .catch((error) => {
-      console.error("API Error:", error);
+      // Only log unexpected errors, not user-facing error messages
+      const isUserFacingError =
+        (error.code &&
+          [
+            "INVALID_CREDENTIALS",
+            "EMAIL_ALREADY_EXISTS",
+            "MISSING_CREDENTIALS",
+          ].includes(error.code)) ||
+        (error.error &&
+          error.error.includes(
+            "Server-Fehler beim Verarbeiten der Reset-Anfrage"
+          ));
+
+      if (!isUserFacingError) {
+        console.error("API Error:", error);
+      }
       throw error;
     });
 };

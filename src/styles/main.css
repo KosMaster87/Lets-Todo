@@ -24,6 +24,8 @@
 /* User Management Pages */
 @import url("./personal-data.css");
 @import url("./change-password.css");
+@import url("./reset-password.css");
+@import url("./reset-password-confirm.css");
 
 /* Todo Application Pages */
 @import url("./todos.css");

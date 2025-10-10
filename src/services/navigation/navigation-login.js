@@ -3,13 +3,20 @@
 import { handleNavigationClick, navigateToView } from "./navigation.js";
 import { VIEWS } from "./../../utils/constants.js";
 import { loginUser } from "./../api-auth.js";
+import {
+  showSuccessToast,
+  showErrorToast,
+} from "./../../utils/toast-notifications.js";
 
 /**
  * Sets up login navigation buttons.
  * Maps login button clicks to their corresponding views and actions.
  */
 const setupLoginNavigation = () => {
-  const loginLinks = [{ id: "loginCancelBtn", view: VIEWS.MAIN_MENU }];
+  const loginLinks = [
+    { id: "loginCancelBtn", view: VIEWS.MAIN_MENU },
+    { id: "loginForgotPasswordBtn", view: VIEWS.RESET_PASSWORD },
+  ];
 
   loginLinks.forEach(({ id, view }) => {
     const element = document.getElementById(id);
@@ -134,6 +141,7 @@ const handleUserLogin = async (userData) => {
     let errorMessage = "Login fehlgeschlagen. Bitte überprüfe deine Daten.";
 
     if (error.error) {
+      // Use server error message directly (now clean and user-friendly)
       errorMessage = error.error;
     } else if (error.message) {
       errorMessage = error.message;
@@ -150,8 +158,28 @@ const handleUserLogin = async (userData) => {
 const showLoginLoading = (loading) => {
   const submitBtn = document.getElementById("loginSubmitBtn");
   if (submitBtn) {
+    const btnContent = submitBtn.querySelector(".btn-content");
+    const btnIcon = submitBtn.querySelector(".btn-icon");
+
     submitBtn.disabled = loading;
-    submitBtn.textContent = loading ? "Anmeldung läuft..." : "Anmelden";
+
+    if (btnContent) {
+      const h3 = btnContent.querySelector("h3");
+      const p = btnContent.querySelector("p");
+
+      if (h3) h3.textContent = loading ? "Anmeldung läuft..." : "Anmelden";
+      if (p)
+        p.textContent = loading ? "Bitte warten..." : "In dein Konto einloggen";
+    }
+
+    // Add loading animation to button
+    if (loading) {
+      submitBtn.style.opacity = "0.7";
+      if (btnIcon) btnIcon.style.animation = "spin 1s linear infinite";
+    } else {
+      submitBtn.style.opacity = "1";
+      if (btnIcon) btnIcon.style.animation = "";
+    }
   }
 };
 
@@ -160,8 +188,7 @@ const showLoginLoading = (loading) => {
  * @param {string} message - Success message to display
  */
 const showLoginSuccess = (message) => {
-  // TODO: Implement proper toast/success display system
-  alert(`✅ ${message}`);
+  showSuccessToast(message);
 };
 
 /**
@@ -169,8 +196,7 @@ const showLoginSuccess = (message) => {
  * @param {string} message - Error message to display
  */
 const showLoginError = (message) => {
-  // TODO: Implement proper toast/error display system
-  alert(`❌ ${message}`);
+  showErrorToast(message);
 };
 
 /**

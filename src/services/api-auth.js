@@ -26,7 +26,13 @@ export const registerUser = async (userData) => {
     console.log("✅ User registered successfully:", result);
     return result;
   } catch (error) {
-    console.error("❌ Registration failed:", error);
+    // Only log unexpected errors, not user-facing registration errors
+    if (
+      !error.code ||
+      !["EMAIL_ALREADY_EXISTS", "MISSING_CREDENTIALS"].includes(error.code)
+    ) {
+      console.error("❌ Registration failed:", error);
+    }
     throw error;
   }
 };
@@ -64,7 +70,10 @@ export const loginUser = async (userData) => {
 
     return result;
   } catch (error) {
-    console.error("❌ Login failed:", error);
+    // Only log unexpected errors, not user authentication failures
+    if (!error.code || error.code !== "INVALID_CREDENTIALS") {
+      console.error("❌ Login failed:", error);
+    }
     throw error;
   }
 };

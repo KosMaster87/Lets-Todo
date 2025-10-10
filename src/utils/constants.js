@@ -16,6 +16,8 @@ export const VIEWS = {
   OPTIONS: "options",
   PERSONAL_DATA: "personal-data",
   CHANGE_PASSWORD: "change-password",
+  RESET_PASSWORD: "reset-password",
+  RESET_PASSWORD_CONFIRM: "reset-password-confirm",
 };
 
 /**
@@ -34,6 +36,8 @@ export const PAGE_TITLES = {
   [VIEWS.OPTIONS]: "Let's Todo - Einstellungen",
   [VIEWS.PERSONAL_DATA]: "Let's Todo - Persönliche Daten",
   [VIEWS.CHANGE_PASSWORD]: "Let's Todo - Passwort ändern",
+  [VIEWS.RESET_PASSWORD]: "Let's Todo - Passwort zurücksetzen",
+  [VIEWS.RESET_PASSWORD_CONFIRM]: "Let's Todo - Neues Passwort setzen",
 };
 
 /**

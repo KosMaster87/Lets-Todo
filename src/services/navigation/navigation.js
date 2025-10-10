@@ -13,6 +13,8 @@ import { initializeLogoutEvents } from "./navigation-logout.js";
 import { setupOptionsEventListeners } from "./navigation-options.js";
 import { setupPersonalDataEventListeners } from "./navigation-personal-data.js";
 import { setupChangePasswordEventListeners } from "./navigation-change-password.js";
+import { setupResetPasswordEventListeners } from "./navigation-reset-password.js";
+import { setupResetPasswordConfirmEventListeners } from "./navigation-reset-password-confirm.js";
 import { setupTodosListNavigation } from "./navigation-todos-list.js";
 import { setupTodosNavigation } from "./navigation-todos.js";
 import { setupTrashNavigation } from "./navigation-trash.js";
@@ -43,6 +45,8 @@ export const setupNavigationListeners = () => {
   setupOptionsEventListeners();
   setupPersonalDataEventListeners();
   setupChangePasswordEventListeners();
+  setupResetPasswordEventListeners();
+  setupResetPasswordConfirmEventListeners();
   setupTodosListNavigation();
   setupTodosNavigation();
   setupTrashNavigation();
@@ -62,9 +66,10 @@ const setupBrowserNavigation = () => {
  * @param {PopStateEvent} event - PopState event
  */
 const handlePopState = (event) => {
-  const view = event.state?.view || extractViewFromURL();
-  if (isValidView(view)) {
-    setCurrentView(view);
+  const urlInfo = extractViewAndParamsFromURL();
+  if (isValidView(urlInfo.view)) {
+    setCurrentView(urlInfo.view);
+    // Render über app.js triggern statt direkt
   } else {
     navigateToView(VIEWS.MAIN_MENU);
   }
@@ -74,12 +79,28 @@ const handlePopState = (event) => {
  * Loads the initial view based on the current URL.
  */
 const loadInitialView = () => {
-  const view = extractViewFromURL();
-  if (isValidView(view)) {
-    setCurrentView(view);
-    updateDocumentTitle(view);
+  const urlInfo = extractViewAndParamsFromURL();
+
+  // DEBUG: URL-Parameter ausgeben
+  // console.log("🔍 loadInitialView - URL Info:", urlInfo);
+  // console.log("🔍 Current URL:", window.location.pathname);
+
+  if (isValidView(urlInfo.view)) {
+    // URL-Parameter ZUERST setzen, bevor setCurrentView aufgerufen wird!
+    if (urlInfo.params) {
+      window.currentUrlParams = urlInfo.params;
+      // console.log("✅ URL-Parameter gesetzt:", window.currentUrlParams);
+    } else {
+      window.currentUrlParams = null;
+      // console.log("ℹ️ Keine URL-Parameter gefunden");
+    }
+
+    setCurrentView(urlInfo.view);
+    updateDocumentTitle(urlInfo.view);
   } else {
-    console.warn(`Invalid view "${view}" detected, redirecting to main menu`);
+    console.warn(
+      `Invalid view "${urlInfo.view}" detected, redirecting to main menu`
+    );
     navigateToView(VIEWS.MAIN_MENU);
   }
 };
@@ -158,14 +179,22 @@ export const handleNavigationClick = (event, view) => {
  * Navigates to a view.
  * Updates state, browser history, document title, and saves session.
  * @param {string} view - Target view
+ * @param {Object} [params] - Optional URL parameters
  */
-export const navigateToView = (view) => {
+export const navigateToView = (view, params = null) => {
   if (!isValidView(view)) return;
 
   setCurrentView(view);
-  updateBrowserHistory(view);
+  updateBrowserHistory(view, params);
   updateDocumentTitle(view);
   saveSessionToStorage();
+
+  // URL-Parameter für spätere Verwendung speichern
+  if (params) {
+    window.currentUrlParams = params;
+  } else {
+    delete window.currentUrlParams;
+  }
 };
 
 /**
@@ -182,10 +211,17 @@ export const navigateBack = () => {
 /**
  * Updates the browser history with the new view.
  * @param {string} view - View name
+ * @param {Object} [params] - Optional URL parameters
  */
-const updateBrowserHistory = (view) => {
-  const url = view === VIEWS.MAIN_MENU ? "/" : `/${view}`;
-  window.history.pushState({ view }, "", url);
+const updateBrowserHistory = (view, params = null) => {
+  let url = view === VIEWS.MAIN_MENU ? "/" : `/${view}`;
+
+  // Für Reset-Password-Confirm: Token als URL-Parameter hinzufügen
+  if (view === VIEWS.RESET_PASSWORD_CONFIRM && params?.token) {
+    url = `/${view}/${params.token}`;
+  }
+
+  window.history.pushState({ view, params }, "", url);
 };
 
 /**
@@ -198,12 +234,36 @@ const updateDocumentTitle = (view) => {
 };
 
 /**
- * Extracts the view name from the current URL.
+ * Extracts the view name and parameters from the current URL.
+ * @returns {{view: string, params: Object|null}} View name and parameters
+ */
+const extractViewAndParamsFromURL = () => {
+  const path = window.location.pathname;
+  const segments = path.split("/").filter((segment) => segment);
+
+  if (segments.length === 0) {
+    return { view: VIEWS.MAIN_MENU, params: null };
+  }
+
+  const view = segments[0];
+
+  // Spezielle Behandlung für Reset-Password-Confirm mit Token
+  if (view === VIEWS.RESET_PASSWORD_CONFIRM && segments[1]) {
+    return {
+      view: view,
+      params: { token: segments[1] },
+    };
+  }
+
+  return { view: view, params: null };
+};
+
+/**
+ * Extracts the view name from the current URL (backwards compatibility).
  * @returns {string} View name
  */
 const extractViewFromURL = () => {
-  const path = window.location.pathname;
-  return path.substring(1) || VIEWS.MAIN_MENU;
+  return extractViewAndParamsFromURL().view;
 };
 
 /**

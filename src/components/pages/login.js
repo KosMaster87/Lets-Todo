@@ -48,6 +48,12 @@ export const renderLoginPage = () => {
           </div>
         </button>
 
+        <div class="login-forgot-password">
+          <button class="link-button" id="loginForgotPasswordBtn">
+            Passwort vergessen?
+          </button>
+        </div>
+
         <button class="menu-btn login-cancel-btn" id="loginCancelBtn">
           <div class="btn-icon login-cancel-btn-icon"></div>
           <div class="btn-content">

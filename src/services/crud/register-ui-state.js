@@ -30,6 +30,13 @@ export const updateRegisterLoadingState = (
   return true;
 };
 
+// Import the toast notification system
+import {
+  showSuccessToast,
+  showErrorToast,
+  showInfoToast,
+} from "../../utils/toast-notifications.js";
+
 /**
  * Shows register success message
  * @param {string} message - Success message to display
@@ -41,8 +48,7 @@ export const showRegisterSuccess = (message, customHandler) => {
     return;
   }
 
-  // TODO: Replace with proper toast/notification system
-  alert(`✅ ${message}`);
+  showSuccessToast(message);
 };
 
 /**
@@ -56,8 +62,8 @@ export const showRegisterError = (message, customHandler) => {
     return;
   }
 
-  // TODO: Replace with proper toast/notification system
-  alert(`❌ ${message}`);
+  // Server messages are now clean and user-friendly
+  showErrorToast(message);
 };
 
 /**
@@ -71,8 +77,7 @@ export const showRegisterInfo = (message, customHandler) => {
     return;
   }
 
-  // TODO: Replace with proper toast/notification system
-  alert(`ℹ️ ${message}`);
+  showInfoToast(message);
 };
 
 /**

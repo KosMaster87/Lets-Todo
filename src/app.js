@@ -61,7 +61,8 @@ const registerStateListeners = () => {
  * Main content, and sets up component-specific event listeners.
  */
 const renderAllComponents = () => {
-  renderMainContent();
+  // renderMainContent();
+  renderMainContent(window.currentUrlParams);
   setupComponentEventListeners();
 };
 

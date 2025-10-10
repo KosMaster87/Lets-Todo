@@ -40,7 +40,13 @@ export const handleUserRegistration = async (
     const processedError = processRegistrationError(error);
     onError?.(processedError);
 
-    console.error("Registration error:", error);
+    // Only log unexpected errors, not user-facing registration errors
+    if (
+      !error.code ||
+      !["EMAIL_ALREADY_EXISTS", "MISSING_CREDENTIALS"].includes(error.code)
+    ) {
+      console.error("Registration error:", error);
+    }
   }
 };
 
@@ -53,14 +59,23 @@ export const processRegistrationError = (error) => {
   let errorType = REGISTRATION_ERRORS.UNKNOWN_ERROR;
   let errorMessage = "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
 
-  if (error.error) {
-    if (error.error.includes("already exists")) {
-      errorType = REGISTRATION_ERRORS.USER_EXISTS;
-      errorMessage = "Diese E-Mail-Adresse ist bereits registriert.";
-    } else {
-      errorType = REGISTRATION_ERRORS.VALIDATION_ERROR;
-      errorMessage = error.error;
+  if (error.code) {
+    switch (error.code) {
+      case "EMAIL_ALREADY_EXISTS":
+        errorType = REGISTRATION_ERRORS.USER_EXISTS;
+        errorMessage = error.error; // Use server message directly
+        break;
+      case "MISSING_CREDENTIALS":
+        errorType = REGISTRATION_ERRORS.VALIDATION_ERROR;
+        errorMessage = error.error;
+        break;
+      default:
+        errorType = REGISTRATION_ERRORS.UNKNOWN_ERROR;
+        errorMessage = error.error || errorMessage;
     }
+  } else if (error.error) {
+    errorType = REGISTRATION_ERRORS.VALIDATION_ERROR;
+    errorMessage = error.error;
   }
 
   return {
