@@ -33,35 +33,35 @@ import {
   generateResetToken,
   calculateExpirationTime,
   validateUserSession,
+  getLatestResetToken,
+  validateResetTokenResponse,
 } from "./helpers/dbHelpers.js";
 import {
   createCookieOptions,
   createClearCookieOptions,
 } from "./helpers/cookieHelpers.js";
+import { sendPasswordResetEmail } from "./helpers/emailHelpers.js";
+import {
+  sendSuccess,
+  sendError,
+  sendValidationError,
+  sendAuthError,
+  sendServerError,
+  HTTP_STATUS,
+} from "./helpers/responseHelpers.js";
 
 const router = Router();
 
 // DEBUG ONLY: Temporärer Endpoint zum Abrufen des letzten Tokens für Tests (vor Session-Middleware)
 router.get("/debug/get-latest-token/:email", async (req, res) => {
   const { email } = req.params;
+  const result = await getLatestResetToken(email);
 
-  try {
-    const [rows] = await userPool.execute(
-      "SELECT token FROM password_reset_tokens WHERE email = ? ORDER BY created_at DESC LIMIT 1",
-      [email]
-    );
-
-    if (rows.length === 0) {
-      return res.json({ error: "Kein Token gefunden für diese E-Mail" });
-    }
-
-    res.json({
-      email: email,
-      latestToken: rows[0].token,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (result.error) {
+    return res.status(result.error.includes("Server") ? 500 : 404).json(result);
   }
+
+  res.json(result);
 });
 
 /**
@@ -77,7 +77,7 @@ router.post("/register", async (req, res) => {
   // Use helper function for validation
   const validation = validateRegisterInput(email, password);
   if (!validation.valid) {
-    return res.status(400).json({ error: validation.error });
+    return sendValidationError(res, validation.error);
   }
 
   // Use helper function for password hashing
@@ -107,21 +107,25 @@ router.post("/register", async (req, res) => {
      * autoLogin: true,
      * requiresEmailVerification: false
      */
-    res.status(201).json({
-      message: "Registrierung erfolgreich. Du kannst dich jetzt anmelden.",
-      success: true,
-    });
+    return sendSuccess(
+      res,
+      "Registrierung erfolgreich. Du kannst dich jetzt anmelden.",
+      {},
+      HTTP_STATUS.CREATED
+    );
   } catch (err) {
-    if (err.code === "ER_DUP_ENTRY")
-      return res.status(409).json({
-        error:
-          "Ein Account mit dieser E-Mail existiert bereits. Versuche dich anzumelden oder das Passwort zurückzusetzen.",
-        code: "EMAIL_ALREADY_EXISTS",
-      });
-    res.status(500).json({
-      error: "Registrierung fehlgeschlagen. Bitte versuche es später erneut.",
-      code: "REGISTRATION_ERROR",
-    });
+    if (err.code === "ER_DUP_ENTRY") {
+      return sendError(
+        res,
+        "Ein Account mit dieser E-Mail existiert bereits. Versuche dich anzumelden oder das Passwort zurückzusetzen.",
+        "EMAIL_ALREADY_EXISTS",
+        HTTP_STATUS.CONFLICT
+      );
+    }
+    return sendServerError(
+      res,
+      "Registrierung fehlgeschlagen. Bitte versuche es später erneut."
+    );
   }
 });
 
@@ -137,26 +141,29 @@ router.post("/login", async (req, res) => {
 
   const validation = validateLoginInput(email, password);
   if (!validation.valid) {
-    return res.status(400).json({
-      error: validation.error,
-      code: "MISSING_CREDENTIALS",
-    });
+    return sendError(res, validation.error, "MISSING_CREDENTIALS");
   }
 
   try {
     const user = await findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({
-        error: "E-Mail oder Passwort ist falsch.",
-        code: "INVALID_CREDENTIALS",
-      });
+      return sendError(
+        res,
+        "E-Mail oder Passwort ist falsch.",
+        "INVALID_CREDENTIALS",
+        HTTP_STATUS.UNAUTHORIZED
+      );
     }
+
     const valid = await verifyPassword(password, user.password_hash);
-    if (!valid)
-      return res.status(401).json({
-        error: "E-Mail oder Passwort ist falsch.",
-        code: "INVALID_CREDENTIALS",
-      });
+    if (!valid) {
+      return sendError(
+        res,
+        "E-Mail oder Passwort ist falsch.",
+        "INVALID_CREDENTIALS",
+        HTTP_STATUS.UNAUTHORIZED
+      );
+    }
 
     // Eventuelle Gast-Session löschen
     if (req.cookies.guestId) {
@@ -170,13 +177,11 @@ router.post("/login", async (req, res) => {
     debugLog(`User-Login Cookie-Optionen:`, cookieOptions);
     res.cookie("userId", user.id, cookieOptions);
 
-    res.json({
-      message: "Login erfolgreich. Willkommen zurück!",
-      success: true,
+    return sendSuccess(res, "Login erfolgreich. Willkommen zurück!", {
       userId: user.id,
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    return sendServerError(res, "Login-Fehler");
   }
 });
 
@@ -202,10 +207,7 @@ router.get("/validate-session", async (req, res) => {
 router.post("/logout", (req, res) => {
   const clearCookieOptions = createClearCookieOptions();
   res.clearCookie("userId", clearCookieOptions);
-  res.json({
-    message: "Erfolgreich abgemeldet.",
-    success: true,
-  });
+  return sendSuccess(res, "Erfolgreich abgemeldet.");
 });
 
 /**
@@ -261,20 +263,7 @@ router.post("/forgot-password", async (req, res) => {
     );
 
     // E-Mail mit Reset-Link senden
-    try {
-      const emailResult = await emailService.sendPasswordResetEmail(
-        email,
-        resetToken,
-        `${user.firstName || ""} ${user.lastName || ""}`.trim() || null
-      );
-
-      debugLog(
-        `📧 Password-Reset-E-Mail versendet: ${emailResult.messageId} (${emailResult.mode})`
-      );
-    } catch (emailError) {
-      errorLog("❌ Fehler beim E-Mail-Versand:", emailError.message);
-      // Trotzdem erfolgreich antworten (Security: keine Info über E-Mail-Probleme)
-    }
+    await sendPasswordResetEmail(email, resetToken, user);
 
     res.json({
       success: true,
@@ -440,41 +429,19 @@ router.post("/reset-password", async (req, res) => {
  */
 router.get("/validate-reset-token/:token", async (req, res) => {
   const { token } = req.params;
+  const result = await validateResetTokenResponse(token);
 
-  if (!token) {
-    return res.status(400).json({
-      valid: false,
-      error: "Token ist erforderlich",
-    });
-  }
-
-  try {
-    const resetToken = await validateResetToken(token);
-
-    if (!resetToken) {
-      return res.json({
-        valid: false,
-        error: "Token nicht gefunden oder bereits verwendet",
-      });
-    }
-
+  if (result.logData) {
     debugLog(
-      `Valid reset token for user: ${resetToken.user_id} (${resetToken.email})`
+      `Valid reset token for user: ${result.logData.user_id} (${result.logData.email})`
     );
-
-    res.json({
-      valid: true,
-      userId: resetToken.user_id,
-      email: resetToken.email,
-      expiresAt: resetToken.expires_at,
-    });
-  } catch (err) {
-    errorLog(`Token validation error for token ${token}:`, err);
-    res.status(500).json({
-      valid: false,
-      error: "Server-Fehler bei Token-Validierung",
-    });
   }
+
+  if (result.error) {
+    errorLog(`Token validation error for token ${token}:`, result.error);
+  }
+
+  res.status(result.status).json(result.response);
 });
 
 export default router;

@@ -284,3 +284,79 @@ export const validateUserSession = async (userId) => {
     return { valid: false, reason: "Database error", error: err };
   }
 };
+
+/**
+ * Gets latest reset token for email (DEBUG only)
+ * @param {string} email - Email address
+ * @returns {Promise<Object>} - Token result
+ */
+export const getLatestResetToken = async (email) => {
+  try {
+    const [rows] = await userPool.execute(
+      "SELECT token FROM password_reset_tokens WHERE email = ? ORDER BY created_at DESC LIMIT 1",
+      [email]
+    );
+
+    if (rows.length === 0) {
+      return { error: "Kein Token gefunden für diese E-Mail" };
+    }
+
+    return {
+      email: email,
+      latestToken: rows[0].token,
+    };
+  } catch (error) {
+    return { error: error.message };
+  }
+};
+
+/**
+ * Validates reset token and returns formatted response
+ * @param {string} token - Reset token to validate
+ * @returns {Promise<Object>} - Validation response
+ */
+export const validateResetTokenResponse = async (token) => {
+  if (!token) {
+    return {
+      status: 400,
+      response: {
+        valid: false,
+        error: "Token ist erforderlich",
+      },
+    };
+  }
+
+  try {
+    const resetToken = await validateResetToken(token);
+
+    if (!resetToken) {
+      return {
+        status: 200,
+        response: {
+          valid: false,
+          error: "Token nicht gefunden oder bereits verwendet",
+        },
+      };
+    }
+
+    return {
+      status: 200,
+      response: {
+        valid: true,
+        userId: resetToken.user_id,
+        email: resetToken.email,
+        expiresAt: resetToken.expires_at,
+      },
+      logData: resetToken,
+    };
+  } catch (err) {
+    return {
+      status: 500,
+      response: {
+        valid: false,
+        error: "Server-Fehler bei Token-Validierung",
+      },
+      error: err,
+    };
+  }
+};
