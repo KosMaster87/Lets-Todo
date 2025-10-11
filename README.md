@@ -234,7 +234,7 @@ Recommended tools:
 - Vanilla JavaScript SPA with modular architecture
 - Automatic environment detection and API connection
 - Cookie-based session management
-- Live development on `127.0.0.1:5501`
+- Live development on `127.0.0.1:5500`
 
 ## 🐛 Troubleshooting
 
@@ -263,7 +263,7 @@ npm run dev  # Shows environment detection in logs
 
 ### Session/Cookie Issues
 
-- Development: Cookies work between `127.0.0.1:5501` ↔ `127.0.0.1:3000`
+- Development: Cookies work between `127.0.0.1:5500` ↔ `127.0.0.1:3000`
 - Production: Cookies are domain-restricted to `.dev2k.org`
 - Modern browsers block insecure cookies
 

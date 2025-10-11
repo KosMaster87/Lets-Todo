@@ -1,12 +1,43 @@
 // lets-todo-api/routing/authRouter.js
 
 import { Router } from "express";
-import bcrypt from "bcrypt";
-import crypto from "crypto";
 import { userPool, corePool, userPools } from "../db.js";
 import { ENV, debugLog, errorLog } from "../config/environment.js";
 import { emailService } from "../services/emailService.js";
 import mysql from "mysql2/promise";
+import {
+  validateRegisterInput,
+  hashPassword,
+  validateLoginInput,
+  validateEmail,
+  verifyPassword,
+  validateChangePasswordInput,
+  validateResetPasswordInput,
+} from "./helpers/authHelpers.js";
+import {
+  findUserByEmail,
+  createUserDbName,
+  findUserForPasswordReset,
+  clearOldResetTokens,
+  saveResetToken,
+  validateResetToken,
+  insertUser,
+  findUserById,
+  findUserByIdWithPassword,
+  updateUserPassword,
+  createUserDatabase,
+  createUserPool,
+  createTodosTable,
+  createTodosIndex,
+  executePasswordResetTransaction,
+  generateResetToken,
+  calculateExpirationTime,
+  validateUserSession,
+} from "./helpers/dbHelpers.js";
+import {
+  createCookieOptions,
+  createClearCookieOptions,
+} from "./helpers/cookieHelpers.js";
 
 const router = Router();
 
@@ -42,62 +73,31 @@ router.get("/debug/get-latest-token/:email", async (req, res) => {
  */
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
-    return res.status(400).json({ error: "Email und Passwort erforderlich" });
 
-  // Passwort hashen für sichere Speicherung
-  const password_hash = await bcrypt.hash(password, 10);
+  // Use helper function for validation
+  const validation = validateRegisterInput(email, password);
+  if (!validation.valid) {
+    return res.status(400).json({ error: validation.error });
+  }
+
+  // Use helper function for password hashing
+  const password_hash = await hashPassword(password);
 
   // Eindeutiger DB-Name basierend auf E-Mail
-  const dbName = `todos_user_${Buffer.from(email)
-    .toString("hex")
-    .slice(0, 24)}`;
+  const dbName = createUserDbName(email);
   const created = Date.now();
 
   try {
     // 1) User in zentrale User-Tabelle eintragen
-    const [result] = await userPool.query(
-      `INSERT INTO users (email, password_hash, db_name, created)
-       VALUES (?, ?, ?, ?)`,
-      [email, password_hash, dbName, created]
-    );
-
-    const userId = result.insertId;
+    const userId = await insertUser(email, password_hash, dbName, created);
 
     // 2) Dedicated User-Datenbank erstellen
-    await corePool.query(
-      `CREATE DATABASE IF NOT EXISTS \`${dbName}\`
-       CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;`
-    );
+    await createUserDatabase(dbName);
 
     // 3) Todos-Tabelle in User-DB initialisieren UND Pool speichern
-    const pool = mysql.createPool({
-      host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: dbName,
-      waitForConnections: true,
-      connectionLimit: 5,
-    });
-
-    await pool.query(`
-      CREATE TABLE IF NOT EXISTS todos (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        title TEXT NOT NULL,
-        description TEXT,
-        created BIGINT,
-        updated BIGINT,
-        completed TINYINT,
-        trashed TINYINT(1) DEFAULT 0 COMMENT 'Indicates if todo is in trash',
-        trashed_at BIGINT DEFAULT NULL COMMENT 'Timestamp when todo was trashed'
-      );
-    `);
-
-    // Add index for better performance on trash queries
-    await pool.query(`
-      CREATE INDEX IF NOT EXISTS idx_todos_trashed ON todos (trashed, trashed_at)
-    `);
+    const pool = createUserPool(dbName);
+    await createTodosTable(pool);
+    await createTodosIndex(pool);
 
     // WICHTIG: Pool für zukünftige Requests speichern
     userPools[`user_${userId}`] = pool;
@@ -134,24 +134,24 @@ router.post("/register", async (req, res) => {
  */
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  if (!email || !password)
+
+  const validation = validateLoginInput(email, password);
+  if (!validation.valid) {
     return res.status(400).json({
-      error: "E-Mail und Passwort sind erforderlich.",
+      error: validation.error,
       code: "MISSING_CREDENTIALS",
     });
+  }
 
   try {
-    const [rows] = await userPool.query(`SELECT * FROM users WHERE email = ?`, [
-      email,
-    ]);
-    if (!rows.length)
+    const user = await findUserByEmail(email);
+    if (!user) {
       return res.status(401).json({
         error: "E-Mail oder Passwort ist falsch.",
         code: "INVALID_CREDENTIALS",
       });
-
-    const user = rows[0];
-    const valid = await bcrypt.compare(password, user.password_hash);
+    }
+    const valid = await verifyPassword(password, user.password_hash);
     if (!valid)
       return res.status(401).json({
         error: "E-Mail oder Passwort ist falsch.",
@@ -160,28 +160,12 @@ router.post("/login", async (req, res) => {
 
     // Eventuelle Gast-Session löschen
     if (req.cookies.guestId) {
-      const clearCookieOptions = { path: "/" };
-      if (ENV.COOKIE_DOMAIN) clearCookieOptions.domain = ENV.COOKIE_DOMAIN;
+      const clearCookieOptions = createClearCookieOptions();
       res.clearCookie("guestId", clearCookieOptions);
     }
 
     // Session-Cookie setzen
-    const cookieOptions = {
-      httpOnly: false, // Für Frontend-Zugriff
-      secure: ENV.COOKIE_SECURE, // false in Development, true in Production
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 Tage
-      path: "/",
-    };
-
-    // SameSite nur in Production setzen (mit secure: true)
-    if (ENV.COOKIE_SECURE) {
-      cookieOptions.sameSite = "lax";
-    }
-
-    // Domain nur setzen wenn definiert (Production), in Development weglassen
-    if (ENV.COOKIE_DOMAIN) {
-      cookieOptions.domain = ENV.COOKIE_DOMAIN;
-    }
+    const cookieOptions = createCookieOptions();
 
     debugLog(`User-Login Cookie-Optionen:`, cookieOptions);
     res.cookie("userId", user.id, cookieOptions);
@@ -202,30 +186,13 @@ router.post("/login", async (req, res) => {
  */
 router.get("/validate-session", async (req, res) => {
   const userId = req.cookies.userId;
+  const sessionResult = await validateUserSession(userId);
 
-  if (!userId) {
-    return res.json({ valid: false, reason: "No session cookie found" });
+  if (!sessionResult.valid && sessionResult.error) {
+    errorLog("Session validation error:", sessionResult.error);
   }
 
-  try {
-    const [rows] = await userPool.query(
-      `SELECT id, email FROM users WHERE id = ?`,
-      [userId]
-    );
-
-    if (!rows.length) {
-      return res.json({ valid: false, reason: "User not found" });
-    }
-
-    res.json({
-      valid: true,
-      userId: userId,
-      email: rows[0].email,
-    });
-  } catch (err) {
-    errorLog("Session validation error:", err);
-    res.json({ valid: false, reason: "Database error" });
-  }
+  res.json(sessionResult);
 });
 
 /**
@@ -233,8 +200,7 @@ router.get("/validate-session", async (req, res) => {
  * Löscht das userId Cookie
  */
 router.post("/logout", (req, res) => {
-  const clearCookieOptions = { path: "/" };
-  if (ENV.COOKIE_DOMAIN) clearCookieOptions.domain = ENV.COOKIE_DOMAIN;
+  const clearCookieOptions = createClearCookieOptions();
   res.clearCookie("userId", clearCookieOptions);
   res.json({
     message: "Erfolgreich abgemeldet.",
@@ -257,22 +223,18 @@ router.post("/forgot-password", async (req, res) => {
     });
   }
 
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
+  if (!validateEmail(email)) {
     return res.status(400).json({
       error: "Ungültiges E-Mail-Format",
     });
   }
 
   try {
-    const [rows] = await userPool.query(
-      `SELECT id, email FROM users WHERE email = ?`,
-      [email]
-    );
+    const user = await findUserForPasswordReset(email);
 
     // Aus Sicherheitsgründen immer erfolgreich antworten
     // (verhindert User-Enumeration/Benutzer-Aufzählung)
-    if (!rows.length) {
+    if (!user) {
       debugLog(`Password reset requested for non-existent email: ${email}`);
       return res.json({
         success: true,
@@ -281,25 +243,16 @@ router.post("/forgot-password", async (req, res) => {
       });
     }
 
-    const user = rows[0];
-
     // Sichere Token-Generierung
-    const resetToken = crypto.randomBytes(32).toString("hex");
+    const resetToken = generateResetToken();
     const currentTime = new Date();
-    const expirationTime = new Date(Date.now() + 60 * 60 * 1000); // 1 Stunde gültig
+    const expirationTime = calculateExpirationTime();
 
     // Alte Tokens für diesen User löschen (nur einer gültig zur Zeit)
-    await userPool.query(
-      `DELETE FROM password_reset_tokens WHERE user_id = ?`,
-      [user.id]
-    );
+    await clearOldResetTokens(user.id);
 
     // Neuen Token in Datenbank speichern
-    await userPool.query(
-      `INSERT INTO password_reset_tokens (user_id, email, token, expires_at, created_at)
-       VALUES (?, ?, ?, ?, ?)`,
-      [user.id, email, resetToken, expirationTime, currentTime]
-    );
+    await saveResetToken(user.id, email, resetToken, expirationTime);
 
     debugLog(
       `Password reset token generated for user: ${
@@ -364,15 +317,10 @@ router.put("/change-password", async (req, res) => {
     },
   });
 
-  if (!currentPassword || !newPassword) {
+  const validation = validateChangePasswordInput(currentPassword, newPassword);
+  if (!validation.valid) {
     return res.status(400).json({
-      error: "Aktuelles und neues Passwort erforderlich",
-    });
-  }
-
-  if (newPassword.length < 6) {
-    return res.status(400).json({
-      error: "Neues Passwort muss mindestens 6 Zeichen lang sein",
+      error: validation.error,
     });
   }
 
@@ -389,21 +337,16 @@ router.put("/change-password", async (req, res) => {
 
   try {
     // User-Daten aus Datenbank laden
-    const [rows] = await userPool.query(
-      `SELECT id, email, password_hash FROM users WHERE id = ?`,
-      [userId]
-    );
+    const user = await findUserByIdWithPassword(userId);
 
-    if (!rows.length) {
+    if (!user) {
       return res.status(404).json({
         error: "User nicht gefunden",
       });
     }
 
-    const user = rows[0];
-
     // Aktuelles Passwort verifizieren
-    const currentPasswordValid = await bcrypt.compare(
+    const currentPasswordValid = await verifyPassword(
       currentPassword,
       user.password_hash
     );
@@ -415,13 +358,10 @@ router.put("/change-password", async (req, res) => {
     }
 
     // Neues Passwort hashen
-    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+    const newPasswordHash = await hashPassword(newPassword);
 
     // Passwort in Datenbank aktualisieren
-    await userPool.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [
-      newPasswordHash,
-      userId,
-    ]);
+    await updateUserPassword(userId, newPasswordHash);
 
     debugLog(
       `Password changed successfully for user ${userId} (${user.email})`
@@ -449,86 +389,41 @@ router.put("/change-password", async (req, res) => {
 router.post("/reset-password", async (req, res) => {
   const { token, newPassword } = req.body;
 
-  if (!token || !newPassword) {
+  const validation = validateResetPasswordInput(token, newPassword);
+  if (!validation.valid) {
     return res.status(400).json({
-      error: "Token und neues Passwort sind erforderlich",
-    });
-  }
-
-  if (newPassword.length < 6) {
-    return res.status(400).json({
-      error: "Neues Passwort muss mindestens 6 Zeichen lang sein",
+      error: validation.error,
     });
   }
 
   try {
-    // Token validieren (gleiche Logik wie validate-reset-token)
-    const [rows] = await userPool.query(
-      `SELECT rt.id, rt.user_id, rt.expires_at, rt.is_used, u.email
-       FROM password_reset_tokens rt
-       JOIN users u ON rt.user_id = u.id
-       WHERE rt.token = ? AND rt.is_used = 0`,
-      [token]
-    );
+    // Token validieren
+    const resetToken = await validateResetToken(token);
 
-    if (!rows.length) {
+    if (!resetToken) {
       return res.status(400).json({
         error: "Token nicht gefunden oder bereits verwendet",
       });
     }
 
-    const resetToken = rows[0];
+    // Neues Passwort hashen
+    const newPasswordHash = await hashPassword(newPassword);
     const currentTime = new Date();
 
-    if (resetToken.expires_at < currentTime) {
-      return res.status(400).json({
-        error: "Token ist abgelaufen",
-      });
-    }
-
-    // Neues Passwort hashen
-    const newPasswordHash = await bcrypt.hash(newPassword, 10);
-
     // Transaktional: Passwort ändern und Token als verwendet markieren
-    await userPool.getConnection().then(async (connection) => {
-      try {
-        await connection.beginTransaction();
+    await executePasswordResetTransaction(
+      resetToken,
+      newPasswordHash,
+      currentTime
+    );
 
-        // Passwort aktualisieren
-        await connection.query(
-          `UPDATE users SET password_hash = ? WHERE id = ?`,
-          [newPasswordHash, resetToken.user_id]
-        );
+    debugLog(
+      `Password reset successful for user: ${resetToken.user_id} (${resetToken.email})`
+    );
 
-        // Token als verwendet markieren
-        await connection.query(
-          `UPDATE password_reset_tokens SET is_used = 1, used_at = ? WHERE id = ?`,
-          [currentTime, resetToken.id]
-        );
-
-        // Alle anderen Reset-Tokens dieses Users invalidieren
-        await connection.query(
-          `UPDATE password_reset_tokens SET is_used = 1, used_at = ?
-           WHERE user_id = ? AND id != ? AND is_used = 0`,
-          [currentTime, resetToken.user_id, resetToken.id]
-        );
-
-        await connection.commit();
-        connection.release();
-
-        debugLog(
-          `Password reset successful for user: ${resetToken.user_id} (${resetToken.email})`
-        );
-
-        res.json({
-          success: true,
-          message: "Passwort wurde erfolgreich zurückgesetzt",
-        });
-      } catch (error) {
-        await connection.rollback();
-        connection.release();
-        throw error;
-      }
+    res.json({
+      success: true,
+      message: "Passwort wurde erfolgreich zurückgesetzt",
     });
   } catch (err) {
     errorLog(`Password reset error for token ${token}:`, err);
@@ -554,29 +449,12 @@ router.get("/validate-reset-token/:token", async (req, res) => {
   }
 
   try {
-    const [rows] = await userPool.query(
-      `SELECT rt.id, rt.user_id, rt.expires_at, rt.is_used, u.email
-       FROM password_reset_tokens rt
-       JOIN users u ON rt.user_id = u.id
-       WHERE rt.token = ? AND rt.is_used = 0`,
-      [token]
-    );
+    const resetToken = await validateResetToken(token);
 
-    if (!rows.length) {
+    if (!resetToken) {
       return res.json({
         valid: false,
         error: "Token nicht gefunden oder bereits verwendet",
-      });
-    }
-
-    const resetToken = rows[0];
-    const currentTime = Date.now();
-
-    // Token-Expiration/Ablauf prüfen
-    if (resetToken.expires_at < currentTime) {
-      return res.json({
-        valid: false,
-        error: "Token ist abgelaufen",
       });
     }
 

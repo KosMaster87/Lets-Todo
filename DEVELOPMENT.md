@@ -290,7 +290,7 @@ npm run dev
 
 # Start frontend (in separate terminal)
 cd ../lets-todo-app
-# Use VS Code Live Server on 127.0.0.1:5501
+# Use VS Code Live Server on 127.0.0.1:5500
 
 # Test cross-origin requests with browser dev tools
 # Check Network tab for CORS headers
@@ -421,7 +421,7 @@ mysql -u root -p -e "SELECT 1;"
 curl -I http://127.0.0.1:3000/api/session/validate
 
 # Verify frontend is on correct port
-# Frontend should be on 127.0.0.1:5501
+# Frontend should be on 127.0.0.1:5500
 # Backend should be on 127.0.0.1:3000
 
 # Check browser dev tools:

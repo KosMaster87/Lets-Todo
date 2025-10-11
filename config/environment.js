@@ -106,7 +106,7 @@ const CONFIG = {
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
     EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || false,
     APP_NAME: process.env.APP_NAME || "Let's Todo",
-    FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:5500",
+    FRONTEND_URL: process.env.FRONTEND_URL || "http://127.0.0.1:5500",
   },
 
   feature: {
