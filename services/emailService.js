@@ -17,48 +17,13 @@ class EmailService {
    */
   initializeTransporter() {
     try {
-      // Gmail SMTP Konfiguration
       if (ENV.EMAIL_PROVIDER === "gmail") {
-        this.transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: ENV.EMAIL_USER,
-            pass: ENV.EMAIL_PASSWORD, // App-Password, nicht normales Passwort!
-          },
-        });
-        debugLog("📧 Gmail SMTP Transporter initialisiert");
-      }
-
-      // Outlook/Hotmail SMTP Konfiguration
-      else if (ENV.EMAIL_PROVIDER === "outlook") {
-        this.transporter = nodemailer.createTransport({
-          service: "hotmail",
-          auth: {
-            user: ENV.EMAIL_USER,
-            pass: ENV.EMAIL_PASSWORD,
-          },
-        });
-        debugLog("📧 Outlook SMTP Transporter initialisiert");
-      }
-
-      // Custom SMTP Konfiguration
-      else if (ENV.EMAIL_PROVIDER === "smtp") {
-        this.transporter = nodemailer.createTransport({
-          host: ENV.EMAIL_HOST,
-          port: ENV.EMAIL_PORT || 587,
-          secure: ENV.EMAIL_SECURE === "true", // true für 465, false für andere Ports
-          auth: {
-            user: ENV.EMAIL_USER,
-            pass: ENV.EMAIL_PASSWORD,
-          },
-        });
-        debugLog(
-          `📧 Custom SMTP Transporter initialisiert (${ENV.EMAIL_HOST})`
-        );
-      }
-
-      // Development - Console Logger (keine echten E-Mails)
-      else if (ENV.NODE_ENV === "development" && !ENV.EMAIL_PROVIDER) {
+        this.setupGmailTransporter();
+      } else if (ENV.EMAIL_PROVIDER === "outlook") {
+        this.setupOutlookTransporter();
+      } else if (ENV.EMAIL_PROVIDER === "smtp") {
+        this.setupCustomSmtpTransporter();
+      } else if (ENV.NODE_ENV === "development" && !ENV.EMAIL_PROVIDER) {
         debugLog("📧 Development Modus - E-Mails werden in Console ausgegeben");
         return;
       } else {
@@ -71,6 +36,50 @@ class EmailService {
       );
       this.transporter = null;
     }
+  }
+
+  /**
+   * Erstellt Gmail SMTP Transporter
+   */
+  setupGmailTransporter() {
+    this.transporter = nodemailer.createTransporter({
+      service: "gmail",
+      auth: {
+        user: ENV.EMAIL_USER,
+        pass: ENV.EMAIL_PASSWORD, // App-Password, nicht normales Passwort!
+      },
+    });
+    debugLog("📧 Gmail SMTP Transporter initialisiert");
+  }
+
+  /**
+   * Erstellt Outlook SMTP Transporter
+   */
+  setupOutlookTransporter() {
+    this.transporter = nodemailer.createTransporter({
+      service: "hotmail",
+      auth: {
+        user: ENV.EMAIL_USER,
+        pass: ENV.EMAIL_PASSWORD,
+      },
+    });
+    debugLog("📧 Outlook SMTP Transporter initialisiert");
+  }
+
+  /**
+   * Erstellt Custom SMTP Transporter
+   */
+  setupCustomSmtpTransporter() {
+    this.transporter = nodemailer.createTransporter({
+      host: ENV.EMAIL_HOST,
+      port: ENV.EMAIL_PORT || 587,
+      secure: ENV.EMAIL_SECURE === "true",
+      auth: {
+        user: ENV.EMAIL_USER,
+        pass: ENV.EMAIL_PASSWORD,
+      },
+    });
+    debugLog(`📧 Custom SMTP Transporter initialisiert (${ENV.EMAIL_HOST})`);
   }
 
   /**
@@ -209,23 +218,23 @@ class EmailService {
     const greeting = userName ? `Hallo ${userName}` : "Hallo";
 
     return `
-${greeting}!
+    ${greeting}!
 
-Du hast eine Anfrage zum Zurücksetzen deines Passworts für Let's Todo gestellt.
+    Du hast eine Anfrage zum Zurücksetzen deines Passworts für Let's Todo gestellt.
 
-Um ein neues Passwort zu erstellen, öffne folgenden Link in deinem Browser:
-${resetLink}
+    Um ein neues Passwort zu erstellen, öffne folgenden Link in deinem Browser:
+    ${resetLink}
 
-WICHTIGE SICHERHEITSHINWEISE:
-- Dieser Link ist nur 1 Stunde gültig
-- Der Link kann nur einmal verwendet werden
-- Falls du diese Anfrage nicht gestellt hast, ignoriere diese E-Mail
+    WICHTIGE SICHERHEITSHINWEISE:
+    - Dieser Link ist nur 1 Stunde gültig
+    - Der Link kann nur einmal verwendet werden
+    - Falls du diese Anfrage nicht gestellt hast, ignoriere diese E-Mail
 
-Falls du Probleme hast, wende dich an den Support.
+    Falls du Probleme hast, wende dich an den Support.
 
----
-Diese E-Mail wurde automatisch erstellt.
-© ${new Date().getFullYear()} Let's Todo
+    ---
+    Diese E-Mail wurde automatisch erstellt.
+    © ${new Date().getFullYear()} Let's Todo
     `.trim();
   }
 
