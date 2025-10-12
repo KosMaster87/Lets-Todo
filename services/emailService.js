@@ -1,7 +1,12 @@
 // lets-todo-api/services/emailService.js
 
 import nodemailer from "nodemailer";
-import { ENV, debugLog, errorLog } from "./../config/environment.js";
+import {
+  ENV,
+  ENVIRONMENT,
+  debugLog,
+  errorLog,
+} from "./../config/environment.js";
 
 /**
  * E-Mail-Service für Password-Reset und andere Benachrichtigungen
@@ -23,7 +28,7 @@ class EmailService {
         this.setupOutlookTransporter();
       } else if (ENV.EMAIL_PROVIDER === "smtp") {
         this.setupCustomSmtpTransporter();
-      } else if (ENV.NODE_ENV === "development" && !ENV.EMAIL_PROVIDER) {
+      } else if (ENVIRONMENT === "development" && !ENV.EMAIL_PROVIDER) {
         debugLog("📧 Development Modus - E-Mails werden in Console ausgegeben");
         return;
       } else {
@@ -42,7 +47,7 @@ class EmailService {
    * Erstellt Gmail SMTP Transporter
    */
   setupGmailTransporter() {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
         user: ENV.EMAIL_USER,
@@ -56,7 +61,7 @@ class EmailService {
    * Erstellt Outlook SMTP Transporter
    */
   setupOutlookTransporter() {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
         user: ENV.EMAIL_USER,
@@ -70,7 +75,7 @@ class EmailService {
    * Erstellt Custom SMTP Transporter
    */
   setupCustomSmtpTransporter() {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: ENV.EMAIL_HOST,
       port: ENV.EMAIL_PORT || 587,
       secure: ENV.EMAIL_SECURE === "true",

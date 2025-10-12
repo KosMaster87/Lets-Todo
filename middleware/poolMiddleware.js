@@ -1,14 +1,17 @@
+// lets-todo-api/middleware/poolMiddleware.js
+
 /**
  * Database Pool Assignment Middleware
  * Weist jedem Request den korrekten DB-Pool zu (User oder Gast)
  */
 
 import mysql from "mysql2/promise";
-import { corePool, guestPools, userPool, userPools } from "../db.js";
+import { userPool, userPools } from "./../db.js";
+import { ENV } from "./../config/environment.js";
 
 /**
- * Middleware: Pool-Auswahl basierend auf Session-Typ
- * Priorisiert User-Session vor Gast-Session
+ * Middleware: Pool-Auswahl basierend auf User-Session
+ * Nur für registrierte Benutzer - Gäste verwenden LocalStorage
  * Setzt req.pool für nachfolgende Route-Handler
  * @param {Request} req - Express Request Object
  * @param {Response} res - Express Response Object
@@ -16,61 +19,20 @@ import { corePool, guestPools, userPool, userPools } from "../db.js";
  */
 export async function assignPoolMiddleware(req, res, next) {
   try {
-    // STRIKTE TRENNUNG: User-Session hat Vorrang und schließt Gast aus
-    if (req.cookies.userId && !req.cookies.guestId) {
-      // 1. User-Session: Pool für User-DB bereitstellen
-      const [rows] = await userPool.query(
-        `SELECT db_name FROM users WHERE id = ?`,
-        [req.cookies.userId]
-      );
-      if (rows.length) {
-        const dbName = rows[0].db_name;
-        const userPoolKey = `user_${req.cookies.userId}`;
+    if (!req.cookies.userId) {
+      return res.status(401).json({
+        error: "Authentifizierung erforderlich. Gäste verwenden LocalStorage.",
+      });
+    }
 
-        // Pool cachen für Performance
-        if (!guestPools[userPoolKey]) {
-          guestPools[userPoolKey] = mysql.createPool({
-            host: process.env.DB_HOST,
-            port: Number(process.env.DB_PORT),
-            user: process.env.DB_USER,
-            password: process.env.DB_PASSWORD,
-            database: dbName,
-            waitForConnections: true,
-            connectionLimit: 5,
-          });
-        }
-        req.pool = guestPools[userPoolKey];
-        return next();
-      }
-      // User nicht in DB gefunden → Cookie ungültig
-      res.clearCookie("userId", { domain: ".dev2k.org", path: "/" });
+    const dbName = await getUserDbName(req.cookies.userId);
+    if (!dbName) {
+      clearInvalidUserCookie(res);
       return res.status(401).json({ error: "User-Session ungültig" });
     }
 
-    // 2. Konflikt: Beide Cookies vorhanden → Gast löschen
-    if (req.cookies.userId && req.cookies.guestId) {
-      res.clearCookie("guestId", { domain: ".dev2k.org", path: "/" });
-      console.warn("⚠️ Beide Cookies vorhanden - Gast-Cookie gelöscht");
-      return assignPoolMiddleware(req, res, next);
-    }
-
-    // 3. Gast-Session: Pool für Gast-DB bereitstellen
-    if (req.cookies.guestId && !req.cookies.userId) {
-      const guestId = req.cookies.guestId;
-      if (guestPools[guestId]) {
-        req.pool = guestPools[guestId];
-        return next();
-      }
-      // Gast-Pool existiert nicht → Session ungültig
-      res.clearCookie("guestId", { domain: ".dev2k.org", path: "/" });
-      return res.status(401).json({ error: "Gast-Session ungültig" });
-    }
-
-    // 4. Keine Session: Authentifizierung erforderlich
-    return res.status(401).json({
-      error:
-        "Keine Session initialisiert. Bitte als Gast starten oder einloggen.",
-    });
+    req.pool = getOrCreateUserPool(req.cookies.userId, dbName);
+    next();
   } catch (err) {
     console.error("Pool-Assignment-Middleware-Fehler:", err);
     res.status(500).json({ error: "Server-Fehler bei Session-Prüfung" });
@@ -79,84 +41,80 @@ export async function assignPoolMiddleware(req, res, next) {
 
 /**
  * Erweiterte Pool-Zuweisung mit Fallback-Rekonstruktion
- * Rekonstruiert fehlende Pools aus der Datenbank
+ * Rekonstruiert fehlende User-Pools aus der Datenbank
+ * Nur für User-Sessions - Gäste verwenden LocalStorage
  */
 export async function enhancedPoolMiddleware(req, res, next) {
   try {
-    // 1) User-Session prüfen (hat Vorrang)
-    if (req.cookies.userId) {
-      const userId = req.cookies.userId;
-      const poolKey = `user_${userId}`;
-
-      if (userPools[poolKey]) {
-        req.pool = userPools[poolKey];
-        return next();
-      }
-
-      // Pool nicht vorhanden - aus DB rekonstruieren
-      const [userRows] = await userPool.query(
-        `SELECT db_name FROM users WHERE id = ?`,
-        [userId]
-      );
-
-      if (userRows.length) {
-        const dbName = userRows[0].db_name;
-        const pool = mysql.createPool({
-          host: process.env.DB_HOST,
-          port: Number(process.env.DB_PORT),
-          user: process.env.DB_USER,
-          password: process.env.DB_PASSWORD,
-          database: dbName,
-          waitForConnections: true,
-          connectionLimit: 5,
-        });
-
-        userPools[poolKey] = pool;
-        req.pool = pool;
-        return next();
-      }
-
-      // User nicht gefunden - Cookie löschen
-      res.clearCookie("userId", { domain: ".dev2k.org", path: "/" });
+    if (!req.cookies.userId) {
+      return next(); // Kein User → Request ohne Pool fortsetzen
     }
 
-    // 2) Gast-Session prüfen
-    if (req.cookies.guestId) {
-      const guestId = req.cookies.guestId;
+    const userId = req.cookies.userId;
+    const poolKey = `user_${userId}`;
 
-      if (guestPools[guestId]) {
-        req.pool = guestPools[guestId];
-        return next();
-      }
-
-      // Gast-Pool rekonstruieren
-      const dbName = `todos_guest_${guestId.replace(/-/g, "")}`;
-      const [dbRows] = await corePool.query(`SHOW DATABASES LIKE '${dbName}'`);
-
-      if (dbRows.length) {
-        const pool = mysql.createPool({
-          host: process.env.DB_HOST,
-          port: Number(process.env.DB_PORT),
-          user: process.env.DB_USER,
-          password: process.env.DB_PASSWORD,
-          database: dbName,
-          waitForConnections: true,
-          connectionLimit: 5,
-        });
-
-        guestPools[guestId] = pool;
-        req.pool = pool;
-        return next();
-      }
-
-      // Gast-DB nicht gefunden - Cookie löschen
-      res.clearCookie("guestId", { domain: ".dev2k.org", path: "/" });
+    // Bestehenden Pool verwenden falls vorhanden
+    if (userPools[poolKey]) {
+      req.pool = userPools[poolKey];
+      return next();
     }
 
-    // 3) Keine gültige Session - Request ohne Pool fortsetzen
+    // Pool aus DB rekonstruieren
+    const dbName = await getUserDbName(userId);
+    if (dbName) {
+      req.pool = getOrCreateUserPool(userId, dbName);
+    } else {
+      clearInvalidUserCookie(res);
+    }
+
     next();
   } catch (err) {
     console.error("Enhanced-Pool-Assignment Fehler:", err);
     next();
   }
+}
+
+/**
+ * Erstellt oder verwendet gecachten User-Pool
+ * @param {string} userId - User-ID
+ * @param {string} dbName - Datenbankname
+ * @returns {Object} MySQL Connection Pool
+ */
+function getOrCreateUserPool(userId, dbName) {
+  const poolKey = `user_${userId}`;
+
+  if (!userPools[poolKey]) {
+    userPools[poolKey] = mysql.createPool({
+      host: ENV.DB_HOST,
+      port: ENV.DB_PORT,
+      user: ENV.DB_USER,
+      password: ENV.DB_PASSWORD,
+      database: dbName,
+      waitForConnections: true,
+      connectionLimit: 5,
+    });
+  }
+
+  return userPools[poolKey];
+}
+
+/**
+ * Holt User-Datenbank-Namen aus der Datenbank
+ * @param {string} userId - User-ID
+ * @returns {Promise<string|null>} Datenbankname oder null
+ */
+async function getUserDbName(userId) {
+  const [rows] = await userPool.query(
+    `SELECT db_name FROM users WHERE id = ?`,
+    [userId]
+  );
+  return rows.length ? rows[0].db_name : null;
+}
+
+/**
+ * Löscht ungültiges User-Cookie
+ * @param {Object} res - Express Response Object
+ */
+function clearInvalidUserCookie(res) {
+  res.clearCookie("userId", { domain: ".dev2k.org", path: "/" });
 }

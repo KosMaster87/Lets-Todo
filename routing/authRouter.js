@@ -189,9 +189,7 @@ router.post("/forgot-password", async (req, res) => {
           userId: result.user.id,
           email,
           resetToken: result.resetToken,
-          resetLink: `${
-            ENV.FRONTEND_URL || "http://localhost:5500"
-          }/reset-password/${result.resetToken}`,
+          resetLink: `${ENV.FRONTEND_URL}/reset-password/${result.resetToken}`,
           expiresAt: new Date(result.expirationTime).toLocaleString("de-DE"),
         },
       }

@@ -1,4 +1,5 @@
 // server.js
+
 /**
  * Express-Server für Todo-App mit User- und Gast-Session-Management
  * Features:
@@ -7,26 +8,20 @@
  * - RESTful Todo-API
  */
 
-// server.js
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
 import {
   ENV,
   ENVIRONMENT,
-  debugLog,
-  infoLog,
-  errorLog,
+  debugLog
 } from "./config/environment.js";
-import { userPool } from "./db.js";
 import authRouter from "./routing/authRouter.js";
-import sessionRouter from "./routing/sessionRouter.js";
 import todosRouter from "./routing/todosRouter.js";
 import {
   assignPoolMiddleware,
   enhancedPoolMiddleware,
-} from "./middleware/poolMiddleware.js";
+} from "./middleware/poolMiddleware.js"; // zuweisen und erweitern
 
 const app = express();
 
@@ -51,8 +46,6 @@ debugLog(
   "Tabellen-Erstellung übersprungen - bereits in setup-dev-db.js erstellt"
 );
 
-// Auth- und Session-Router (diese brauchen keine Pool-Zuweisung)
-app.use("/api/session", sessionRouter);
 app.use("/api", authRouter);
 
 // Pool-Middleware für alle folgenden Routen
