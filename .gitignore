@@ -8,6 +8,7 @@ package-lock.json
 dev-server.js
 
 # Environment files - Keep example files for reference
+config/env/.env
 config/env/.env.production
 config/env/.env.feature
 config/env/.env.staging
