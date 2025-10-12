@@ -220,15 +220,11 @@ router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
-    return res.status(400).json({
-      error: "E-Mail-Adresse ist erforderlich",
-    });
+    return sendValidationError(res, "E-Mail-Adresse ist erforderlich");
   }
 
   if (!validateEmail(email)) {
-    return res.status(400).json({
-      error: "Ungültiges E-Mail-Format",
-    });
+    return sendValidationError(res, "Ungültiges E-Mail-Format");
   }
 
   try {
@@ -238,11 +234,10 @@ router.post("/forgot-password", async (req, res) => {
     // (verhindert User-Enumeration/Benutzer-Aufzählung)
     if (!user) {
       debugLog(`Password reset requested for non-existent email: ${email}`);
-      return res.json({
-        success: true,
-        message:
-          "Falls ein Account mit dieser E-Mail existiert, wurde ein Reset-Link gesendet.",
-      });
+      return sendSuccess(
+        res,
+        "Falls ein Account mit dieser E-Mail existiert, wurde ein Reset-Link gesendet."
+      );
     }
 
     // Sichere Token-Generierung
@@ -265,25 +260,28 @@ router.post("/forgot-password", async (req, res) => {
     // E-Mail mit Reset-Link senden
     await sendPasswordResetEmail(email, resetToken, user);
 
-    res.json({
-      success: true,
-      message: "Reset-Link wurde an deine E-Mail-Adresse gesendet.",
-      // Für Entwicklung - in Produktion entfernen:
-      debug: {
-        userId: user.id,
-        email: email,
-        resetToken: resetToken,
-        resetLink: `${
-          ENV.FRONTEND_URL || "http://localhost:5500"
-        }/reset-password/${resetToken}`,
-        expiresAt: new Date(expirationTime).toLocaleString("de-DE"),
-      },
-    });
+    return sendSuccess(
+      res,
+      "Reset-Link wurde an deine E-Mail-Adresse gesendet.",
+      {
+        // Für Entwicklung - in Produktion entfernen:
+        debug: {
+          userId: user.id,
+          email: email,
+          resetToken: resetToken,
+          resetLink: `${
+            ENV.FRONTEND_URL || "http://localhost:5500"
+          }/reset-password/${resetToken}`,
+          expiresAt: new Date(expirationTime).toLocaleString("de-DE"),
+        },
+      }
+    );
   } catch (err) {
     errorLog(`Forgot password error for email ${email}:`, err);
-    res.status(500).json({
-      error: "Server-Fehler beim Verarbeiten der Reset-Anfrage",
-    });
+    return sendServerError(
+      res,
+      "Server-Fehler beim Verarbeiten der Reset-Anfrage"
+    );
   }
 });
 
@@ -308,9 +306,7 @@ router.put("/change-password", async (req, res) => {
 
   const validation = validateChangePasswordInput(currentPassword, newPassword);
   if (!validation.valid) {
-    return res.status(400).json({
-      error: validation.error,
-    });
+    return sendValidationError(res, validation.error);
   }
 
   // User-ID aus Cookie/Session extrahieren
@@ -319,9 +315,7 @@ router.put("/change-password", async (req, res) => {
 
   if (!userId) {
     errorLog("No userId found in cookies:", req.cookies);
-    return res.status(401).json({
-      error: "Nicht authentifiziert - Bitte einloggen",
-    });
+    return sendAuthError(res, "Nicht authentifiziert - Bitte einloggen");
   }
 
   try {
@@ -329,9 +323,12 @@ router.put("/change-password", async (req, res) => {
     const user = await findUserByIdWithPassword(userId);
 
     if (!user) {
-      return res.status(404).json({
-        error: "User nicht gefunden",
-      });
+      return sendError(
+        res,
+        "User nicht gefunden",
+        "USER_NOT_FOUND",
+        HTTP_STATUS.NOT_FOUND
+      );
     }
 
     // Aktuelles Passwort verifizieren
@@ -341,9 +338,7 @@ router.put("/change-password", async (req, res) => {
     );
 
     if (!currentPasswordValid) {
-      return res.status(401).json({
-        error: "Aktuelles Passwort ist falsch",
-      });
+      return sendAuthError(res, "Aktuelles Passwort ist falsch");
     }
 
     // Neues Passwort hashen
@@ -356,15 +351,10 @@ router.put("/change-password", async (req, res) => {
       `Password changed successfully for user ${userId} (${user.email})`
     );
 
-    res.json({
-      message: "Simon says... Password successfully changed",
-      success: true,
-    });
+    return sendSuccess(res, "Simon says... Password successfully changed");
   } catch (err) {
     errorLog(`Password change error for user ${userId}:`, err);
-    res.status(500).json({
-      error: "Server-Fehler beim Passwort-Update",
-    });
+    return sendServerError(res, "Server-Fehler beim Passwort-Update");
   }
 });
 
