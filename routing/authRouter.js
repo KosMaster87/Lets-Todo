@@ -370,9 +370,7 @@ router.post("/reset-password", async (req, res) => {
 
   const validation = validateResetPasswordInput(token, newPassword);
   if (!validation.valid) {
-    return res.status(400).json({
-      error: validation.error,
-    });
+    return sendValidationError(res, validation.error);
   }
 
   try {
@@ -380,9 +378,10 @@ router.post("/reset-password", async (req, res) => {
     const resetToken = await validateResetToken(token);
 
     if (!resetToken) {
-      return res.status(400).json({
-        error: "Token nicht gefunden oder bereits verwendet",
-      });
+      return sendValidationError(
+        res,
+        "Token nicht gefunden oder bereits verwendet"
+      );
     }
 
     // Neues Passwort hashen
@@ -400,15 +399,10 @@ router.post("/reset-password", async (req, res) => {
       `Password reset successful for user: ${resetToken.user_id} (${resetToken.email})`
     );
 
-    res.json({
-      success: true,
-      message: "Passwort wurde erfolgreich zurückgesetzt",
-    });
+    return sendSuccess(res, "Passwort wurde erfolgreich zurückgesetzt");
   } catch (err) {
     errorLog(`Password reset error for token ${token}:`, err);
-    res.status(500).json({
-      error: "Server-Fehler beim Passwort-Reset",
-    });
+    return sendServerError(res, "Server-Fehler beim Passwort-Reset");
   }
 });
 
