@@ -1,8 +1,9 @@
 // lets-todo-api/routing/helpers/dbHelpers.js
 
-import { userPool, corePool, userPools } from "../../db.js";
+import { userPool, corePool, userPools } from "./../../db.js";
 import mysql from "mysql2/promise";
 import crypto from "crypto";
+import { hashPassword, verifyPassword } from "./authHelpers.js";
 
 /**
  * Finds user by email
@@ -286,31 +287,6 @@ export const validateUserSession = async (userId) => {
 };
 
 /**
- * Gets latest reset token for email (DEBUG only)
- * @param {string} email - Email address
- * @returns {Promise<Object>} - Token result
- */
-export const getLatestResetToken = async (email) => {
-  try {
-    const [rows] = await userPool.execute(
-      "SELECT token FROM password_reset_tokens WHERE email = ? ORDER BY created_at DESC LIMIT 1",
-      [email]
-    );
-
-    if (rows.length === 0) {
-      return { error: "Kein Token gefunden für diese E-Mail" };
-    }
-
-    return {
-      email: email,
-      latestToken: rows[0].token,
-    };
-  } catch (error) {
-    return { error: error.message };
-  }
-};
-
-/**
  * Validates reset token and returns formatted response
  * @param {string} token - Reset token to validate
  * @returns {Promise<Object>} - Validation response
@@ -359,4 +335,174 @@ export const validateResetTokenResponse = async (token) => {
       error: err,
     };
   }
+};
+
+/**
+ * Processes password reset with token validation
+ * @param {string} token - Reset token
+ * @param {string} newPassword - New password
+ * @returns {Promise<Object>} - Reset result
+ */
+export const processPasswordReset = async (token, newPassword) => {
+  const resetToken = await validateResetToken(token);
+
+  if (!resetToken) {
+    return {
+      success: false,
+      error: "Token nicht gefunden oder bereits verwendet",
+    };
+  }
+
+  const newPasswordHash = await hashPassword(newPassword);
+  const currentTime = new Date();
+
+  await executePasswordResetTransaction(
+    resetToken,
+    newPasswordHash,
+    currentTime
+  );
+
+  return {
+    success: true,
+    resetToken: resetToken,
+  };
+};
+
+/**
+ * Creates complete user setup with database and tables
+ * @param {string} email - User email
+ * @param {string} password_hash - Hashed password
+ * @param {string} dbName - Database name
+ * @param {number} created - Creation timestamp
+ * @returns {Promise<number>} - User ID
+ */
+export const createCompleteUserSetup = async (
+  email,
+  password_hash,
+  dbName,
+  created
+) => {
+  // 1) User in zentrale User-Tabelle eintragen
+  const userId = await insertUser(email, password_hash, dbName, created);
+
+  // 2) Dedicated User-Datenbank erstellen
+  await createUserDatabase(dbName);
+
+  // 3) Todos-Tabelle in User-DB initialisieren und Pool erstellen
+  const pool = createUserPool(dbName);
+  await createTodosTable(pool);
+  await createTodosIndex(pool);
+
+  // 4) Pool für zukünftige Requests speichern
+  userPools[`user_${userId}`] = pool;
+
+  return userId;
+};
+
+/**
+ * Processes user login with authentication
+ * @param {string} email - User email
+ * @param {string} password - Plain text password
+ * @returns {Promise<Object>} - Login result
+ */
+export const processUserLogin = async (email, password) => {
+  const user = await findUserByEmail(email);
+  if (!user) {
+    return {
+      success: false,
+      error: "E-Mail oder Passwort ist falsch.",
+      code: "INVALID_CREDENTIALS",
+    };
+  }
+
+  const valid = await verifyPassword(password, user.password_hash);
+  if (!valid) {
+    return {
+      success: false,
+      error: "E-Mail oder Passwort ist falsch.",
+      code: "INVALID_CREDENTIALS",
+    };
+  }
+
+  return {
+    success: true,
+    user: user,
+  };
+};
+
+/**
+ * Processes forgot password request with token generation
+ * @param {string} email - User email
+ * @returns {Promise<Object>} - Process result
+ */
+export const processForgotPassword = async (email) => {
+  const user = await findUserForPasswordReset(email);
+
+  // Aus Sicherheitsgründen immer erfolgreich antworten (verhindert User-Enumeration)
+  if (!user) {
+    return {
+      success: true,
+      userExists: false,
+      message:
+        "Falls ein Account mit dieser E-Mail existiert, wurde ein Reset-Link gesendet.",
+    };
+  }
+
+  const resetToken = generateResetToken();
+  const expirationTime = calculateExpirationTime();
+
+  await clearOldResetTokens(user.id);
+  await saveResetToken(user.id, email, resetToken, expirationTime);
+
+  return {
+    success: true,
+    userExists: true,
+    user: user,
+    resetToken: resetToken,
+    expirationTime: expirationTime,
+  };
+};
+
+/**
+ * Processes password change with current password verification
+ * @param {string} userId - User ID
+ * @param {string} currentPassword - Current password
+ * @param {string} newPassword - New password
+ * @returns {Promise<Object>} - Process result
+ */
+export const processPasswordChange = async (
+  userId,
+  currentPassword,
+  newPassword
+) => {
+  const user = await findUserByIdWithPassword(userId);
+
+  if (!user) {
+    return {
+      success: false,
+      error: "User nicht gefunden",
+      code: "USER_NOT_FOUND",
+    };
+  }
+
+  const currentPasswordValid = await verifyPassword(
+    currentPassword,
+    user.password_hash
+  );
+
+  if (!currentPasswordValid) {
+    return {
+      success: false,
+      error: "Aktuelles Passwort ist falsch",
+      code: "INVALID_CURRENT_PASSWORD",
+    };
+  }
+
+  const newPasswordHash = await hashPassword(newPassword);
+  await updateUserPassword(userId, newPasswordHash);
+
+  return {
+    success: true,
+    user: user,
+  };
 };
