@@ -80,7 +80,7 @@ done
 # —————— User-Daten bereinigen ——————
 echo ""
 echo "🧹 Leere zentrale User-Tabelle..."
-${MYSQL} -e "DELETE FROM `todo`s_users.users;" 2>/dev/null
+${MYSQL} -e "DELETE FROM todos_users.users;" 2>/dev/null
 ${MYSQL} -e "DELETE FROM todos_users.password_reset_tokens;" 2>/dev/null
 echo "✅ User-Daten geleert"
 
