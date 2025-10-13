@@ -1,6 +1,6 @@
 {
-  "name": "RESTful Todos App",
-  "short_name": "Todos",
+  "name": "RESTful Let's Todo App",
+  "short_name": "Let's Todo",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

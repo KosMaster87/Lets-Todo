@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor Position Debug Test</title>
+</head>
+<body>
+    <h2>Debug Test für Cursor Position</h2>
+    <p>Öffne die Entwicklertools (F12) und schaue die Konsole.</p>
+
+    <div id="test-results"></div>
+
+    <script>
+        // Test Script um verschiedene Ansichten zu testen
+        console.log("🚀 Starting cursor position debug test...");
+
+        // Test 1: Zu Guest Zugang navigieren
+        setTimeout(() => {
+            console.log("📍 Test 1: Navigating to guest dashboard...");
+            window.location.href = 'http://127.0.0.1:5500/dashboard';
+        }, 1000);
+
+        // Test 2: Todo erstellen öffnen (funktioniert)
+        setTimeout(() => {
+            console.log("📍 Test 2: Navigating to todo creation...");
+            window.location.href = 'http://127.0.0.1:5500/todos';
+        }, 3000);
+
+        // Test 3: Todo Ansicht öffnen (Problem)
+        setTimeout(() => {
+            console.log("📍 Test 3: Navigating to todo view...");
+            window.location.href = 'http://127.0.0.1:5500/todo-view';
+        }, 5000);
+
+        // Test 4: Zurück zur Liste
+        setTimeout(() => {
+            console.log("📍 Test 4: Navigating to todos list...");
+            window.location.href = 'http://127.0.0.1:5500/todos-list';
+        }, 7000);
+    </script>
+</body>
+</html>
+</script>
+</body>
+</html>
