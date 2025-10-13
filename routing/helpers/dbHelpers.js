@@ -23,7 +23,10 @@ export const findUserByEmail = async (email) => {
  * @returns {string} Database name
  */
 export const createUserDbName = (email) => {
-  return `todos_user_${Buffer.from(email).toString("hex").slice(0, 24)}`;
+  const emailHex = Buffer.from(email).toString("hex");
+  const timestamp = Date.now().toString(16); // Hex timestamp for uniqueness
+  const dbName = `todos_user_${emailHex}_${timestamp}`.substring(0, 64); // MySQL limit
+  return dbName;
 };
 
 /**
