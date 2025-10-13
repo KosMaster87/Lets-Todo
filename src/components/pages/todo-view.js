@@ -49,7 +49,7 @@ export const renderTodoViewPage = () => {
           )}</h3>
         </div>
 
-        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true">
+        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Schreibe hier den Inhalt deiner Todo...">
           ${escapeHtml(
             currentTodo.content ||
               currentTodo.title ||

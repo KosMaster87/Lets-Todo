@@ -1,5 +1,7 @@
 // lets-todo-app/src/services/action-buttons.js
 
+import { getTodoElements } from "./../../utils/dom-selectors.js";
+
 /**
  * Sets up action buttons with configurable handlers
  * @param {Object} config - Configuration object with button definitions
@@ -182,8 +184,7 @@ export const createContentClearHandler = (
     const { title, content } = getContentCallback();
     // console.log("Content clear handler content:", { title, content });
 
-    const titleElement = document.querySelector("#todoDisplayTitle");
-    const contentElement = document.querySelector("#todoContentDisplay");
+    const { titleElement, contentElement } = getTodoElements();
 
     if (!titleElement && !contentElement) {
       showMessage("Keine Todo-Elemente gefunden.");
@@ -300,7 +301,7 @@ export const fallbackCopy = (text) => {
  * @param {string} type - Message type (success, error, info)
  */
 export const showMessage = (message, type = "success") => {
-  console.log(`Action message (${type}):`, message);
+  // console.log(`Action message (${type}):`, message);
 
   const messageDiv = document.createElement("div");
   messageDiv.textContent = message;

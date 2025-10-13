@@ -148,7 +148,7 @@ const showValidTokenForm = (tokenResult) => {
   hideElement("tokenValidationStatus");
   hideElement("invalidTokenMessage");
 
-  showElement("resetPasswordConfirmForm");
+  showElement("resetPasswordConfirmMenu");
   showElement("resetUserInfo");
 
   const emailElement = document.getElementById("resetUserEmail");
@@ -171,7 +171,7 @@ const showValidTokenForm = (tokenResult) => {
  */
 const showInvalidTokenMessage = (message) => {
   hideElement("tokenValidationStatus");
-  hideElement("resetPasswordConfirmForm");
+  hideElement("resetPasswordConfirmMenu");
 
   showElement("invalidTokenMessage");
   console.error("Invalid token:", message);

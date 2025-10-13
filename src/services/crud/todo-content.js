@@ -1,12 +1,13 @@
 // lets-todo-app/src/services/crud/todo-content.js
 
+import { getTodoElements } from "./../../utils/dom-selectors.js";
+
 /**
  * Gets todo content from DOM elements
  * @returns {Object|null} Content object with elements and values, or null if elements not found
  */
 export const getTodoContentFromDOM = () => {
-  const titleElement = document.getElementById("todoDisplayTitle");
-  const contentElement = document.getElementById("todoContentDisplay");
+  const { titleElement, contentElement } = getTodoElements();
 
   if (!titleElement || !contentElement) {
     return null;
@@ -17,6 +18,8 @@ export const getTodoContentFromDOM = () => {
     contentElement,
     title: titleElement.textContent.trim(),
     content: contentElement.textContent.trim(),
+    titlePlaceholder: titleElement.getAttribute("data-placeholder"),
+    contentPlaceholder: contentElement.getAttribute("data-placeholder"),
   };
 };
 
@@ -25,8 +28,7 @@ export const getTodoContentFromDOM = () => {
  * @returns {Object} Object with title and content
  */
 export const getContentForActions = () => {
-  const titleElement = document.querySelector("#todoDisplayTitle");
-  const contentElement = document.querySelector("#todoContentDisplay");
+  const { titleElement, contentElement } = getTodoElements();
 
   const title = titleElement ? titleElement.textContent.trim() : "";
   const content = contentElement ? contentElement.textContent.trim() : "";
@@ -45,8 +47,7 @@ export const getContentForActions = () => {
  * Clears todo content for delete action
  */
 export const clearTodoContent = () => {
-  const titleElement = document.querySelector("#todoDisplayTitle");
-  const contentElement = document.querySelector("#todoContentDisplay");
+  const { titleElement, contentElement } = getTodoElements();
 
   if (titleElement) titleElement.textContent = "Neue Todo";
   if (contentElement) contentElement.textContent = "";
