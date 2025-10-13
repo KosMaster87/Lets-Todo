@@ -55,6 +55,7 @@ export const loginUser = async (userData) => {
       userId: result.userId,
       userEmail: userData.email,
       sessionId: `user_${result.userId}`,
+      remember: userData.remember || false,
     });
 
     try {

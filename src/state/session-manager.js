@@ -55,11 +55,19 @@ export const SessionManager = {
    * Saves current session data to storage
    * @param {Object} appState - Application state object
    * @param {Function} getCurrentView - Function to get current view
+   * @param {boolean} [remember] - Whether to use persistent storage (auto-detect if not provided)
    */
-  saveToStorage(appState, getCurrentView) {
+  saveToStorage(appState, getCurrentView, remember) {
     try {
       if (!appState.sessionType) {
         return;
+      }
+
+      // Auto-detect remember preference from existing session if not provided
+      if (remember === undefined) {
+        const existingSession = SessionPersistence.load();
+        remember = existingSession?.remember || false;
+        console.log(`🔍 Auto-detected remember preference: ${remember}`);
       }
 
       const sessionData = {
@@ -69,8 +77,9 @@ export const SessionManager = {
         userEmail: appState.userEmail,
         lastView: getCurrentView(),
         timestamp: Date.now(),
+        remember: remember,
       };
-      SessionPersistence.save(sessionData);
+      SessionPersistence.save(sessionData, remember);
     } catch (error) {
       console.error("Error saving session:", error);
     }
@@ -98,7 +107,8 @@ export const SessionManager = {
       this.reloadSessionData(appState);
     }
 
-    this.saveToStorage(appState, getCurrentView);
+    const remember = sessionData.remember || false;
+    this.saveToStorage(appState, getCurrentView, remember);
     notifyListeners();
   },
 
