@@ -153,27 +153,28 @@ const handleUserLogin = async (userData) => {
 
 /**
  * Shows login loading state
- * @param {boolean} loading - Loading state
+ * @param {boolean} isLoading - Loading state
  */
-const showLoginLoading = (loading) => {
+const showLoginLoading = (isLoading) => {
   const submitBtn = document.getElementById("loginSubmitBtn");
   if (submitBtn) {
     const btnContent = submitBtn.querySelector(".btn-content");
     const btnIcon = submitBtn.querySelector(".btn-icon");
 
-    submitBtn.disabled = loading;
+    submitBtn.disabled = isLoading;
 
     if (btnContent) {
       const h3 = btnContent.querySelector("h3");
       const p = btnContent.querySelector("p");
 
-      if (h3) h3.textContent = loading ? "Anmeldung läuft..." : "Anmelden";
+      if (h3) h3.textContent = isLoading ? "Anmeldung läuft..." : "Anmelden";
       if (p)
-        p.textContent = loading ? "Bitte warten..." : "In dein Konto einloggen";
+        p.textContent = isLoading
+          ? "Bitte warten..."
+          : "In dein Konto einloggen";
     }
 
-    // Add loading animation to button
-    if (loading) {
+    if (isLoading) {
       submitBtn.style.opacity = "0.7";
       if (btnIcon) btnIcon.style.animation = "spin 1s linear infinite";
     } else {

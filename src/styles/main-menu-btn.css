@@ -12,6 +12,23 @@
   cursor: pointer;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.258);
   height: 5rem;
+  transition: all 0.3s ease;
+}
+
+.menu-btn:hover::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  pointer-events: none;
+}
+
+.menu-btn {
+  position: relative;
 }
 
 .btn-icon {
@@ -28,6 +45,18 @@
 .btn-content p {
   font-size: 0.8rem;
   color: #666;
+}
+
+.dashboard-btn {
+  border-left: 4px solid #673ab7;
+}
+
+.dashboard-btn-icon {
+  background-color: #673ab7;
+  mask: url("/assets/icons/bookmark.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
 }
 
 .guest-btn {

@@ -98,8 +98,8 @@
   background: rgba(76, 175, 80, 0.05);
 }
 
-.todos-wrapper .todo-title:empty:before {
-  content: attr(data-placeholder);
+/* Placeholder styling handled by JavaScript, not CSS pseudo-elements */
+.todos-wrapper .todo-title.placeholder-active {
   color: #999;
   font-style: italic;
 }
@@ -124,10 +124,15 @@
   background: rgba(76, 175, 80, 0.05);
 }
 
-.todos-wrapper .todo-content-display:empty:before {
-  content: attr(data-placeholder);
+/* Placeholder für todo-content-display */
+.todos-wrapper .todo-content-display.placeholder-active {
   color: #999;
   font-style: italic;
+}
+
+.todos-wrapper .todo-content-display.placeholder-active:focus {
+  color: #333;
+  font-style: normal;
 }
 
 /* Todo Creation Actions */

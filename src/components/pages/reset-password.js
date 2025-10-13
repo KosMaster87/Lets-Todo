@@ -33,47 +33,49 @@ export const renderResetPasswordPage = () => {
         </p>
       </section>
 
-      <form class="reset-password-menu reset-password-form" id="resetPasswordForm">
+      <nav class="reset-password-menu">
         <!-- Error and Success Messages -->
         <div class="reset-password-error" id="resetPasswordError" style="display: none;"></div>
         <div class="reset-password-success" id="resetPasswordSuccess" style="display: none;"></div>
 
-        <div class="form-group">
-          <label for="resetEmail">E-Mail-Adresse</label>
-          <input
-            type="email"
-            id="resetEmail"
-            name="resetEmail"
-            placeholder="Deine E-Mail-Adresse"
-            required
-            autocomplete="email"
-          />
-        </div>
-
-        <button
-          type="submit"
-          class="menu-btn reset-password-submit-btn"
-          id="resetPasswordSubmitBtn"
-        >
-          <div class="btn-icon reset-password-submit-btn-icon"></div>
-          <div class="btn-content">
-            <h3>Reset-Link senden</h3>
-            <p>E-Mail mit Zurücksetzen-Link anfordern</p>
+        <form class="reset-password-form" id="resetPasswordForm">
+          <div class="form-group">
+            <label for="resetEmail">E-Mail-Adresse</label>
+            <input
+              type="email"
+              id="resetEmail"
+              name="resetEmail"
+              placeholder="Deine E-Mail-Adresse"
+              required
+              autocomplete="email"
+            />
           </div>
-        </button>
 
-        <button
-          type="button"
-          class="menu-btn reset-password-cancel-btn"
-          id="resetPasswordCancelBtn"
-        >
-          <div class="btn-icon reset-password-cancel-btn-icon"></div>
-          <div class="btn-content">
-            <h3>Zurück zum Login</h3>
-            <p>Passwort doch noch bekannt?</p>
-          </div>
-        </button>
-      </form>
+          <button
+            type="submit"
+            class="menu-btn reset-password-submit-btn"
+            id="resetPasswordSubmitBtn"
+          >
+            <div class="btn-icon reset-password-submit-btn-icon"></div>
+            <div class="btn-content">
+              <h3>Reset-Link senden</h3>
+              <p>E-Mail mit Zurücksetzen-Link anfordern</p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            class="menu-btn reset-password-cancel-btn"
+            id="resetPasswordCancelBtn"
+          >
+            <div class="btn-icon reset-password-cancel-btn-icon"></div>
+            <div class="btn-content">
+              <h3>Zurück zum Login</h3>
+              <p>Passwort doch noch bekannt?</p>
+            </div>
+          </button>
+        </form>
+      </nav>
     </main>
   `;
 };

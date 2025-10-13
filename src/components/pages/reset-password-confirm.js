@@ -45,7 +45,7 @@ export const renderResetPasswordConfirmPage = (token = "") => {
       </div>
 
       <!-- Reset Form (initially hidden) -->
-      <form class="reset-password-confirm-menu reset-password-confirm-form" id="resetPasswordConfirmForm" style="display: none;">
+      <nav class="reset-password-confirm-menu" id="resetPasswordConfirmMenu" style="display: none;">
         <!-- Error and Success Messages -->
         <div class="reset-password-confirm-error" id="resetPasswordConfirmError" style="display: none;"></div>
         <div class="reset-password-confirm-success" id="resetPasswordConfirmSuccess" style="display: none;"></div>
@@ -55,67 +55,69 @@ export const renderResetPasswordConfirmPage = (token = "") => {
           <p>Passwort zurücksetzen für: <strong id="resetUserEmail"></strong></p>
         </div>
 
-        <div class="form-group">
-          <label for="newPassword">Neues Passwort</label>
-          <input
-            type="password"
-            id="newPassword"
-            name="newPassword"
-            placeholder="Mindestens 6 Zeichen"
-            required
-            minlength="6"
-            autocomplete="new-password"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="confirmPassword">Passwort bestätigen</label>
-          <input
-            type="password"
-            id="confirmPassword"
-            name="confirmPassword"
-            placeholder="Passwort wiederholen"
-            required
-            minlength="6"
-            autocomplete="new-password"
-          />
-        </div>
-
-        <!-- Password Strength Indicator -->
-        <div class="password-strength" id="passwordStrength" style="display: none;">
-          <div class="strength-bar">
-            <div class="strength-fill" id="strengthFill"></div>
+        <form class="reset-password-confirm-form" id="resetPasswordConfirmForm">
+          <div class="form-group">
+            <label for="newPassword">Neues Passwort</label>
+            <input
+              type="password"
+              id="newPassword"
+              name="newPassword"
+              placeholder="Mindestens 6 Zeichen"
+              required
+              minlength="6"
+              autocomplete="new-password"
+            />
           </div>
-          <p class="strength-text" id="strengthText">Passwort-Stärke</p>
-        </div>
 
-        <button
-          type="submit"
-          class="menu-btn reset-password-confirm-submit-btn"
-          id="resetPasswordConfirmSubmitBtn"
-        >
-          <div class="btn-icon reset-password-confirm-submit-btn-icon"></div>
-          <div class="btn-content">
-            <h3>Passwort speichern</h3>
-            <p>Neues Passwort übernehmen</p>
+          <div class="form-group">
+            <label for="confirmPassword">Passwort bestätigen</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder="Passwort wiederholen"
+              required
+              minlength="6"
+              autocomplete="new-password"
+            />
           </div>
-        </button>
 
-        <button
-          type="button"
-          class="menu-btn reset-password-confirm-cancel-btn"
-          id="resetPasswordConfirmCancelBtn"
-        >
-          <div class="btn-icon reset-password-confirm-cancel-btn-icon"></div>
-          <div class="btn-content">
-            <h3>Zum Login</h3>
-            <p>Zurück zur Anmeldung</p>
+          <!-- Password Strength Indicator -->
+          <div class="password-strength" id="passwordStrength" style="display: none;">
+            <div class="strength-bar">
+              <div class="strength-fill" id="strengthFill"></div>
+            </div>
+            <p class="strength-text" id="strengthText">Passwort-Stärke</p>
           </div>
-        </button>
-      </form>
+
+          <button
+            type="submit"
+            class="menu-btn reset-password-confirm-submit-btn"
+            id="resetPasswordConfirmSubmitBtn"
+          >
+            <div class="btn-icon reset-password-confirm-submit-btn-icon"></div>
+            <div class="btn-content">
+              <h3>Passwort speichern</h3>
+              <p>Neues Passwort übernehmen</p>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            class="menu-btn reset-password-confirm-cancel-btn"
+            id="resetPasswordConfirmCancelBtn"
+          >
+            <div class="btn-icon reset-password-confirm-cancel-btn-icon"></div>
+            <div class="btn-content">
+              <h3>Zum Login</h3>
+              <p>Zurück zur Anmeldung</p>
+            </div>
+          </button>
+        </form>
+      </nav>
 
       <!-- Invalid Token Message (initially hidden) -->
-      <div class="invalid-token-message" id="invalidTokenMessage" style="display: none;">
+      <nav class="invalid-token-message" id="invalidTokenMessage" style="display: none;">
         <div class="error-icon">⚠️</div>
         <h3>Ungültiger oder abgelaufener Link</h3>
         <p>Dieser Reset-Link ist nicht mehr gültig. Bitte fordere einen neuen an.</p>
@@ -143,7 +145,7 @@ export const renderResetPasswordConfirmPage = (token = "") => {
             <p>Zurück zur Anmeldung</p>
           </div>
         </button>
-      </div>
+      </nav>
     </main>
   `;
 };

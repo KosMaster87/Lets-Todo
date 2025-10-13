@@ -108,7 +108,22 @@ const setSubmitButtonState = (isLoading) => {
   const submitBtn = document.getElementById("changePasswordSubmitBtn");
   if (submitBtn) {
     submitBtn.disabled = isLoading;
-    submitBtn.textContent = isLoading ? "Changing..." : "Change Password";
+
+    // Update the button content while preserving icon structure
+    const btnContentH3 = submitBtn.querySelector(".btn-content h3");
+    const btnContentP = submitBtn.querySelector(".btn-content p");
+
+    if (btnContentH3 && btnContentP) {
+      if (isLoading) {
+        btnContentH3.textContent = "Wird gespeichert...";
+        btnContentP.textContent = "Bitte warten";
+        submitBtn.classList.add("loading");
+      } else {
+        btnContentH3.textContent = "Passwort speichern";
+        btnContentP.textContent = "Neues Passwort übernehmen";
+        submitBtn.classList.remove("loading");
+      }
+    }
   }
 };
 
