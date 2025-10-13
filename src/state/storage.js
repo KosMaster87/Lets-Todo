@@ -138,6 +138,54 @@ export const StorageManager = {
   // === UTILITY FUNCTIONS ===
 
   /**
+   * Save data to storage type dynamically based on remember preference
+   * @param {boolean} remember - Whether to use persistent storage
+   * @param {string} key - Storage key
+   * @param {any} data - Data to store
+   */
+  setAuthData(remember, key, data) {
+    const storageType = remember ? StorageTypes.LOCAL : StorageTypes.SESSION;
+    console.log(`💾 Saving auth data to ${storageType} storage (remember: ${remember})`);
+
+    if (remember) {
+      this.setLocalData(key, data);
+    } else {
+      this.setSessionData(key, data);
+    }
+  },
+
+  /**
+   * Load auth data from either storage type
+   * @param {string} key - Storage key
+   * @returns {any|null} Auth data or null
+   */
+  getAuthData(key) {
+    const localData = this.getLocalData(key);
+    if (localData) {
+      console.log(`🔓 Auth data loaded from localStorage (persistent)`);
+      return localData;
+    }
+
+    const sessionData = this.getSessionData(key);
+    if (sessionData) {
+      console.log(`🔓 Auth data loaded from sessionStorage (temporary)`);
+      return sessionData;
+    }
+
+    return null;
+  },
+
+  /**
+   * Remove auth data from both storage types
+   * @param {string} key - Storage key
+   */
+  removeAuthData(key) {
+    this.removeData(StorageTypes.LOCAL, key);
+    this.removeData(StorageTypes.SESSION, key);
+    console.log(`🗑️ Auth data removed from both storage types`);
+  },
+
+  /**
    * Remove data from specific storage type
    * @param {string} type - Storage type (session|local|memory)
    * @param {string} key - Storage key

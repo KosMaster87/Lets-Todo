@@ -134,14 +134,12 @@ export const TrashPersistence = {
  */
 export const SessionPersistence = {
   /**
-   * Loads session data using StorageManager
+   * Loads session data using StorageManager (checks both storage types)
    * @returns {Object|null} Session object or null
    */
   load() {
     try {
-      const session = StorageManager.getSessionData(
-        StorageKeys.SESSION.AUTH_DATA
-      );
+      const session = StorageManager.getAuthData(StorageKeys.SESSION.AUTH_DATA);
       return session;
     } catch (error) {
       console.error("Error loading session:", error);
@@ -150,23 +148,34 @@ export const SessionPersistence = {
   },
 
   /**
-   * Saves session data using StorageManager
+   * Saves session data using StorageManager with remember preference
    * @param {Object} sessionData - Session data to save
+   * @param {boolean} [remember=false] - Whether to use persistent storage
    */
-  save(sessionData) {
+  save(sessionData, remember = false) {
     try {
-      StorageManager.setSessionData(StorageKeys.SESSION.AUTH_DATA, sessionData);
+      if (remember) {
+        StorageManager.removeData("session", StorageKeys.SESSION.AUTH_DATA);
+      } else {
+        StorageManager.removeData("local", StorageKeys.SESSION.AUTH_DATA);
+      }
+
+      StorageManager.setAuthData(
+        remember,
+        StorageKeys.SESSION.AUTH_DATA,
+        sessionData
+      );
     } catch (error) {
       console.error("Error saving session:", error);
     }
   },
 
   /**
-   * Removes session data from storage
+   * Removes session data from both storage types
    */
   clear() {
     try {
-      StorageManager.removeData("session", StorageKeys.SESSION.AUTH_DATA);
+      StorageManager.removeAuthData(StorageKeys.SESSION.AUTH_DATA);
     } catch (error) {
       console.error("Error clearing session:", error);
     }
