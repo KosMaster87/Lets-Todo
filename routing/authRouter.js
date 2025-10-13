@@ -86,9 +86,10 @@ router.post("/register", async (req, res) => {
  * @param {Object} req.body - Login-Daten
  * @param {string} req.body.email - E-Mail-Adresse
  * @param {string} req.body.password - Passwort
+ * @param {boolean} [req.body.remember] - "Remember Me" Option für persistenten Login
  */
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, remember = false } = req.body;
   const validation = validateLoginInput(email, password);
 
   if (!validation.valid) {
@@ -117,6 +118,7 @@ router.post("/login", async (req, res) => {
 
     return sendSuccess(res, "Login erfolgreich. Willkommen zurück!", {
       userId: result.user.id,
+      remember: remember,
     });
   } catch (err) {
     return sendServerError(res, "Login-Fehler");
