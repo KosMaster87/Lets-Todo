@@ -55,12 +55,27 @@
   font-weight: 700;
   text-align: center;
   cursor: pointer;
-  transition: color 0.3s ease;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .todo-title:hover {
   color: #2196f3;
-  text-decoration: underline;
+}
+
+.todo-title:focus {
+  outline: none;
+  border-color: #4caf50;
+  background: rgba(76, 175, 80, 0.05);
+  text-decoration: none;
+}
+
+/* Placeholder styling for todo-title */
+.todo-title.placeholder-active {
+  color: #999;
+  font-style: italic;
 }
 
 .todo-content-display {
