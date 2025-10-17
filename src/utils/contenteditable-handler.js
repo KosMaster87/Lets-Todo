@@ -11,6 +11,9 @@ import {
   validateTodoContent,
 } from "./../services/crud/todo-validation.js";
 
+// Debug mode - set to true to enable console logging
+const DEBUG_MODE = true;
+
 /**
  * Sets up contenteditable handlers for todo title and content elements
  * @param {Object} options - Configuration options
@@ -207,6 +210,18 @@ export function initializePlaceholders() {
  * @param {HTMLElement} element - The contenteditable element
  */
 function setCursorToStart(element) {
+  if (DEBUG_MODE) {
+    console.log(
+      "🎯 setCursorToStart called for:",
+      element.id || element.className
+    );
+    console.log(
+      "  - Element content:",
+      element.textContent?.substring(0, 50) + "..."
+    );
+    console.log("  - Child nodes count:", element.childNodes.length);
+  }
+
   try {
     const range = document.createRange();
     const selection = window.getSelection();
@@ -224,17 +239,47 @@ function setCursorToStart(element) {
       let targetNode = element;
       let targetOffset = 0;
 
-      // Walk through child nodes to find the first text node
+      // Walk through child nodes to find the first meaningful text node
       for (let i = 0; i < element.childNodes.length; i++) {
         const node = element.childNodes[i];
         if (node.nodeType === Node.TEXT_NODE) {
-          targetNode = node;
-          targetOffset = 0;
+          const text = node.textContent || "";
+          // Skip leading whitespace to find first meaningful character
+          const trimmedStartIndex = text.search(/\S/);
+
+          if (trimmedStartIndex >= 0) {
+            // Found meaningful text, position at first non-whitespace character
+            targetNode = node;
+            targetOffset = trimmedStartIndex;
+            if (DEBUG_MODE) {
+              console.log(
+                `  - Found text node with content, positioning at index ${trimmedStartIndex}`
+              );
+              console.log(
+                `  - Text preview: "${text.substring(
+                  trimmedStartIndex,
+                  trimmedStartIndex + 20
+                )}..."`
+              );
+            }
+          } else {
+            // This is a whitespace-only text node, position at start
+            targetNode = node;
+            targetOffset = 0;
+            if (DEBUG_MODE) {
+              console.log(
+                "  - Found whitespace-only text node, positioning at start"
+              );
+            }
+          }
           break;
         } else if (node.nodeType === Node.ELEMENT_NODE) {
           // Position before this element
           targetNode = element;
           targetOffset = i;
+          if (DEBUG_MODE) {
+            console.log("  - Found element node, positioning before it");
+          }
           break;
         }
       }
@@ -248,6 +293,10 @@ function setCursorToStart(element) {
 
     // Ensure the element stays focused
     element.focus();
+
+    if (DEBUG_MODE) {
+      console.log("✅ Cursor positioned successfully");
+    }
   } catch (error) {
     console.warn("Could not set cursor position:", error);
     // Fallback: just focus the element
