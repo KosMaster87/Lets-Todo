@@ -12,7 +12,7 @@ import {
 } from "./../services/crud/todo-validation.js";
 
 // Debug mode - set to true to enable console logging
-const DEBUG_MODE = true;
+const DEBUG_MODE = false;
 
 /**
  * Sets up contenteditable handlers for todo title and content elements
