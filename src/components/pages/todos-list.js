@@ -73,15 +73,13 @@ export const renderTodosList = (todos) => {
         <h3 class="todo-title">${escapeHtml(todo.title || "Untitled")}</h3>
       </div>
 
-      <div class="todo-content-display">
-        ${(() => {
-          const rawContent =
-            todo.content || todo.title || "Kein Inhalt vorhanden...";
-          const truncated = rawContent.substring(0, 150);
-          const hasMore = rawContent.length > 150;
-          return escapeHtml(truncated) + (hasMore ? "..." : "");
-        })()}
-      </div>
+      <div class="todo-content-display">${(() => {
+        const rawContent =
+          todo.content || todo.title || "Kein Inhalt vorhanden...";
+        const truncated = rawContent.substring(0, 150);
+        const hasMore = rawContent.length > 150;
+        return escapeHtml(truncated) + (hasMore ? "..." : "");
+      })()}</div>
 
       ${renderListActionButtons(todo)}
 

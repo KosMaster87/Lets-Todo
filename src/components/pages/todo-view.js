@@ -49,13 +49,9 @@ export const renderTodoViewPage = () => {
           )}</h3>
         </div>
 
-        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Schreibe hier den Inhalt deiner Todo...">
-          ${escapeHtml(
-            currentTodo.content ||
-              currentTodo.title ||
-              "Kein Inhalt vorhanden..."
-          )}
-        </div>
+        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Schreibe hier den Inhalt deiner Todo...">${escapeHtml(
+          currentTodo.content || currentTodo.title || "Kein Inhalt vorhanden..."
+        )}</div>
 
         ${renderSingleActionButtons(currentTodo)}
 
@@ -132,6 +128,7 @@ const formatDate = (date) => {
 
 /**
  * Escapes HTML characters in text
+ * Prevented XSS-Attacks
  * @param {string} text - Text to escape
  * @returns {string} Escaped text
  */
