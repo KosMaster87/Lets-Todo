@@ -160,11 +160,16 @@ export const setLoading = (loading) => {
 };
 
 /**
- * Sets user preferences using UIStateManager.
+ * Sets user preferences using UIStateManager with async API sync support.
  * @param {Object} preferences - New preferences
+ * @returns {Promise<void>}
  */
-export const setUserPreferences = (preferences) => {
-  UIStateManager.setUserPreferences(appState, preferences, notifyListeners);
+export const setUserPreferences = async (preferences) => {
+  await UIStateManager.setUserPreferences(
+    appState,
+    preferences,
+    notifyListeners
+  );
 };
 
 /**
@@ -315,19 +320,19 @@ export const removeNotification = (notificationId) => {
 // === DATA PERSISTENCE (Delegated to DataPersistence) ===
 
 /**
- * Initializes all stored data (called explicitly from app.js)
- * @returns {void}
+ * Initializes all stored data with async API sync support (called explicitly from app.js)
+ * @returns {Promise<void>}
  */
-export const initializeStoredData = () => {
-  AppInitializer.initialize(appState, notifyListeners);
+export const initializeStoredData = async () => {
+  await AppInitializer.initialize(appState, notifyListeners);
 };
 
 /**
- * Re-initializes all stored data (useful for testing or manual refresh)
- * @returns {void}
+ * Re-initializes all stored data with async API sync support (useful for testing or manual refresh)
+ * @returns {Promise<void>}
  */
-export const reinitializeStoredData = () => {
-  AppInitializer.initialize(appState, notifyListeners);
+export const reinitializeStoredData = async () => {
+  await AppInitializer.initialize(appState, notifyListeners);
   notifyListeners();
 };
 

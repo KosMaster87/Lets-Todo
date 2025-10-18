@@ -1,5 +1,7 @@
 // lets-todo-app/src/state/storage.js
 
+import { getApiBase, apiHandler } from "./../utils/api-handler.js";
+
 /**
  * Storage Management System
  * Provides unified API for sessionStorage, localStorage, and memory storage
@@ -197,25 +199,47 @@ export const PreferencesManager = {
    */
   load(defaultPreferences = {}) {
     try {
-      const savedPrefs = StorageManager.getLocalData(
-        StorageKeys.LOCAL.USER_PREFERENCES
-      );
-      if (savedPrefs) {
-        const mergedPrefs = {
-          ...defaultPreferences,
-          ...savedPrefs,
-        };
-        // console.log("✅ User preferences loaded from storage");
-        return mergedPrefs;
-      } else {
-        console.log("ℹ️ No saved preferences found, using defaults");
-        return defaultPreferences;
-      }
+      const savedPrefs = this.loadSavedPreferences();
+      return this.processLoadedPreferences(savedPrefs, defaultPreferences);
     } catch (error) {
       console.error("❌ Error loading user preferences:", error);
       return defaultPreferences;
     }
   },
+
+  /**
+   * Loads saved preferences from storage
+   * @returns {Object|null} Saved preferences or null
+   */
+  loadSavedPreferences() {
+    return StorageManager.getLocalData(StorageKeys.LOCAL.USER_PREFERENCES);
+  },
+
+  /**
+   * Processes found preferences or returns defaults
+   * @param {Object} savedPrefs - Saved preferences or null
+   * @param {Object} defaultPrefs - Default preferences
+   * @returns {Object} Final preferences
+   */
+  processLoadedPreferences(savedPrefs, defaultPrefs) {
+    if (savedPrefs) {
+      return this.mergePreferences(defaultPrefs, savedPrefs);
+    } else {
+      console.log("ℹ️ No saved preferences found, using defaults");
+      return defaultPrefs;
+    }
+  },
+
+  /**
+   * Merges saved preferences with defaults
+   * @param {Object} defaultPrefs - Default preferences
+   * @param {Object} savedPrefs - Saved preferences
+   * @returns {Object} Merged preferences
+   */
+  mergePreferences: (defaultPrefs, savedPrefs) => ({
+    ...defaultPrefs,
+    ...savedPrefs,
+  }),
 
   /**
    * Save user preferences to localStorage
@@ -245,5 +269,147 @@ export const PreferencesManager = {
     } catch (error) {
       console.error("❌ Error clearing user preferences:", error);
     }
+  },
+
+  /**
+   * Syncs preferences from server to localStorage for registered users
+   * @param {string} sessionType - Current session type ('guest' | 'user')
+   * @returns {Promise<Object|null>} Server preferences or null
+   */
+  async syncFromServer(sessionType) {
+    if (sessionType !== "user") {
+      return null;
+    }
+
+    try {
+      const endpoint = this.createPreferencesEndpoint();
+      const response = await apiHandler(endpoint, "GET");
+
+      if (response.success && response.preferences) {
+        return this.processServerPreferences(response);
+      }
+
+      return this.handleServerSyncFailure(response);
+    } catch (error) {
+      console.error("❌ Error syncing preferences from server:", error);
+      return null;
+    }
+  },
+
+  /**
+   * Creates preferences endpoint URL
+   * @returns {string} Full API endpoint URL for user preferences
+   */
+  createPreferencesEndpoint() {
+    const API_BASE = getApiBase();
+    return `${API_BASE}/user/preferences`;
+  },
+
+  /**
+   * Processes successful server preferences response
+   * @param {Object} response - Server response
+   * @returns {Object} Processed preferences
+   */
+  processServerPreferences(response) {
+    const preferences = response.preferences;
+    this.save(preferences);
+    console.log("✅ Preferences synced from server:", preferences);
+    return preferences;
+  },
+
+  /**
+   * Handles server sync failure
+   * @param {Object} response - Failed server response
+   * @returns {null}
+   */
+  handleServerSyncFailure(response) {
+    console.warn("⚠️ Server sync failed:", response.message || "Unknown error");
+    return null;
+  },
+
+  /**
+   * Syncs preferences from localStorage to server for registered users
+   * @param {Object} preferences - Preferences to sync
+   * @param {string} sessionType - Current session type ('guest' | 'user')
+   * @returns {Promise<boolean>} Success status
+   */
+  async syncToServer(preferences, sessionType) {
+    if (sessionType !== "user") {
+      console.log("ℹ️ Skipping server sync for guest session");
+      return true; // Success for guests (they use localStorage only)
+    }
+
+    try {
+      console.log("🔄 Syncing preferences to server...", preferences);
+
+      const endpoint = this.createPreferencesEndpoint();
+      const response = await apiHandler(endpoint, "PUT", preferences);
+
+      if (response.success) {
+        return this.handleSyncToServerSuccess();
+      }
+
+      return this.handleSyncToServerFailure(response);
+    } catch (error) {
+      console.error("❌ Error syncing preferences to server:", error);
+      return false;
+    }
+  },
+
+  /**
+   * Handles successful server sync
+   * @returns {boolean} Success status
+   */
+  handleSyncToServerSuccess() {
+    console.log("✅ Preferences synced to server successfully");
+    return true;
+  },
+
+  /**
+   * Handles server sync failure for syncToServer
+   * @param {Object} response - Failed server response
+   * @returns {boolean} Failure status
+   */
+  handleSyncToServerFailure(response) {
+    console.warn("⚠️ Server sync failed:", response.message || "Unknown error");
+    return false;
+  },
+
+  /**
+   * Smart sync: Load from server if user, otherwise use localStorage
+   * @param {string} sessionType - Current session type ('guest' | 'user')
+   * @param {Object} defaultPreferences - Fallback preferences
+   * @returns {Promise<Object>} Final preferences object
+   */
+  async autoSync(sessionType, defaultPreferences = {}) {
+    if (this.isUserSession(sessionType)) {
+      return await this.handleUserSync(sessionType, defaultPreferences);
+    } else {
+      return this.load(defaultPreferences);
+    }
+  },
+
+  /**
+   * Checks if user session requires server sync
+   * @param {string} sessionType - Current session type
+   * @returns {boolean} True if user session
+   */
+  isUserSession: (sessionType) => sessionType === "user",
+
+  /**
+   * Handles preferences sync for user sessions
+   * @param {string} sessionType - Current session type
+   * @param {Object} defaultPreferences - Fallback preferences
+   * @returns {Promise<Object>} User preferences
+   */
+  async handleUserSync(sessionType, defaultPreferences) {
+    const serverPrefs = await this.syncFromServer(sessionType);
+
+    if (serverPrefs) {
+      return serverPrefs;
+    }
+
+    console.log("🔄 Server sync failed, using localStorage fallback");
+    return this.load(defaultPreferences);
   },
 };

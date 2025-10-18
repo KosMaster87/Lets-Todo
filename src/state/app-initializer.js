@@ -12,31 +12,31 @@ import { TodosPersistence, TrashPersistence } from "./data-persistence.js";
 
 export const AppInitializer = {
   /**
-   * Loads and initializes all application data
+   * Loads and initializes all application data with smart sync
    * @param {Object} appState - Application state object
    * @param {Function} notifyListeners - Function to notify state listeners
-   * @returns {Object} Loaded data object
+   * @returns {Promise<Object>} Loaded data object
    */
-  loadAllData(appState, notifyListeners) {
+  async loadAllData(appState, notifyListeners) {
     // console.log("🚀 Starting application data initialization...");
 
-    // 1. Load core data using persistence modules
+    // 1. Load session data first to determine session type
+    SessionManager.loadFromStorage(appState, notifyListeners);
+
+    // 2. Load preferences with smart sync based on session type
+    const userPreferences = await PreferencesManager.autoSync(
+      appState.sessionType,
+      appState.userPreferences
+    );
+
+    // 3. Load core data using persistence modules
     const loadedData = {
       todos: TodosPersistence.load(appState.sessionType),
       trashedTodos: TrashPersistence.load(appState.sessionType),
-      userPreferences: PreferencesManager.load(appState.userPreferences),
+      userPreferences: userPreferences,
     };
 
-    // 2. Load session data (this may modify appState.sessionType)
-    SessionManager.loadFromStorage(appState, notifyListeners);
-
-    // 3. Re-load todos/trash if session changed during load
-    if (appState.sessionType) {
-      loadedData.todos = TodosPersistence.load(appState.sessionType);
-      loadedData.trashedTodos = TrashPersistence.load(appState.sessionType);
-    }
-
-    // 4. Save preferences to ensure storage is up to date
+    // 4. Save preferences to ensure localStorage is up to date
     PreferencesManager.save(loadedData.userPreferences);
 
     // console.log("✅ Application data initialization complete");
@@ -63,12 +63,13 @@ export const AppInitializer = {
   },
 
   /**
-   * Complete application initialization
+   * Complete application initialization with async support
    * @param {Object} appState - Application state object
    * @param {Function} notifyListeners - Function to notify state listeners
+   * @returns {Promise<void>}
    */
-  initialize(appState, notifyListeners) {
-    const loadedData = this.loadAllData(appState, notifyListeners);
+  async initialize(appState, notifyListeners) {
+    const loadedData = await this.loadAllData(appState, notifyListeners);
 
     Object.assign(appState, {
       todos: loadedData.todos,

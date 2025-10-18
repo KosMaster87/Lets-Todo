@@ -8,6 +8,7 @@ import {
   setTrashedTodos,
   addListener,
   getSessionType,
+  getUserPreferences,
 } from "./state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
@@ -17,14 +18,15 @@ import {
 } from "./services/navigation/navigation.js";
 
 /**
- * Initializes the entire Let's Todo application:
+ * Initializes the entire Let's Todo application with async API sync support:
  * Loads stored data, sets up user preferences, theme system, session status,
  * navigation, state listeners, renders all components,
  * and enables scroll management.
  */
-const initializeApp = () => {
+const initializeApp = async () => {
   registerStateListeners();
-  initializeStoredData();
+  initializeTheme();
+  await initializeStoredData();
 
   const currentTodos = getTodos();
   const currentTrashedTodos = getTrashedTodos();
@@ -72,6 +74,22 @@ const renderAllComponents = () => {
  */
 const setupComponentEventListeners = () => {
   setupNavigationListeners();
+};
+
+/**
+ * Initializes the theme system by loading saved theme preference.
+ * First paint setup for consistent theming using same storage as AppInitializer.
+ */
+const initializeTheme = () => {
+  try {
+    const preferences = getUserPreferences();
+    const savedTheme = preferences?.theme || "light";
+    document.body.setAttribute("data-theme", savedTheme);
+    console.log(`Theme initialized: ${savedTheme}`);
+  } catch (error) {
+    console.error("Failed to load theme preference:", error);
+    document.body.setAttribute("data-theme", "light");
+  }
 };
 
 /**

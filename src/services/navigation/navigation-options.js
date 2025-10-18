@@ -2,6 +2,7 @@
 
 import { handleNavigationClick } from "./navigation.js";
 import { VIEWS } from "./../../utils/constants.js";
+import { setUserPreferences, getUserPreferences } from "./../../state.js";
 
 /**
  * Sets up options navigation buttons.
@@ -36,17 +37,28 @@ const setupOptionsFormHandlers = () => {
 };
 
 /**
- * Handles theme toggle functionality.
- * @param {Event} event - Click event
+ * Handles theme toggle functionality with async API sync support
+ * @param {Event} event - Click event from theme toggle button
  */
-const handleThemeToggle = (event) => {
-  event.preventDefault();
+const handleThemeToggle = async (event) => {
+  try {
+    // Get current theme preference
+    const currentPreferences = getUserPreferences();
+    const currentTheme = currentPreferences?.theme || "light";
+    const newTheme = currentTheme === "light" ? "dark" : "light";
 
-  // TODO: Implement actual theme toggle logic
-  console.log("Theme toggle clicked");
-
-  // For now, show a placeholder message
-  showOptionsMessage("Theme-Wechsel wird noch implementiert.");
+    // Update preferences with API sync for registered users
+    await setUserPreferences({ theme: newTheme });
+    console.log(`Theme switched to: ${newTheme}`);
+    showOptionsMessage(
+      `Theme zu ${newTheme === "dark" ? "Dunkel" : "Hell"} gewechselt!`
+    );
+  } catch (error) {
+    console.error("Failed to persist theme preference:", error);
+    showOptionsMessage(
+      "Theme gewechselt, aber Einstellung konnte nicht gespeichert werden."
+    );
+  }
 };
 
 /**

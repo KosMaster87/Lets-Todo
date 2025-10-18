@@ -40,21 +40,48 @@ export const UIStateManager = {
   },
 
   /**
-   * Sets user preferences and applies them immediately
+   * Sets user preferences and applies them immediately with API sync for registered users
    * @param {Object} appState - Application state object
    * @param {Object} preferences - New preferences
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  setUserPreferences(appState, preferences, notifyListeners) {
+  async setUserPreferences(appState, preferences, notifyListeners) {
+    // Update state immediately for better UX
     appState.userPreferences = {
       ...appState.userPreferences,
       ...preferences,
     };
-    PreferencesManager.save(appState.userPreferences);
 
     // Apply theme immediately
     if (preferences.theme) {
       document.body.setAttribute("data-theme", preferences.theme);
+    }
+
+    // Save to localStorage first (primary storage)
+    PreferencesManager.save(appState.userPreferences);
+
+    // Sync to server for registered users (background operation)
+    if (appState.sessionType === "user") {
+      console.log("🔄 Auto-syncing preferences to server for registered user");
+
+      try {
+        const syncSuccess = await PreferencesManager.syncToServer(
+          appState.userPreferences,
+          appState.sessionType
+        );
+
+        if (syncSuccess) {
+          console.log("✅ Preferences successfully synced to server");
+        } else {
+          console.warn("⚠️ Preferences saved locally but server sync failed");
+          // Still consider this a success since localStorage is primary storage
+        }
+      } catch (error) {
+        console.error(
+          "❌ Server sync error (preferences still saved locally):",
+          error
+        );
+      }
     }
 
     notifyListeners();
