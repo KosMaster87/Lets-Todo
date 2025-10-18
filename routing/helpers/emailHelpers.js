@@ -1,7 +1,7 @@
 // lets-todo-api/routing/helpers/emailHelpers.js
 
-import { emailService } from "../../services/emailService.js";
-import { debugLog, errorLog } from "../../config/environment.js";
+import { emailService } from "./../../services/emailService.js";
+import { debugLog, errorLog } from "./../../config/environment.js";
 
 /**
  * Sends password reset email with error handling
@@ -12,23 +12,66 @@ import { debugLog, errorLog } from "../../config/environment.js";
  */
 export const sendPasswordResetEmail = async (email, resetToken, user) => {
   try {
-    const fullName =
-      `${user.firstName || ""} ${user.lastName || ""}`.trim() || null;
-
+    const fullName = constructFullName(user);
     const emailResult = await emailService.sendPasswordResetEmail(
       email,
       resetToken,
       fullName
     );
 
-    debugLog(
-      `📧 Password-Reset-E-Mail versendet: ${emailResult.messageId} (${emailResult.mode})`
-    );
-
-    return { success: true, result: emailResult };
+    logEmailSuccess(emailResult);
+    return createEmailSuccessResponse(emailResult);
   } catch (emailError) {
-    errorLog("❌ Fehler beim E-Mail-Versand:", emailError.message);
-    // Trotzdem erfolgreich behandeln (Security: keine Info über E-Mail-Probleme)
-    return { success: false, error: emailError };
+    logEmailError(emailError);
+    return createEmailErrorResponse(emailError);
   }
 };
+
+/**
+ * Constructs full name from user object
+ * @param {Object} user - User object with firstName and lastName
+ * @returns {string|null} - Full name or null
+ */
+const constructFullName = (user) => {
+  const fullName = `${user.firstName || ""} ${user.lastName || ""}`.trim();
+  return fullName || null;
+};
+
+/**
+ * Logs successful email sending
+ * @param {Object} emailResult - Email result object
+ */
+const logEmailSuccess = (emailResult) => {
+  debugLog(
+    `📧 Password reset email sent: ${emailResult.messageId} (${emailResult.mode})`
+  );
+};
+
+/**
+ * Logs email sending error
+ * @param {Error} emailError - Email error object
+ */
+const logEmailError = (emailError) => {
+  errorLog("❌ Error sending email:", emailError.message);
+  // Still handle as successful (Security: no info about email problems)
+};
+
+/**
+ * Creates email success response
+ * @param {Object} emailResult - Email result object
+ * @returns {Object} - Success response
+ */
+const createEmailSuccessResponse = (emailResult) => ({
+  success: true,
+  result: emailResult,
+});
+
+/**
+ * Creates email error response
+ * @param {Error} emailError - Email error object
+ * @returns {Object} - Error response
+ */
+const createEmailErrorResponse = (emailError) => ({
+  success: false,
+  error: emailError,
+});

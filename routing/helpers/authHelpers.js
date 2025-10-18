@@ -20,12 +20,9 @@ export const hashPassword = async (password) => {
  */
 export const validateRegisterInput = (email, password) => {
   if (!email || !password) {
-    return {
-      valid: false,
-      error: "Email und Passwort erforderlich",
-    };
+    return createValidationError("Email and password are required");
   }
-  return { valid: true };
+  return createValidationSuccess();
 };
 
 /**
@@ -36,12 +33,9 @@ export const validateRegisterInput = (email, password) => {
  */
 export const validateLoginInput = (email, password) => {
   if (!email || !password) {
-    return {
-      valid: false,
-      error: "E-Mail und Passwort sind erforderlich.",
-    };
+    return createValidationError("Email and password are required");
   }
-  return { valid: true };
+  return createValidationSuccess();
 };
 
 /**
@@ -65,6 +59,26 @@ export const verifyPassword = async (password, hash) => {
 };
 
 /**
+ * Validates password length requirement
+ * @param {string} password - Password to validate
+ * @returns {boolean} - True if password meets length requirement
+ */
+const isValidPasswordLength = (password) => password.length >= 6;
+
+/**
+ * Creates validation error for missing fields
+ * @param {string} message - Error message
+ * @returns {Object} - Validation error object
+ */
+const createValidationError = (message) => ({ valid: false, error: message });
+
+/**
+ * Creates validation success object
+ * @returns {Object} - Validation success object
+ */
+const createValidationSuccess = () => ({ valid: true });
+
+/**
  * Validates input for password change
  * @param {string} currentPassword - Current password
  * @param {string} newPassword - New password
@@ -72,20 +86,16 @@ export const verifyPassword = async (password, hash) => {
  */
 export const validateChangePasswordInput = (currentPassword, newPassword) => {
   if (!currentPassword || !newPassword) {
-    return {
-      valid: false,
-      error: "Aktuelles und neues Passwort sind erforderlich",
-    };
+    return createValidationError("Current and new password are required");
   }
 
-  if (newPassword.length < 6) {
-    return {
-      valid: false,
-      error: "Neues Passwort muss mindestens 6 Zeichen lang sein",
-    };
+  if (!isValidPasswordLength(newPassword)) {
+    return createValidationError(
+      "New password must be at least 6 characters long"
+    );
   }
 
-  return { valid: true };
+  return createValidationSuccess();
 };
 
 /**
@@ -96,18 +106,14 @@ export const validateChangePasswordInput = (currentPassword, newPassword) => {
  */
 export const validateResetPasswordInput = (token, newPassword) => {
   if (!token || !newPassword) {
-    return {
-      valid: false,
-      error: "Token und neues Passwort sind erforderlich",
-    };
+    return createValidationError("Token and new password are required");
   }
 
-  if (newPassword.length < 6) {
-    return {
-      valid: false,
-      error: "Neues Passwort muss mindestens 6 Zeichen lang sein",
-    };
+  if (!isValidPasswordLength(newPassword)) {
+    return createValidationError(
+      "New password must be at least 6 characters long"
+    );
   }
 
-  return { valid: true };
+  return createValidationSuccess();
 };
