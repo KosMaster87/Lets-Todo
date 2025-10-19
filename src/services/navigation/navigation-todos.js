@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/navigation-todos.js
+/**
+ * @fileoverview Navigation event handling for individual todo view (create/edit)
+ * @module navigation-todos
+ */
 
 import { navigateToView } from "./navigation.js";
 import { VIEWS } from "./../../utils/constants.js";
@@ -20,7 +23,9 @@ let currentBookmarkState = false;
 let currentCompletedState = false;
 
 /**
- * Sets up all navigation event handlers for the todo view (both new and edit).
+ * @function setupTodosNavigation
+ * @description Sets up all navigation event handlers for the todo view (both new and edit)
+ * @returns {void} No return value - performs event handler registration
  */
 export function setupTodosNavigation() {
   setupTodosMenuNavigation();
@@ -31,7 +36,9 @@ export function setupTodosNavigation() {
 }
 
 /**
- * Sets up navigation for the todos menu (cancel and save buttons).
+ * @function setupTodosMenuNavigation
+ * @description Sets up navigation for the todos menu (cancel and save buttons)
+ * @returns {void} No return value - performs event listener registration
  */
 function setupTodosMenuNavigation() {
   const cancelBtn = document.getElementById("todosCancelBtn");
@@ -49,24 +56,39 @@ function setupTodosMenuNavigation() {
 }
 
 /**
- * Sets up action buttons using the specialized todo-action-setup service.
+ * @function setupTodosActionButtonsWrapper
+ * @description Sets up action buttons using the specialized todo-action-setup service
+ * @returns {void} No return value - performs action button configuration
  */
 function setupTodosActionButtonsWrapper() {
+  const stateHandlers = createStateHandlers();
   setupTodosActionButtons(
     currentBookmarkState,
-    (state) => {
-      currentBookmarkState = state;
-    },
+    stateHandlers.bookmarkHandler,
     currentCompletedState,
-    (state) => {
-      currentCompletedState = state;
-    },
+    stateHandlers.completedHandler,
     resetBookmarkState
   );
 }
 
 /**
- * Initializes the bookmark and completed states from the form state.
+ * @function createStateHandlers
+ * @description Creates state update handlers for bookmark and completed states
+ * @returns {Object} State handlers configuration object
+ */
+const createStateHandlers = () => ({
+  bookmarkHandler: (state) => {
+    currentBookmarkState = state;
+  },
+  completedHandler: (state) => {
+    currentCompletedState = state;
+  },
+});
+
+/**
+ * @function initializeBookmarkState
+ * @description Initializes the bookmark and completed states from the form state
+ * @returns {void} No return value - performs state initialization
  */
 function initializeBookmarkState() {
   const state = initializeFormState();
@@ -75,7 +97,9 @@ function initializeBookmarkState() {
 }
 
 /**
- * Resets bookmark state after delete
+ * @function resetBookmarkState
+ * @description Resets bookmark state after delete operation
+ * @returns {void} No return value - performs state reset
  */
 function resetBookmarkState() {
   const state = resetFormState();
@@ -85,25 +109,36 @@ function resetBookmarkState() {
 }
 
 /**
- * Handles the save todo action
- * @param {Event} event - The event object
- * @returns {void}
+ * @function handleSaveTodo
+ * @description Handles the save todo action with validation and processing
+ * @param {Event} event - The event object from save button click
+ * @returns {void} No return value - performs todo save operation
  */
 function handleSaveTodo(event) {
   event.preventDefault();
 
   const domContent = getTodoContentFromDOM();
-  if (
-    !domContent ||
-    !validateTodoContentValues(
-      domContent.title,
-      domContent.content,
-      domContent.titlePlaceholder,
-      domContent.contentPlaceholder
-    )
-  ) {
+  if (!isValidTodoContent(domContent)) {
     return;
   }
 
   processTodoSave(domContent, currentCompletedState, currentBookmarkState);
 }
+
+/**
+ * @function isValidTodoContent
+ * @description Validates todo content from DOM
+ * @param {Object|null} domContent - Content object from DOM
+ * @returns {boolean} True if content is valid, false otherwise
+ */
+const isValidTodoContent = (domContent) => {
+  return (
+    domContent &&
+    validateTodoContentValues(
+      domContent.title,
+      domContent.content,
+      domContent.titlePlaceholder,
+      domContent.contentPlaceholder
+    )
+  );
+};

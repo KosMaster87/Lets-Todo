@@ -1,12 +1,9 @@
-// lets-todo-app/src/state/storage.js
-
-import { getApiBase, apiHandler } from "./../utils/api-handler.js";
-
 /**
- * Storage Management System
- * Provides unified API for sessionStorage, localStorage, and memory storage
- * following best practices for data persistence
+ * @fileoverview Storage management system
+ * @module storage
  */
+
+import { getApiBase, apiHandler } from "./../services/api/api-handler.js";
 
 /**
  * Storage types enum for clear categorization
@@ -277,23 +274,45 @@ export const PreferencesManager = {
    * @returns {Promise<Object|null>} Server preferences or null
    */
   async syncFromServer(sessionType) {
-    if (sessionType !== "user") {
-      return null;
-    }
+    if (!this.requiresServerSync(sessionType)) return null;
 
     try {
-      const endpoint = this.createPreferencesEndpoint();
-      const response = await apiHandler(endpoint, "GET");
-
-      if (response.success && response.preferences) {
-        return this.processServerPreferences(response);
-      }
-
-      return this.handleServerSyncFailure(response);
+      const response = await this.fetchPreferencesFromServer();
+      return this.processServerResponse(response);
     } catch (error) {
       console.error("❌ Error syncing preferences from server:", error);
       return null;
     }
+  },
+
+  /**
+   * Validates session type for server sync
+   * @param {string} sessionType - Current session type
+   * @returns {boolean} Whether server sync is needed
+   */
+  requiresServerSync(sessionType) {
+    return sessionType === "user";
+  },
+
+  /**
+   * Fetches preferences from server
+   * @returns {Promise<Object>} Server response
+   */
+  async fetchPreferencesFromServer() {
+    const endpoint = this.createPreferencesEndpoint();
+    return await apiHandler(endpoint, "GET");
+  },
+
+  /**
+   * Processes server response for preferences
+   * @param {Object} response - Server response
+   * @returns {Object|null} Processed preferences or null
+   */
+  processServerResponse(response) {
+    if (response.success && response.preferences) {
+      return this.processServerPreferences(response);
+    }
+    return this.handleServerSyncFailure(response);
   },
 
   /**
@@ -334,26 +353,49 @@ export const PreferencesManager = {
    * @returns {Promise<boolean>} Success status
    */
   async syncToServer(preferences, sessionType) {
-    if (sessionType !== "user") {
-      console.log("ℹ️ Skipping server sync for guest session");
-      return true; // Success for guests (they use localStorage only)
+    if (!this.requiresServerSync(sessionType)) {
+      return this.handleGuestSync();
     }
 
     try {
-      console.log("🔄 Syncing preferences to server...", preferences);
-
-      const endpoint = this.createPreferencesEndpoint();
-      const response = await apiHandler(endpoint, "PUT", preferences);
-
-      if (response.success) {
-        return this.handleSyncToServerSuccess();
-      }
-
-      return this.handleSyncToServerFailure(response);
+      const response = await this.sendPreferencesToServer(preferences);
+      return this.processSyncToServerResponse(response);
     } catch (error) {
       console.error("❌ Error syncing preferences to server:", error);
       return false;
     }
+  },
+
+  /**
+   * Handles guest session sync (always successful)
+   * @returns {boolean} Success status for guest sessions
+   */
+  handleGuestSync() {
+    console.log("ℹ️ Skipping server sync for guest session");
+    return true;
+  },
+
+  /**
+   * Sends preferences to server via API
+   * @param {Object} preferences - Preferences to sync
+   * @returns {Promise<Object>} Server response
+   */
+  async sendPreferencesToServer(preferences) {
+    console.log("🔄 Syncing preferences to server...", preferences);
+    const endpoint = this.createPreferencesEndpoint();
+    return await apiHandler(endpoint, "PUT", preferences);
+  },
+
+  /**
+   * Processes server sync response
+   * @param {Object} response - Server response
+   * @returns {boolean} Success status
+   */
+  processSyncToServerResponse(response) {
+    if (response.success) {
+      return this.handleSyncToServerSuccess();
+    }
+    return this.handleSyncToServerFailure(response);
   },
 
   /**

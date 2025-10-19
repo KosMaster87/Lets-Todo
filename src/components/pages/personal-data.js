@@ -1,4 +1,7 @@
-// lets-todo-app/src/components/pages/personal-data.js
+/**
+ * @fileoverview Personal Data Page Component
+ * @module personal-data
+ */
 
 /**
  * Renders the personal data page.

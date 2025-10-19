@@ -1,12 +1,10 @@
-// lets-todo-app/src/services/crud/todos-list-filter.js
-
-import { getTodos } from "./../../state.js";
-import { renderTodosList } from "./../../components/pages/todos-list.js";
-
 /**
- * Todos List Filter Service
- * Handles filtering, sorting, and rendering of todos list
+ * @fileoverview Todos List Filter Module
+ * @module todos-list-filter
  */
+
+import { getTodos } from "./../../state/main-state.js";
+import { renderTodosList } from "./../../components/pages/todos-list.js";
 
 /**
  * Valid filter modes for todos list display

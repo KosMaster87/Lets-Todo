@@ -1,4 +1,7 @@
-// lets-todo-app/src/app.js
+/**
+ * @fileoverview Main application initializer for Let's Todo App
+ * @module app
+ */
 
 import {
   initializeStoredData,
@@ -9,7 +12,7 @@ import {
   addListener,
   getSessionType,
   getUserPreferences,
-} from "./state.js";
+} from "./state/main-state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
 import {
@@ -32,19 +35,7 @@ const initializeApp = async () => {
   const currentTrashedTodos = getTrashedTodos();
   const sessionType = getSessionType();
 
-  if (sessionType !== "user") {
-    initializeAllSampleData(
-      addTodo,
-      setTrashedTodos,
-      currentTodos,
-      currentTrashedTodos
-    );
-  } else {
-    // console.log(
-    //   `👤 User session detected - skipping sample data initialization`
-    // );
-  }
-
+  initializeSampleDataIfNeeded(sessionType, currentTodos, currentTrashedTodos);
   initializeNavigation();
 };
 
@@ -63,7 +54,6 @@ const registerStateListeners = () => {
  * Main content, and sets up component-specific event listeners.
  */
 const renderAllComponents = () => {
-  // renderMainContent();
   renderMainContent(window.currentUrlParams);
   setupComponentEventListeners();
 };
@@ -89,6 +79,32 @@ const initializeTheme = () => {
   } catch (error) {
     console.error("Failed to load theme preference:", error);
     document.body.setAttribute("data-theme", "light");
+  }
+};
+
+/**
+ * Initializes sample data for guest sessions only
+ * User sessions skip sample data initialization to preserve user data
+ * @param {string} sessionType - Current session type ('user' or 'guest')
+ * @param {Array} currentTodos - Current todos array
+ * @param {Array} currentTrashedTodos - Current trashed todos array
+ */
+const initializeSampleDataIfNeeded = (
+  sessionType,
+  currentTodos,
+  currentTrashedTodos
+) => {
+  if (sessionType !== "user") {
+    initializeAllSampleData(
+      addTodo,
+      setTrashedTodos,
+      currentTodos,
+      currentTrashedTodos
+    );
+  } else {
+    // console.log(
+    //   `👤 User session detected - skipping sample data initialization`
+    // );
   }
 };
 

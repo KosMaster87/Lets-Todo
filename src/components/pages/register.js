@@ -1,4 +1,7 @@
-// lets-todo-app/src/components/pages/register.js
+/**
+ * @fileoverview Register Page Component
+ * @module register
+ */
 
 /**
  * Renders the register page.

@@ -1,6 +1,9 @@
-// lets-todo-app/src/services/crud/register-operations.js
+/**
+ * @fileoverview Registration Operations and Error Handling
+ * @module register-operations
+ */
 
-import { registerUser } from "./../api-auth.js";
+import { registerUser } from "./../api/api-auth.js";
 import { navigateToView } from "./../navigation/navigation.js";
 import { VIEWS } from "./../../utils/constants.js";
 

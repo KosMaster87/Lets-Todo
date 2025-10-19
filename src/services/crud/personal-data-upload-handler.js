@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/personal-data-upload-handler.js
+/**
+ * @fileoverview Personal Data Upload Handler
+ * @module personal-data-upload-handler
+ */
 
 import {
   validateFileFormat,

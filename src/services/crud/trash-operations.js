@@ -1,11 +1,13 @@
-// lets-todo-app/src/services/crud/trash-operations.js
-
-import { emptyTrash, restoreTodo, deleteTodo } from "./../../state.js";
-
 /**
- * Trash Operations Service
- * Handles all trash-related CRUD operations (empty, restore, delete forever)
+ * @fileoverview Trash Operations Service
+ * @module trash-operations
  */
+
+import {
+  emptyTrash,
+  restoreTodo,
+  deleteTodo,
+} from "./../../state/main-state.js";
 
 /**
  * Handles emptying the entire trash

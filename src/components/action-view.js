@@ -1,4 +1,7 @@
-// lets-todo-app/src/components/action-view.js
+/**
+ * @fileoverview Action View Component
+ * @module action-view
+ */
 
 /**
  * Renders action buttons for a todo item

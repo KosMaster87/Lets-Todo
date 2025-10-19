@@ -1,6 +1,9 @@
-// lets-todo-app/src/services/crud/todos-list-utils.js
+/**
+ * @fileoverview Todos List Utilities Service
+ * @module todos-list-utils
+ */
 
-import { getTodos } from "./../../state.js";
+import { getTodos } from "./../../state/main-state.js";
 
 /**
  * Finds a todo by ID, handling both string and number IDs

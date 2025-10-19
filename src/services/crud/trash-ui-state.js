@@ -1,15 +1,13 @@
-// lets-todo-app/src/services/crud/trash-ui-state.js
+/**
+ * @fileoverview Trash UI State Service
+ * @module trash-ui-state
+ */
 
 import {
   getFilterButtonConfig,
   getNextFilterMode,
   TRASH_FILTER_MODES,
 } from "./trash-filter.js";
-
-/**
- * Trash UI State Service
- * Handles UI state management for trash view (filter buttons, state updates)
- */
 
 /**
  * Updates the filter button text and description based on current mode

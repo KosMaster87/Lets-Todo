@@ -1,4 +1,7 @@
-// lets-todo-app/src/components/pages/change-password.js
+/**
+ * @fileoverview Change Password Page Component
+ * @module change-password
+ */
 
 /**
  * Renders the change password page.

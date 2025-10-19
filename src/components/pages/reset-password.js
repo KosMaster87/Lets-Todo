@@ -1,17 +1,5 @@
 /**
  * @fileoverview Reset Password Page Component
- *
- * Renders the forgot password form where users can enter their email address
- * to request a password reset link. Provides email validation, loading states,
- * and user feedback for the password reset request process.
- *
- * Key Features:
- * - Email input with validation
- * - Loading state during reset request
- * - Success/error message display
- * - Navigation back to login
- * - Responsive design consistent with app theme
- *
  * @module reset-password-page
  * @since 1.0.0
  */

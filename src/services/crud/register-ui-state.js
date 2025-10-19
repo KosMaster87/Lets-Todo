@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/register-ui-state.js
+/**
+ * @fileoverview Registration UI State Management
+ * @module register-ui-state
+ */
 
 /**
  * Message types for consistent UI feedback

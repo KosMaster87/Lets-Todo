@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/todos-list-sharing.js
+/**
+ * @fileoverview Todos List Sharing Service
+ * @module todos-list-sharing
+ */
 
 import {
   findTodoById,
@@ -6,11 +9,6 @@ import {
   formatTodoContent,
   logTodoAction,
 } from "./todos-list-utils.js";
-
-/**
- * Todos List Sharing Service
- * Handles sharing and copying functionality for todos
- */
 
 /**
  * Copies text to clipboard using modern API with fallback

@@ -1,6 +1,9 @@
-// lets-todo-app/src/services/crud/personal-data-download.js
+/**
+ * @fileoverview Personal Data Download Service
+ * @module personal-data-download
+ */
 
-import { getTodos, getTrashedTodos } from "./../../state.js";
+import { getTodos, getTrashedTodos } from "./../../state/main-state.js";
 
 /**
  * Supported export formats
@@ -45,7 +48,7 @@ export const todosToJSON = (todos, trashedTodos) => {
       created: todo.created,
       lastModified: todo.lastModified,
       deletedAt: null,
-      status: "active"
+      status: "active",
     })),
     trash: trashedTodos.map((todo) => ({
       id: todo.id,
@@ -56,8 +59,8 @@ export const todosToJSON = (todos, trashedTodos) => {
       created: todo.created,
       lastModified: todo.lastModified,
       deletedAt: todo.deletedAt,
-      status: "trashed"
-    }))
+      status: "trashed",
+    })),
   };
 
   return JSON.stringify(exportData, null, 2);
@@ -79,7 +82,7 @@ export const todosToCSV = (todos, trashedTodos) => {
     "Created",
     "LastModified",
     "DeletedAt",
-    "Status"
+    "Status",
   ];
 
   const csvRows = [headers.join(",")];
@@ -95,7 +98,7 @@ export const todosToCSV = (todos, trashedTodos) => {
       todo.created ? new Date(todo.created).toISOString() : "",
       todo.lastModified || "",
       "",
-      "Active"
+      "Active",
     ];
     csvRows.push(row.join(","));
   });
@@ -111,7 +114,7 @@ export const todosToCSV = (todos, trashedTodos) => {
       todo.created ? new Date(todo.created).toISOString() : "",
       todo.lastModified || "",
       todo.deletedAt || "",
-      "Trashed"
+      "Trashed",
     ];
     csvRows.push(row.join(","));
   });
@@ -132,7 +135,7 @@ export const todosToText = (todos, trashedTodos) => {
     `TODOS EXPORT - ${new Date().toLocaleString()}`,
     `Total Todos: ${totalCount} (${todos.length} aktiv, ${trashedTodos.length} im Papierkorb)`,
     "=".repeat(60),
-    ""
+    "",
   ];
 
   // Active todos section
@@ -145,7 +148,11 @@ export const todosToText = (todos, trashedTodos) => {
       lines.push(`${index + 1}. ${todo.title || "Untitled"}`);
       lines.push(`   Status: ${todo.completed ? "✅ Erledigt" : "⏳ Offen"}`);
       lines.push(`   Bookmark: ${todo.bookmarked ? "⭐ Ja" : "Nein"}`);
-      lines.push(`   Erstellt: ${todo.created ? new Date(todo.created).toLocaleString() : "Unbekannt"}`);
+      lines.push(
+        `   Erstellt: ${
+          todo.created ? new Date(todo.created).toLocaleString() : "Unbekannt"
+        }`
+      );
 
       if (todo.content) {
         lines.push(`   Inhalt:`);
@@ -165,8 +172,18 @@ export const todosToText = (todos, trashedTodos) => {
       lines.push(`${index + 1}. ${todo.title || "Untitled"} [GELÖSCHT]`);
       lines.push(`   Status: ${todo.completed ? "✅ Erledigt" : "⏳ Offen"}`);
       lines.push(`   Bookmark: ${todo.bookmarked ? "⭐ Ja" : "Nein"}`);
-      lines.push(`   Erstellt: ${todo.created ? new Date(todo.created).toLocaleString() : "Unbekannt"}`);
-      lines.push(`   Gelöscht: ${todo.deletedAt ? new Date(todo.deletedAt).toLocaleString() : "Unbekannt"}`);
+      lines.push(
+        `   Erstellt: ${
+          todo.created ? new Date(todo.created).toLocaleString() : "Unbekannt"
+        }`
+      );
+      lines.push(
+        `   Gelöscht: ${
+          todo.deletedAt
+            ? new Date(todo.deletedAt).toLocaleString()
+            : "Unbekannt"
+        }`
+      );
 
       if (todo.content) {
         lines.push(`   Inhalt:`);
@@ -269,7 +286,9 @@ export const downloadTodos = (format, onSuccess, onError) => {
     triggerDownload(content, filename, mimeType);
 
     onSuccess?.(
-      `${totalCount} Todos (${todos.length} aktiv, ${trashedTodos.length} gelöscht) erfolgreich als ${format.toUpperCase()} exportiert: ${filename}`
+      `${totalCount} Todos (${todos.length} aktiv, ${
+        trashedTodos.length
+      } gelöscht) erfolgreich als ${format.toUpperCase()} exportiert: ${filename}`
     );
   } catch (error) {
     console.error("Download error:", error);

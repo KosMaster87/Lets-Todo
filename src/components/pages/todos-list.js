@@ -1,6 +1,9 @@
-// lets-todo-app/src/components/pages/todos-list.js
+/**
+ * @fileoverview Todos List Page Component
+ * @module todos-list
+ */
 
-import { getTodos } from "../../state.js";
+import { getTodos } from "../../state/main-state.js";
 import { renderListActionButtons } from "../action-view.js";
 
 /**

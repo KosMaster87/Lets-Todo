@@ -1,4 +1,7 @@
-// lets-todo-app/src/state/session-manager.js
+/**
+ * @fileoverview Session Management System
+ * @module session-manager
+ */
 
 import {
   SessionPersistence,
@@ -7,12 +10,6 @@ import {
 } from "./data-persistence.js";
 import { StorageManager } from "./storage.js";
 import { VIEWS } from "./../utils/constants.js";
-
-/**
- * Session Manager
- * Handles all session-related operations and state management
- * Extracted from state.js for better modularity
- */
 
 /**
  * Validates if a view is valid
@@ -32,22 +29,38 @@ export const SessionManager = {
   loadFromStorage(appState, notifyListeners) {
     try {
       const session = SessionPersistence.load();
-      if (session) {
-        Object.assign(appState, {
-          sessionType: session.sessionType || null,
-          sessionId: session.sessionId || null,
-          userId: session.userId || null,
-          userEmail: session.userEmail || null,
-        });
+      if (!session) return;
 
-        if (session.lastView && isValidView(session.lastView)) {
-          appState.currentView = session.lastView;
-        }
-
-        notifyListeners();
-      }
+      this.applySessionToState(appState, session);
+      this.applyLastViewIfValid(appState, session);
+      notifyListeners();
     } catch (error) {
       console.error("Error loading session:", error);
+    }
+  },
+
+  /**
+   * Applies session data to app state
+   * @param {Object} appState - Application state object to update
+   * @param {Object} session - Session data from storage
+   */
+  applySessionToState(appState, session) {
+    Object.assign(appState, {
+      sessionType: session.sessionType || null,
+      sessionId: session.sessionId || null,
+      userId: session.userId || null,
+      userEmail: session.userEmail || null,
+    });
+  },
+
+  /**
+   * Applies last view from session if valid
+   * @param {Object} appState - Application state object
+   * @param {Object} session - Session data from storage
+   */
+  applyLastViewIfValid(appState, session) {
+    if (session.lastView && isValidView(session.lastView)) {
+      appState.currentView = session.lastView;
     }
   },
 
@@ -58,22 +71,30 @@ export const SessionManager = {
    */
   saveToStorage(appState, getCurrentView) {
     try {
-      if (!appState.sessionType) {
-        return;
-      }
+      if (!appState.sessionType) return;
 
-      const sessionData = {
-        sessionType: appState.sessionType,
-        sessionId: appState.sessionId,
-        userId: appState.userId,
-        userEmail: appState.userEmail,
-        lastView: getCurrentView(),
-        timestamp: Date.now(),
-      };
+      const sessionData = this.createSessionData(appState, getCurrentView);
       SessionPersistence.save(sessionData);
     } catch (error) {
       console.error("Error saving session:", error);
     }
+  },
+
+  /**
+   * Creates session data object from app state
+   * @param {Object} appState - Application state object
+   * @param {Function} getCurrentView - Function to get current view
+   * @returns {Object} Session data object
+   */
+  createSessionData(appState, getCurrentView) {
+    return {
+      sessionType: appState.sessionType,
+      sessionId: appState.sessionId,
+      userId: appState.userId,
+      userEmail: appState.userEmail,
+      lastView: getCurrentView(),
+      timestamp: Date.now(),
+    };
   },
 
   /**
@@ -84,6 +105,19 @@ export const SessionManager = {
    * @param {Function} getCurrentView - Function to get current view
    */
   setSession(appState, sessionData, notifyListeners, getCurrentView) {
+    const oldSessionType = this.updateSessionState(appState, sessionData);
+    this.handleSessionTypeChange(appState, oldSessionType);
+    this.saveToStorage(appState, getCurrentView);
+    notifyListeners();
+  },
+
+  /**
+   * Updates app state with session data
+   * @param {Object} appState - Application state object
+   * @param {Object} sessionData - Session data to apply
+   * @returns {string} Previous session type
+   */
+  updateSessionState(appState, sessionData) {
     const oldSessionType = appState.sessionType;
 
     appState.sessionType = sessionData.sessionType || null;
@@ -91,15 +125,18 @@ export const SessionManager = {
     appState.userId = sessionData.userId || null;
     appState.userEmail = sessionData.userEmail || null;
 
+    return oldSessionType;
+  },
+
+  /**
+   * Handles session type change by reloading data if needed
+   * @param {Object} appState - Application state object
+   * @param {string} oldSessionType - Previous session type
+   */
+  handleSessionTypeChange(appState, oldSessionType) {
     if (oldSessionType !== appState.sessionType) {
-      // console.log(
-      //   `🔄 Session changed from ${oldSessionType} to ${appState.sessionType}, reloading data...`
-      // );
       this.reloadSessionData(appState);
     }
-
-    this.saveToStorage(appState, getCurrentView);
-    notifyListeners();
   },
 
   /**
@@ -141,26 +178,39 @@ export const SessionManager = {
    */
   clearUserData(appState, notifyListeners) {
     try {
-      // Clear user data from localStorage before resetting app state
-      this.clearUserDataFromStorage();
-
-      appState.sessionType = null;
-      appState.sessionId = null;
-      appState.userId = null;
-      appState.userEmail = null;
-      appState.notifications = [];
-      appState.error = null;
-      appState.currentTodo = null;
-
-      SessionPersistence.clear();
-
-      this.restoreGuestData(appState);
-      notifyListeners();
-
-      console.log("✅ User logged out, user data cleared, guest data restored");
+      this.performCompleteLogout(appState, notifyListeners);
     } catch (error) {
       console.error("❌ Error during logout:", error);
     }
+  },
+
+  /**
+   * Resets all user-related app state properties to null/empty
+   * @param {Object} appState - Application state object
+   */
+  resetUserAppState(appState) {
+    appState.sessionType = null;
+    appState.sessionId = null;
+    appState.userId = null;
+    appState.userEmail = null;
+    appState.notifications = [];
+    appState.error = null;
+    appState.currentTodo = null;
+  },
+
+  /**
+   * Performs complete user logout with data cleanup and guest restoration
+   * @param {Object} appState - Application state object
+   * @param {Function} notifyListeners - Function to notify listeners
+   */
+  performCompleteLogout(appState, notifyListeners) {
+    this.clearUserDataFromStorage();
+    this.resetUserAppState(appState);
+    SessionPersistence.clear();
+    this.restoreGuestData(appState);
+    notifyListeners();
+
+    console.log("✅ User logged out, user data cleared, guest data restored");
   },
 
   /**
@@ -168,7 +218,6 @@ export const SessionManager = {
    */
   clearUserDataFromStorage() {
     try {
-      // Clear user todos and trash from localStorage
       StorageManager.removeData("local", "todoapp-user-todos");
       StorageManager.removeData("local", "todoapp-user-trash");
 
@@ -185,25 +234,39 @@ export const SessionManager = {
   restoreGuestData(appState) {
     try {
       const guestData = TodosPersistence.loadGuestData();
-
-      if (guestData.todos.length > 0 || guestData.trashedTodos.length > 0) {
-        appState.todos = guestData.todos;
-        appState.trashedTodos = guestData.trashedTodos;
-        console.log("✅ Guest data restored from storage");
-      } else {
-        appState.todos = [];
-        appState.trashedTodos = [];
-        console.log("✅ Fresh guest session initialized");
-      }
-
-      // Update storage with current state
+      this.applyGuestDataToState(appState, guestData);
       TodosPersistence.saveGuestData(appState.todos, appState.trashedTodos);
     } catch (error) {
       console.error("❌ Error restoring guest data:", error);
-      // Fallback: empty state
       appState.todos = [];
       appState.trashedTodos = [];
     }
+  },
+
+  /**
+   * Applies guest data to app state and logs result
+   * @param {Object} appState - Application state object
+   * @param {Object} guestData - Guest data from storage
+   */
+  applyGuestDataToState(appState, guestData) {
+    if (this.hasExistingGuestData(guestData)) {
+      appState.todos = guestData.todos;
+      appState.trashedTodos = guestData.trashedTodos;
+      console.log("✅ Guest data restored from storage");
+    } else {
+      appState.todos = [];
+      appState.trashedTodos = [];
+      console.log("✅ Fresh guest session initialized");
+    }
+  },
+
+  /**
+   * Checks if guest data contains any todos or trashed todos
+   * @param {Object} guestData - Guest data from storage
+   * @returns {boolean} Whether guest data exists
+   */
+  hasExistingGuestData(guestData) {
+    return guestData.todos.length > 0 || guestData.trashedTodos.length > 0;
   },
 
   /**

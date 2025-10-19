@@ -1,11 +1,14 @@
-// lets-todo-app/src/state.js
+/**
+ * @fileoverview Central application state management for Let's Todo App
+ * @module main-state
+ */
 
-import { VIEWS } from "./utils/constants.js";
-import { createListenerManager } from "./state/listeners.js";
-import { SessionManager } from "./state/session-manager.js";
-import { TodoOperations } from "./state/todo-operations.js";
-import { UIStateManager } from "./state/ui-state-manager.js";
-import { AppInitializer } from "./state/app-initializer.js";
+import { VIEWS } from "./../utils/constants.js";
+import { createListenerManager } from "./listeners.js";
+import { SessionManager } from "./session-manager.js";
+import { TodoOperations } from "./todo-operations.js";
+import { UIStateManager } from "./ui-state-manager.js";
+import { AppInitializer } from "./app-initializer.js";
 
 /**
  * Central application state for Let's Todo App
@@ -39,7 +42,6 @@ const appState = {
   },
 };
 
-// Create listener manager instance
 const listenerManager = createListenerManager(appState);
 const {
   addListener,

@@ -1,16 +1,32 @@
-// lets-todo-app/src/state/app-initializer.js
+/**
+ * @fileoverview Application Initializer
+ * @module app-initializer
+ */
 
 import { SessionManager } from "./session-manager.js";
 import { PreferencesManager } from "./storage.js";
 import { TodosPersistence, TrashPersistence } from "./data-persistence.js";
 
-/**
- * Application Initializer
- * Handles complete app initialization and data loading coordination
- * Extracted from state.js for better separation of concerns
- */
-
 export const AppInitializer = {
+  /**
+   * Complete application initialization with async support
+   * @param {Object} appState - Application state object
+   * @param {Function} notifyListeners - Function to notify state listeners
+   * @returns {Promise<void>}
+   */
+  async initialize(appState, notifyListeners) {
+    const loadedData = await this.loadAllData(appState, notifyListeners);
+
+    Object.assign(appState, {
+      todos: loadedData.todos,
+      trashedTodos: loadedData.trashedTodos,
+      userPreferences: loadedData.userPreferences,
+    });
+
+    notifyListeners();
+    this.applyUserPreferences(appState.userPreferences);
+  },
+
   /**
    * Loads and initializes all application data with smart sync
    * @param {Object} appState - Application state object
@@ -48,36 +64,15 @@ export const AppInitializer = {
    * @param {Object} userPreferences - User preferences object
    */
   applyUserPreferences(userPreferences) {
-    // Apply theme to DOM
     if (userPreferences.theme) {
       document.body.setAttribute("data-theme", userPreferences.theme);
       // console.log(`🎨 Theme applied: ${userPreferences.theme}`);
     }
 
-    // Apply language (if needed in future)
     if (userPreferences.language) {
       document.documentElement.lang = userPreferences.language;
     }
 
     // Apply other UI preferences...
-  },
-
-  /**
-   * Complete application initialization with async support
-   * @param {Object} appState - Application state object
-   * @param {Function} notifyListeners - Function to notify state listeners
-   * @returns {Promise<void>}
-   */
-  async initialize(appState, notifyListeners) {
-    const loadedData = await this.loadAllData(appState, notifyListeners);
-
-    Object.assign(appState, {
-      todos: loadedData.todos,
-      trashedTodos: loadedData.trashedTodos,
-      userPreferences: loadedData.userPreferences,
-    });
-
-    notifyListeners();
-    this.applyUserPreferences(appState.userPreferences);
   },
 };

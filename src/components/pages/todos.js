@@ -1,4 +1,7 @@
-// lets-todo-app/src/components/pages/todos.js
+/**
+ * @fileoverview Todos Page Component
+ * @module todos
+ */
 
 import { renderSingleActionButtons } from "../action-view.js";
 

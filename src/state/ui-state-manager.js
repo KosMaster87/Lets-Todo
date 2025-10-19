@@ -1,13 +1,11 @@
-// src/state/ui-state-manager.js
+/**
+ * @fileoverview UI state management utilities
+ * @module ui-state-manager
+ */
 
 import { PreferencesManager } from "./storage.js";
 import { SessionManager } from "./session-manager.js";
-
-/**
- * UI State Manager
- * Handles all UI-related state management (views, loading, preferences, errors)
- * Extracted from state.js for better modularity
- */
+import { DEBUG_MODE } from "./../utils/constants.js";
 
 export const UIStateManager = {
   /**
@@ -17,7 +15,7 @@ export const UIStateManager = {
    * @param {Function} getCurrentView - Function to get current view
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  setCurrentView(appState, view, getCurrentView, notifyListeners) {
+  setCurrentView: (appState, view, getCurrentView, notifyListeners) => {
     if (appState.currentView !== view) {
       appState.previousView = appState.currentView;
       appState.currentView = view;
@@ -32,7 +30,7 @@ export const UIStateManager = {
    * @param {boolean} loading - Loading state
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  setLoading(appState, loading, notifyListeners) {
+  setLoading: (appState, loading, notifyListeners) => {
     if (appState.loading !== loading) {
       appState.loading = loading;
       notifyListeners();
@@ -45,46 +43,88 @@ export const UIStateManager = {
    * @param {Object} preferences - New preferences
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  async setUserPreferences(appState, preferences, notifyListeners) {
-    // Update state immediately for better UX
+  setUserPreferences: async (appState, preferences, notifyListeners) => {
+    UIStateManager.updatePreferencesState(appState, preferences);
+    UIStateManager.applyThemePreference(preferences);
+    PreferencesManager.save(appState.userPreferences);
+
+    // Background server sync for registered users
+    UIStateManager.handleServerSync(
+      appState.userPreferences,
+      appState.sessionType
+    );
+
+    notifyListeners();
+  },
+
+  /**
+   * Updates preferences in application state
+   * @param {Object} appState - Application state object
+   * @param {Object} preferences - New preferences to merge
+   */
+  updatePreferencesState: (appState, preferences) => {
     appState.userPreferences = {
       ...appState.userPreferences,
       ...preferences,
     };
+  },
 
-    // Apply theme immediately
+  /**
+   * Applies theme preference to DOM immediately
+   * @param {Object} preferences - Preferences object
+   */
+  applyThemePreference: (preferences) => {
     if (preferences.theme) {
       document.body.setAttribute("data-theme", preferences.theme);
     }
+  },
 
-    // Save to localStorage first (primary storage)
-    PreferencesManager.save(appState.userPreferences);
+  /**
+   * Handles server synchronization for registered users
+   * @param {Object} preferences - User preferences to sync
+   * @param {string} sessionType - Current session type
+   */
+  /**
+   * Logs server sync status messages
+   * @param {string} type - Message type (start, success, warning, error)
+   * @param {Error} [error] - Optional error object
+   */
+  logServerSyncStatus: (type, error = null) => {
+    if (!DEBUG_MODE) return;
 
-    // Sync to server for registered users (background operation)
-    if (appState.sessionType === "user") {
-      console.log("🔄 Auto-syncing preferences to server for registered user");
+    const messages = {
+      start: "🔄 Auto-syncing preferences to server for registered user",
+      success: "✅ Preferences successfully synced to server",
+      warning: "⚠️ Preferences saved locally but server sync failed",
+      error: "❌ Server sync error (preferences still saved locally):",
+    };
 
-      try {
-        const syncSuccess = await PreferencesManager.syncToServer(
-          appState.userPreferences,
-          appState.sessionType
-        );
-
-        if (syncSuccess) {
-          console.log("✅ Preferences successfully synced to server");
-        } else {
-          console.warn("⚠️ Preferences saved locally but server sync failed");
-          // Still consider this a success since localStorage is primary storage
-        }
-      } catch (error) {
-        console.error(
-          "❌ Server sync error (preferences still saved locally):",
-          error
-        );
-      }
+    if (type === "error" && error) {
+      console.error(messages[type], error);
+    } else {
+      console.log(messages[type]);
     }
+  },
 
-    notifyListeners();
+  handleServerSync: async (preferences, sessionType) => {
+    if (sessionType !== "user") return;
+
+    UIStateManager.logServerSyncStatus("start");
+
+    try {
+      const syncSuccess = await PreferencesManager.syncToServer(
+        preferences,
+        sessionType
+      );
+
+      if (syncSuccess) {
+        UIStateManager.logServerSyncStatus("success");
+      } else {
+        UIStateManager.logServerSyncStatus("warning");
+      }
+    } catch (error) {
+      UIStateManager.logServerSyncStatus("error", error);
+    }
   },
 
   /**
@@ -94,7 +134,7 @@ export const UIStateManager = {
    * @param {Function} addNotification - Function to add notifications
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  setError(appState, error, addNotification, notifyListeners) {
+  setError: (appState, error, addNotification, notifyListeners) => {
     appState.error = error;
     if (error) {
       addNotification({
@@ -111,15 +151,9 @@ export const UIStateManager = {
    * @param {Object} notification - Notification object
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  addNotification(appState, notification, notifyListeners) {
-    const newNotification = {
-      id: Date.now(),
-      type: "info",
-      message: "",
-      duration: 3000,
-      displayed: false,
-      ...notification,
-    };
+  addNotification: (appState, notification, notifyListeners) => {
+    const newNotification =
+      UIStateManager.createNotificationObject(notification);
     appState.notifications = [...appState.notifications, newNotification];
     notifyListeners();
   },
@@ -130,10 +164,24 @@ export const UIStateManager = {
    * @param {number} notificationId - ID of the notification to remove
    * @param {Function} notifyListeners - Function to notify state listeners
    */
-  removeNotification(appState, notificationId, notifyListeners) {
+  removeNotification: (appState, notificationId, notifyListeners) => {
     appState.notifications = appState.notifications.filter(
       (notification) => notification.id !== notificationId
     );
     notifyListeners();
   },
+
+  /**
+   * Creates default notification object with provided overrides
+   * @param {Object} notification - Notification overrides
+   * @returns {Object} Complete notification object
+   */
+  createNotificationObject: (notification) => ({
+    id: Date.now(),
+    type: "info",
+    message: "",
+    duration: 3000,
+    displayed: false,
+    ...notification,
+  }),
 };

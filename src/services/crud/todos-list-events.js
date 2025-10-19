@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/todos-list-events.js
+/**
+ * @fileoverview Todo List Events Handling
+ * @module todos-list-events
+ */
 
 /**
  * Action type constants for better maintainability

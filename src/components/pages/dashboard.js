@@ -1,11 +1,13 @@
-// lets-todo-app/src/components/pages/dashboard.js
+/**
+ * @fileoverview Dashboard Page Component
+ * @module dashboard-page
+ */
 
 import {
   getTodos,
   getTrashedTodos,
   getSessionType,
-  getUserEmail,
-} from "../../state.js";
+} from "./../../state/main-state.js";
 
 /**
  * Renders the dashboard page.

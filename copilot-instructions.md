@@ -11,12 +11,7 @@
 
 ## JavaScript Function Guidelines
 
-- Each function may be a maximum of 14 lines long.
-- Each function should have only one single, clearly defined task.
-- Split complex functions into smaller helper functions.
-- Do not use nested functions.
-- When exceeding the line limit: split function into multiple specialized functions.
-- Prefer arrow functions, except for constructors or event handlers that need `this`.
+
 
 ## JSDoc Requirements
 

@@ -1,6 +1,65 @@
-// lets-todo-app/src/services/action-buttons.js
+/**
+ * @fileoverview Action Buttons Module
+ * @module navigation-action-buttons
+ */
 
 import { getTodoElements } from "./../../utils/dom-selectors.js";
+import { DEBUG_MODE } from "./../../utils/constants.js";
+
+/**
+ * Logs action button operation status
+ * @param {string} type - Message type (success, warning, info)
+ * @param {string} message - Message to log
+ * @param {any} data - Optional data to log
+ */
+const logActionStatus = (type, message, data = null) => {
+  if (!DEBUG_MODE) return;
+
+  const logFunctions = {
+    success: console.log,
+    warning: console.warn,
+    info: console.log,
+    error: console.error,
+  };
+
+  const logFunction = logFunctions[type] || console.log;
+  data ? logFunction(message, data) : logFunction(message);
+};
+
+/**
+ * Configures a single action button with handler
+ * @param {string} actionType - Type of action
+ * @param {string} elementId - Button element ID
+ * @param {Function} handler - Click handler function
+ * @param {boolean} suppressWarnings - Whether to suppress warnings
+ * @returns {boolean} True if configured successfully
+ */
+const configureActionButton = (
+  actionType,
+  elementId,
+  handler,
+  suppressWarnings
+) => {
+  const element = document.getElementById(elementId);
+  if (!element) {
+    if (!suppressWarnings) {
+      logActionStatus(
+        "warning",
+        `⚠️ Action button element ${elementId} not found for ${actionType}`
+      );
+    }
+    return false;
+  }
+
+  const existingHandler = element._actionHandler;
+  if (existingHandler) {
+    element.removeEventListener("click", existingHandler);
+  }
+
+  element.addEventListener("click", handler);
+  element._actionHandler = handler;
+  return true;
+};
 
 /**
  * Sets up action buttons with configurable handlers
@@ -9,34 +68,39 @@ import { getTodoElements } from "./../../utils/dom-selectors.js";
  */
 export const setupActionButtons = (config, suppressWarnings = false) => {
   let configuredCount = 0;
-  let totalCount = Object.keys(config).length;
+  const totalCount = Object.keys(config).length;
 
   Object.entries(config).forEach(([actionType, { elementId, handler }]) => {
-    const element = document.getElementById(elementId);
-    if (element) {
-      const existingHandler = element._actionHandler;
-      if (existingHandler) {
-        element.removeEventListener("click", existingHandler);
-      }
-
-      element.addEventListener("click", handler);
-      element._actionHandler = handler;
+    if (
+      configureActionButton(actionType, elementId, handler, suppressWarnings)
+    ) {
       configuredCount++;
-      // console.log(`✅ Action button ${actionType} (${elementId}) configured`);
-    } else if (!suppressWarnings) {
-      console.warn(
-        `⚠️  Action button element ${elementId} not found for ${actionType}`
-      );
     }
   });
 
-  // if (configuredCount > 0) {
-  //   console.log(
-  //     `🎯 Action buttons setup complete: ${configuredCount}/${totalCount} configured`
-  //   );
-  // } else {
-  //   console.log(`📋 No action buttons found to configure`);
-  // }
+  if (configuredCount > 0) {
+    logActionStatus(
+      "info",
+      `🎯 Action buttons setup complete: ${configuredCount}/${totalCount} configured`
+    );
+  } else {
+    logActionStatus("info", "📋 No action buttons found to configure");
+  }
+};
+
+/**
+ * Updates bookmark button visual state
+ * @param {HTMLElement} button - Bookmark button element
+ * @param {boolean} isBookmarked - New bookmark state
+ */
+const updateBookmarkButton = (button, isBookmarked) => {
+  if (isBookmarked) {
+    button.classList.add("bookmarked");
+    showMessage("Marked as bookmark!");
+  } else {
+    button.classList.remove("bookmarked");
+    showMessage("Bookmark removed!");
+  }
 };
 
 /**
@@ -46,12 +110,8 @@ export const setupActionButtons = (config, suppressWarnings = false) => {
  * @param {string} buttonId - ID of the bookmark button
  * @returns {Function} Event handler function
  */
-export const createBookmarkToggleHandler = (
-  getBookmarkState,
-  setBookmarkState,
-  buttonId
-) => {
-  return (event) => {
+export const createBookmarkToggleHandler =
+  (getBookmarkState, setBookmarkState, buttonId) => (event) => {
     event.preventDefault();
 
     const bookmarkBtn = document.getElementById(buttonId);
@@ -61,15 +121,22 @@ export const createBookmarkToggleHandler = (
     const newState = !currentState;
 
     setBookmarkState(newState);
-
-    if (newState) {
-      bookmarkBtn.classList.add("bookmarked");
-      showMessage("Als Lesezeichen markiert!");
-    } else {
-      bookmarkBtn.classList.remove("bookmarked");
-      showMessage("Lesezeichen entfernt!");
-    }
+    updateBookmarkButton(bookmarkBtn, newState);
   };
+
+/**
+ * Updates completed button visual state
+ * @param {HTMLElement} button - Done button element
+ * @param {boolean} isCompleted - New completed state
+ */
+const updateCompletedButton = (button, isCompleted) => {
+  if (isCompleted) {
+    button.classList.add("completed");
+    showMessage("Todo marked as completed!");
+  } else {
+    button.classList.remove("completed");
+    showMessage("Todo marked as pending!");
+  }
 };
 
 /**
@@ -79,12 +146,8 @@ export const createBookmarkToggleHandler = (
  * @param {string} buttonId - ID of the done button
  * @returns {Function} Event handler function
  */
-export const createCompletedToggleHandler = (
-  getCompletedState,
-  setCompletedState,
-  buttonId
-) => {
-  return (event) => {
+export const createCompletedToggleHandler =
+  (getCompletedState, setCompletedState, buttonId) => (event) => {
     event.preventDefault();
 
     const doneBtn = document.getElementById(buttonId);
@@ -94,48 +157,36 @@ export const createCompletedToggleHandler = (
     const newState = !currentState;
 
     setCompletedState(newState);
-
-    if (newState) {
-      doneBtn.classList.add("completed");
-      showMessage("Todo als erledigt markiert!");
-    } else {
-      doneBtn.classList.remove("completed");
-      showMessage("Todo als ausstehend markiert!");
-    }
+    updateCompletedButton(doneBtn, newState);
   };
-};
 
 /**
  * Handles content sharing functionality
  * @param {Function} getContentCallback - Function to get title and content
  * @returns {Function} Event handler function
  */
-export const createShareHandler = (getContentCallback) => {
-  return (event) => {
-    event.preventDefault();
+export const createShareHandler = (getContentCallback) => (event) => {
+  event.preventDefault();
 
-    const { title, content } = getContentCallback();
+  const { title, content } = getContentCallback();
 
-    if (!title && !content) {
-      showMessage("Keine Inhalte zum Teilen vorhanden.");
-      return;
-    }
+  if (!title && !content) {
+    showMessage("No content available to share.");
+    return;
+  }
 
-    const shareText = `${title}\n\n${content}`;
+  const shareText = `${title}\n\n${content}`;
 
-    if (navigator.share) {
-      navigator
-        .share({
-          title: title || "Meine Todo",
-          text: shareText,
-        })
-        .catch(() => {
-          fallbackShare(shareText);
-        });
-    } else {
-      fallbackShare(shareText);
-    }
-  };
+  if (navigator.share) {
+    navigator
+      .share({
+        title: title || "My Todo",
+        text: shareText,
+      })
+      .catch(() => fallbackShare(shareText));
+  } else {
+    fallbackShare(shareText);
+  }
 };
 
 /**
@@ -143,26 +194,64 @@ export const createShareHandler = (getContentCallback) => {
  * @param {Function} getContentCallback - Function to get title and content
  * @returns {Function} Event handler function
  */
-export const createCopyHandler = (getContentCallback) => {
-  return (event) => {
-    event.preventDefault();
+export const createCopyHandler = (getContentCallback) => (event) => {
+  event.preventDefault();
 
-    const { title, content } = getContentCallback();
-    const copyText = `${title}\n\n${content}`;
+  const { title, content } = getContentCallback();
+  const copyText = `${title}\n\n${content}`;
 
-    if (navigator.clipboard) {
-      navigator.clipboard
-        .writeText(copyText)
-        .then(() => {
-          showMessage("Todo in die Zwischenablage kopiert!");
-        })
-        .catch(() => {
-          fallbackCopy(copyText);
-        });
-    } else {
-      fallbackCopy(copyText);
+  if (navigator.clipboard) {
+    navigator.clipboard
+      .writeText(copyText)
+      .then(() => showMessage("Todo copied to clipboard!"))
+      .catch(() => fallbackCopy(copyText));
+  } else {
+    fallbackCopy(copyText);
+  }
+};
+
+/**
+ * Checks if todo has any content
+ * @param {string} title - Todo title
+ * @param {string} content - Todo content
+ * @param {HTMLElement} titleElement - Title DOM element
+ * @param {HTMLElement} contentElement - Content DOM element
+ * @returns {boolean} True if todo has content
+ */
+const hasAnyTodoContent = (title, content, titleElement, contentElement) => {
+  return (
+    title ||
+    content ||
+    (titleElement && titleElement.textContent.trim() !== "New Todo") ||
+    (contentElement && contentElement.textContent.trim() !== "")
+  );
+};
+
+/**
+ * Handles content clearing with user confirmation
+ * @param {Function} clearContentCallback - Function to clear content
+ * @param {Function} onDeleteCallback - Optional callback after deletion
+ * @param {boolean} hasContent - Whether todo has content
+ */
+const handleContentClear = (
+  clearContentCallback,
+  onDeleteCallback,
+  hasContent
+) => {
+  const confirmMessage = hasContent
+    ? "Do you really want to delete the content of this todo?"
+    : "Do you want to reset the todo?";
+
+  const successMessage = hasContent ? "Content deleted!" : "Todo reset!";
+
+  if (confirm(confirmMessage)) {
+    clearContentCallback();
+    showMessage(successMessage);
+
+    if (onDeleteCallback) {
+      onDeleteCallback();
     }
-  };
+  }
 };
 
 /**
@@ -172,55 +261,26 @@ export const createCopyHandler = (getContentCallback) => {
  * @param {Function} onDeleteCallback - Optional callback after deletion
  * @returns {Function} Event handler function
  */
-export const createContentClearHandler = (
-  getContentCallback,
-  clearContentCallback,
-  onDeleteCallback
-) => {
-  return (event) => {
+export const createContentClearHandler =
+  (getContentCallback, clearContentCallback, onDeleteCallback) => (event) => {
     event.preventDefault();
-    // console.log("Content clear handler called");
 
     const { title, content } = getContentCallback();
-    // console.log("Content clear handler content:", { title, content });
-
     const { titleElement, contentElement } = getTodoElements();
 
     if (!titleElement && !contentElement) {
-      showMessage("Keine Todo-Elemente gefunden.");
+      showMessage("No todo elements found.");
       return;
     }
 
-    // Für neue Todos: Immer löschen erlauben, auch bei leerem Content
-    const hasAnyContent =
-      title ||
-      content ||
-      (titleElement && titleElement.textContent.trim() !== "Neue Todo") ||
-      (contentElement && contentElement.textContent.trim() !== "");
-
-    if (!hasAnyContent) {
-      // Auch bei leerem Content zurücksetzen
-      if (confirm("Möchten Sie die Todo zurücksetzen?")) {
-        clearContentCallback();
-        showMessage("Todo zurückgesetzt!");
-
-        if (onDeleteCallback) {
-          onDeleteCallback();
-        }
-      }
-      return;
-    }
-
-    if (confirm("Möchten Sie den Inhalt dieser Todo wirklich löschen?")) {
-      clearContentCallback();
-      showMessage("Inhalt gelöscht!");
-
-      if (onDeleteCallback) {
-        onDeleteCallback();
-      }
-    }
+    const hasContent = hasAnyTodoContent(
+      title,
+      content,
+      titleElement,
+      contentElement
+    );
+    handleContentClear(clearContentCallback, onDeleteCallback, hasContent);
   };
-};
 
 /**
  * Handles todo deletion functionality (moves todo to trash)
@@ -229,37 +289,62 @@ export const createContentClearHandler = (
  * @param {Function} onDeleteCallback - Optional callback after deletion
  * @returns {Function} Event handler function
  */
-export const createDeleteHandler = (
-  getTodoIdCallback,
-  trashTodoCallback,
-  onDeleteCallback
-) => {
-  return (event) => {
+export const createDeleteHandler =
+  (getTodoIdCallback, trashTodoCallback, onDeleteCallback) => (event) => {
     event.preventDefault();
 
     const todoId = getTodoIdCallback();
 
     if (!todoId) {
-      showMessage("Kein Todo zum Löschen gefunden.", "error");
+      showMessage("No todo found to delete.", "error");
       return;
     }
 
-    if (
-      confirm("Möchten Sie diese Todo wirklich in den Papierkorb verschieben?")
-    ) {
+    if (confirm("Do you really want to move this todo to trash?")) {
       try {
         trashTodoCallback(todoId);
-        showMessage("Todo wurde in den Papierkorb verschoben!");
+        showMessage("Todo was moved to trash!");
 
         if (onDeleteCallback) {
           onDeleteCallback();
         }
       } catch (error) {
-        console.error("Error deleting todo:", error);
-        showMessage("Fehler beim Löschen der Todo.", "error");
+        logActionStatus("error", "Error deleting todo:", error);
+        showMessage("Error deleting todo.", "error");
       }
     }
   };
+
+/**
+ * Creates a temporary textarea for fallback copy operations
+ * @param {string} text - Text to copy
+ * @returns {HTMLTextAreaElement} Configured textarea element
+ */
+const createCopyTextArea = (text) => {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.cssText = "position: fixed; left: -999999px; top: -999999px;";
+  return textArea;
+};
+
+/**
+ * Fallback copy function for older browsers
+ * @param {string} text - Text to copy
+ */
+export const fallbackCopy = (text) => {
+  const textArea = createCopyTextArea(text);
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+
+  try {
+    document.execCommand("copy");
+    showMessage("Todo copied to clipboard!");
+  } catch (err) {
+    showMessage("Copy failed.");
+  }
+
+  document.body.removeChild(textArea);
 };
 
 /**
@@ -268,31 +353,31 @@ export const createDeleteHandler = (
  */
 const fallbackShare = (text) => {
   fallbackCopy(text);
-  showMessage("Todo kopiert - kann nun geteilt werden!");
+  showMessage("Todo copied - ready to share!");
 };
 
 /**
- * Fallback copy function for older browsers
- * @param {string} text - Text to copy
+ * Creates styled message element
+ * @param {string} message - Message text
+ * @param {string} type - Message type
+ * @returns {HTMLDivElement} Styled message element
  */
-export const fallbackCopy = (text) => {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  textArea.style.position = "fixed";
-  textArea.style.left = "-999999px";
-  textArea.style.top = "-999999px";
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
+const createMessageElement = (message, type) => {
+  const messageDiv = document.createElement("div");
+  messageDiv.textContent = message;
 
-  try {
-    document.execCommand("copy");
-    showMessage("Todo in die Zwischenablage kopiert!");
-  } catch (err) {
-    showMessage("Kopieren fehlgeschlagen.");
-  }
+  const backgroundColor =
+    type === "error" ? "rgba(244, 67, 54, 0.9)" : "rgba(76, 175, 80, 0.9)";
 
-  document.body.removeChild(textArea);
+  messageDiv.style.cssText = `
+    position: fixed; top: 20px; right: 20px;
+    background: ${backgroundColor}; color: white;
+    padding: 1rem; border-radius: 0.5rem; z-index: 1000;
+    font-size: 0.9rem; max-width: 300px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  `;
+
+  return messageDiv;
 };
 
 /**
@@ -301,28 +386,9 @@ export const fallbackCopy = (text) => {
  * @param {string} type - Message type (success, error, info)
  */
 export const showMessage = (message, type = "success") => {
-  // console.log(`Action message (${type}):`, message);
+  logActionStatus("info", `Action message (${type}): ${message}`);
 
-  const messageDiv = document.createElement("div");
-  messageDiv.textContent = message;
-
-  const backgroundColor =
-    type === "error" ? "rgba(244, 67, 54, 0.9)" : "rgba(76, 175, 80, 0.9)";
-
-  messageDiv.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    background: ${backgroundColor};
-    color: white;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    z-index: 1000;
-    font-size: 0.9rem;
-    max-width: 300px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  `;
-
+  const messageDiv = createMessageElement(message, type);
   document.body.appendChild(messageDiv);
 
   setTimeout(() => {

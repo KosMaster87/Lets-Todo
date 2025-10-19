@@ -1,6 +1,9 @@
-// lets-todo-app/src/components/pages/todo-view.js
+/**
+ * @fileoverview Todo View Page Component
+ * @module todo-view
+ */
 
-import { getCurrentTodo } from "../../state.js";
+import { getCurrentTodo } from "../../state/main-state.js";
 import { renderSingleActionButtons } from "../action-view.js";
 
 /**

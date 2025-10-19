@@ -1,6 +1,13 @@
-// lets-todo-app/src/services/crud/todos-list-operations.js
+/**
+ * @fileoverview Todos List Operations Service
+ * @module todos-list-operations
+ */
 
-import { setCurrentTodo, updateTodo, trashTodo } from "./../../state.js";
+import {
+  setCurrentTodo,
+  updateTodo,
+  trashTodo,
+} from "./../../state/main-state.js";
 import { VIEWS } from "./../../utils/constants.js";
 import { navigateToView } from "./../navigation/navigation.js";
 import {
@@ -8,11 +15,6 @@ import {
   isValidTodoId,
   logTodoAction,
 } from "./todos-list-utils.js";
-
-/**
- * Todos List Operations Service
- * Handles CRUD operations for todos in list view
- */
 
 /**
  * Handles opening a todo for editing

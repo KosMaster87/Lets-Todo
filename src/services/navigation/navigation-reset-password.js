@@ -1,35 +1,49 @@
+// lets-todo-app/src/services/navigation/navigation-reset-password.js
+
 /**
- * @fileoverview Reset Password Navigation Module
- *
- * Handles forgot password functionality including email validation,
- * API communication, and user feedback. Provides a complete
- * password reset request workflow with proper error handling and success states.
- *
- * Key Features:
- * - Email validation with real-time feedback
- * - API integration for reset request
- * - Loading states and user experience optimization
- * - Success/error message handling
- * - Navigation back to login
- *
+ * @fileoverview Reset password navigation module
  * @module navigation-reset-password
- * @requires ./navigation.js
- * @requires ./../../utils/constants.js
- * @requires ./../../utils/api-handler.js
- * @since 1.0.0
  */
 
 import { handleNavigationClick } from "./navigation.js";
-import { VIEWS } from "./../../utils/constants.js";
-import { getApiBase, apiHandler } from "./../../utils/api-handler.js";
+import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
+import { getApiBase, apiHandler } from "./../api/api-handler.js";
+import {
+  showErrorMessage,
+  showSuccessMessage,
+  clearErrorMessages,
+} from "./../../utils/dom-helpers.js";
+import { setSubmitButtonState } from "./../../utils/ui-state-helpers.js";
 
 /**
- * Sets up reset password navigation buttons.
- * Maps reset password button clicks to their corresponding views and actions.
+ * Logs reset password status for debugging
+ * @function logResetPasswordStatus
+ * @param {string} action - The action being performed
+ * @param {string} [details=''] - Additional details about the action
+ * @returns {void}
+ */
+const logResetPasswordStatus = (action, details = "") => {
+  if (DEBUG_MODE) {
+    console.log(`[Reset Password] ${action}${details ? ": " + details : ""}`);
+  }
+};
+
+/**
+ * Sets up reset password navigation buttons and handlers
  * @function setupResetPasswordNavigation
  * @returns {void}
  */
 const setupResetPasswordNavigation = () => {
+  setupCancelButton();
+  setupSubmitButton();
+};
+
+/**
+ * Sets up cancel button navigation handler
+ * @function setupCancelButton
+ * @returns {void}
+ */
+const setupCancelButton = () => {
   const resetPasswordLinks = [
     { id: "resetPasswordCancelBtn", view: VIEWS.LOGIN },
   ];
@@ -40,7 +54,14 @@ const setupResetPasswordNavigation = () => {
       element.onclick = (e) => handleNavigationClick(e, view);
     }
   });
+};
 
+/**
+ * Sets up submit button click handler
+ * @function setupSubmitButton
+ * @returns {void}
+ */
+const setupSubmitButton = () => {
   const resetPasswordSubmitBtn = document.getElementById(
     "resetPasswordSubmitBtn"
   );
@@ -50,19 +71,38 @@ const setupResetPasswordNavigation = () => {
 };
 
 /**
- * Sets up reset password form handlers.
- * Handles form validation and submission for password reset requests.
+ * Sets up form event handlers and validation
  * @function setupResetPasswordFormHandlers
  * @returns {void}
  */
 const setupResetPasswordFormHandlers = () => {
+  setupEmailInputHandler();
+  setupFormSubmissionHandler();
+};
+
+/**
+ * Sets up email input change handler to clear messages
+ * @function setupEmailInputHandler
+ * @returns {void}
+ */
+const setupEmailInputHandler = () => {
   const form = document.getElementById("resetPasswordForm");
   if (form) {
     const emailInput = form.querySelector('input[type="email"]');
     if (emailInput) {
       emailInput.addEventListener("input", clearErrorMessages);
     }
+  }
+};
 
+/**
+ * Sets up form submission handler with preventDefault
+ * @function setupFormSubmissionHandler
+ * @returns {void}
+ */
+const setupFormSubmissionHandler = () => {
+  const form = document.getElementById("resetPasswordForm");
+  if (form) {
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       handleResetPasswordSubmit(e);
@@ -71,16 +111,16 @@ const setupResetPasswordFormHandlers = () => {
 };
 
 /**
- * Gets reset password form input values and DOM elements.
+ * Gets reset password form input values and DOM elements
  * @function getResetPasswordFormInputs
- * @returns {{emailInput: HTMLInputElement, email: string}} Object containing form input and value
+ * @returns {{emailInput: HTMLInputElement, email: string}} Object containing form input element and trimmed email value
  * @throws {Error} When form elements are not found
  */
 const getResetPasswordFormInputs = () => {
   const emailInput = document.getElementById("resetEmail");
 
   if (!emailInput) {
-    throw new Error("Form elements not found. Please refresh the page.");
+    throw new Error("Form not available.");
   }
 
   return {
@@ -90,27 +130,22 @@ const getResetPasswordFormInputs = () => {
 };
 
 /**
- * Sets submit button loading state.
- * @function setSubmitButtonState
+ * Sets reset password button loading state
+ * @function setResetPasswordButtonState
  * @param {boolean} isLoading - Whether the button should show loading state
  * @returns {void}
  */
-const setSubmitButtonState = (isLoading) => {
-  const submitBtn = document.getElementById("resetPasswordSubmitBtn");
-  if (submitBtn) {
-    submitBtn.disabled = isLoading;
-    if (isLoading) {
-      submitBtn.classList.add("loading");
-      submitBtn.querySelector("h3").textContent = "Sende E-Mail...";
-    } else {
-      submitBtn.classList.remove("loading");
-      submitBtn.querySelector("h3").textContent = "Reset-Link senden";
-    }
-  }
+const setResetPasswordButtonState = (isLoading) => {
+  setSubmitButtonState(
+    isLoading,
+    "resetPasswordSubmitBtn",
+    "Sending Email...",
+    "Send Reset Link"
+  );
 };
 
 /**
- * Calls forgot password API endpoint.
+ * Calls forgot password API endpoint
  * @async
  * @function callForgotPasswordAPI
  * @param {string} email - User's email address for password reset
@@ -119,15 +154,13 @@ const setSubmitButtonState = (isLoading) => {
  */
 const callForgotPasswordAPI = async (email) => {
   const API_BASE = getApiBase();
-  return await apiHandler(`${API_BASE}/forgot-password`, "POST", {
-    email,
-  });
+  return await apiHandler(`${API_BASE}/forgot-password`, "POST", { email });
 };
 
 /**
- * Clears reset password form input.
+ * Clears reset password form input field
  * @function clearResetPasswordFormInput
- * @param {{emailInput: HTMLInputElement}} inputs - Form input element object
+ * @param {{emailInput: HTMLInputElement}} inputs - Object containing form input element
  * @returns {void}
  */
 const clearResetPasswordFormInput = (inputs) => {
@@ -135,31 +168,38 @@ const clearResetPasswordFormInput = (inputs) => {
 };
 
 /**
- * Handles successful password reset request.
- * Shows success message and provides instructions to user.
+ * Handles successful password reset request
  * @function handleResetPasswordSuccess
- * @param {string} email - Email address where reset link was sent
+ * @param {Object} result - Result object from password reset API
+ * @param {string} result.message - Success message from server
+ * @param {string} result.email - Email address where reset link was sent
  * @returns {void}
  */
 const handleResetPasswordSuccess = (result) => {
-  // Use server message if available (includes security-conscious messaging)
   const message =
     result.message ||
-    `Reset-Link wurde an ${result.email} gesendet. Bitte überprüfe dein E-Mail-Postfach und folge den Anweisungen.`;
+    `Reset link sent to ${result.email}. Please check your email inbox and follow the instructions.`;
 
-  showSuccessMessage(message);
+  showSuccessMessage(message, "resetPasswordSuccess");
+  clearFormInput();
+};
 
-  // Optionally clear the input
+/**
+ * Clears form input after successful submission
+ * @function clearFormInput
+ * @returns {void}
+ */
+const clearFormInput = () => {
   const inputs = getResetPasswordFormInputs();
   clearResetPasswordFormInput(inputs);
 };
 
 /**
- * Processes password reset request and handles API response.
+ * Processes password reset request and handles API response
  * @async
  * @function processResetPasswordRequest
  * @param {string} email - Email address for reset request
- * @returns {Promise<{success: boolean, email: string}>} Success result with email
+ * @returns {Promise<{success: boolean, email: string, message: string}>} Success result with email and message
  * @throws {Error} When password reset request fails or API returns error
  */
 const processResetPasswordRequest = async (email) => {
@@ -175,31 +215,23 @@ const processResetPasswordRequest = async (email) => {
 };
 
 /**
- * Handles password reset request errors and displays user-friendly error messages.
+ * Handles password reset request errors and displays user-friendly messages
  * @function handleResetPasswordError
  * @param {Error} error - The error object from reset password operation
  * @returns {void}
  */
 const handleResetPasswordError = (error) => {
-  // Only log unexpected errors, not user-facing error messages
-  if (
-    !error.error ||
-    !error.error.includes("Server-Fehler beim Verarbeiten der Reset-Anfrage")
-  ) {
-    console.error("Error sending reset email:", error);
-  }
+  logResetPasswordStatus("Reset password error", error.message);
 
-  // Always show a generic, security-conscious message
   const message =
-    "Falls ein Account mit dieser E-Mail existiert, wurde ein Reset-Link gesendet. " +
-    "Bitte überprüfe dein E-Mail-Postfach. Falls du keine E-Mail erhältst, versuche es später erneut.";
+    "If an account with this email exists, a reset link has been sent. " +
+    "Please check your email inbox. If you don't receive an email, try again later.";
 
-  showSuccessMessage(message); // Use success message even for errors (security)
+  showSuccessMessage(message, "resetPasswordSuccess");
 };
 
 /**
- * Handles reset password form submission.
- * Main coordinator function that orchestrates the password reset request process.
+ * Handles reset password form submission
  * @async
  * @function handleResetPasswordSubmit
  * @param {Event} e - Form submit event
@@ -210,41 +242,50 @@ const handleResetPasswordSubmit = async (e) => {
 
   try {
     const inputs = getResetPasswordFormInputs();
-    clearErrorMessages();
+    clearErrorMessages("resetPasswordError", "resetPasswordSuccess");
 
-    if (!validateResetPasswordInputs(inputs.email)) {
-      return;
-    }
+    if (!validateResetPasswordInputs(inputs.email)) return;
 
-    setSubmitButtonState(true);
-    const result = await processResetPasswordRequest(inputs.email);
-    handleResetPasswordSuccess(result);
+    await processResetPasswordSubmission(inputs.email);
   } catch (error) {
     handleResetPasswordError(error);
   } finally {
-    setSubmitButtonState(false);
+    setResetPasswordButtonState(false);
   }
 };
 
 /**
- * Validates reset password form inputs.
- * Checks for required email field and valid email format.
+ * Processes reset password submission with loading state
+ * @async
+ * @function processResetPasswordSubmission
+ * @param {string} email - Email address for reset request
+ * @returns {Promise<void>}
+ */
+const processResetPasswordSubmission = async (email) => {
+  setResetPasswordButtonState(true);
+  const result = await processResetPasswordRequest(email);
+  handleResetPasswordSuccess(result);
+};
+
+/**
+ * Validates reset password form inputs
  * @function validateResetPasswordInputs
- * @param {string} email - Email input value
+ * @param {string} email - Email input value to validate
  * @returns {boolean} True if all validations pass, false otherwise
  */
 const validateResetPasswordInputs = (email) => {
   if (!email) {
-    showErrorMessage("E-Mail-Adresse ist erforderlich.");
-    document.getElementById("resetEmail")?.focus();
+    showErrorMessage("Email address is required.", "resetPasswordError");
+    focusEmailInput();
     return false;
   }
 
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(email)) {
-    showErrorMessage("Bitte gib eine gültige E-Mail-Adresse ein.");
-    document.getElementById("resetEmail")?.focus();
+  if (!isValidEmail(email)) {
+    showErrorMessage(
+      "Please enter a valid email address.",
+      "resetPasswordError"
+    );
+    focusEmailInput();
     return false;
   }
 
@@ -252,54 +293,27 @@ const validateResetPasswordInputs = (email) => {
 };
 
 /**
- * Shows error message in the reset password form.
- * @function showErrorMessage
- * @param {string} message - Error message to display
- * @returns {void}
+ * Checks if email format is valid using regex
+ * @function isValidEmail
+ * @param {string} email - Email address to validate
+ * @returns {boolean} True if email format is valid, false otherwise
  */
-const showErrorMessage = (message) => {
-  const errorElement = document.getElementById("resetPasswordError");
-  if (errorElement) {
-    errorElement.textContent = message;
-    errorElement.style.display = "block";
-    errorElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };
 
 /**
- * Shows success message in the reset password form.
- * @function showSuccessMessage
- * @param {string} message - Success message to display
+ * Focuses on email input field for better UX
+ * @function focusEmailInput
  * @returns {void}
  */
-const showSuccessMessage = (message) => {
-  const successElement = document.getElementById("resetPasswordSuccess");
-  if (successElement) {
-    successElement.textContent = message;
-    successElement.style.display = "block";
-    successElement.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
+const focusEmailInput = () => {
+  document.getElementById("resetEmail")?.focus();
 };
 
 /**
- * Clears error and success messages from the form.
- * @function clearErrorMessages
- * @returns {void}
- */
-const clearErrorMessages = () => {
-  const errorElement = document.getElementById("resetPasswordError");
-  const successElement = document.getElementById("resetPasswordSuccess");
-
-  if (errorElement) {
-    errorElement.style.display = "none";
-  }
-  if (successElement) {
-    successElement.style.display = "none";
-  }
-};
-
-/**
- * Sets up additional reset password-specific navigation handlers.
+ * Sets up reset password event listeners and handlers
  * Called by the main navigation system for all reset password-related event listeners.
  * @function setupResetPasswordEventListeners
  * @returns {void}
@@ -308,7 +322,6 @@ const clearErrorMessages = () => {
 export const setupResetPasswordEventListeners = () => {
   setupResetPasswordNavigation();
   setupResetPasswordFormHandlers();
-
-  // Additional reset password-specific event listeners can be added here
+  // Additional reset password-specific event listeners can be added here.
   // For example: email format indicators, rate limiting feedback, etc.
 };
