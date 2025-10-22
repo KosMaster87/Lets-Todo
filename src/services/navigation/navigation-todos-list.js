@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/navigation-todos-list.js
+/**
+ * @fileoverview Navigation event handling for todos list view
+ * @module navigation-todos-list
+ */
 
 import { VIEWS } from "./../../utils/constants.js";
 import { navigateToView } from "./navigation.js";
@@ -26,7 +29,9 @@ import {
 let todosListFilterMode = TODOS_LIST_FILTER_MODES.ALL;
 
 /**
- * Sets up all navigation event handlers for todos list.
+ * @function setupTodosListNavigation
+ * @description Sets up all navigation event handlers for todos list view
+ * @returns {void} No return value - performs event handler registration
  */
 export function setupTodosListNavigation() {
   setupFilterButtonNavigation();
@@ -36,7 +41,9 @@ export function setupTodosListNavigation() {
 }
 
 /**
- * Sets up the filter button to cycle through filter modes and re-render the todos list.
+ * @function setupFilterButtonNavigation
+ * @description Sets up the filter button to cycle through filter modes and re-render
+ * @returns {void} No return value - performs event listener registration
  */
 function setupFilterButtonNavigation() {
   const filterBtn = document.getElementById("todosListFilterBtn");
@@ -46,14 +53,18 @@ function setupFilterButtonNavigation() {
 }
 
 /**
- * Initializes the filter UI with default state.
+ * @function initializeFilterUI
+ * @description Initializes the filter UI with default state
+ * @returns {void} No return value - performs UI initialization
  */
 function initializeFilterUI() {
   updateFilterButtonText(todosListFilterMode);
 }
 
 /**
- * Handles filter toggle action.
+ * @function handleFilterToggle
+ * @description Handles filter toggle action and re-renders list
+ * @returns {void} No return value - performs filter state update and re-render
  */
 function handleFilterToggle() {
   todosListFilterMode = getNextFilterMode(todosListFilterMode);
@@ -62,7 +73,9 @@ function handleFilterToggle() {
 }
 
 /**
- * Sets up the cancel button to navigate back to the dashboard.
+ * @function setupCancelButtonNavigation
+ * @description Sets up the cancel button to navigate back to dashboard
+ * @returns {void} No return value - performs event listener registration
  */
 function setupCancelButtonNavigation() {
   const cancelBtn = document.getElementById("todosListCancelBtn");
@@ -74,31 +87,52 @@ function setupCancelButtonNavigation() {
 }
 
 /**
- * Sets up event delegation for todo actions using the events service.
+ * @function setupTodoActionsNavigationWrapper
+ * @description Sets up event delegation for todo actions using the events service
+ * @returns {void} No return value - performs action event delegation setup
  */
 function setupTodoActionsNavigationWrapper() {
-  const handlers = {
-    [TODO_ACTIONS.OPEN]: handleOpenAction,
-    [TODO_ACTIONS.BOOKMARK]: handleBookmarkAction,
-    [TODO_ACTIONS.DONE]: handleDoneAction,
-    [TODO_ACTIONS.SHARE]: handleShareAction,
-    [TODO_ACTIONS.COPY]: handleCopyAction,
-    [TODO_ACTIONS.DELETE]: handleDeleteAction,
-  };
-
+  const handlers = createActionHandlers();
   setupTodoActionsNavigation("todosList", handlers);
 }
 
 /**
- * Wrapper functions that connect UI events to CRUD services
+ * @function createActionHandlers
+ * @description Creates mapping of action types to handler functions
+ * @returns {Object} Action handlers configuration object
+ */
+const createActionHandlers = () => ({
+  [TODO_ACTIONS.OPEN]: handleOpenAction,
+  [TODO_ACTIONS.BOOKMARK]: handleBookmarkAction,
+  [TODO_ACTIONS.DONE]: handleDoneAction,
+  [TODO_ACTIONS.SHARE]: handleShareAction,
+  [TODO_ACTIONS.COPY]: handleCopyAction,
+  [TODO_ACTIONS.DELETE]: handleDeleteAction,
+});
+
+/**
+ * @section Action Handler Functions
+ * @description Wrapper functions that connect UI events to CRUD services
  */
 
+/**
+ * @function handleOpenAction
+ * @description Handles opening a todo with error handling
+ * @param {string} todoId - ID of the todo to open
+ * @returns {void} No return value - performs todo opening operation
+ */
 function handleOpenAction(todoId) {
   handleOpenTodo(todoId, (error) => {
     console.error("Failed to open todo:", error);
   });
 }
 
+/**
+ * @function handleBookmarkAction
+ * @description Handles bookmark toggle with UI refresh and error handling
+ * @param {string} todoId - ID of the todo to bookmark/unbookmark
+ * @returns {void} No return value - performs bookmark toggle operation
+ */
 function handleBookmarkAction(todoId) {
   handleBookmarkToggle(
     todoId,
@@ -111,6 +145,12 @@ function handleBookmarkAction(todoId) {
   );
 }
 
+/**
+ * @function handleDoneAction
+ * @description Handles done state toggle with UI refresh and error handling
+ * @param {string} todoId - ID of the todo to mark done/undone
+ * @returns {void} No return value - performs done state toggle operation
+ */
 function handleDoneAction(todoId) {
   handleToggleDone(
     todoId,
@@ -123,6 +163,12 @@ function handleDoneAction(todoId) {
   );
 }
 
+/**
+ * @function handleShareAction
+ * @description Handles todo sharing with success logging and error handling
+ * @param {string} todoId - ID of the todo to share
+ * @returns {void} No return value - performs todo sharing operation
+ */
 function handleShareAction(todoId) {
   handleShareTodo(
     todoId,
@@ -135,6 +181,12 @@ function handleShareAction(todoId) {
   );
 }
 
+/**
+ * @function handleCopyAction
+ * @description Handles todo copying with success logging and error handling
+ * @param {string} todoId - ID of the todo to copy
+ * @returns {void} No return value - performs todo copying operation
+ */
 function handleCopyAction(todoId) {
   handleCopyTodo(
     todoId,
@@ -147,6 +199,12 @@ function handleCopyAction(todoId) {
   );
 }
 
+/**
+ * @function handleDeleteAction
+ * @description Handles todo deletion with UI refresh and error handling
+ * @param {string} todoId - ID of the todo to delete
+ * @returns {void} No return value - performs todo deletion operation
+ */
 function handleDeleteAction(todoId) {
   handleDeleteTodo(
     todoId,

@@ -1,42 +1,58 @@
-// lets-todo-app/src/state/app-initializer.js
+/**
+ * @fileoverview Application Initializer
+ * @module app-initializer
+ */
 
 import { SessionManager } from "./session-manager.js";
 import { PreferencesManager } from "./storage.js";
 import { TodosPersistence, TrashPersistence } from "./data-persistence.js";
 
-/**
- * Application Initializer
- * Handles complete app initialization and data loading coordination
- * Extracted from state.js for better separation of concerns
- */
-
 export const AppInitializer = {
   /**
-   * Loads and initializes all application data
+   * Complete application initialization with async support
    * @param {Object} appState - Application state object
    * @param {Function} notifyListeners - Function to notify state listeners
-   * @returns {Object} Loaded data object
+   * @returns {Promise<void>}
    */
-  loadAllData(appState, notifyListeners) {
+  async initialize(appState, notifyListeners) {
+    const loadedData = await this.loadAllData(appState, notifyListeners);
+
+    Object.assign(appState, {
+      todos: loadedData.todos,
+      trashedTodos: loadedData.trashedTodos,
+      userPreferences: loadedData.userPreferences,
+    });
+
+    notifyListeners();
+    this.applyUserPreferences(appState.userPreferences);
+  },
+
+  /**
+   * Loads and initializes all application data with smart sync
+   * @param {Object} appState - Application state object
+   * @param {Function} notifyListeners - Function to notify state listeners
+   * @returns {Promise<Object>} Loaded data object
+   */
+  async loadAllData(appState, notifyListeners) {
     // console.log("🚀 Starting application data initialization...");
 
-    // 1. Load core data using persistence modules
+    // 1. Load session data first to determine session type
+    SessionManager.loadFromStorage(appState, notifyListeners);
+
+    // 2. Load preferences with smart sync based on session type
+    const userPreferences = await PreferencesManager.autoSync(
+      appState.sessionType,
+      appState.userPreferences
+    );
+
+    // 3. Load core data using persistence modules
     const loadedData = {
       todos: TodosPersistence.load(appState.sessionType),
       trashedTodos: TrashPersistence.load(appState.sessionType),
-      userPreferences: PreferencesManager.load(appState.userPreferences),
+      userPreferences: userPreferences,
     };
 
-    // 2. Load session data (this may modify appState.sessionType)
-    SessionManager.loadFromStorage(appState, notifyListeners);
-
-    // 3. Re-load todos/trash if session changed during load
-    if (appState.sessionType) {
-      loadedData.todos = TodosPersistence.load(appState.sessionType);
-      loadedData.trashedTodos = TrashPersistence.load(appState.sessionType);
-    }
-
-    // 4. Save preferences to ensure storage is up to date
+    // 4. Save preferences to ensure localStorage is up to date
     PreferencesManager.save(loadedData.userPreferences);
 
     // console.log("✅ Application data initialization complete");
@@ -48,35 +64,15 @@ export const AppInitializer = {
    * @param {Object} userPreferences - User preferences object
    */
   applyUserPreferences(userPreferences) {
-    // Apply theme to DOM
     if (userPreferences.theme) {
       document.body.setAttribute("data-theme", userPreferences.theme);
       // console.log(`🎨 Theme applied: ${userPreferences.theme}`);
     }
 
-    // Apply language (if needed in future)
     if (userPreferences.language) {
       document.documentElement.lang = userPreferences.language;
     }
 
     // Apply other UI preferences...
-  },
-
-  /**
-   * Complete application initialization
-   * @param {Object} appState - Application state object
-   * @param {Function} notifyListeners - Function to notify state listeners
-   */
-  initialize(appState, notifyListeners) {
-    const loadedData = this.loadAllData(appState, notifyListeners);
-
-    Object.assign(appState, {
-      todos: loadedData.todos,
-      trashedTodos: loadedData.trashedTodos,
-      userPreferences: loadedData.userPreferences,
-    });
-
-    notifyListeners();
-    this.applyUserPreferences(appState.userPreferences);
   },
 };

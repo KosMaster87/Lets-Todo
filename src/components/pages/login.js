@@ -1,4 +1,7 @@
-// lets-todo-app/src/pages/login.js
+/**
+ * @fileoverview Login Page Component
+ * @module login
+ */
 
 /**
  * Renders the login page.

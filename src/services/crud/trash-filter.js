@@ -1,6 +1,9 @@
-// lets-todo-app/src/services/crud/trash-filter.js
+/**
+ * @fileoverview Trash Filter Module
+ * @module trash-filter
+ */
 
-import { getTrashedTodos } from "./../../state.js";
+import { getTrashedTodos } from "./../../state/main-state.js";
 import {
   renderTrashPlaceholder,
   renderSingleTrashTodo,

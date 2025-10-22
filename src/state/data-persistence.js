@@ -1,12 +1,9 @@
-// lets-todo-app/src/state/data-persistence.js
+/**
+ * @fileoverview Data Persistence Manager
+ * @module data-persistence
+ */
 
 import { StorageManager, StorageKeys } from "./storage.js";
-
-/**
- * Data Persistence Manager
- * Handles all storage operations for todos, trash, and session data
- * Extracted from state.js for better modularity
- */
 
 /**
  * Gets the appropriate storage key based on session type

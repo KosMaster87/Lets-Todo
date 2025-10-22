@@ -1,6 +1,9 @@
-// lets-todo-app/src/services/crud/todo-action-setup.js
+/**
+ * @fileoverview Todo Action Setup Module
+ * @module todo-action-setup
+ */
 
-import { getCurrentTodo, trashTodo } from "./../../state.js";
+import { getCurrentTodo, trashTodo } from "./../../state/main-state.js";
 import { VIEWS } from "./../../utils/constants.js";
 import { navigateToView } from "./../navigation/navigation.js";
 import {

@@ -5,8 +5,7 @@ node_modules/
 package-lock.json
 
 # Development
-dev-server.js
-dev-server-standalone.js
+# dev-server.js
 
 # Environment files
 .env

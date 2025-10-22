@@ -1,4 +1,7 @@
-// lets-todo-app/src/utils/constants.js
+/**
+ * @fileoverview Application-wide constants
+ * @module constants
+ */
 
 /**
  * Available views of the Let's Todo application
@@ -41,6 +44,22 @@ export const PAGE_TITLES = {
 };
 
 /**
+ * Debug mode flag for development logging
+ * @type {boolean}
+ */
+export const DEBUG_MODE = true;
+
+/**
+ * Session types
+ * @type {Object}
+ */
+export const SESSION_TYPES = {
+  GUEST: "guest",
+  USER: "user",
+};
+
+/**
+ * TODO: Update base URL as needed
  * API endpoints
  * @type {Object}
  */
@@ -66,6 +85,7 @@ export const API_ENDPOINTS = {
 };
 
 /**
+ * TODO: Update base URL as needed
  * Local storage keys
  * @type {Object}
  */
@@ -77,6 +97,7 @@ export const STORAGE_KEYS = {
 };
 
 /**
+ * TODO: Update base URL as needed
  * Notification types
  * @type {Object}
  */
@@ -88,15 +109,7 @@ export const NOTIFICATION_TYPES = {
 };
 
 /**
- * Session types
- * @type {Object}
- */
-export const SESSION_TYPES = {
-  GUEST: "guest",
-  USER: "user",
-};
-
-/**
+ * TODO: Update base URL as needed
  * Theme options
  * @type {Object}
  */
@@ -107,6 +120,7 @@ export const THEMES = {
 };
 
 /**
+ * TODO: Update base URL as needed
  * Language options
  * @type {Object}
  */

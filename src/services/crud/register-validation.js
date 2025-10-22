@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/register-validation.js
+/**
+ * @fileoverview Registration Form Validation Utilities
+ * @module register-validation
+ */
 
 /**
  * Validation error messages

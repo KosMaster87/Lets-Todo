@@ -1,8 +1,6 @@
-// lets-todo-app/src/state/listeners.js
-
 /**
- * Event Listener System for State Management
- * Provides clean API for component registration and notifications
+ * @fileoverview Event Listener System for State Management
+ * @module listeners
  */
 
 /**
@@ -16,20 +14,18 @@ export const createListenerManager = (state) => {
    */
   const addListener = (listener) => {
     if (typeof listener !== "function") {
-      console.error("Listener must be a function");
       return;
     }
 
-    // Prevent duplicate listeners
     if (!state.listeners.includes(listener)) {
       state.listeners.push(listener);
-      // console.log(`📝 Added state listener (${state.listeners.length} total)`);
     } else {
       console.warn("Listener already registered, skipping duplicate");
     }
   };
 
   /**
+   * TODO: Implement removeListener
    * Removes a state change listener.
    * @param {Function} listener - Listener function to remove
    */

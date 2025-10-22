@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/trash-messages.js
+/**
+ * @fileoverview Trash Messages Service
+ * @module trash-messages
+ */
 
 import { showMessage } from "./../navigation/navigation-action-buttons.js";
 

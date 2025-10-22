@@ -1,19 +1,5 @@
 /**
  * @fileoverview Reset Password Confirmation Page Component
- *
- * Renders the password reset confirmation form where users can enter a new password
- * after clicking on a valid reset link. This component handles token validation,
- * password input with confirmation, and the actual password reset process.
- *
- * Key Features:
- * - Token validation on page load
- * - New password input with confirmation field
- * - Password strength validation
- * - Loading states during reset process
- * - Success/error message display
- * - Automatic redirect after successful reset
- * - Secure token handling
- *
  * @module reset-password-confirm-page
  * @since 1.0.0
  */

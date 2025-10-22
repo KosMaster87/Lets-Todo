@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/personal-data-ui-state.js
+/**
+ * @fileoverview Personal Data UI State Management
+ * @module personal-data-ui-state
+ */
 
 /**
  * Message types for consistent UI feedback

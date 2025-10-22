@@ -1,4 +1,7 @@
-// lets-todo-app/src/services/crud/register-form.js
+/**
+ * @fileoverview Registration Form Handlers and Validation
+ * @module register-form
+ */
 
 import {
   validateEmailField,

@@ -1,6 +1,9 @@
-// lets-todo-app/src/components/main-content.js
+/**
+ * @fileoverview Main Content Component
+ * @module main-content
+ */
 
-import { getCurrentView } from "./../state.js";
+import { getCurrentView } from "./../state/main-state.js";
 import { VIEWS, PAGE_TITLES } from "./../utils/constants.js";
 import { updateBodyClass as updateViewBodyClass } from "./../services/navigation/navigation.js";
 import { initializeResetPasswordConfirm } from "./../services/navigation/navigation-reset-password-confirm.js";

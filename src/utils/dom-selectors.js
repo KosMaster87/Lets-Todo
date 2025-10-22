@@ -1,8 +1,6 @@
-// lets-todo-app/src/utils/dom-selectors.js
-
 /**
- * DOM element selectors for todo components
- * Centralized to avoid duplication across multiple files
+ * @fileoverview DOM element selectors for todo components
+ * @module dom-selectors
  */
 
 /**

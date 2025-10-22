@@ -47,3 +47,33 @@
   width: 1.2rem;
   height: 1.2rem;
 }
+
+/* Dark Mode Styles for Action Buttons */
+[data-theme="dark"] .action-btn {
+  background: rgba(42, 42, 42, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .action-btn:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .action-btn:active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .action-btn.view-btn:hover {
+  background: rgba(33, 150, 243, 0.2);
+}
+
+[data-theme="dark"] .action-btn.edit-btn:hover {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+[data-theme="dark"] .action-btn.delete-btn:hover {
+  background: rgba(244, 67, 54, 0.2);
+}
+
+[data-theme="dark"] .action-btn.toggle-btn:hover {
+  background: rgba(255, 193, 7, 0.2);
+}

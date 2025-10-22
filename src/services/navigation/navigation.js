@@ -1,10 +1,8 @@
-// lets-todo-app/src/services/navigation.js
-
 import {
   setCurrentView,
   saveSessionToStorage,
   setSession,
-} from "./../../state.js";
+} from "./../../state/main-state.js";
 import { VIEWS, PAGE_TITLES, SESSION_TYPES } from "./../../utils/constants.js";
 import { setupDashboardEventListeners } from "./navigation-dashboard.js";
 import { setupRegisterEventListeners } from "./navigation-register.js";

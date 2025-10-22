@@ -1,4 +1,7 @@
-// lets-todo-app/src/components/pages/options.js
+/**
+ * @fileoverview Options Page Component
+ * @module options
+ */
 
 /**
  * Renders the options page.

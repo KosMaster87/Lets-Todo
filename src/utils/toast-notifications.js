@@ -1,8 +1,6 @@
-// lets-todo-app/src/utils/toast-notifications.js
-
 /**
- * Toast notification utility for user feedback
- * Provides consistent toast notifications across the application
+ * @fileoverview Toast notification utility for user feedback
+ * @module toast-notifications
  */
 
 /**
@@ -17,20 +15,43 @@ export const showToast = (message, type = "info", options = {}) => {
   const { duration = type === "success" ? 5000 : 8000, closeable = true } =
     options;
 
-  // Remove existing toasts of the same type
+  removeExistingToasts(type);
+
+  if (!document.getElementById("toast-styles")) {
+    addToastStyles();
+  }
+
+  const toast = createToastElement(message, type, closeable);
+  document.body.appendChild(toast);
+  setupToastAutoRemoval(toast, duration);
+
+  return toast;
+};
+
+/**
+ * Removes existing toasts of the same type
+ * @param {string} type - Toast type to remove
+ */
+const removeExistingToasts = (type) => {
   const existingToasts = document.querySelectorAll(`.toast-${type}`);
   existingToasts.forEach((toast) => {
     toast.classList.add("toast-fade-out");
     setTimeout(() => toast.remove(), 300);
   });
+};
 
-  // Create toast element
+/**
+ * Creates toast element with content and styling
+ * @param {string} message - Message to display
+ * @param {string} type - Toast type
+ * @param {boolean} closeable - Whether toast can be manually closed
+ * @returns {HTMLElement} Toast element
+ */
+const createToastElement = (message, type, closeable) => {
   const toast = document.createElement("div");
   toast.className = `toast toast-${type}`;
   toast.innerHTML = `
-    <div class="toast-icon">
-      ${getToastIcon(type)}
-    </div>
+    <div class="toast-icon">${getToastIcon(type)}</div>
     <div class="toast-message">${message}</div>
     ${
       closeable
@@ -38,27 +59,26 @@ export const showToast = (message, type = "info", options = {}) => {
         : ""
     }
   `;
-
-  // Add toast styles if not already present
-  if (!document.getElementById("toast-styles")) {
-    addToastStyles();
-  }
-
-  // Add to page
-  document.body.appendChild(toast);
-
-  // Auto-remove after specified duration
-  if (duration > 0) {
-    setTimeout(() => {
-      if (toast.parentNode) {
-        toast.classList.add("toast-fade-out");
-        setTimeout(() => toast.remove(), 300);
-      }
-    }, duration);
-  }
-
   return toast;
 };
+
+/**
+ * Sets up auto-removal for toast after specified duration
+ * @param {HTMLElement} toast - Toast element
+ * @param {number} duration - Duration in ms (0 = no auto-removal)
+ */
+const setupToastAutoRemoval = (toast, duration) => {
+  if (duration <= 0) return;
+
+  setTimeout(() => {
+    if (toast.parentNode) {
+      toast.classList.add("toast-fade-out");
+      setTimeout(() => toast.remove(), 300);
+    }
+  }, duration);
+};
+
+// ###########################################################
 
 /**
  * Shows a success toast

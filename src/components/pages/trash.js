@@ -1,6 +1,9 @@
-// lets-todo-app/src/components/pages/trash.js
+/**
+ * @fileoverview Trash Page Component
+ * @module trash
+ */
 
-import { getTrashedTodos } from "../../state.js";
+import { getTrashedTodos } from "../../state/main-state.js";
 
 /**
  * Renders the trash page.
