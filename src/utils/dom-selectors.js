@@ -38,3 +38,21 @@ export const todoElementsExist = () => {
   const { titleElement, contentElement } = getTodoElements();
   return titleElement !== null && contentElement !== null;
 };
+
+/**
+ * Gets the current bookmark state from DOM
+ * @returns {boolean} True if bookmarked
+ */
+export const getBookmarkStateFromDOM = () => {
+  const bookmarkBtn = document.getElementById("bookmarkViewBtn");
+  return bookmarkBtn ? bookmarkBtn.classList.contains("bookmarked") : false;
+};
+
+/**
+ * Gets the current completed state from DOM
+ * @returns {boolean} True if completed
+ */
+export const getCompletedStateFromDOM = () => {
+  const doneBtn = document.getElementById("doneTodoBtn");
+  return doneBtn ? doneBtn.classList.contains("completed") : false;
+};
