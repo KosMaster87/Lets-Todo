@@ -1,14 +1,14 @@
-// lets-todo-api/config/env/environment.js
+// lets-todo-api/config/environment.js
 
 /**
- * Backend Environment-Konfiguration
+ * Backend Environment Configuration
  * Multi-Environment Support: development, feature, staging, production
  */
 
 import dotenv from "dotenv";
 
 /**
- * Dynamisches Laden der Environment-Datei basierend auf NODE_ENV
+ * Dynamic loading of environment file based on NODE_ENV
  */
 const NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -38,7 +38,7 @@ dotenv.config({ path: envFile });
 console.log(`🔧 Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
 
 /**
- * Environment-Detection basierend auf NODE_ENV
+ * Environment detection based on NODE_ENV
  */
 function detectEnvironment() {
   // Use mapped environment name
@@ -46,7 +46,7 @@ function detectEnvironment() {
     return actualEnv;
   }
 
-  // Development als Fallback für lokale Entwicklung
+  // Development as fallback for local development
   if (
     process.env.DB_HOST === "127.0.0.1" ||
     process.env.DB_HOST === "localhost" ||
@@ -56,14 +56,14 @@ function detectEnvironment() {
     return "development";
   }
 
-  // Production als Standard-Fallback
+  // Production as default fallback
   return "production";
 }
 
 const ENVIRONMENT = detectEnvironment();
 
 /**
- * Environment-spezifische Konfiguration für alle 4 Environments
+ * Environment-specific configuration for all 4 environments
  */
 const CONFIG = {
   development: {
@@ -79,7 +79,7 @@ const CONFIG = {
     HTTP_PORT: Number(process.env.PORT) || 3000,
     HTTP_HOST: "127.0.0.1",
 
-    // CORS - lokale Development
+    // CORS - local development
     CORS_ORIGINS: [
       "http://localhost:3000",
       "http://localhost:5500",
@@ -91,7 +91,7 @@ const CONFIG = {
     ],
 
     // Cookies
-    COOKIE_DOMAIN: undefined, // Keine Domain für localhost
+    COOKIE_DOMAIN: undefined, // No domain for localhost
     COOKIE_SECURE: false,
 
     // Logging
@@ -125,7 +125,7 @@ const CONFIG = {
     // CORS - Feature Environment
     CORS_ORIGINS: [
       "https://lets-todo-app-feat.dev2k.org",
-      "http://localhost:3000", // Für lokale Tests
+      "http://localhost:3000", // For local testing
     ],
 
     // Cookies
@@ -178,7 +178,7 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production sollte SSL verwenden
+    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production should use SSL
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL:
       process.env.FRONTEND_URL || "https://lets-todo-app-stage.dev2k.org",
@@ -214,19 +214,19 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production sollte SSL verwenden
+    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production should use SSL
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo.dev2k.org",
   },
 };
 
 /**
- * Aktuelle Environment-Konfiguration
+ * Current environment configuration
  */
 const ENV = CONFIG[ENVIRONMENT];
 
 /**
- * Logging-Funktionen
+ * Logging functions
  */
 function debugLog(message, data = null) {
   if (ENV.DEBUG) {
@@ -244,7 +244,7 @@ function errorLog(message, error = null) {
   console.error(`❌ [${ENVIRONMENT.toUpperCase()}] ${message}`, error || "");
 }
 
-// Initial-Log beim Laden
+// Initial log on loading
 debugLog(`Backend Environment Detection: ${ENVIRONMENT}`, {
   dbHost: ENV.DB_HOST,
   dbPort: ENV.DB_PORT,

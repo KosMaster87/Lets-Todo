@@ -2,7 +2,7 @@
 
 /**
  * Database Pool Assignment Middleware
- * Weist jedem Request den korrekten DB-Pool zu (User oder Gast)
+ * Assigns the correct DB pool to each request (User or Guest)
  */
 
 import mysql from "mysql2/promise";
@@ -10,74 +10,144 @@ import { userPool, userPools } from "./../db.js";
 import { ENV } from "./../config/environment.js";
 
 /**
- * Middleware: Pool-Auswahl basierend auf User-Session
- * Nur für registrierte Benutzer - Gäste verwenden LocalStorage
- * Setzt req.pool für nachfolgende Route-Handler
+ * Middleware: Pool selection based on user session
+ * Only for registered users - Guests use LocalStorage
+ * Sets req.pool for subsequent route handlers
  * @param {Request} req - Express Request Object
  * @param {Response} res - Express Response Object
  * @param {Function} next - Next Middleware Function
  */
 export async function assignPoolMiddleware(req, res, next) {
   try {
-    if (!req.cookies.userId) {
-      return res.status(401).json({
-        error: "Authentifizierung erforderlich. Gäste verwenden LocalStorage.",
-      });
-    }
+    if (!validateUserAuthentication(req, res)) return;
 
     const dbName = await getUserDbName(req.cookies.userId);
     if (!dbName) {
-      clearInvalidUserCookie(res);
-      return res.status(401).json({ error: "User-Session ungültig" });
+      return handleInvalidUserDatabase(res);
     }
 
     req.pool = getOrCreateUserPool(req.cookies.userId, dbName);
     next();
   } catch (err) {
-    console.error("Pool-Assignment-Middleware-Fehler:", err);
-    res.status(500).json({ error: "Server-Fehler bei Session-Prüfung" });
+    console.error("Pool assignment middleware error:", err);
+    createServerErrorResponse(res);
   }
 }
 
 /**
- * Erweiterte Pool-Zuweisung mit Fallback-Rekonstruktion
- * Rekonstruiert fehlende User-Pools aus der Datenbank
- * Nur für User-Sessions - Gäste verwenden LocalStorage
+ * Validates user authentication
+ * @param {Request} req - Express Request Object
+ * @param {Response} res - Express Response Object
+ * @returns {boolean} True if user is authenticated
+ */
+const validateUserAuthentication = (req, res) => {
+  if (!req.cookies.userId) {
+    createAuthRequiredResponse(res);
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Creates authentication error response
+ * @param {Response} res - Express Response Object
+ */
+const createAuthRequiredResponse = (res) => {
+  return res.status(401).json({
+    error: "Authentication required. Guests use LocalStorage.",
+  });
+};
+
+/**
+ * Handles invalid user database scenario
+ * @param {Response} res - Express Response Object
+ * @returns {Response} Error response
+ */
+const handleInvalidUserDatabase = (res) => {
+  clearInvalidUserCookie(res);
+  return createInvalidSessionResponse(res);
+};
+
+/**
+ * Creates server error response
+ * @param {Response} res - Express Response Object
+ */
+const createServerErrorResponse = (res) => {
+  return res.status(500).json({ error: "Server error during session check" });
+};
+
+/**
+ * Checks if user pool exists in cache
+ * @param {string} poolKey - Pool cache key
+ * @returns {boolean} True if pool exists
+ */
+const hasExistingUserPool = (poolKey) => Boolean(userPools[poolKey]);
+
+/**
+ * Creates invalid session error response
+ * @param {Response} res - Express Response Object
+ */
+const createInvalidSessionResponse = (res) => {
+  return res.status(401).json({ error: "Invalid user session" });
+};
+
+/**
+ * Handles existing pool assignment
+ * @param {Request} req - Express Request Object
+ * @param {string} poolKey - Pool cache key
+ * @param {Function} next - Next middleware function
+ */
+const assignExistingPool = (req, poolKey, next) => {
+  req.pool = userPools[poolKey];
+  next();
+};
+
+/**
+ * Reconstructs user pool from database
+ * @param {Request} req - Express Request Object
+ * @param {Response} res - Express Response Object
+ * @param {string} userId - User ID
+ * @param {Function} next - Next middleware function
+ */
+const reconstructUserPool = async (req, res, userId, next) => {
+  const dbName = await getUserDbName(userId);
+  if (dbName) {
+    req.pool = getOrCreateUserPool(userId, dbName);
+  } else {
+    clearInvalidUserCookie(res);
+  }
+  next();
+};
+
+/**
+ * Enhanced pool assignment with fallback reconstruction
+ * Reconstructs missing user pools from database
+ * Only for user sessions - Guests use LocalStorage
  */
 export async function enhancedPoolMiddleware(req, res, next) {
   try {
     if (!req.cookies.userId) {
-      return next(); // Kein User → Request ohne Pool fortsetzen
+      return next(); // No user → continue request without pool
     }
 
     const userId = req.cookies.userId;
     const poolKey = `user_${userId}`;
 
-    // Bestehenden Pool verwenden falls vorhanden
-    if (userPools[poolKey]) {
-      req.pool = userPools[poolKey];
-      return next();
+    if (hasExistingUserPool(poolKey)) {
+      return assignExistingPool(req, poolKey, next);
     }
 
-    // Pool aus DB rekonstruieren
-    const dbName = await getUserDbName(userId);
-    if (dbName) {
-      req.pool = getOrCreateUserPool(userId, dbName);
-    } else {
-      clearInvalidUserCookie(res);
-    }
-
-    next();
+    await reconstructUserPool(req, res, userId, next);
   } catch (err) {
-    console.error("Enhanced-Pool-Assignment Fehler:", err);
+    console.error("Enhanced pool assignment error:", err);
     next();
   }
 }
 
 /**
- * Erstellt oder verwendet gecachten User-Pool
- * @param {string} userId - User-ID
- * @param {string} dbName - Datenbankname
+ * Creates or uses cached user pool
+ * @param {string} userId - User ID
+ * @param {string} dbName - Database name
  * @returns {Object} MySQL Connection Pool
  */
 function getOrCreateUserPool(userId, dbName) {
@@ -99,9 +169,9 @@ function getOrCreateUserPool(userId, dbName) {
 }
 
 /**
- * Holt User-Datenbank-Namen aus der Datenbank
- * @param {string} userId - User-ID
- * @returns {Promise<string|null>} Datenbankname oder null
+ * Gets user database name from database
+ * @param {string} userId - User ID
+ * @returns {Promise<string|null>} Database name or null
  */
 async function getUserDbName(userId) {
   const [rows] = await userPool.query(
@@ -112,7 +182,7 @@ async function getUserDbName(userId) {
 }
 
 /**
- * Löscht ungültiges User-Cookie
+ * Clears invalid user cookie
  * @param {Object} res - Express Response Object
  */
 function clearInvalidUserCookie(res) {
