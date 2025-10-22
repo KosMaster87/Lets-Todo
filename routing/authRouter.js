@@ -141,9 +141,10 @@ const processUserRegistration = async (email, password) => {
  * @param {Object} req.body - Login-Daten
  * @param {string} req.body.email - E-Mail-Adresse
  * @param {string} req.body.password - Passwort
+ * @param {boolean} [req.body.remember] - "Remember Me" Option für persistenten Login
  */
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, remember = false } = req.body;
   const validation = validateLoginInput(email, password);
 
   if (!validation.valid) {
