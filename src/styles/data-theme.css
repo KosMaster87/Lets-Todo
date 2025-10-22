@@ -1,12 +1,18 @@
 [data-theme="dark"] {
   --primary-bg: #1a1a1a;
-  --secondary-bg: #2a2a2a;
+  --secondary-bg: #2a2a2aab;
   --text-primary: #ffffff;
   --text-secondary: #cccccc;
 }
 
-[data-theme="dark"] body {
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+body[data-theme="dark"] {
+  background-image: linear-gradient(
+    180deg,
+    #414175 0%,
+    #1e2e59 100%
+  ) !important;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 /* Der Style der Menü-Buttons einer jeden Seite. */
@@ -35,6 +41,7 @@
   opacity: 0.9;
 }
 
+/* TODO */
 /* Der Style im Header einer jeder Seite. */
 [data-theme="dark"] .page-item {
   background: var(--secondary-bg);
@@ -132,4 +139,71 @@
 [data-theme="dark"] .form-cancel-btn .btn-content h3,
 [data-theme="dark"] .form-cancel-btn .btn-content p {
   color: var(--text-primary);
+}
+
+/* ===========================================
+   INPUT FIELDS - DARK MODE
+   =========================================== */
+
+/* All input types */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] textarea {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Focus states for inputs */
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] input[type="email"]:focus,
+[data-theme="dark"] input[type="password"]:focus,
+[data-theme="dark"] input[type="search"]:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+  background: rgba(45, 45, 45, 1) !important;
+  outline: none !important;
+}
+
+/* Placeholder text */
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #999999 !important;
+}
+
+/* Specific input IDs (like registerEmail) */
+[data-theme="dark"] #registerEmail,
+[data-theme="dark"] #registerPassword,
+[data-theme="dark"] #registerPasswordConfirm,
+[data-theme="dark"] #loginEmail,
+[data-theme="dark"] #loginPassword,
+[data-theme="dark"] #resetPasswordEmail,
+[data-theme="dark"] #resetPasswordConfirmPassword,
+[data-theme="dark"] #resetPasswordConfirmPasswordConfirm,
+[data-theme="dark"] #changePasswordCurrent,
+[data-theme="dark"] #changePasswordNew,
+[data-theme="dark"] #changePasswordConfirm,
+[data-theme="dark"] #personalDataEmail,
+[data-theme="dark"] #personalDataFirstName,
+[data-theme="dark"] #personalDataLastName {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Contenteditable elements (for todo editing) */
+[data-theme="dark"] [contenteditable="true"] {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] [contenteditable="true"]:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+  background: rgba(45, 45, 45, 1) !important;
+  outline: none !important;
 }
