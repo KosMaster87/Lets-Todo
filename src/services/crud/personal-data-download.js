@@ -1,31 +1,51 @@
 /**
- * @fileoverview Personal Data Download Service
+ * @fileoverview Personal Data Download Service - JSON Export Only
  * @module personal-data-download
  */
 
 import { getTodos, getTrashedTodos } from "./../../state/main-state.js";
 
 /**
- * Supported export formats
- */
-export const EXPORT_FORMATS = {
-  JSON: "json",
-  CSV: "csv",
-  TXT: "txt",
-};
-
-/**
- * Gets current timestamp for filename
- * @returns {string} Formatted timestamp
+ * Gets current timestamp formatted for filename usage
+ * @returns {string} Formatted timestamp in YYYY-MM-DD_HH-MM-SS format
  */
 export const getTimestamp = () => {
   const now = new Date();
-  return (
-    now.toISOString().split("T")[0] +
-    "_" +
-    now.toTimeString().split(" ")[0].replace(/:/g, "-")
-  );
+  const datePart = now.toISOString().split("T")[0];
+  const timePart = now.toTimeString().split(" ")[0].replace(/:/g, "-");
+  return `${datePart}_${timePart}`;
 };
+
+/**
+ * Creates export metadata for todos
+ * @param {Array} todos - Array of active todo objects
+ * @param {Array} trashedTodos - Array of trashed todo objects
+ * @returns {Object} Export metadata object
+ */
+const createExportMetadata = (todos, trashedTodos) => ({
+  exportDate: new Date().toISOString(),
+  totalTodos: todos.length + trashedTodos.length,
+  activeTodos: todos.length,
+  trashedTodos: trashedTodos.length,
+});
+
+/**
+ * Formats a single todo for export
+ * @param {Object} todo - Todo object
+ * @param {string} status - Todo status ("active" or "trashed")
+ * @returns {Object} Formatted todo object
+ */
+const formatTodoForExport = (todo, status) => ({
+  id: todo.id,
+  title: todo.title,
+  content: todo.content,
+  completed: todo.completed,
+  bookmarked: todo.bookmarked,
+  created: todo.created,
+  lastModified: todo.lastModified,
+  deletedAt: status === "trashed" ? todo.deletedAt : null,
+  status,
+});
 
 /**
  * Converts todos to JSON format
@@ -34,166 +54,19 @@ export const getTimestamp = () => {
  * @returns {string} JSON string
  */
 export const todosToJSON = (todos, trashedTodos) => {
+  const metadata = createExportMetadata(todos, trashedTodos);
+  const activeTodos = todos.map((todo) => formatTodoForExport(todo, "active"));
+  const trashedItems = trashedTodos.map((todo) =>
+    formatTodoForExport(todo, "trashed")
+  );
+
   const exportData = {
-    exportDate: new Date().toISOString(),
-    totalTodos: todos.length + trashedTodos.length,
-    activeTodos: todos.length,
-    trashedTodos: trashedTodos.length,
-    todos: todos.map((todo) => ({
-      id: todo.id,
-      title: todo.title,
-      content: todo.content,
-      completed: todo.completed,
-      bookmarked: todo.bookmarked,
-      created: todo.created,
-      lastModified: todo.lastModified,
-      deletedAt: null,
-      status: "active",
-    })),
-    trash: trashedTodos.map((todo) => ({
-      id: todo.id,
-      title: todo.title,
-      content: todo.content,
-      completed: todo.completed,
-      bookmarked: todo.bookmarked,
-      created: todo.created,
-      lastModified: todo.lastModified,
-      deletedAt: todo.deletedAt,
-      status: "trashed",
-    })),
+    ...metadata,
+    todos: activeTodos,
+    trash: trashedItems,
   };
 
   return JSON.stringify(exportData, null, 2);
-};
-
-/**
- * Converts todos to CSV format
- * @param {Array} todos - Array of active todo objects
- * @param {Array} trashedTodos - Array of trashed todo objects
- * @returns {string} CSV string
- */
-export const todosToCSV = (todos, trashedTodos) => {
-  const headers = [
-    "ID",
-    "Title",
-    "Content",
-    "Completed",
-    "Bookmarked",
-    "Created",
-    "LastModified",
-    "DeletedAt",
-    "Status",
-  ];
-
-  const csvRows = [headers.join(",")];
-
-  // Add active todos
-  todos.forEach((todo) => {
-    const row = [
-      todo.id,
-      `"${(todo.title || "").replace(/"/g, '""')}"`,
-      `"${(todo.content || "").replace(/"/g, '""')}"`,
-      todo.completed ? "Yes" : "No",
-      todo.bookmarked ? "Yes" : "No",
-      todo.created ? new Date(todo.created).toISOString() : "",
-      todo.lastModified || "",
-      "",
-      "Active",
-    ];
-    csvRows.push(row.join(","));
-  });
-
-  // Add trashed todos
-  trashedTodos.forEach((todo) => {
-    const row = [
-      todo.id,
-      `"${(todo.title || "").replace(/"/g, '""')}"`,
-      `"${(todo.content || "").replace(/"/g, '""')}"`,
-      todo.completed ? "Yes" : "No",
-      todo.bookmarked ? "Yes" : "No",
-      todo.created ? new Date(todo.created).toISOString() : "",
-      todo.lastModified || "",
-      todo.deletedAt || "",
-      "Trashed",
-    ];
-    csvRows.push(row.join(","));
-  });
-
-  return csvRows.join("\n");
-};
-
-/**
- * Converts todos to plain text format
- * @param {Array} todos - Array of active todo objects
- * @param {Array} trashedTodos - Array of trashed todo objects
- * @returns {string} Text string
- */
-export const todosToText = (todos, trashedTodos) => {
-  const totalCount = todos.length + trashedTodos.length;
-  const lines = [
-    "=".repeat(60),
-    `TODOS EXPORT - ${new Date().toLocaleString()}`,
-    `Total Todos: ${totalCount} (${todos.length} aktiv, ${trashedTodos.length} im Papierkorb)`,
-    "=".repeat(60),
-    "",
-  ];
-
-  // Active todos section
-  if (todos.length > 0) {
-    lines.push("📝 AKTIVE TODOS");
-    lines.push("-".repeat(30));
-    lines.push("");
-
-    todos.forEach((todo, index) => {
-      lines.push(`${index + 1}. ${todo.title || "Untitled"}`);
-      lines.push(`   Status: ${todo.completed ? "✅ Erledigt" : "⏳ Offen"}`);
-      lines.push(`   Bookmark: ${todo.bookmarked ? "⭐ Ja" : "Nein"}`);
-      lines.push(
-        `   Erstellt: ${
-          todo.created ? new Date(todo.created).toLocaleString() : "Unbekannt"
-        }`
-      );
-
-      if (todo.content) {
-        lines.push(`   Inhalt:`);
-        lines.push(`   ${todo.content.replace(/\n/g, "\n   ")}`);
-      }
-      lines.push("");
-    });
-  }
-
-  // Trashed todos section
-  if (trashedTodos.length > 0) {
-    lines.push("🗑️ PAPIERKORB");
-    lines.push("-".repeat(30));
-    lines.push("");
-
-    trashedTodos.forEach((todo, index) => {
-      lines.push(`${index + 1}. ${todo.title || "Untitled"} [GELÖSCHT]`);
-      lines.push(`   Status: ${todo.completed ? "✅ Erledigt" : "⏳ Offen"}`);
-      lines.push(`   Bookmark: ${todo.bookmarked ? "⭐ Ja" : "Nein"}`);
-      lines.push(
-        `   Erstellt: ${
-          todo.created ? new Date(todo.created).toLocaleString() : "Unbekannt"
-        }`
-      );
-      lines.push(
-        `   Gelöscht: ${
-          todo.deletedAt
-            ? new Date(todo.deletedAt).toLocaleString()
-            : "Unbekannt"
-        }`
-      );
-
-      if (todo.content) {
-        lines.push(`   Inhalt:`);
-        lines.push(`   ${todo.content.replace(/\n/g, "\n   ")}`);
-      }
-      lines.push("");
-    });
-  }
-
-  return lines.join("\n");
 };
 
 /**
@@ -205,8 +78,8 @@ export const todosToText = (todos, trashedTodos) => {
 export const triggerDownload = (content, filename, mimeType) => {
   const blob = new Blob([content], { type: mimeType });
   const url = URL.createObjectURL(blob);
-
   const link = document.createElement("a");
+
   link.href = url;
   link.download = filename;
   link.style.display = "none";
@@ -215,83 +88,75 @@ export const triggerDownload = (content, filename, mimeType) => {
   link.click();
   document.body.removeChild(link);
 
-  // Clean up the URL object
   setTimeout(() => URL.revokeObjectURL(url), 100);
 };
 
 /**
- * Generates filename based on format
- * @param {string} format - Export format
+ * Generates JSON filename with timestamp
  * @returns {string} Generated filename
  */
-export const generateFilename = (format) => {
+export const generateJSONFilename = () => {
   const timestamp = getTimestamp();
-  return `todos_export_${timestamp}.${format}`;
+  return `todos_export_${timestamp}.json`;
 };
 
 /**
- * Gets MIME type for format
- * @param {string} format - Export format
- * @returns {string} MIME type
+ * Validates if todos exist for export
+ * @param {number} totalCount - Total number of todos
+ * @param {Function} onError - Error callback
+ * @returns {boolean} True if validation passes
  */
-export const getMimeType = (format) => {
-  switch (format) {
-    case EXPORT_FORMATS.JSON:
-      return "application/json";
-    case EXPORT_FORMATS.CSV:
-      return "text/csv";
-    case EXPORT_FORMATS.TXT:
-      return "text/plain";
-    default:
-      return "text/plain";
+const validateTodosForExport = (totalCount, onError) => {
+  if (totalCount === 0) {
+    onError?.("No todos available for export.");
+    return false;
   }
+  return true;
 };
 
 /**
- * Downloads todos in specified format
- * @param {string} format - Export format (json, csv, txt)
+ * Creates success message for export
+ * @param {number} totalCount - Total todos exported
+ * @param {number} activeCount - Active todos count
+ * @param {number} trashedCount - Trashed todos count
+ * @param {string} filename - Export filename
+ * @returns {string} Success message
+ */
+const createExportSuccessMessage = (
+  totalCount,
+  activeCount,
+  trashedCount,
+  filename
+) =>
+  `${totalCount} todos (${activeCount} active, ${trashedCount} trashed) exported as JSON: ${filename}`;
+
+/**
+ * Downloads todos as JSON format
  * @param {Function} onSuccess - Success callback
  * @param {Function} onError - Error callback
  */
-export const downloadTodos = (format, onSuccess, onError) => {
+export const downloadTodos = (onSuccess, onError) => {
   try {
     const todos = getTodos();
     const trashedTodos = getTrashedTodos();
     const totalCount = todos.length + trashedTodos.length;
 
-    if (totalCount === 0) {
-      onError?.("Keine Todos zum Exportieren vorhanden.");
-      return;
-    }
+    if (!validateTodosForExport(totalCount, onError)) return;
 
-    let content;
-    switch (format) {
-      case EXPORT_FORMATS.JSON:
-        content = todosToJSON(todos, trashedTodos);
-        break;
-      case EXPORT_FORMATS.CSV:
-        content = todosToCSV(todos, trashedTodos);
-        break;
-      case EXPORT_FORMATS.TXT:
-        content = todosToText(todos, trashedTodos);
-        break;
-      default:
-        onError?.(`Unbekanntes Export-Format: ${format}`);
-        return;
-    }
+    const content = todosToJSON(todos, trashedTodos);
+    const filename = generateJSONFilename();
 
-    const filename = generateFilename(format);
-    const mimeType = getMimeType(format);
+    triggerDownload(content, filename, "application/json");
 
-    triggerDownload(content, filename, mimeType);
-
-    onSuccess?.(
-      `${totalCount} Todos (${todos.length} aktiv, ${
-        trashedTodos.length
-      } gelöscht) erfolgreich als ${format.toUpperCase()} exportiert: ${filename}`
+    const successMessage = createExportSuccessMessage(
+      totalCount,
+      todos.length,
+      trashedTodos.length,
+      filename
     );
+    onSuccess?.(successMessage);
   } catch (error) {
     console.error("Download error:", error);
-    onError?.("Fehler beim Exportieren der Todos.");
+    onError?.("Error exporting todos.");
   }
 };

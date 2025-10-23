@@ -275,3 +275,93 @@ const getButtonTexts = (isLoading) => {
     };
   }
 };
+
+/**
+ * @function setDownloadButtonState
+ * @description Sets download button loading state while preserving icon
+ * @param {boolean} isLoading - Loading state flag
+ * @param {string} buttonId - Download button ID
+ * @returns {void} No return value - performs button state updates
+ */
+export const setDownloadButtonState = (
+  isLoading,
+  buttonId = "downloadTodosBtn"
+) => {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+
+  button.disabled = isLoading;
+  button.classList.toggle("loading", isLoading);
+
+  const btnContent = button.querySelector(".btn-content");
+  if (btnContent) {
+    updateDownloadButtonContent(btnContent, isLoading);
+  }
+};
+
+/**
+ * @function updateDownloadButtonContent
+ * @description Updates download button content text while preserving structure
+ * @param {HTMLElement} btnContent - Button content container
+ * @param {boolean} isLoading - Loading state flag
+ * @returns {void} No return value - performs content updates
+ */
+const updateDownloadButtonContent = (btnContent, isLoading) => {
+  const h3 = btnContent.querySelector("h3");
+  const p = btnContent.querySelector("p");
+
+  if (h3 && p) {
+    if (isLoading) {
+      h3.textContent = "Exporting...";
+      p.textContent = "Preparing todos for download";
+    } else {
+      h3.textContent = "Todos herunterladen";
+      p.textContent = "Alle deine Todos als Datei speichern";
+    }
+  }
+};
+
+/**
+ * @function setUploadButtonState
+ * @description Sets upload button loading state while preserving icon
+ * @param {boolean} isLoading - Loading state flag
+ * @param {string} buttonId - Upload button ID
+ * @returns {void} No return value - performs button state updates
+ */
+export const setUploadButtonState = (
+  isLoading,
+  buttonId = "uploadTodosBtn"
+) => {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+
+  button.disabled = isLoading;
+  button.classList.toggle("loading", isLoading);
+
+  const btnContent = button.querySelector(".btn-content");
+  if (btnContent) {
+    updateUploadButtonContent(btnContent, isLoading);
+  }
+};
+
+/**
+ * @function updateUploadButtonContent
+ * @description Updates upload button content text while preserving structure
+ * @param {HTMLElement} btnContent - Button content container
+ * @param {boolean} isLoading - Loading state flag
+ * @returns {void} No return value - performs content updates
+ */
+const updateUploadButtonContent = (btnContent, isLoading) => {
+  const h3 = btnContent.querySelector("h3");
+  const p = btnContent.querySelector("p");
+
+  if (h3 && p) {
+    if (isLoading) {
+      h3.textContent = "Importing...";
+      p.textContent = "Processing uploaded file";
+    } else {
+      h3.textContent = "Todos wiederherstellen";
+      p.textContent = "Todos aus einer Datei importieren";
+    }
+  }
+};

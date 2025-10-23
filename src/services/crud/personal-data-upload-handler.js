@@ -14,31 +14,65 @@ import {
 } from "./personal-data-upload.js";
 
 import {
-  showPersonalDataSuccess,
-  showPersonalDataError,
-  showPersonalDataInfo,
-  updateUploadLoadingState,
+  showSuccessNotification,
+  showErrorNotification,
+  showInfoNotification,
+} from "./../../utils/notifications.js";
+
+import {
   createProgressIndicator,
   removeProgressIndicator,
 } from "./personal-data-ui-state.js";
 
+import { setUploadButtonState } from "./../../utils/ui-state-helpers.js";
+
 /**
  * Creates file input for todo upload
  * @param {Function} onFileSelected - Callback when file is selected
+ * @param {Function} onCancel - Callback when dialog is cancelled
  * @returns {HTMLInputElement} File input element
  */
-export const createFileInput = (onFileSelected) => {
+export const createFileInput = (onFileSelected, onCancel) => {
   const input = document.createElement("input");
   input.type = "file";
   input.accept = ".json,.csv";
   input.style.display = "none";
 
+  let dialogHandled = false;
+  let focusHandler;
+
   input.addEventListener("change", (event) => {
     const file = event.target.files[0];
+    dialogHandled = true;
+
+    // Clean up focus handler
+    if (focusHandler) {
+      window.removeEventListener("focus", focusHandler);
+    }
+
     if (file && onFileSelected) {
       onFileSelected(file);
+    } else if (onCancel) {
+      onCancel();
     }
   });
+
+  // Handle dialog cancel - focus returns to window without file selection
+  focusHandler = () => {
+    setTimeout(() => {
+      if (!dialogHandled && onCancel) {
+        dialogHandled = true;
+        onCancel();
+      }
+    }, 100);
+  };
+
+  // Set up focus listener after a brief delay to avoid immediate trigger
+  setTimeout(() => {
+    if (!dialogHandled) {
+      window.addEventListener("focus", focusHandler, { once: true });
+    }
+  }, 100);
 
   return input;
 };
@@ -49,9 +83,18 @@ export const createFileInput = (onFileSelected) => {
  * @param {Object} options - Upload options
  */
 export const triggerFileUpload = (onComplete, options = {}) => {
-  const input = createFileInput(async (file) => {
-    await handleFileUpload(file, onComplete, options);
-  });
+  const input = createFileInput(
+    async (file) => {
+      await handleFileUpload(file, onComplete, options);
+    },
+    () => {
+      // User cancelled file dialog - reset button state
+      setUploadButtonState(false);
+      if (onComplete) {
+        onComplete(false, { message: "File selection cancelled" });
+      }
+    }
+  );
 
   document.body.appendChild(input);
   input.click();
@@ -71,13 +114,13 @@ export const handleFileUpload = async (file, onComplete, options = {}) => {
     // Validate file format
     const validation = validateFileFormat(file);
     if (!validation.isValid) {
-      showPersonalDataError(validation.error);
+      showErrorNotification(validation.error);
       onComplete?.(false, validation.error);
       return;
     }
 
-    showPersonalDataInfo(`Datei "${file.name}" wird verarbeitet...`);
-    updateUploadLoadingState(true);
+    showInfoNotification(`Datei "${file.name}" wird verarbeitet...`);
+    setUploadButtonState(true);
     createProgressIndicator(containerId, "Datei wird gelesen...");
 
     // Read file content
@@ -96,7 +139,7 @@ export const handleFileUpload = async (file, onComplete, options = {}) => {
 
     if (!parseResult.success) {
       removeProgressIndicator(containerId);
-      showPersonalDataError(parseResult.error);
+      showErrorNotification(parseResult.error);
       onComplete?.(false, parseResult.error);
       return;
     }
@@ -113,16 +156,16 @@ export const handleFileUpload = async (file, onComplete, options = {}) => {
       showUploadSuccessMessage(importResult);
       onComplete?.(true, importResult);
     } else {
-      showPersonalDataError(importResult.error);
+      showErrorNotification(importResult.error);
       onComplete?.(false, importResult.error);
     }
   } catch (error) {
     console.error("Upload error:", error);
     removeProgressIndicator(containerId);
-    showPersonalDataError(`Upload-Fehler: ${error.message}`);
+    showErrorNotification(`Upload-Fehler: ${error.message}`);
     onComplete?.(false, error.message);
   } finally {
-    updateUploadLoadingState(false);
+    setUploadButtonState(false);
   }
 };
 
@@ -197,7 +240,7 @@ export const showUploadSuccessMessage = (result) => {
 
   const message =
     parts.length > 0 ? parts.join(", ") : "Import erfolgreich abgeschlossen";
-  showPersonalDataSuccess(`✅ ${message}`);
+  showSuccessNotification(`✅ ${message}`);
 
   if (result.errors.length > 0) {
     console.warn("Import errors:", result.errors);
