@@ -1,12 +1,18 @@
 [data-theme="dark"] {
   --primary-bg: #1a1a1a;
-  --secondary-bg: #2a2a2a;
+  --secondary-bg: #2a2a2aab;
   --text-primary: #ffffff;
   --text-secondary: #cccccc;
 }
 
-[data-theme="dark"] body {
-  background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+body[data-theme="dark"] {
+  background-image: linear-gradient(
+    180deg,
+    #414175 0%,
+    #1e2e59 100%
+  ) !important;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 /* Der Style der Menü-Buttons einer jeden Seite. */
@@ -35,6 +41,7 @@
   opacity: 0.9;
 }
 
+/* TODO */
 /* Der Style im Header einer jeder Seite. */
 [data-theme="dark"] .page-item {
   background: var(--secondary-bg);
@@ -132,4 +139,296 @@
 [data-theme="dark"] .form-cancel-btn .btn-content h3,
 [data-theme="dark"] .form-cancel-btn .btn-content p {
   color: var(--text-primary);
+}
+
+/* ===========================================
+   INPUT FIELDS - DARK MODE
+   =========================================== */
+
+/* All input types */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] textarea {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Focus states for inputs */
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] input[type="email"]:focus,
+[data-theme="dark"] input[type="password"]:focus,
+[data-theme="dark"] input[type="search"]:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+  background: rgba(45, 45, 45, 1) !important;
+  outline: none !important;
+}
+
+/* Placeholder text */
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #999999 !important;
+}
+
+/* Specific input IDs (like registerEmail) */
+[data-theme="dark"] #registerEmail,
+[data-theme="dark"] #registerPassword,
+[data-theme="dark"] #registerPasswordConfirm,
+[data-theme="dark"] #loginEmail,
+[data-theme="dark"] #loginPassword,
+[data-theme="dark"] #resetPasswordEmail,
+[data-theme="dark"] #resetPasswordConfirmPassword,
+[data-theme="dark"] #resetPasswordConfirmPasswordConfirm,
+[data-theme="dark"] #changePasswordCurrent,
+[data-theme="dark"] #changePasswordNew,
+[data-theme="dark"] #changePasswordConfirm,
+[data-theme="dark"] #personalDataEmail,
+[data-theme="dark"] #personalDataFirstName,
+[data-theme="dark"] #personalDataLastName {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Contenteditable elements (for todo editing) */
+[data-theme="dark"] [contenteditable="true"] {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 1px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] [contenteditable="true"]:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+  background: rgba(45, 45, 45, 1) !important;
+  outline: none !important;
+}
+
+/* ===========================================
+   FORM GROUPS - DARK MODE
+   =========================================== */
+
+/* Form group labels */
+[data-theme="dark"] .form-group label {
+  color: var(--text-primary) !important;
+}
+
+/* Form group inputs (from form-group.css) */
+[data-theme="dark"] .form-group input[type="text"],
+[data-theme="dark"] .form-group input[type="email"],
+[data-theme="dark"] .form-group input[type="password"] {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .form-group input[type="text"]:focus,
+[data-theme="dark"] .form-group input[type="email"]:focus,
+[data-theme="dark"] .form-group input[type="password"]:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4) !important;
+  background: rgba(45, 45, 45, 1) !important;
+}
+
+/* Form validation states */
+[data-theme="dark"] .form-group input.invalid {
+  border-color: #f44336 !important;
+  box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.3) !important;
+}
+
+[data-theme="dark"] .form-group input.valid {
+  border-color: #4caf50 !important;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Checkbox groups */
+[data-theme="dark"] .checkbox-group label {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: #3a3a3a !important;
+  border: 2px solid #666666 !important;
+  border-radius: 4px !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  position: relative !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:checked {
+  background-color: #0066cc !important;
+  border-color: #0066cc !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:checked::after {
+  content: "✓" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: white !important;
+  font-size: 0.9rem !important;
+  font-weight: bold !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:hover {
+  border-color: #0088ff !important;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3) !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:focus {
+  outline: none !important;
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+}
+
+/* Form controls (todo creation) */
+[data-theme="dark"] .form-control {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .form-control:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4) !important;
+}
+
+/* ===========================================
+   TODO DISPLAY AREAS - DARK MODE
+   =========================================== */
+
+/* Main todo display container */
+[data-theme="dark"] .todo-display {
+  background: rgba(45, 45, 45, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid #555555;
+}
+
+/* Todo header */
+[data-theme="dark"] .todo-header {
+  border-bottom: unset;
+}
+
+/* Todo title */
+[data-theme="dark"] .todo-title {
+  border: 1px solid #555555;
+  background: rgba(83, 83, 83, 0.253) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Todo content display */
+[data-theme="dark"] .todo-content-display {
+  background: rgba(83, 83, 83, 0.253) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid #555555;
+}
+
+/* Todo view actions */
+[data-theme="dark"] .todo-view-actions {
+  background: rgba(83, 83, 83, 0.253) !important;
+  border: 1px solid #555555;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Todo meta info */
+[data-theme="dark"] .todo-meta-info {
+  background: rgba(83, 83, 83, 0.253) !important;
+  border: 1px solid #555555;
+  color: var(--text-secondary) !important;
+}
+
+/* Todo creation date */
+[data-theme="dark"] .todo-creation-date {
+  color: var(--text-secondary) !important;
+}
+
+/* Todo status badges */
+[data-theme="dark"] .todo-status-badge {
+  color: var(--text-secondary) !important;
+  border: 1px solid #555555;
+}
+
+[data-theme="dark"] .todo-status-badge.completed {
+  background: rgba(76, 175, 80, 0.2) !important;
+  color: #4caf50 !important;
+  border: 1px solid #4caf50 !important;
+}
+
+[data-theme="dark"] .todo-status-badge.pending {
+  background: rgba(255, 152, 0, 0.2) !important;
+  color: #ff9800 !important;
+  border: 1px solid #ff9800 !important;
+}
+
+/* Todos list container heading */
+[data-theme="dark"] .todos-list-container h3 {
+  color: var(--text-primary) !important;
+}
+
+/* ===========================================
+   RESET PASSWORD CONFIRM - DARK MODE
+   =========================================== */
+
+/* Reset user info display */
+[data-theme="dark"] .reset-user-info {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .reset-user-info p {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .reset-user-info strong {
+  color: #66b3ff !important;
+}
+
+/* Token validation status */
+[data-theme="dark"] .token-validation-status {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid #555555;
+  color: var(--text-primary) !important;
+}
+
+/* Password strength indicator */
+[data-theme="dark"] .strength-bar {
+  background-color: #444444 !important;
+}
+
+[data-theme="dark"] .strength-text {
+  color: var(--text-secondary) !important;
+}
+
+/* Error and success messages */
+[data-theme="dark"] .reset-password-confirm-error {
+  background-color: rgba(248, 115, 121, 0.2) !important;
+  color: #ff6b6b !important;
+  border: 1px solid #ff6b6b !important;
+}
+
+[data-theme="dark"] .reset-password-confirm-success {
+  background-color: rgba(76, 175, 80, 0.2) !important;
+  color: #4caf50 !important;
+  border: 1px solid #4caf50 !important;
+}
+
+/* Invalid token message */
+[data-theme="dark"] .invalid-token-message h3 {
+  color: #ff6b6b !important;
+}
+
+[data-theme="dark"] .invalid-token-message p {
+  color: var(--text-secondary) !important;
 }

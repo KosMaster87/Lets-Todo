@@ -15,8 +15,12 @@ import {
   createDeleteHandler,
   createContentClearHandler,
 } from "./../navigation/navigation-action-buttons.js";
-import { updateTodoStatusBadge } from "./todo-form.js";
+import { updateTodoStatusBadge, initializeButtonsUI } from "./todo-form.js";
 import { getContentForActions, clearTodoContent } from "./todo-content.js";
+import {
+  getBookmarkStateFromDOM,
+  getCompletedStateFromDOM,
+} from "./../../utils/dom-selectors.js";
 
 /**
  * Gets the current todo ID for action handlers
@@ -55,24 +59,21 @@ const createTodoDeleteHandler = (resetBookmarkState) => {
 
 /**
  * Creates action button configuration object
- * @param {boolean} currentBookmarkState - Current bookmark state
  * @param {Function} setBookmarkState - Function to set bookmark state
- * @param {boolean} currentCompletedState - Current completed state
  * @param {Function} setCompletedState - Function to set completed state
  * @param {Function} resetBookmarkState - Function to reset bookmark state
  * @returns {Object} Action button configuration
+ * @description Uses getBookmarkStateFromDOM and getCompletedStateFromDOM to read current state from DOM elements
  */
 const createActionButtonConfig = (
-  currentBookmarkState,
   setBookmarkState,
-  currentCompletedState,
   setCompletedState,
   resetBookmarkState
 ) => ({
   bookmark: {
     elementId: "bookmarkViewBtn",
     handler: createBookmarkToggleHandler(
-      () => currentBookmarkState,
+      getBookmarkStateFromDOM,
       setBookmarkState,
       "bookmarkViewBtn"
     ),
@@ -80,7 +81,7 @@ const createActionButtonConfig = (
   done: {
     elementId: "doneTodoBtn",
     handler: createCompletedToggleHandler(
-      () => currentCompletedState,
+      getCompletedStateFromDOM,
       (state) => {
         setCompletedState(state);
         updateTodoStatusBadge(state);
@@ -124,16 +125,13 @@ const areActionButtonsAvailable = () => {
 
 /**
  * Sets up action buttons for todo views
- * @param {boolean} currentBookmarkState - Current bookmark state
  * @param {Function} setBookmarkState - Function to set bookmark state
- * @param {boolean} currentCompletedState - Current completed state
  * @param {Function} setCompletedState - Function to set completed state
  * @param {Function} resetBookmarkState - Function to reset bookmark state
+ * @description Uses getBookmarkStateFromDOM and getCompletedStateFromDOM to read current state from DOM
  */
 export const setupTodosActionButtons = (
-  currentBookmarkState,
   setBookmarkState,
-  currentCompletedState,
   setCompletedState,
   resetBookmarkState
 ) => {
@@ -149,12 +147,16 @@ export const setupTodosActionButtons = (
   }
 
   const actionButtonConfig = createActionButtonConfig(
-    currentBookmarkState,
     setBookmarkState,
-    currentCompletedState,
     setCompletedState,
     resetBookmarkState
   );
 
+  // Ensure UI classes are applied after action buttons are set up
+  // Read current state from DOM for initialization
+  const currentBookmarkState = getBookmarkStateFromDOM();
+  const currentCompletedState = getCompletedStateFromDOM();
+
   setupActionButtons(actionButtonConfig);
+  initializeButtonsUI(currentBookmarkState, currentCompletedState);
 };

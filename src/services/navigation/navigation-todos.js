@@ -63,9 +63,7 @@ function setupTodosMenuNavigation() {
 function setupTodosActionButtonsWrapper() {
   const stateHandlers = createStateHandlers();
   setupTodosActionButtons(
-    currentBookmarkState,
     stateHandlers.bookmarkHandler,
-    currentCompletedState,
     stateHandlers.completedHandler,
     resetBookmarkState
   );
