@@ -375,3 +375,60 @@ body[data-theme="dark"] {
 [data-theme="dark"] .todos-list-container h3 {
   color: var(--text-primary) !important;
 }
+
+/* ===========================================
+   RESET PASSWORD CONFIRM - DARK MODE
+   =========================================== */
+
+/* Reset user info display */
+[data-theme="dark"] .reset-user-info {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .reset-user-info p {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .reset-user-info strong {
+  color: #66b3ff !important;
+}
+
+/* Token validation status */
+[data-theme="dark"] .token-validation-status {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid #555555;
+  color: var(--text-primary) !important;
+}
+
+/* Password strength indicator */
+[data-theme="dark"] .strength-bar {
+  background-color: #444444 !important;
+}
+
+[data-theme="dark"] .strength-text {
+  color: var(--text-secondary) !important;
+}
+
+/* Error and success messages */
+[data-theme="dark"] .reset-password-confirm-error {
+  background-color: rgba(248, 115, 121, 0.2) !important;
+  color: #ff6b6b !important;
+  border: 1px solid #ff6b6b !important;
+}
+
+[data-theme="dark"] .reset-password-confirm-success {
+  background-color: rgba(76, 175, 80, 0.2) !important;
+  color: #4caf50 !important;
+  border: 1px solid #4caf50 !important;
+}
+
+/* Invalid token message */
+[data-theme="dark"] .invalid-token-message h3 {
+  color: #ff6b6b !important;
+}
+
+[data-theme="dark"] .invalid-token-message p {
+  color: var(--text-secondary) !important;
+}
