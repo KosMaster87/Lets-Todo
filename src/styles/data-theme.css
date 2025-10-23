@@ -432,3 +432,55 @@ body[data-theme="dark"] {
 [data-theme="dark"] .invalid-token-message p {
   color: var(--text-secondary) !important;
 }
+
+/* ===========================================
+   TRASH TODO ITEMS - DARK MODE
+   =========================================== */
+
+/* Main trash todo item container */
+[data-theme="dark"] .trash-todo-item {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border-left: 4px solid #ff6b6b !important;
+  border-top: 1px solid #555555;
+  border-right: 1px solid #555555;
+  border-bottom: 1px solid #555555;
+}
+
+[data-theme="dark"] .trash-todo-item:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Trash todo header */
+[data-theme="dark"] .trash-todo-header {
+  border-bottom: 1px solid #555555;
+}
+
+/* Trash todo title */
+[data-theme="dark"] .trash-todo-title {
+  color: var(--text-primary) !important;
+}
+
+/* Trash todo content text */
+[data-theme="dark"] .trash-todo-text {
+  color: var(--text-primary) !important;
+}
+
+/* Trash todo metadata */
+[data-theme="dark"] .trash-todo-meta {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .trash-todo-date {
+  color: #ff6b6b !important;
+}
+
+[data-theme="dark"] .trash-todo-original-date {
+  color: var(--text-secondary) !important;
+}
+
+/* Trash todo placeholder */
+[data-theme="dark"] .trash-todo-placeholder {
+  background: rgba(45, 45, 45, 0.3) !important;
+  border: 1px solid #555555;
+  color: var(--text-primary) !important;
+}
