@@ -269,7 +269,7 @@ const createUploadCallback = (safetyTimeoutId) => {
 const handleUploadTodos = (event) => {
   event.preventDefault();
   setUploadButtonState(true);
-  showSuccessNotification("Select a JSON or CSV file to import...");
+  showSuccessNotification("Select a JSON file to import...");
 
   const safetyTimeoutId = createUploadSafetyTimeout();
   const uploadCallback = createUploadCallback(safetyTimeoutId);
