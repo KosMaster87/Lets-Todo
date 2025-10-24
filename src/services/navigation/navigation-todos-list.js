@@ -25,6 +25,16 @@ import {
   setupTodoActionsNavigation,
   TODO_ACTIONS,
 } from "./../crud/todos-list-events.js";
+import {
+  shouldRestoreBookmarkFocus,
+  shouldRestoreDoneFocus,
+  restoreBookmarkButtonFocus,
+  restoreDoneButtonFocus,
+} from "./../../utils/ui-state-helpers.js";
+import {
+  createBookmarkSuccessHandler,
+  createDoneSuccessHandler,
+} from "./../../utils/ui-helpers/callback-creators.js";
 
 let todosListFilterMode = TODOS_LIST_FILTER_MODES.ALL;
 
@@ -134,15 +144,19 @@ function handleOpenAction(todoId) {
  * @returns {void} No return value - performs bookmark toggle operation
  */
 function handleBookmarkAction(todoId) {
-  handleBookmarkToggle(
+  const focusedElement = document.activeElement;
+  const shouldRestoreFocus = shouldRestoreBookmarkFocus(focusedElement);
+
+  const successHandler = createBookmarkSuccessHandler(
     todoId,
-    (newState) => {
-      renderTodosListWithFilter(todosListFilterMode);
-    },
-    (error) => {
-      console.error("Failed to toggle bookmark:", error);
-    }
+    shouldRestoreFocus,
+    () => renderTodosListWithFilter(todosListFilterMode),
+    restoreBookmarkButtonFocus
   );
+
+  handleBookmarkToggle(todoId, successHandler, (error) => {
+    console.error("Failed to toggle bookmark:", error);
+  });
 }
 
 /**
@@ -152,15 +166,19 @@ function handleBookmarkAction(todoId) {
  * @returns {void} No return value - performs done state toggle operation
  */
 function handleDoneAction(todoId) {
-  handleToggleDone(
+  const focusedElement = document.activeElement;
+  const shouldRestoreFocus = shouldRestoreDoneFocus(focusedElement);
+
+  const successHandler = createDoneSuccessHandler(
     todoId,
-    (newState) => {
-      renderTodosListWithFilter(todosListFilterMode);
-    },
-    (error) => {
-      console.error("Failed to toggle done state:", error);
-    }
+    shouldRestoreFocus,
+    () => renderTodosListWithFilter(todosListFilterMode),
+    restoreDoneButtonFocus
   );
+
+  handleToggleDone(todoId, successHandler, (error) => {
+    console.error("Failed to toggle done state:", error);
+  });
 }
 
 /**

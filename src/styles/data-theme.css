@@ -478,6 +478,40 @@ body[data-theme="dark"] {
   color: var(--text-secondary) !important;
 }
 
+/* Action Buttons Dark Mode */
+[data-theme="dark"] .action-btn {
+  background: rgba(42, 42, 42, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .action-btn:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .action-btn:active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .action-btn.bookmark-view-btn:hover {
+  background: rgba(255, 152, 0, 0.2);
+}
+
+[data-theme="dark"] .action-btn.done-todo-btn:hover {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+[data-theme="dark"] .action-btn.share-todo-btn:hover {
+  background: rgba(156, 39, 176, 0.2);
+}
+
+[data-theme="dark"] .action-btn.copy-todo-btn:hover {
+  background: rgba(33, 150, 243, 0.2);
+}
+
+[data-theme="dark"] .action-btn.delete-todo-btn:hover {
+  background: rgba(244, 67, 54, 0.2);
+}
+
 /* Trash todo placeholder */
 [data-theme="dark"] .trash-todo-placeholder {
   background: rgba(45, 45, 45, 0.3) !important;

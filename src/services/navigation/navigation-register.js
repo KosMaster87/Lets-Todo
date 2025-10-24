@@ -1,5 +1,3 @@
-// lets-todo-app/src/services/navigation-register.js
-
 /**
  * @fileoverview Navigation Register Module
  * @module navigation-register

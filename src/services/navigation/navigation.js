@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Navigation Service
+ * @module navigation
+ */
+
 import {
   setCurrentView,
   saveSessionToStorage,

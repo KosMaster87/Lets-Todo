@@ -3,6 +3,10 @@
  * @module register-validation
  */
 
+// ###############################################################
+// Validation Messages and Constants
+// ###############################################################
+
 /**
  * Validation error messages
  */
@@ -17,6 +21,10 @@ export const VALIDATION_MESSAGES = {
   ALL_FIELDS_REQUIRED: "Bitte fülle alle Felder aus",
 };
 
+// ###############################################################
+// Input Validation Utilities
+// ###############################################################
+
 /**
  * Checks if email format is valid using regex
  * @param {string} email - Email to validate
@@ -28,26 +36,42 @@ export const isValidEmail = (email) => {
 };
 
 /**
+ * Checks if string is empty or only whitespace
+ * @param {string} value - Value to check
+ * @returns {boolean} True if empty
+ */
+const isEmpty = (value) => !value || value.trim() === "";
+
+/**
+ * Creates validation result object
+ * @param {boolean} isValid - Validation result
+ * @param {string} message - Error message
+ * @returns {Object} Validation result object
+ */
+const createValidationResult = (isValid, message = "") => ({
+  isValid,
+  message,
+});
+
+// ###############################################################
+// Field-Specific Validation Functions
+// ###############################################################
+
+/**
  * Validates email field
  * @param {string} email - Email to validate
  * @returns {Object} Validation result with isValid and message
  */
 export const validateEmailField = (email) => {
-  if (!email || email.trim() === "") {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.EMAIL_REQUIRED,
-    };
+  if (isEmpty(email)) {
+    return createValidationResult(false, VALIDATION_MESSAGES.EMAIL_REQUIRED);
   }
 
   if (!isValidEmail(email)) {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.EMAIL_INVALID,
-    };
+    return createValidationResult(false, VALIDATION_MESSAGES.EMAIL_INVALID);
   }
 
-  return { isValid: true, message: "" };
+  return createValidationResult(true);
 };
 
 /**
@@ -56,21 +80,18 @@ export const validateEmailField = (email) => {
  * @returns {Object} Validation result with isValid and message
  */
 export const validatePasswordField = (password) => {
-  if (!password || password.trim() === "") {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.PASSWORD_REQUIRED,
-    };
+  if (isEmpty(password)) {
+    return createValidationResult(false, VALIDATION_MESSAGES.PASSWORD_REQUIRED);
   }
 
   if (password.length < 6) {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.PASSWORD_TOO_SHORT,
-    };
+    return createValidationResult(
+      false,
+      VALIDATION_MESSAGES.PASSWORD_TOO_SHORT
+    );
   }
 
-  return { isValid: true, message: "" };
+  return createValidationResult(true);
 };
 
 /**
@@ -80,21 +101,18 @@ export const validatePasswordField = (password) => {
  * @returns {Object} Validation result with isValid and message
  */
 export const validatePasswordConfirmField = (password, passwordConfirm) => {
-  if (!passwordConfirm || passwordConfirm.trim() === "") {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED,
-    };
+  if (isEmpty(passwordConfirm)) {
+    return createValidationResult(
+      false,
+      VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED
+    );
   }
 
   if (password !== passwordConfirm) {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.PASSWORD_MISMATCH,
-    };
+    return createValidationResult(false, VALIDATION_MESSAGES.PASSWORD_MISMATCH);
   }
 
-  return { isValid: true, message: "" };
+  return createValidationResult(true);
 };
 
 /**
@@ -104,13 +122,60 @@ export const validatePasswordConfirmField = (password, passwordConfirm) => {
  */
 export const validateTermsAcceptance = (termsAccepted) => {
   if (!termsAccepted) {
-    return {
-      isValid: false,
-      message: VALIDATION_MESSAGES.TERMS_NOT_ACCEPTED,
-    };
+    return createValidationResult(
+      false,
+      VALIDATION_MESSAGES.TERMS_NOT_ACCEPTED
+    );
   }
 
-  return { isValid: true, message: "" };
+  return createValidationResult(true);
+};
+
+// ###############################################################
+// Form Validation Orchestration
+// ###############################################################
+
+/**
+ * Runs all field validations
+ * @param {Object} formData - Form data object
+ * @returns {Object} All validation results
+ */
+const runAllValidations = (formData) => {
+  const { email, password, passwordConfirm, termsAccepted } = formData;
+
+  return {
+    email: validateEmailField(email),
+    password: validatePasswordField(password),
+    passwordConfirm: validatePasswordConfirmField(password, passwordConfirm),
+    terms: validateTermsAcceptance(termsAccepted),
+  };
+};
+
+/**
+ * Builds field errors object from validations
+ * @param {Object} validations - Validation results
+ * @returns {Object} Field errors object
+ */
+const buildFieldErrors = (validations) => {
+  const fieldErrors = {};
+
+  if (!validations.email.isValid) fieldErrors.email = validations.email.message;
+  if (!validations.password.isValid)
+    fieldErrors.password = validations.password.message;
+  if (!validations.passwordConfirm.isValid)
+    fieldErrors.passwordConfirm = validations.passwordConfirm.message;
+  if (!validations.terms.isValid) fieldErrors.terms = validations.terms.message;
+
+  return fieldErrors;
+};
+
+/**
+ * Checks if all validations passed
+ * @param {Object} validations - Validation results
+ * @returns {boolean} True if all valid
+ */
+const areAllValidationsValid = (validations) => {
+  return Object.values(validations).every((v) => v.isValid);
 };
 
 /**
@@ -119,29 +184,9 @@ export const validateTermsAcceptance = (termsAccepted) => {
  * @returns {Object} Validation result with isValid, message, and field errors
  */
 export const validateRegistrationForm = (formData) => {
-  const { email, password, passwordConfirm, termsAccepted } = formData;
-
-  const emailValidation = validateEmailField(email);
-  const passwordValidation = validatePasswordField(password);
-  const passwordConfirmValidation = validatePasswordConfirmField(
-    password,
-    passwordConfirm
-  );
-  const termsValidation = validateTermsAcceptance(termsAccepted);
-
-  const fieldErrors = {};
-  if (!emailValidation.isValid) fieldErrors.email = emailValidation.message;
-  if (!passwordValidation.isValid)
-    fieldErrors.password = passwordValidation.message;
-  if (!passwordConfirmValidation.isValid)
-    fieldErrors.passwordConfirm = passwordConfirmValidation.message;
-  if (!termsValidation.isValid) fieldErrors.terms = termsValidation.message;
-
-  const isValid =
-    emailValidation.isValid &&
-    passwordValidation.isValid &&
-    passwordConfirmValidation.isValid &&
-    termsValidation.isValid;
+  const validations = runAllValidations(formData);
+  const fieldErrors = buildFieldErrors(validations);
+  const isValid = areAllValidationsValid(validations);
 
   return {
     isValid,
@@ -149,6 +194,10 @@ export const validateRegistrationForm = (formData) => {
     fieldErrors,
   };
 };
+
+// ###############################################################
+// DOM Validation Utilities
+// ###############################################################
 
 /**
  * Sets custom validity message on DOM element

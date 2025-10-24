@@ -20,7 +20,15 @@ import { getContentForActions, clearTodoContent } from "./todo-content.js";
 import {
   getBookmarkStateFromDOM,
   getCompletedStateFromDOM,
+  isInTodoView,
+  areActionButtonsAvailable,
 } from "./../../utils/dom-selectors.js";
+import {
+  canSetupActionButtons,
+  getCurrentDOMStates,
+  initializeActionButtons,
+} from "./../../utils/ui-state-helpers.js";
+import { createActionButtonConfig } from "./../../utils/ui-helpers/button-config.js";
 
 /**
  * Gets the current todo ID for action handlers
@@ -32,95 +40,53 @@ const getCurrentTodoId = () => {
 };
 
 /**
- * Handles todo deletion by moving to trash and navigating back
+ * Handles todo deletion by navigating to dashboard
+ * @returns {void}
  */
 const handleTodoTrash = () => {
   navigateToView(VIEWS.DASHBOARD);
 };
 
 /**
- * Creates appropriate delete handler based on context (new todo vs existing todo)
+ * Determines if current todo exists and has ID
+ * @returns {boolean} True if todo exists with ID
+ */
+const hasExistingTodoId = () => {
+  const currentTodo = getCurrentTodo();
+  return !!(currentTodo && currentTodo.id);
+};
+
+/**
+ * Creates delete handler for existing todo
+ * @returns {Function} Delete handler for existing todo
+ */
+const createExistingTodoDeleteHandler = () => {
+  return createDeleteHandler(getCurrentTodoId, trashTodo, handleTodoTrash);
+};
+
+/**
+ * Creates content clear handler for new todo
+ * @param {Function} resetBookmarkState - Function to reset bookmark state
+ * @returns {Function} Content clear handler
+ */
+const createNewTodoDeleteHandler = (resetBookmarkState) => {
+  return createContentClearHandler(
+    getContentForActions,
+    clearTodoContent,
+    resetBookmarkState
+  );
+};
+
+/**
+ * Creates appropriate delete handler based on context
  * @param {Function} resetBookmarkState - Function to reset bookmark state
  * @returns {Function} Appropriate delete handler
  */
 const createTodoDeleteHandler = (resetBookmarkState) => {
-  const currentTodo = getCurrentTodo();
-
-  if (currentTodo && currentTodo.id) {
-    return createDeleteHandler(getCurrentTodoId, trashTodo, handleTodoTrash);
-  } else {
-    return createContentClearHandler(
-      getContentForActions,
-      clearTodoContent,
-      resetBookmarkState
-    );
+  if (hasExistingTodoId()) {
+    return createExistingTodoDeleteHandler();
   }
-};
-
-/**
- * Creates action button configuration object
- * @param {Function} setBookmarkState - Function to set bookmark state
- * @param {Function} setCompletedState - Function to set completed state
- * @param {Function} resetBookmarkState - Function to reset bookmark state
- * @returns {Object} Action button configuration
- * @description Uses getBookmarkStateFromDOM and getCompletedStateFromDOM to read current state from DOM elements
- */
-const createActionButtonConfig = (
-  setBookmarkState,
-  setCompletedState,
-  resetBookmarkState
-) => ({
-  bookmark: {
-    elementId: "bookmarkViewBtn",
-    handler: createBookmarkToggleHandler(
-      getBookmarkStateFromDOM,
-      setBookmarkState,
-      "bookmarkViewBtn"
-    ),
-  },
-  done: {
-    elementId: "doneTodoBtn",
-    handler: createCompletedToggleHandler(
-      getCompletedStateFromDOM,
-      (state) => {
-        setCompletedState(state);
-        updateTodoStatusBadge(state);
-      },
-      "doneTodoBtn"
-    ),
-  },
-  share: {
-    elementId: "shareTodoBtn",
-    handler: createShareHandler(getContentForActions),
-  },
-  copy: {
-    elementId: "copyTodoBtn",
-    handler: createCopyHandler(getContentForActions),
-  },
-  delete: {
-    elementId: "deleteTodoBtn",
-    handler: createTodoDeleteHandler(resetBookmarkState),
-  },
-});
-
-/**
- * Checks if we're in a valid todo view
- * @returns {boolean} True if in todos or todo-view
- */
-const isInTodoView = () => {
-  const isTodosView = document.querySelector('[data-view="todos"]');
-  const isTodoView = document.querySelector('[data-view="todo-view"]');
-  return !!(isTodosView || isTodoView);
-};
-
-/**
- * Checks if action buttons are available in DOM
- * @returns {boolean} True if buttons are available
- */
-const areActionButtonsAvailable = () => {
-  const bookmarkBtn = document.getElementById("bookmarkViewBtn");
-  const doneBtn = document.getElementById("doneTodoBtn");
-  return !!(bookmarkBtn || doneBtn);
+  return createNewTodoDeleteHandler(resetBookmarkState);
 };
 
 /**
@@ -128,35 +94,51 @@ const areActionButtonsAvailable = () => {
  * @param {Function} setBookmarkState - Function to set bookmark state
  * @param {Function} setCompletedState - Function to set completed state
  * @param {Function} resetBookmarkState - Function to reset bookmark state
- * @description Uses getBookmarkStateFromDOM and getCompletedStateFromDOM to read current state from DOM
+ * @returns {void}
  */
 export const setupTodosActionButtons = (
   setBookmarkState,
   setCompletedState,
   resetBookmarkState
 ) => {
-  if (!isInTodoView()) {
-    return;
-  }
+  if (!canSetupActionButtons(isInTodoView, areActionButtonsAvailable)) return;
 
-  if (!areActionButtonsAvailable()) {
-    // console.log(
-    //   "⏳ Action buttons not yet available in DOM - will retry later"
-    // );
-    return;
-  }
+  const handlers = {
+    createBookmarkToggleHandler,
+    createCompletedToggleHandler,
+    createShareHandler,
+    createCopyHandler,
+    updateTodoStatusBadge,
+    getContentForActions,
+  };
 
-  const actionButtonConfig = createActionButtonConfig(
+  const stateGetters = {
+    getBookmarkStateFromDOM,
+    getCompletedStateFromDOM,
+  };
+
+  const stateSetters = {
     setBookmarkState,
     setCompletedState,
-    resetBookmarkState
+  };
+
+  const deleteHandler = createTodoDeleteHandler(resetBookmarkState);
+  const actionButtonConfig = createActionButtonConfig(
+    handlers,
+    stateGetters,
+    stateSetters,
+    deleteHandler
   );
 
-  // Ensure UI classes are applied after action buttons are set up
-  // Read current state from DOM for initialization
-  const currentBookmarkState = getBookmarkStateFromDOM();
-  const currentCompletedState = getCompletedStateFromDOM();
-
-  setupActionButtons(actionButtonConfig);
-  initializeButtonsUI(currentBookmarkState, currentCompletedState);
+  const currentStates = getCurrentDOMStates(
+    getBookmarkStateFromDOM,
+    getCompletedStateFromDOM
+  );
+  
+  initializeActionButtons(
+    actionButtonConfig,
+    currentStates,
+    setupActionButtons,
+    initializeButtonsUI
+  );
 };

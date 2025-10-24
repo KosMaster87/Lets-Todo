@@ -1,5 +1,3 @@
-// lets-todo-app/src/services/navigation/navigation-change-password.js
-
 /**
  * @fileoverview Change Password Navigation Module
  * @module navigation-change-password

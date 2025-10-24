@@ -1,6 +1,6 @@
 /**
- * @fileoverview Personal Data Upload Handler
- * @module personal-data-upload-handler
+ * @fileoverview Personal Data Upload Core - File Processing & Import Logic
+ * @module personal-data-upload
  */
 
 import {
@@ -10,181 +10,172 @@ import {
   trashTodo,
 } from "./../../state/main-state.js";
 
-/**
- * Supported import formats
- */
-export const IMPORT_FORMATS = {
-  JSON: "json",
-  CSV: "csv",
-};
+import {
+  validateFileExists,
+  isSupportedFileExtension,
+  createValidationSuccess,
+  createUnsupportedFormatError,
+  createFileReader,
+  isNewExportFormat,
+  createNewFormatMetadata,
+  createSuccessResult,
+  createParseError,
+  createUnknownFormatError,
+  isStringValue,
+  arrayToString,
+  objectToString,
+  createFallbackString,
+  isValidTodoObject,
+  createDefaultTodoObject,
+  createNormalizedTodo,
+  createEmptyAnalysisResult,
+  categorizeTodo,
+  selectTodosToImport,
+  processSingleActiveTodo,
+  handleActiveTodoError,
+  createActiveImportResult,
+  selectTrashedTodosToImport,
+  processSingleTrashedTodo,
+  handleTrashedTodoError,
+  createTrashImportResult,
+} from "./../../utils/import-export/index.js";
 
-/**
- * Import result types
- */
+// ###############################################################
+// Import Result Constants
+// ###############################################################
+
 export const IMPORT_RESULT_TYPES = {
   SUCCESS: "success",
   WARNING: "warning",
   ERROR: "error",
 };
 
+// ###############################################################
+// File Validation Utilities
+// ###############################################################
+
 /**
- * Validates if a file is a supported format
- * @param {File} file - File object to validate
- * @returns {Object} Validation result with isValid and format
+ * Validates file format and ensures it's a JSON file
+ * @param {File} file - File to validate
+ * @returns {Object} Validation result object
  */
 export const validateFileFormat = (file) => {
-  if (!file) {
-    return { isValid: false, error: "Keine Datei ausgewählt." };
+  const fileError = validateFileExists(file);
+  if (fileError) {
+    return fileError;
   }
 
-  const fileName = file.name.toLowerCase();
-
-  if (fileName.endsWith(".json")) {
-    return { isValid: true, format: IMPORT_FORMATS.JSON };
-  }
-
-  if (fileName.endsWith(".csv")) {
-    return { isValid: true, format: IMPORT_FORMATS.CSV };
-  }
-
-  return {
-    isValid: false,
-    error: `Nicht unterstütztes Dateiformat. Unterstützt: JSON, CSV`,
-  };
+  return isSupportedFileExtension(file.name)
+    ? createValidationSuccess()
+    : createUnsupportedFormatError();
 };
 
+// ###############################################################
+// File Content Processing
+// ###############################################################
+
 /**
- * Reads file content as text
+ * Reads file content asynchronously as text
  * @param {File} file - File to read
- * @returns {Promise<string>} File content
+ * @returns {Promise<string>} File content as text
  */
 export const readFileContent = (file) => {
+  const reader = createFileReader();
+
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = (e) => resolve(e.target.result);
-    reader.onerror = (e) =>
-      reject(new Error("Datei konnte nicht gelesen werden"));
-
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = () => reject(new Error("File reading failed"));
     reader.readAsText(file);
   });
 };
 
 /**
- * Parses JSON import file
- * @param {string} content - File content
- * @returns {Object} Parsed todos with metadata
+ * Creates legacy format metadata object
+ * @param {Array} data - Legacy format data array
+ * @returns {Object} Legacy format metadata
+ */
+const createLegacyMetadata = (data) => ({
+  format: "legacy",
+  todoCount: Array.isArray(data) ? data.length : 0,
+  trashedCount: 0,
+});
+
+/**
+ * Handles JSON parsing error and returns appropriate error object
+ * @param {Error} error - JSON parsing error
+ * @returns {Object} Error result object
+ */
+const handleParseError = (error) =>
+  error.name === "SyntaxError"
+    ? createParseError()
+    : createUnknownFormatError();
+
+/**
+ * Parses JSON content and determines format type
+ * @param {string} content - JSON content to parse
+ * @returns {Object} Parsed data with format information
  */
 export const parseJSONImport = (content) => {
   try {
-    const data = JSON.parse(content);
-
-    // Handle new export format with separate todos/trash
-    if (data.todos && Array.isArray(data.todos)) {
-      const activeTodos = data.todos || [];
-      const trashedTodos = data.trash || [];
-
-      return {
-        success: true,
-        activeTodos: activeTodos.map(normalizeTodoObject),
-        trashedTodos: trashedTodos.map(normalizeTodoObject),
-        totalCount: activeTodos.length + trashedTodos.length,
-        metadata: {
-          exportDate: data.exportDate,
-          originalActiveTodos: data.activeTodos || activeTodos.length,
-          originalTrashedTodos: data.trashedTodos || trashedTodos.length,
-        },
-      };
+    const parsedData = JSON.parse(content);
+    if (isNewExportFormat(parsedData)) {
+      const metadata = createNewFormatMetadata(parsedData);
+      return createSuccessResult(parsedData, metadata);
     }
-
-    // Handle legacy format (array of todos)
-    if (Array.isArray(data)) {
-      const todos = data.map(normalizeTodoObject);
-      return {
-        success: true,
-        activeTodos: todos.filter((todo) => !todo.deletedAt),
-        trashedTodos: todos.filter((todo) => todo.deletedAt),
-        totalCount: todos.length,
-        metadata: { format: "legacy" },
-      };
-    }
-
-    return {
-      success: false,
-      error: "Unbekanntes JSON-Format",
-    };
+    const metadata = createLegacyMetadata(parsedData);
+    return createSuccessResult(parsedData, metadata);
   } catch (error) {
-    return {
-      success: false,
-      error: `JSON-Parsing Fehler: ${error.message}`,
-    };
+    return handleParseError(error);
   }
 };
 
+// ###############################################################
+// Format Processing Utilities
+// ###############################################################
+
 /**
- * Parses CSV import file
- * @param {string} content - CSV content
- * @returns {Object} Parsed todos with metadata
+ * Processes new format export data (version 2.0+)
+ * @param {Object} data - Parsed new format data
+ * @param {Object} metadata - Format metadata
+ * @returns {Object} Processing result with todos and trashed items
  */
-export const parseCSVImport = (content) => {
-  try {
-    const lines = content.trim().split("\n");
-    if (lines.length < 2) {
-      return {
-        success: false,
-        error: "CSV-Datei ist leer oder ungültig",
-      };
-    }
-
-    const headers = lines[0].split(",").map((h) => h.trim().replace(/"/g, ""));
-    const todos = [];
-
-    for (let i = 1; i < lines.length; i++) {
-      const values = parseCSVLine(lines[i]);
-      if (values.length !== headers.length) continue;
-
-      const todoObj = {};
-      headers.forEach((header, index) => {
-        todoObj[header.toLowerCase()] = values[index];
-      });
-
-      todos.push(normalizeCSVTodo(todoObj));
-    }
-
-    const activeTodos = todos.filter((todo) => !todo.deletedAt);
-    const trashedTodos = todos.filter((todo) => todo.deletedAt);
-
-    return {
-      success: true,
-      activeTodos,
-      trashedTodos,
-      totalCount: todos.length,
-      metadata: { format: "csv" },
-    };
-  } catch (error) {
-    return {
-      success: false,
-      error: `CSV-Parsing Fehler: ${error.message}`,
-    };
-  }
-};
+export const processNewFormatData = (data, metadata) => ({
+  todos: data.todos || [],
+  trashed: data.trashed || [],
+  metadata,
+  success: true,
+  format: "new",
+});
 
 /**
- * Ensures string value from potentially corrupted data
- * @param {*} value - Value to fix
- * @returns {string} Cleaned string
+ * Processes legacy format export data (version 1.x)
+ * @param {Array} data - Parsed legacy format data
+ * @param {Object} metadata - Format metadata
+ * @returns {Object} Processing result with todos
+ */
+export const processLegacyFormatData = (data, metadata) => ({
+  todos: Array.isArray(data) ? data : [],
+  trashed: [],
+  metadata,
+  success: true,
+  format: "legacy",
+});
+
+// ###############################################################
+// Data Normalization Utilities
+// ###############################################################
+
+/**
+ * Ensures value is converted to string format
+ * @param {*} value - Value to convert
+ * @returns {string} String representation of value
  */
 export const ensureString = (value) => {
-  if (typeof value === "string") {
-    return value;
-  }
-  if (Array.isArray(value)) {
-    return value.join("");
-  }
-  if (typeof value === "object" && value !== null) {
-    return Object.values(value).join("");
-  }
-  return String(value || "");
+  if (isStringValue(value)) return value;
+  if (Array.isArray(value)) return arrayToString(value);
+  if (typeof value === "object") return objectToString(value);
+
+  return createFallbackString(value);
 };
 
 /**
@@ -193,87 +184,17 @@ export const ensureString = (value) => {
  * @returns {Object} Normalized todo object
  */
 export const normalizeTodoObject = (todo) => {
-  // Ensure we have a valid todo object
-  if (!todo || typeof todo !== "object") {
+  if (!isValidTodoObject(todo)) {
     console.warn("Invalid todo object:", todo);
-    return {
-      id: generateTempId(),
-      title: "Importiertes Todo",
-      content: "",
-      completed: false,
-      bookmarked: false,
-      created: new Date().toISOString(),
-      lastModified: new Date().toISOString(),
-      deletedAt: null,
-    };
+    return createDefaultTodoObject();
   }
 
-  // Fix corrupted title/content (array-like objects)
-  const title = ensureString(todo.title).trim() || "Importiertes Todo";
-  const content = ensureString(todo.content).trim();
-
-  return {
-    id: todo.id || generateTempId(),
-    title: title,
-    content: content,
-    completed: Boolean(todo.completed),
-    bookmarked: Boolean(todo.bookmarked),
-    created: todo.created || new Date().toISOString(),
-    lastModified: todo.lastModified || new Date().toISOString(),
-    deletedAt: todo.deletedAt || null,
-  };
+  return createNormalizedTodo(todo, ensureString);
 };
 
-/**
- * Normalizes CSV todo object
- * @param {Object} csvTodo - CSV parsed todo
- * @returns {Object} Normalized todo
- */
-export const normalizeCSVTodo = (csvTodo) => ({
-  id: csvTodo.id || generateTempId(),
-  title: ensureString(csvTodo.title).trim() || "Importiertes Todo",
-  content: ensureString(csvTodo.content).trim(),
-  completed: csvTodo.completed === "Yes" || csvTodo.completed === "true",
-  bookmarked: csvTodo.bookmarked === "Yes" || csvTodo.bookmarked === "true",
-  created: csvTodo.created || new Date().toISOString(),
-  lastModified: csvTodo.lastmodified || new Date().toISOString(),
-  deletedAt: csvTodo.deletedat || null,
-});
-
-/**
- * Parses CSV line handling quoted values
- * @param {string} line - CSV line
- * @returns {Array} Parsed values
- */
-export const parseCSVLine = (line) => {
-  const result = [];
-  let current = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-
-    if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === "," && !inQuotes) {
-      result.push(current.trim());
-      current = "";
-    } else {
-      current += char;
-    }
-  }
-
-  result.push(current.trim());
-  return result.map((val) => val.replace(/^"|"$/g, ""));
-};
-
-/**
- * Generates temporary ID for imported todos
- * @returns {string} Temporary ID
- */
-export const generateTempId = () => {
-  return `import_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-};
+// ###############################################################
+// Duplicate Detection Utilities
+// ###############################################################
 
 /**
  * Checks for duplicate todos
@@ -282,24 +203,49 @@ export const generateTempId = () => {
  * @returns {Object} Duplicates analysis
  */
 export const findDuplicates = (importedTodos, existingTodos) => {
-  const duplicates = [];
-  const unique = [];
+  const result = createEmptyAnalysisResult();
 
   importedTodos.forEach((importedTodo) => {
-    const isDuplicate = existingTodos.some(
-      (existing) =>
-        existing.title === importedTodo.title &&
-        existing.content === importedTodo.content
+    categorizeTodo(
+      importedTodo,
+      existingTodos,
+      result.duplicates,
+      result.unique
     );
-
-    if (isDuplicate) {
-      duplicates.push(importedTodo);
-    } else {
-      unique.push(importedTodo);
-    }
   });
 
-  return { duplicates, unique };
+  return result;
+};
+
+// ###############################################################
+// Active Todos Import Operations
+// ###############################################################
+
+/**
+ * Processes a single active todo during import
+ * @param {Object} todo - Todo to process
+ * @param {Object} counters - Import counters object
+ */
+const processActiveTodoSafely = (todo, counters) => {
+  try {
+    processSingleActiveTodo(todo, counters, ensureString, addTodo);
+  } catch (error) {
+    handleActiveTodoError(error, todo, counters.errors, ensureString);
+  }
+};
+
+/**
+ * Prepares active todos import data and filters
+ * @param {Array} activeTodos - Active todos to import
+ * @param {Object} options - Import options
+ * @returns {Object} Prepared import data
+ */
+const prepareActiveImportData = (activeTodos, options) => {
+  const existingTodos = getTodos();
+  const { duplicates, unique } = findDuplicates(activeTodos, existingTodos);
+  const todosToImport = selectTodosToImport(activeTodos, unique, options);
+
+  return { duplicates, todosToImport };
 };
 
 /**
@@ -309,144 +255,89 @@ export const findDuplicates = (importedTodos, existingTodos) => {
  * @returns {Object} Import result
  */
 export const importActiveTodos = (activeTodos, options = {}) => {
-  const existingTodos = getTodos();
-  const { duplicates, unique } = findDuplicates(activeTodos, existingTodos);
+  const { duplicates, todosToImport } = prepareActiveImportData(
+    activeTodos,
+    options
+  );
+  const counters = { imported: 0, errors: [] };
 
-  let imported = 0;
-  const errors = [];
+  todosToImport.forEach((todo) => processActiveTodoSafely(todo, counters));
 
-  const todosToImport = options.allowDuplicates ? activeTodos : unique;
+  return createActiveImportResult(
+    counters.imported,
+    duplicates,
+    counters.errors,
+    options
+  );
+};
 
-  todosToImport.forEach((todo) => {
-    try {
-      console.log(`🔍 Raw active todo object:`, todo);
+// ###############################################################
+// Trashed Todos Import Operations
+// ###############################################################
 
-      // Fix potentially corrupted title/content
-      const title = ensureString(todo.title).trim() || "Importiertes Todo";
-      const content = ensureString(todo.content).trim();
-
-      console.log(`🔍 Fixed title: "${title}", content: "${content}"`);
-
-      if (!title) {
-        errors.push(`Todo ohne Titel übersprungen`);
-        return;
-      }
-
-      console.log(`📥 Importing active todo: "${title}"`);
-      const todoObject = {
-        title: title,
-        content: content,
-        completed: Boolean(todo.completed),
-        bookmarked: Boolean(todo.bookmarked),
-      };
-
-      console.log(`🔍 Final todo object for addTodo:`, todoObject);
-      addTodo(todoObject);
-      imported++;
-    } catch (error) {
-      console.error(`Error importing active todo:`, error);
-      errors.push(
-        `Fehler beim Importieren: ${
-          ensureString(todo.title) || "Unbekanntes Todo"
-        } - ${error.message}`
-      );
-    }
-  });
-
-  return {
-    imported,
-    duplicatesFound: duplicates.length,
-    errors,
-    skipped: options.allowDuplicates ? 0 : duplicates.length,
-  };
+/**
+ * Processes a single trashed todo during import
+ * @param {Object} todo - Todo to process
+ * @param {Object} counters - Import counters object
+ */
+const processTrashedTodoSafely = async (todo, counters) => {
+  try {
+    await processSingleTrashedTodo(
+      todo,
+      counters,
+      ensureString,
+      addTodo,
+      getTodos,
+      trashTodo
+    );
+  } catch (error) {
+    handleTrashedTodoError(error, todo, counters.errors, ensureString);
+  }
 };
 
 /**
- * Imports trashed todos into the system
- * Note: This is complex because we need to create todos first, then move them to trash
+ * Prepares trashed todos import data and filters
  * @param {Array} trashedTodos - Trashed todos to import
  * @param {Object} options - Import options
- * @returns {Object} Import result
+ * @returns {Object} Prepared import data
  */
-export const importTrashedTodos = async (trashedTodos, options = {}) => {
+const prepareTrashImportData = (trashedTodos, options) => {
   const existingTrashedTodos = getTrashedTodos();
   const { duplicates, unique } = findDuplicates(
     trashedTodos,
     existingTrashedTodos
   );
+  const todosToImport = selectTrashedTodosToImport(
+    trashedTodos,
+    unique,
+    options
+  );
 
-  let imported = 0;
-  const errors = [];
+  return { duplicates, todosToImport };
+};
 
-  const todosToImport = options.allowDuplicates ? trashedTodos : unique;
+/**
+ * Imports trashed todos into the system
+ * Note: Creates todos first, then moves them to trash
+ * @param {Array} trashedTodos - Trashed todos to import
+ * @param {Object} options - Import options
+ * @returns {Promise<Object>} Import result
+ */
+export const importTrashedTodos = async (trashedTodos, options = {}) => {
+  const { duplicates, todosToImport } = prepareTrashImportData(
+    trashedTodos,
+    options
+  );
+  const counters = { imported: 0, errors: [] };
 
   for (const todo of todosToImport) {
-    try {
-      // Fix potentially corrupted title/content
-      const title = ensureString(todo.title).trim() || "Importiertes Todo";
-      const content = ensureString(todo.content).trim();
-
-      if (!title) {
-        errors.push(`Todo ohne Titel übersprungen`);
-        continue;
-      }
-
-      console.log(`📥 Importing trash todo: "${title}"`);
-      const todoObject = {
-        title: title,
-        content: content,
-        completed: Boolean(todo.completed),
-        bookmarked: Boolean(todo.bookmarked),
-      };
-
-      // Step 1: Create todo as active first and wait for server sync
-      await addTodo(todoObject);
-
-      // Step 2: Wait a bit longer for server sync to complete
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      // Step 3: Find the created todo
-      const currentTodos = getTodos();
-      const createdTodo = currentTodos.find(
-        (t) =>
-          t.title === title &&
-          t.content === content &&
-          t.completed === Boolean(todo.completed) &&
-          t.bookmarked === Boolean(todo.bookmarked)
-      );
-
-      if (createdTodo) {
-        console.log(`🗑️ Moving to trash: ID ${createdTodo.id}`);
-
-        // Step 4: Move to trash with retry logic for server sync
-        try {
-          await trashTodo(createdTodo.id);
-          imported++;
-        } catch (trashError) {
-          console.warn(
-            `⚠️ Trash sync failed for "${title}", but todo is trashed locally`
-          );
-          imported++; // Still count as imported since it's in the correct local state
-        }
-      } else {
-        errors.push(
-          `Todo "${title}" wurde erstellt, konnte aber nicht gefunden werden für Trash-Verschiebung`
-        );
-      }
-    } catch (error) {
-      console.error(`Error importing trash todo:`, error);
-      errors.push(
-        `Fehler beim Importieren: ${
-          ensureString(todo.title) || "Unbekanntes Todo"
-        } - ${error.message}`
-      );
-    }
+    await processTrashedTodoSafely(todo, counters);
   }
 
-  return {
-    imported,
-    duplicatesFound: duplicates.length,
-    errors,
-    skipped: options.allowDuplicates ? 0 : duplicates.length,
-  };
+  return createTrashImportResult(
+    counters.imported,
+    duplicates,
+    counters.errors,
+    options
+  );
 };

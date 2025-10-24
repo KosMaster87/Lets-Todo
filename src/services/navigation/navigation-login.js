@@ -1,5 +1,3 @@
-// lets-todo-app/src/services/navigation-login.js
-
 /**
  * @fileoverview Navigation Login Module
  * @module navigation-login

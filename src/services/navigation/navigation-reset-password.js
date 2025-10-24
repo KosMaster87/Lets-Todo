@@ -1,5 +1,3 @@
-// lets-todo-app/src/services/navigation/navigation-reset-password.js
-
 /**
  * @fileoverview Reset password navigation module
  * @module navigation-reset-password

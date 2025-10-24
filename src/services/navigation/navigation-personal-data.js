@@ -1,5 +1,3 @@
-// lets-todo-app/src/services/navigation-personal-data.js
-
 /**
  * @fileoverview Personal Data Navigation Module
  * @module navigation-personal-data
@@ -10,11 +8,13 @@ import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
 import { downloadTodos } from "./../crud/personal-data-download.js";
 import { triggerFileUpload } from "./../crud/personal-data-upload-handler.js";
 import {
-  showPersonalDataSuccess,
-  showPersonalDataError,
-  updateDownloadLoadingState,
-  updateUploadLoadingState,
-} from "./../crud/personal-data-ui-state.js";
+  showSuccessNotification,
+  showErrorNotification,
+} from "./../../utils/notifications.js";
+import {
+  setDownloadButtonState,
+  setUploadButtonState,
+} from "./../../utils/ui-state-helpers.js";
 
 /**
  * Logs personal data operation status for debugging
@@ -95,8 +95,8 @@ const setupPersonalDataNavigation = () => {
  * @returns {void}
  */
 const handleDownloadSuccess = (successMessage) => {
-  showPersonalDataSuccess(successMessage);
-  updateDownloadLoadingState(false);
+  showSuccessNotification(successMessage);
+  setDownloadButtonState(false);
 };
 
 /**
@@ -106,22 +106,66 @@ const handleDownloadSuccess = (successMessage) => {
  * @returns {void}
  */
 const handleDownloadError = (errorMessage) => {
-  showPersonalDataError(errorMessage);
-  updateDownloadLoadingState(false);
+  showErrorNotification(errorMessage);
+  setDownloadButtonState(false);
 };
 
 /**
- * Handles todos download functionality
- * Initiates download process with loading state management.
+ * Handles download todos click event with loading state management
  * @function handleDownloadTodos
  * @param {Event} event - Click event from download button
  * @returns {void}
  */
 const handleDownloadTodos = (event) => {
   event.preventDefault();
+  setDownloadButtonState(true);
 
-  updateDownloadLoadingState(true);
-  downloadTodos("json", handleDownloadSuccess, handleDownloadError);
+  const safetyTimeoutId = createDownloadSafetyTimeout();
+  const { onSuccess, onError } = createDownloadCallbacks(safetyTimeoutId);
+
+  executeDownloadWithDelay(onSuccess, onError);
+};
+
+/**
+ * Creates safety timeout for download operations
+ * @function createDownloadSafetyTimeout
+ * @returns {number} Timeout ID for cleanup
+ */
+const createDownloadSafetyTimeout = () => {
+  return setTimeout(() => {
+    setDownloadButtonState(false);
+    showErrorNotification("Download process timed out. Please try again.");
+  }, 1000);
+};
+
+/**
+ * Creates download callbacks with timeout cleanup
+ * @function createDownloadCallbacks
+ * @param {number} safetyTimeoutId - Timeout ID to clear
+ * @returns {Object} Success and error callback functions
+ */
+const createDownloadCallbacks = (safetyTimeoutId) => ({
+  onSuccess: (successMessage) => {
+    clearTimeout(safetyTimeoutId);
+    handleDownloadSuccess(successMessage);
+  },
+  onError: (errorMessage) => {
+    clearTimeout(safetyTimeoutId);
+    handleDownloadError(errorMessage);
+  },
+});
+
+/**
+ * Executes download with minimum loading time for user feedback
+ * @function executeDownloadWithDelay
+ * @param {Function} onSuccess - Success callback function
+ * @param {Function} onError - Error callback function
+ * @returns {void}
+ */
+const executeDownloadWithDelay = (onSuccess, onError) => {
+  setTimeout(() => {
+    downloadTodos(onSuccess, onError);
+  }, 800);
 };
 
 /**
@@ -152,7 +196,7 @@ const handleUploadSuccess = (result) => {
   logPersonalDataStatus("success", "Upload successful:", result);
 
   if (result && result.totalFound) {
-    showPersonalDataSuccess(
+    showSuccessNotification(
       `📁 Total ${result.totalFound} todos found and processed`
     );
   }
@@ -182,7 +226,7 @@ const handleUploadError = (result) => {
  * @returns {void}
  */
 const processUploadResult = (success, result) => {
-  updateUploadLoadingState(false);
+  setUploadButtonState(false);
 
   if (success) {
     handleUploadSuccess(result);
@@ -192,20 +236,45 @@ const processUploadResult = (success, result) => {
 };
 
 /**
- * Handles todos upload functionality
- * Initiates file upload process with loading state and user guidance.
+ * Creates safety timeout for upload operations
+ * @function createUploadSafetyTimeout
+ * @returns {number} Timeout ID for cleanup
+ */
+const createUploadSafetyTimeout = () => {
+  return setTimeout(() => {
+    setUploadButtonState(false);
+    showErrorNotification("File selection timed out. Please try again.");
+  }, 30000);
+};
+
+/**
+ * Creates upload callback with timeout cleanup
+ * @function createUploadCallback
+ * @param {number} safetyTimeoutId - Timeout ID to clear
+ * @returns {Function} Upload completion callback
+ */
+const createUploadCallback = (safetyTimeoutId) => {
+  return (success, result) => {
+    clearTimeout(safetyTimeoutId);
+    processUploadResult(success, result);
+  };
+};
+
+/**
+ * Handles upload todos click event with loading state management
  * @function handleUploadTodos
  * @param {Event} event - Click event from upload button
  * @returns {void}
  */
 const handleUploadTodos = (event) => {
   event.preventDefault();
+  setUploadButtonState(true);
+  showSuccessNotification("Select a JSON file to import...");
 
-  updateUploadLoadingState(true);
+  const safetyTimeoutId = createUploadSafetyTimeout();
+  const uploadCallback = createUploadCallback(safetyTimeoutId);
 
-  showPersonalDataSuccess("Select a JSON or CSV file to import...");
-
-  triggerFileUpload(processUploadResult, getUploadOptions());
+  triggerFileUpload(uploadCallback, getUploadOptions());
 };
 
 /**
