@@ -3,6 +3,10 @@
  * @module todos-list-events
  */
 
+// ###############################################################
+// Action Constants and Selectors
+// ###############################################################
+
 /**
  * Action type constants for better maintainability
  */
@@ -26,6 +30,10 @@ const ACTION_SELECTORS = {
   [TODO_ACTIONS.COPY]: [".copy-todo-btn"],
   [TODO_ACTIONS.DELETE]: [".delete-todo-btn"],
 };
+
+// ###############################################################
+// Element Analysis Functions
+// ###############################################################
 
 /**
  * Gets the todo ID from a DOM element
@@ -53,6 +61,44 @@ export const getActionFromTarget = (target) => {
   return null;
 };
 
+// ###############################################################
+// Event Handler Creation
+// ###############################################################
+
+/**
+ * Validates and extracts event data
+ * @param {Element} target - Event target element
+ * @returns {Object|null} Event data or null if invalid
+ */
+const validateAndExtractEventData = (target) => {
+  const action = getActionFromTarget(target);
+  if (!action) return null;
+
+  const todoId = getTodoIdFromElement(target);
+  if (!todoId) {
+    console.warn("No todo ID found for action:", action);
+    return null;
+  }
+
+  return { action, todoId };
+};
+
+/**
+ * Executes handler for given action
+ * @param {Object} handlers - Handler functions object
+ * @param {string} action - Action type
+ * @param {string} todoId - Todo ID
+ * @returns {void}
+ */
+const executeHandler = (handlers, action, todoId) => {
+  const handler = handlers[action];
+  if (handler && typeof handler === "function") {
+    handler(todoId);
+  } else {
+    console.warn("No handler found for action:", action);
+  }
+};
+
 /**
  * Creates a unified event handler for all todo actions
  * @param {Object} handlers - Object containing handler functions for each action
@@ -60,23 +106,16 @@ export const getActionFromTarget = (target) => {
  */
 export const createTodoActionsHandler = (handlers) => {
   return (event) => {
-    const action = getActionFromTarget(event.target);
-    if (!action) return;
+    const eventData = validateAndExtractEventData(event.target);
+    if (!eventData) return;
 
-    const todoId = getTodoIdFromElement(event.target);
-    if (!todoId) {
-      console.warn("No todo ID found for action:", action);
-      return;
-    }
-
-    const handler = handlers[action];
-    if (handler && typeof handler === "function") {
-      handler(todoId);
-    } else {
-      console.warn("No handler found for action:", action);
-    }
+    executeHandler(handlers, eventData.action, eventData.todoId);
   };
 };
+
+// ###############################################################
+// Event Setup Functions
+// ###############################################################
 
 /**
  * Sets up event delegation for todo actions

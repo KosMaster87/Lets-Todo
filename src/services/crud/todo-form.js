@@ -5,6 +5,10 @@
 
 import { getCurrentTodo } from "./../../state/main-state.js";
 
+// ###############################################################
+// Form State Management
+// ###############################################################
+
 /**
  * Clears form after new todo creation
  * @param {HTMLElement} titleElement - Title DOM element
@@ -17,6 +21,25 @@ export const clearFormAfterNewTodo = (titleElement, contentElement) => {
 };
 
 /**
+ * Gets state values for edit mode
+ * @param {Object} todo - Current todo object
+ * @returns {Object} Edit mode state values
+ */
+const getEditModeState = (todo) => ({
+  bookmarkState: todo.bookmarked || false,
+  completedState: todo.completed || false,
+});
+
+/**
+ * Gets state values for create mode
+ * @returns {Object} Create mode state values
+ */
+const getCreateModeState = () => ({
+  bookmarkState: false,
+  completedState: false,
+});
+
+/**
  * Initializes bookmark and completion state based on current todo
  * @returns {Object} Object with initialized state values
  */
@@ -24,18 +47,10 @@ export const initializeFormState = () => {
   const currentTodo = getCurrentTodo();
 
   if (currentTodo && currentTodo.id) {
-    // Edit mode: use actual todo values
-    return {
-      bookmarkState: currentTodo.bookmarked || false,
-      completedState: currentTodo.completed || false,
-    };
+    return getEditModeState(currentTodo);
   }
 
-  // Create mode: use defaults
-  return {
-    bookmarkState: false,
-    completedState: false,
-  };
+  return getCreateModeState();
 };
 
 /**
@@ -46,6 +61,10 @@ export const resetFormState = () => ({
   bookmarkState: false,
   completedState: false,
 });
+
+// ###############################################################
+// UI State Management
+// ###############################################################
 
 /**
  * Updates todo status badge in the DOM
@@ -78,28 +97,49 @@ export const resetBookmarkUI = () => {
 };
 
 /**
+ * Updates bookmark button state
+ * @param {HTMLElement} button - Bookmark button element
+ * @param {boolean} isBookmarked - Bookmark state
+ * @returns {void}
+ */
+const updateBookmarkButtonState = (button, isBookmarked) => {
+  if (isBookmarked) {
+    button.classList.add("bookmarked");
+  } else {
+    button.classList.remove("bookmarked");
+  }
+};
+
+/**
+ * Updates done button state
+ * @param {HTMLElement} button - Done button element
+ * @param {boolean} isCompleted - Completed state
+ * @returns {void}
+ */
+const updateDoneButtonState = (button, isCompleted) => {
+  if (isCompleted) {
+    button.classList.add("completed");
+  } else {
+    button.classList.remove("completed");
+  }
+};
+
+/**
  * Initializes UI state for buttons based on current todo state
  * @param {boolean} bookmarkState - Current bookmark state
  * @param {boolean} completedState - Current completed state
+ * @returns {void}
  */
 export const initializeButtonsUI = (bookmarkState, completedState) => {
   const bookmarkBtn = document.getElementById("bookmarkViewBtn");
   const doneBtn = document.getElementById("doneTodoBtn");
 
   if (bookmarkBtn) {
-    if (bookmarkState) {
-      bookmarkBtn.classList.add("bookmarked");
-    } else {
-      bookmarkBtn.classList.remove("bookmarked");
-    }
+    updateBookmarkButtonState(bookmarkBtn, bookmarkState);
   }
 
   if (doneBtn) {
-    if (completedState) {
-      doneBtn.classList.add("completed");
-    } else {
-      doneBtn.classList.remove("completed");
-    }
+    updateDoneButtonState(doneBtn, completedState);
   }
 
   updateTodoStatusBadge(completedState);

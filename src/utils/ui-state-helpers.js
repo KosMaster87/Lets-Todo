@@ -3,6 +3,12 @@
  * @module ui-state-helpers
  */
 
+import { showMessage } from "./ui-helpers/message-helpers.js";
+
+// ###############################################################
+// Submit Button State Management
+// ###############################################################
+
 /**
  * @function updateButtonText
  * @description Updates the text content of a submit button based on loading state
@@ -61,6 +67,10 @@ export const setSubmitButtonState = (
   updateButtonText(submitBtn, isLoading, loadingText, defaultText);
   updateButtonClass(submitBtn, isLoading);
 };
+
+// ###############################################################
+// Form Message Management
+// ###############################################################
 
 /**
  * @function showErrorMessage
@@ -193,6 +203,10 @@ const hideSuccessMessage = (successElementId) => {
   }
 };
 
+// ###############################################################
+// Change Password Button Management
+// ###############################################################
+
 /**
  * @function setChangePasswordButtonState
  * @description Sets change password submit button loading state with comprehensive UI updates
@@ -275,6 +289,10 @@ const getButtonTexts = (isLoading) => {
     };
   }
 };
+
+// ###############################################################
+// File Management Button States
+// ###############################################################
 
 /**
  * @function setDownloadButtonState
@@ -363,5 +381,140 @@ const updateUploadButtonContent = (btnContent, isLoading) => {
       h3.textContent = "Todos wiederherstellen";
       p.textContent = "Todos aus einer Datei importieren";
     }
+  }
+};
+
+// ###############################################################
+// Action Button Setup Utilities
+// ###############################################################
+
+/**
+ * Validates if action button setup is possible
+ * @param {Function} isInTodoView - Function to check if in todo view
+ * @param {Function} areActionButtonsAvailable - Function to check button availability
+ * @returns {boolean} True if setup can proceed
+ */
+export const canSetupActionButtons = (
+  isInTodoView,
+  areActionButtonsAvailable
+) => {
+  if (!isInTodoView()) return false;
+  if (!areActionButtonsAvailable()) return false;
+  return true;
+};
+
+/**
+ * Reads current state from DOM elements
+ * @param {Function} getBookmarkStateFromDOM - Function to get bookmark state
+ * @param {Function} getCompletedStateFromDOM - Function to get completed state
+ * @returns {Object} Current bookmark and completed states
+ */
+export const getCurrentDOMStates = (
+  getBookmarkStateFromDOM,
+  getCompletedStateFromDOM
+) => ({
+  bookmarkState: getBookmarkStateFromDOM(),
+  completedState: getCompletedStateFromDOM(),
+});
+
+/**
+ * Initializes action buttons with current state
+ * @param {Object} config - Action button configuration
+ * @param {Object} states - Current DOM states
+ * @param {Function} setupActionButtons - Function to setup action buttons
+ * @param {Function} initializeButtonsUI - Function to initialize button UI
+ * @returns {void}
+ */
+export const initializeActionButtons = (
+  config,
+  states,
+  setupActionButtons,
+  initializeButtonsUI
+) => {
+  setupActionButtons(config);
+  initializeButtonsUI(states.bookmarkState, states.completedState);
+};
+
+/**
+ * Checks if focus should be restored for bookmark button
+ * @param {Element} focusedElement - Currently focused element
+ * @returns {boolean} True if focus should be restored
+ */
+export const shouldRestoreBookmarkFocus = (focusedElement) => {
+  return (
+    focusedElement && focusedElement.classList.contains("bookmark-view-btn")
+  );
+};
+
+/**
+ * Checks if focus should be restored for done button
+ * @param {Element} focusedElement - Currently focused element
+ * @returns {boolean} True if focus should be restored
+ */
+export const shouldRestoreDoneFocus = (focusedElement) => {
+  return focusedElement && focusedElement.classList.contains("done-todo-btn");
+};
+
+/**
+ * Restores focus to bookmark button after re-render
+ * @param {string} todoId - ID of the todo
+ * @returns {void}
+ */
+export const restoreBookmarkButtonFocus = (todoId) => {
+  setTimeout(() => {
+    const newButton = document.getElementById(`bookmarkViewBtn-${todoId}`);
+    if (newButton && newButton.focus) {
+      newButton.focus();
+    }
+  }, 0);
+};
+
+/**
+ * Restores focus to done button after re-render
+ * @param {string} todoId - ID of the todo
+ * @returns {void}
+ */
+export const restoreDoneButtonFocus = (todoId) => {
+  setTimeout(() => {
+    const newButton = document.getElementById(`doneTodoBtn-${todoId}`);
+    if (newButton && newButton.focus) {
+      newButton.focus();
+    }
+  }, 0);
+};
+
+// ###############################################################
+// Button State Update Utilities
+// ###############################################################
+
+/**
+ * Updates bookmark button visual state
+ * @param {HTMLElement} button - Bookmark button element
+ * @param {boolean} isBookmarked - New bookmark state
+ * @returns {void}
+ */
+export const updateBookmarkButton = (button, isBookmarked) => {
+  if (isBookmarked) {
+    button.classList.add("bookmarked");
+    showMessage("Marked as bookmark!");
+  } else {
+    button.classList.remove("bookmarked");
+    showMessage("Bookmark removed!");
+  }
+};
+
+/**
+ * Updates completed button visual state
+ * @param {HTMLElement} button - Done button element
+ * @param {boolean} isCompleted - New completed state
+ * @returns {void}
+ */
+export const updateCompletedButton = (button, isCompleted) => {
+  if (isCompleted) {
+    button.classList.add("completed");
+    showMessage("Todo marked as completed!");
+  } else {
+    button.classList.remove("completed");
+    showMessage("Todo marked as pending!");
   }
 };

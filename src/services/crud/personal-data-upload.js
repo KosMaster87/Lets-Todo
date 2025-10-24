@@ -40,101 +40,141 @@ import {
   createTrashImportResult,
 } from "./../../utils/import-export/index.js";
 
+// ###############################################################
+// Import Result Constants
+// ###############################################################
+
 export const IMPORT_RESULT_TYPES = {
   SUCCESS: "success",
   WARNING: "warning",
   ERROR: "error",
 };
 
+// ###############################################################
+// File Validation Utilities
+// ###############################################################
+
 /**
- * Validates if a file is a supported format
- * @param {File} file - File object to validate
- * @returns {Object} Validation result with isValid and format
+ * Validates file format and ensures it's a JSON file
+ * @param {File} file - File to validate
+ * @returns {Object} Validation result object
  */
 export const validateFileFormat = (file) => {
-  const fileExistsError = validateFileExists(file);
-  if (fileExistsError) return fileExistsError;
+  const fileError = validateFileExists(file);
+  if (fileError) {
+    return fileError;
+  }
 
   return isSupportedFileExtension(file.name)
     ? createValidationSuccess()
     : createUnsupportedFormatError();
 };
 
+// ###############################################################
+// File Content Processing
+// ###############################################################
+
 /**
- * Reads file content as text
+ * Reads file content asynchronously as text
  * @param {File} file - File to read
- * @returns {Promise<string>} File content
+ * @returns {Promise<string>} File content as text
  */
 export const readFileContent = (file) => {
+  const reader = createFileReader();
+
   return new Promise((resolve, reject) => {
-    const reader = createFileReader(resolve, reject);
+    reader.onload = (event) => resolve(event.target.result);
+    reader.onerror = () => reject(new Error("File reading failed"));
     reader.readAsText(file);
   });
 };
 
 /**
- * Parses JSON import file
- * @param {string} content - File content
- * @returns {Object} Parsed todos with metadata
+ * Creates legacy format metadata object
+ * @param {Array} data - Legacy format data array
+ * @returns {Object} Legacy format metadata
+ */
+const createLegacyMetadata = (data) => ({
+  format: "legacy",
+  todoCount: Array.isArray(data) ? data.length : 0,
+  trashedCount: 0,
+});
+
+/**
+ * Handles JSON parsing error and returns appropriate error object
+ * @param {Error} error - JSON parsing error
+ * @returns {Object} Error result object
+ */
+const handleParseError = (error) =>
+  error.name === "SyntaxError"
+    ? createParseError()
+    : createUnknownFormatError();
+
+/**
+ * Parses JSON content and determines format type
+ * @param {string} content - JSON content to parse
+ * @returns {Object} Parsed data with format information
  */
 export const parseJSONImport = (content) => {
   try {
-    const data = JSON.parse(content);
-
-    if (isNewExportFormat(data)) {
-      return processNewFormatData(data);
+    const parsedData = JSON.parse(content);
+    if (isNewExportFormat(parsedData)) {
+      const metadata = createNewFormatMetadata(parsedData);
+      return createSuccessResult(parsedData, metadata);
     }
-
-    if (Array.isArray(data)) {
-      return processLegacyFormatData(data);
-    }
-
-    return createUnknownFormatError();
+    const metadata = createLegacyMetadata(parsedData);
+    return createSuccessResult(parsedData, metadata);
   } catch (error) {
-    return createParseError(error);
+    return handleParseError(error);
   }
 };
 
+// ###############################################################
+// Format Processing Utilities
+// ###############################################################
+
 /**
- * Processes new export format data
- * @param {Object} data - Parsed JSON data
- * @returns {Object} Formatted result object
+ * Processes new format export data (version 2.0+)
+ * @param {Object} data - Parsed new format data
+ * @param {Object} metadata - Format metadata
+ * @returns {Object} Processing result with todos and trashed items
  */
-const processNewFormatData = (data) => {
-  const activeTodos = data.todos || [];
-  const trashedTodos = data.trash || [];
-
-  return createSuccessResult(
-    activeTodos.map(normalizeTodoObject),
-    trashedTodos.map(normalizeTodoObject),
-    createNewFormatMetadata(data, activeTodos, trashedTodos)
-  );
-};
+export const processNewFormatData = (data, metadata) => ({
+  todos: data.todos || [],
+  trashed: data.trashed || [],
+  metadata,
+  success: true,
+  format: "new",
+});
 
 /**
- * Processes legacy format data (array of todos)
- * @param {Array} data - Array of todos
- * @returns {Object} Formatted result object
+ * Processes legacy format export data (version 1.x)
+ * @param {Array} data - Parsed legacy format data
+ * @param {Object} metadata - Format metadata
+ * @returns {Object} Processing result with todos
  */
-const processLegacyFormatData = (data) => {
-  const todos = data.map(normalizeTodoObject);
+export const processLegacyFormatData = (data, metadata) => ({
+  todos: Array.isArray(data) ? data : [],
+  trashed: [],
+  metadata,
+  success: true,
+  format: "legacy",
+});
 
-  return createSuccessResult(
-    todos.filter((todo) => !todo.deletedAt),
-    todos.filter((todo) => todo.deletedAt),
-    { format: "legacy" }
-  );
-};
+// ###############################################################
+// Data Normalization Utilities
+// ###############################################################
 
 /**
- * Ensures string value from potentially corrupted data
- * @param {*} value - Value to fix
- * @returns {string} Cleaned string
+ * Ensures value is converted to string format
+ * @param {*} value - Value to convert
+ * @returns {string} String representation of value
  */
 export const ensureString = (value) => {
   if (isStringValue(value)) return value;
   if (Array.isArray(value)) return arrayToString(value);
-  if (typeof value === "object" && value !== null) return objectToString(value);
+  if (typeof value === "object") return objectToString(value);
+
   return createFallbackString(value);
 };
 
@@ -151,6 +191,10 @@ export const normalizeTodoObject = (todo) => {
 
   return createNormalizedTodo(todo, ensureString);
 };
+
+// ###############################################################
+// Duplicate Detection Utilities
+// ###############################################################
 
 /**
  * Checks for duplicate todos
@@ -173,6 +217,37 @@ export const findDuplicates = (importedTodos, existingTodos) => {
   return result;
 };
 
+// ###############################################################
+// Active Todos Import Operations
+// ###############################################################
+
+/**
+ * Processes a single active todo during import
+ * @param {Object} todo - Todo to process
+ * @param {Object} counters - Import counters object
+ */
+const processActiveTodoSafely = (todo, counters) => {
+  try {
+    processSingleActiveTodo(todo, counters, ensureString, addTodo);
+  } catch (error) {
+    handleActiveTodoError(error, todo, counters.errors, ensureString);
+  }
+};
+
+/**
+ * Prepares active todos import data and filters
+ * @param {Array} activeTodos - Active todos to import
+ * @param {Object} options - Import options
+ * @returns {Object} Prepared import data
+ */
+const prepareActiveImportData = (activeTodos, options) => {
+  const existingTodos = getTodos();
+  const { duplicates, unique } = findDuplicates(activeTodos, existingTodos);
+  const todosToImport = selectTodosToImport(activeTodos, unique, options);
+
+  return { duplicates, todosToImport };
+};
+
 /**
  * Imports active todos into the system
  * @param {Array} activeTodos - Active todos to import
@@ -180,19 +255,13 @@ export const findDuplicates = (importedTodos, existingTodos) => {
  * @returns {Object} Import result
  */
 export const importActiveTodos = (activeTodos, options = {}) => {
-  const existingTodos = getTodos();
-  const { duplicates, unique } = findDuplicates(activeTodos, existingTodos);
-  const todosToImport = selectTodosToImport(activeTodos, unique, options);
-
+  const { duplicates, todosToImport } = prepareActiveImportData(
+    activeTodos,
+    options
+  );
   const counters = { imported: 0, errors: [] };
 
-  todosToImport.forEach((todo) => {
-    try {
-      processSingleActiveTodo(todo, counters, ensureString, addTodo);
-    } catch (error) {
-      handleActiveTodoError(error, todo, counters.errors, ensureString);
-    }
-  });
+  todosToImport.forEach((todo) => processActiveTodoSafely(todo, counters));
 
   return createActiveImportResult(
     counters.imported,
@@ -202,14 +271,37 @@ export const importActiveTodos = (activeTodos, options = {}) => {
   );
 };
 
+// ###############################################################
+// Trashed Todos Import Operations
+// ###############################################################
+
 /**
- * Imports trashed todos into the system
- * Note: Creates todos first, then moves them to trash
+ * Processes a single trashed todo during import
+ * @param {Object} todo - Todo to process
+ * @param {Object} counters - Import counters object
+ */
+const processTrashedTodoSafely = async (todo, counters) => {
+  try {
+    await processSingleTrashedTodo(
+      todo,
+      counters,
+      ensureString,
+      addTodo,
+      getTodos,
+      trashTodo
+    );
+  } catch (error) {
+    handleTrashedTodoError(error, todo, counters.errors, ensureString);
+  }
+};
+
+/**
+ * Prepares trashed todos import data and filters
  * @param {Array} trashedTodos - Trashed todos to import
  * @param {Object} options - Import options
- * @returns {Promise<Object>} Import result
+ * @returns {Object} Prepared import data
  */
-export const importTrashedTodos = async (trashedTodos, options = {}) => {
+const prepareTrashImportData = (trashedTodos, options) => {
   const existingTrashedTodos = getTrashedTodos();
   const { duplicates, unique } = findDuplicates(
     trashedTodos,
@@ -221,21 +313,25 @@ export const importTrashedTodos = async (trashedTodos, options = {}) => {
     options
   );
 
+  return { duplicates, todosToImport };
+};
+
+/**
+ * Imports trashed todos into the system
+ * Note: Creates todos first, then moves them to trash
+ * @param {Array} trashedTodos - Trashed todos to import
+ * @param {Object} options - Import options
+ * @returns {Promise<Object>} Import result
+ */
+export const importTrashedTodos = async (trashedTodos, options = {}) => {
+  const { duplicates, todosToImport } = prepareTrashImportData(
+    trashedTodos,
+    options
+  );
   const counters = { imported: 0, errors: [] };
 
   for (const todo of todosToImport) {
-    try {
-      await processSingleTrashedTodo(
-        todo,
-        counters,
-        ensureString,
-        addTodo,
-        getTodos,
-        trashTodo
-      );
-    } catch (error) {
-      handleTrashedTodoError(error, todo, counters.errors, ensureString);
-    }
+    await processTrashedTodoSafely(todo, counters);
   }
 
   return createTrashImportResult(

@@ -9,6 +9,10 @@ import {
   renderSingleTrashTodo,
 } from "./../../components/pages/trash.js";
 
+// ###############################################################
+// Filter Configuration Constants
+// ###############################################################
+
 /**
  * Valid filter modes for trash display
  */
@@ -17,6 +21,10 @@ export const TRASH_FILTER_MODES = {
   RECENT: "recent",
   OLD: "old",
 };
+
+// ###############################################################
+// Filter Mode Navigation Utilities
+// ###############################################################
 
 /**
  * Gets the next filter mode in the cycle
@@ -36,6 +44,32 @@ export const getNextFilterMode = (currentMode) => {
   }
 };
 
+// ###############################################################
+// Todo Sorting and Filtering Logic
+// ###############################################################
+
+/**
+ * Sorts todos by recent deletion date
+ * @param {Array} todos - Array of todos to sort
+ * @returns {Array} Sorted todos (newest first)
+ */
+const sortByRecentDeletion = (todos) => {
+  return todos.sort(
+    (a, b) => new Date(b.deletedAt || 0) - new Date(a.deletedAt || 0)
+  );
+};
+
+/**
+ * Sorts todos by old deletion date
+ * @param {Array} todos - Array of todos to sort
+ * @returns {Array} Sorted todos (oldest first)
+ */
+const sortByOldDeletion = (todos) => {
+  return todos.sort(
+    (a, b) => new Date(a.deletedAt || 0) - new Date(b.deletedAt || 0)
+  );
+};
+
 /**
  * Sorts trashed todos based on filter mode
  * @param {Array} todos - Array of trashed todos
@@ -47,17 +81,47 @@ export const sortTrashedTodos = (todos, filterMode) => {
 
   switch (filterMode) {
     case TRASH_FILTER_MODES.RECENT:
-      return todosCopy.sort(
-        (a, b) => new Date(b.deletedAt || 0) - new Date(a.deletedAt || 0)
-      );
+      return sortByRecentDeletion(todosCopy);
     case TRASH_FILTER_MODES.OLD:
-      return todosCopy.sort(
-        (a, b) => new Date(a.deletedAt || 0) - new Date(b.deletedAt || 0)
-      );
+      return sortByOldDeletion(todosCopy);
     case TRASH_FILTER_MODES.ALL:
     default:
       return todosCopy;
   }
+};
+
+// ###############################################################
+// Trash Rendering Operations
+// ###############################################################
+
+/**
+ * Validates and gets trash container element
+ * @param {string} containerId - Container element ID
+ * @returns {HTMLElement|null} Container element or null
+ */
+const getTrashContainer = (containerId) => {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn(`Trash container with ID '${containerId}' not found`);
+  }
+  return container;
+};
+
+/**
+ * Renders empty state for trash
+ * @param {HTMLElement} container - Trash container element
+ */
+const renderEmptyTrash = (container) => {
+  container.innerHTML = renderTrashPlaceholder();
+};
+
+/**
+ * Renders todos in trash container
+ * @param {HTMLElement} container - Trash container element
+ * @param {Array} todos - Array of todos to render
+ */
+const renderTrashTodos = (container, todos) => {
+  container.innerHTML = todos.map(renderSingleTrashTodo).join("");
 };
 
 /**
@@ -69,21 +133,49 @@ export const renderTrashWithFilter = (
   filterMode,
   containerId = "trashTodosList"
 ) => {
-  const trashContainer = document.getElementById(containerId);
-  if (!trashContainer) {
-    console.warn(`Trash container with ID '${containerId}' not found`);
-    return;
-  }
+  const trashContainer = getTrashContainer(containerId);
+  if (!trashContainer) return;
 
   const trashedTodos = getTrashedTodos();
   const sortedTodos = sortTrashedTodos(trashedTodos, filterMode);
 
   if (sortedTodos.length === 0) {
-    trashContainer.innerHTML = renderTrashPlaceholder();
+    renderEmptyTrash(trashContainer);
   } else {
-    trashContainer.innerHTML = sortedTodos.map(renderSingleTrashTodo).join("");
+    renderTrashTodos(trashContainer, sortedTodos);
   }
 };
+
+// ###############################################################
+// Filter Button Configuration
+// ###############################################################
+
+/**
+ * Gets configuration for "All" filter mode
+ * @returns {Object} Filter configuration object
+ */
+const getAllFilterConfig = () => ({
+  title: "Alle anzeigen",
+  description: "Alle gelöschten Todos anzeigen",
+});
+
+/**
+ * Gets configuration for "Recent" filter mode
+ * @returns {Object} Filter configuration object
+ */
+const getRecentFilterConfig = () => ({
+  title: "Neueste zuerst",
+  description: "Kürzlich gelöschte Todos zuerst",
+});
+
+/**
+ * Gets configuration for "Old" filter mode
+ * @returns {Object} Filter configuration object
+ */
+const getOldFilterConfig = () => ({
+  title: "Älteste zuerst",
+  description: "Älteste gelöschte Todos zuerst",
+});
 
 /**
  * Gets filter button configuration for UI display
@@ -93,24 +185,12 @@ export const renderTrashWithFilter = (
 export const getFilterButtonConfig = (filterMode) => {
   switch (filterMode) {
     case TRASH_FILTER_MODES.ALL:
-      return {
-        title: "Alle anzeigen",
-        description: "Alle gelöschten Todos anzeigen",
-      };
+      return getAllFilterConfig();
     case TRASH_FILTER_MODES.RECENT:
-      return {
-        title: "Neueste zuerst",
-        description: "Kürzlich gelöschte Todos zuerst",
-      };
+      return getRecentFilterConfig();
     case TRASH_FILTER_MODES.OLD:
-      return {
-        title: "Älteste zuerst",
-        description: "Älteste gelöschte Todos zuerst",
-      };
+      return getOldFilterConfig();
     default:
-      return {
-        title: "Alle anzeigen",
-        description: "Alle gelöschten Todos anzeigen",
-      };
+      return getAllFilterConfig();
   }
 };

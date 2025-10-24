@@ -10,6 +10,10 @@ import {
   setElementValidity,
 } from "./register-validation.js";
 
+// ###############################################################
+// Form Field Configuration
+// ###############################################################
+
 /**
  * Form field IDs for consistent reference
  */
@@ -21,6 +25,33 @@ export const FORM_FIELD_IDS = {
   SUBMIT_BTN: "registerSubmitBtn",
 };
 
+// ###############################################################
+// Form Event Handler Setup
+// ###############################################################
+
+/**
+ * Gets form element by selector
+ * @param {string} selector - CSS selector for form
+ * @returns {HTMLElement|null} Form element or null
+ */
+const getFormElement = (selector) => {
+  return document.querySelector(selector);
+};
+
+/**
+ * Creates Enter key handler for form submission
+ * @param {Function} onSubmit - Submit callback
+ * @returns {Function} Event handler function
+ */
+const createEnterKeyHandler = (onSubmit) => {
+  return (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      onSubmit?.(e);
+    }
+  };
+};
+
 /**
  * Sets up form event handlers for registration form
  * @param {Function} onSubmit - Form submission callback
@@ -30,40 +61,45 @@ export const setupRegisterFormHandlers = (
   onSubmit,
   formSelector = ".register-menu"
 ) => {
-  const form = document.querySelector(formSelector);
-  if (!form) {
-    return false;
-  }
+  const form = getFormElement(formSelector);
+  if (!form) return false;
 
-  form.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      onSubmit?.(e);
-    }
-  });
-
+  form.addEventListener("keypress", createEnterKeyHandler(onSubmit));
   return true;
 };
 
-/**
- * Sets up individual field validation handlers
- * @param {Object} fieldIds - Object with field ID mappings
- */
-export const setupFieldValidation = (fieldIds = FORM_FIELD_IDS) => {
-  const emailInput = document.getElementById(fieldIds.EMAIL);
-  const passwordInput = document.getElementById(fieldIds.PASSWORD);
-  const passwordConfirmInput = document.getElementById(
-    fieldIds.PASSWORD_CONFIRM
-  );
+// ###############################################################
+// Field Validation Setup
+// ###############################################################
 
+/**
+ * Sets up email field validation
+ * @param {string} fieldId - Email field ID
+ */
+const setupEmailValidation = (fieldId) => {
+  const emailInput = document.getElementById(fieldId);
   if (emailInput) {
     emailInput.addEventListener("blur", handleEmailValidation);
   }
+};
 
+/**
+ * Sets up password field validation
+ * @param {string} fieldId - Password field ID
+ */
+const setupPasswordValidation = (fieldId) => {
+  const passwordInput = document.getElementById(fieldId);
   if (passwordInput) {
     passwordInput.addEventListener("blur", handlePasswordValidation);
   }
+};
 
+/**
+ * Sets up password confirmation field validation
+ * @param {string} fieldId - Password confirm field ID
+ */
+const setupPasswordConfirmValidation = (fieldId) => {
+  const passwordConfirmInput = document.getElementById(fieldId);
   if (passwordConfirmInput) {
     passwordConfirmInput.addEventListener(
       "blur",
@@ -73,17 +109,36 @@ export const setupFieldValidation = (fieldIds = FORM_FIELD_IDS) => {
 };
 
 /**
+ * Sets up individual field validation handlers
+ * @param {Object} fieldIds - Object with field ID mappings
+ */
+export const setupFieldValidation = (fieldIds = FORM_FIELD_IDS) => {
+  setupEmailValidation(fieldIds.EMAIL);
+  setupPasswordValidation(fieldIds.PASSWORD);
+  setupPasswordConfirmValidation(fieldIds.PASSWORD_CONFIRM);
+};
+
+// ###############################################################
+// Field Validation Handlers
+// ###############################################################
+
+/**
+ * Sets validation message on element
+ * @param {HTMLElement} element - Target element
+ * @param {Object} validation - Validation result
+ */
+const setValidationMessage = (element, validation) => {
+  setElementValidity(element, validation.isValid ? "" : validation.message);
+};
+
+/**
  * Handles email field validation on blur
  * @param {Event} event - Blur event
  */
 export const handleEmailValidation = (event) => {
   const email = event.target.value;
   const validation = validateEmailField(email);
-
-  setElementValidity(
-    event.target,
-    validation.isValid ? "" : validation.message
-  );
+  setValidationMessage(event.target, validation);
 };
 
 /**
@@ -93,11 +148,15 @@ export const handleEmailValidation = (event) => {
 export const handlePasswordValidation = (event) => {
   const password = event.target.value;
   const validation = validatePasswordField(password);
+  setValidationMessage(event.target, validation);
+};
 
-  setElementValidity(
-    event.target,
-    validation.isValid ? "" : validation.message
-  );
+/**
+ * Gets password field value
+ * @returns {string} Password field value
+ */
+const getPasswordValue = () => {
+  return document.getElementById(FORM_FIELD_IDS.PASSWORD)?.value || "";
 };
 
 /**
@@ -106,14 +165,37 @@ export const handlePasswordValidation = (event) => {
  */
 export const handlePasswordConfirmValidation = (event) => {
   const passwordConfirm = event.target.value;
-  const password =
-    document.getElementById(FORM_FIELD_IDS.PASSWORD)?.value || "";
+  const password = getPasswordValue();
   const validation = validatePasswordConfirmField(password, passwordConfirm);
+  setValidationMessage(event.target, validation);
+};
 
-  setElementValidity(
-    event.target,
-    validation.isValid ? "" : validation.message
-  );
+// ###############################################################
+// Form Data Extraction
+// ###############################################################
+
+/**
+ * Checks if form is available
+ * @param {Object} fieldIds - Field ID mappings
+ * @returns {boolean} True if form is available
+ */
+const isFormAvailable = (fieldIds) => {
+  return document.getElementById(fieldIds.EMAIL) !== null;
+};
+
+/**
+ * Extracts field values from form
+ * @param {Object} fieldIds - Field ID mappings
+ * @returns {Object} Field values object
+ */
+const extractFieldValues = (fieldIds) => {
+  return {
+    email: document.getElementById(fieldIds.EMAIL)?.value || "",
+    password: document.getElementById(fieldIds.PASSWORD)?.value || "",
+    passwordConfirm:
+      document.getElementById(fieldIds.PASSWORD_CONFIRM)?.value || "",
+    termsAccepted: document.getElementById(fieldIds.TERMS)?.checked || false,
+  };
 };
 
 /**
@@ -122,24 +204,26 @@ export const handlePasswordConfirmValidation = (event) => {
  * @returns {Object|null} Form data object or null if form not found
  */
 export const getRegisterFormData = (fieldIds = FORM_FIELD_IDS) => {
-  const email = document.getElementById(fieldIds.EMAIL)?.value;
-  const password = document.getElementById(fieldIds.PASSWORD)?.value;
-  const passwordConfirm = document.getElementById(
-    fieldIds.PASSWORD_CONFIRM
-  )?.value;
-  const termsAccepted = document.getElementById(fieldIds.TERMS)?.checked;
-
-  // Check if at least one field exists (form is present)
-  const emailElement = document.getElementById(fieldIds.EMAIL);
-  if (!emailElement) {
+  if (!isFormAvailable(fieldIds)) {
     return null; // Form not available
   }
 
-  return {
-    email: email || "",
-    password: password || "",
-    passwordConfirm: passwordConfirm || "",
-    termsAccepted: termsAccepted || false,
+  return extractFieldValues(fieldIds);
+};
+
+// ###############################################################
+// Submit Handler Setup
+// ###############################################################
+
+/**
+ * Creates submit button click handler
+ * @param {Function} onSubmit - Submit callback
+ * @returns {Function} Click event handler
+ */
+const createSubmitClickHandler = (onSubmit) => {
+  return (e) => {
+    e.preventDefault();
+    onSubmit?.(e);
   };
 };
 
@@ -153,16 +237,48 @@ export const setupSubmitHandler = (
   buttonId = FORM_FIELD_IDS.SUBMIT_BTN
 ) => {
   const submitBtn = document.getElementById(buttonId);
-  if (!submitBtn) {
-    return false;
+  if (!submitBtn) return false;
+
+  submitBtn.addEventListener("click", createSubmitClickHandler(onSubmit));
+  return true;
+};
+
+// ###############################################################
+// Complete Form Setup
+// ###############################################################
+
+/**
+ * Gets form setup options with defaults
+ * @param {Object} options - User provided options
+ * @returns {Object} Complete options object
+ */
+const getFormSetupOptions = (options) => {
+  return {
+    formSelector: ".register-menu",
+    fieldIds: FORM_FIELD_IDS,
+    enableFieldValidation: true,
+    ...options,
+  };
+};
+
+/**
+ * Sets up core form handlers
+ * @param {Function} onSubmit - Submit callback
+ * @param {Object} options - Setup options
+ * @returns {boolean} True if successful
+ */
+const setupCoreHandlers = (onSubmit, options) => {
+  let success = true;
+
+  if (!setupRegisterFormHandlers(onSubmit, options.formSelector)) {
+    success = false;
   }
 
-  submitBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    onSubmit?.(e);
-  });
+  if (!setupSubmitHandler(onSubmit, options.fieldIds.SUBMIT_BTN)) {
+    success = false;
+  }
 
-  return true;
+  return success;
 };
 
 /**
@@ -172,23 +288,11 @@ export const setupSubmitHandler = (
  * @returns {boolean} True if setup was successful
  */
 export const setupCompleteRegisterForm = (onSubmit, options = {}) => {
-  const {
-    formSelector = ".register-menu",
-    fieldIds = FORM_FIELD_IDS,
-    enableFieldValidation = true,
-  } = options;
-  let success = true;
+  const setupOptions = getFormSetupOptions(options);
+  const success = setupCoreHandlers(onSubmit, setupOptions);
 
-  if (!setupRegisterFormHandlers(onSubmit, formSelector)) {
-    success = false;
-  }
-
-  if (!setupSubmitHandler(onSubmit, fieldIds.SUBMIT_BTN)) {
-    success = false;
-  }
-
-  if (enableFieldValidation) {
-    setupFieldValidation(fieldIds);
+  if (setupOptions.enableFieldValidation) {
+    setupFieldValidation(setupOptions.fieldIds);
   }
 
   return success;

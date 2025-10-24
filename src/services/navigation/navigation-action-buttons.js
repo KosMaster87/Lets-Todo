@@ -4,26 +4,60 @@
  */
 
 import { getTodoElements } from "./../../utils/dom-selectors.js";
-import { DEBUG_MODE } from "./../../utils/constants.js";
+import {
+  logActionStatus,
+  showMessage,
+} from "./../../utils/ui-helpers/message-helpers.js";
+import {
+  updateBookmarkButton,
+  updateCompletedButton,
+} from "./../../utils/ui-state-helpers.js";
+import {
+  fallbackCopy,
+  fallbackShare,
+} from "./../../utils/ui-helpers/clipboard-helpers.js";
+import {
+  hasAnyTodoContent,
+  handleContentClear,
+} from "./../../utils/ui-helpers/content-helpers.js";
 
 /**
- * Logs action button operation status
- * @param {string} type - Message type (success, warning, info)
- * @param {string} message - Message to log
- * @param {any} data - Optional data to log
+ * Logs missing element warning if not suppressed
+ * @param {string} elementId - Button element ID
+ * @param {string} actionType - Type of action
+ * @param {boolean} suppressWarnings - Whether to suppress warnings
+ * @returns {void}
  */
-const logActionStatus = (type, message, data = null) => {
-  if (!DEBUG_MODE) return;
+const logMissingElementWarning = (elementId, actionType, suppressWarnings) => {
+  if (!suppressWarnings) {
+    logActionStatus(
+      "warning",
+      `⚠️ Action button element ${elementId} not found for ${actionType}`
+    );
+  }
+};
 
-  const logFunctions = {
-    success: console.log,
-    warning: console.warn,
-    info: console.log,
-    error: console.error,
-  };
+/**
+ * Removes existing event handler from element
+ * @param {HTMLElement} element - Button element
+ * @returns {void}
+ */
+const removeExistingHandler = (element) => {
+  const existingHandler = element._actionHandler;
+  if (existingHandler) {
+    element.removeEventListener("click", existingHandler);
+  }
+};
 
-  const logFunction = logFunctions[type] || console.log;
-  data ? logFunction(message, data) : logFunction(message);
+/**
+ * Adds event handler to element
+ * @param {HTMLElement} element - Button element
+ * @param {Function} handler - Click handler function
+ * @returns {void}
+ */
+const addEventHandler = (element, handler) => {
+  element.addEventListener("click", handler);
+  element._actionHandler = handler;
 };
 
 /**
@@ -42,42 +76,39 @@ const configureActionButton = (
 ) => {
   const element = document.getElementById(elementId);
   if (!element) {
-    if (!suppressWarnings) {
-      logActionStatus(
-        "warning",
-        `⚠️ Action button element ${elementId} not found for ${actionType}`
-      );
-    }
+    logMissingElementWarning(elementId, actionType, suppressWarnings);
     return false;
   }
 
-  const existingHandler = element._actionHandler;
-  if (existingHandler) {
-    element.removeEventListener("click", existingHandler);
-  }
-
-  element.addEventListener("click", handler);
-  element._actionHandler = handler;
+  removeExistingHandler(element);
+  addEventHandler(element, handler);
   return true;
 };
 
 /**
- * Sets up action buttons with configurable handlers
- * @param {Object} config - Configuration object with button definitions
- * @param {boolean} suppressWarnings - Whether to suppress missing element warnings
+ * Configures a single button entry from config
+ * @param {string} actionType - Type of action
+ * @param {Object} buttonConfig - Button configuration
+ * @param {boolean} suppressWarnings - Whether to suppress warnings
+ * @returns {boolean} True if configured successfully
  */
-export const setupActionButtons = (config, suppressWarnings = false) => {
-  let configuredCount = 0;
-  const totalCount = Object.keys(config).length;
+const configureSingleButton = (actionType, buttonConfig, suppressWarnings) => {
+  const { elementId, handler } = buttonConfig;
+  return configureActionButton(
+    actionType,
+    elementId,
+    handler,
+    suppressWarnings
+  );
+};
 
-  Object.entries(config).forEach(([actionType, { elementId, handler }]) => {
-    if (
-      configureActionButton(actionType, elementId, handler, suppressWarnings)
-    ) {
-      configuredCount++;
-    }
-  });
-
+/**
+ * Logs setup completion status
+ * @param {number} configuredCount - Number of configured buttons
+ * @param {number} totalCount - Total number of buttons
+ * @returns {void}
+ */
+const logSetupStatus = (configuredCount, totalCount) => {
   if (configuredCount > 0) {
     logActionStatus(
       "info",
@@ -89,18 +120,22 @@ export const setupActionButtons = (config, suppressWarnings = false) => {
 };
 
 /**
- * Updates bookmark button visual state
- * @param {HTMLElement} button - Bookmark button element
- * @param {boolean} isBookmarked - New bookmark state
+ * Sets up action buttons with configurable handlers
+ * @param {Object} config - Configuration object with button definitions
+ * @param {boolean} suppressWarnings - Whether to suppress missing element warnings
+ * @returns {void}
  */
-const updateBookmarkButton = (button, isBookmarked) => {
-  if (isBookmarked) {
-    button.classList.add("bookmarked");
-    showMessage("Marked as bookmark!");
-  } else {
-    button.classList.remove("bookmarked");
-    showMessage("Bookmark removed!");
-  }
+export const setupActionButtons = (config, suppressWarnings = false) => {
+  let configuredCount = 0;
+  const totalCount = Object.keys(config).length;
+
+  Object.entries(config).forEach(([actionType, buttonConfig]) => {
+    if (configureSingleButton(actionType, buttonConfig, suppressWarnings)) {
+      configuredCount++;
+    }
+  });
+
+  logSetupStatus(configuredCount, totalCount);
 };
 
 /**
@@ -114,7 +149,7 @@ export const createBookmarkToggleHandler =
   (getBookmarkState, setBookmarkState, buttonId) => (event) => {
     event.preventDefault();
 
-    const bookmarkBtn = document.getElementById(buttonId);
+    const bookmarkBtn = event.currentTarget;
     if (!bookmarkBtn) return;
 
     const currentState = getBookmarkState();
@@ -123,21 +158,6 @@ export const createBookmarkToggleHandler =
     setBookmarkState(newState);
     updateBookmarkButton(bookmarkBtn, newState);
   };
-
-/**
- * Updates completed button visual state
- * @param {HTMLElement} button - Done button element
- * @param {boolean} isCompleted - New completed state
- */
-const updateCompletedButton = (button, isCompleted) => {
-  if (isCompleted) {
-    button.classList.add("completed");
-    showMessage("Todo marked as completed!");
-  } else {
-    button.classList.remove("completed");
-    showMessage("Todo marked as pending!");
-  }
-};
 
 /**
  * Handles completed/done toggle functionality
@@ -150,7 +170,7 @@ export const createCompletedToggleHandler =
   (getCompletedState, setCompletedState, buttonId) => (event) => {
     event.preventDefault();
 
-    const doneBtn = document.getElementById(buttonId);
+    const doneBtn = event.currentTarget;
     if (!doneBtn) return;
 
     const currentState = getCompletedState();
@@ -161,22 +181,12 @@ export const createCompletedToggleHandler =
   };
 
 /**
- * Handles content sharing functionality
- * @param {Function} getContentCallback - Function to get title and content
- * @returns {Function} Event handler function
+ * Executes native sharing with fallback
+ * @param {string} shareText - Text to share
+ * @param {string} title - Share title
+ * @returns {void}
  */
-export const createShareHandler = (getContentCallback) => (event) => {
-  event.preventDefault();
-
-  const { title, content } = getContentCallback();
-
-  if (!title && !content) {
-    showMessage("No content available to share.");
-    return;
-  }
-
-  const shareText = `${title}\n\n${content}`;
-
+const executeShare = (shareText, title) => {
   if (navigator.share) {
     navigator
       .share({
@@ -190,16 +200,29 @@ export const createShareHandler = (getContentCallback) => (event) => {
 };
 
 /**
- * Handles content copying functionality
+ * Handles content sharing functionality
  * @param {Function} getContentCallback - Function to get title and content
  * @returns {Function} Event handler function
  */
-export const createCopyHandler = (getContentCallback) => (event) => {
+export const createShareHandler = (getContentCallback) => (event) => {
   event.preventDefault();
 
   const { title, content } = getContentCallback();
-  const copyText = `${title}\n\n${content}`;
+  if (!title && !content) {
+    showMessage("No content available to share.");
+    return;
+  }
 
+  const shareText = `${title}\n\n${content}`;
+  executeShare(shareText, title);
+};
+
+/**
+ * Executes clipboard copy with fallback
+ * @param {string} copyText - Text to copy
+ * @returns {void}
+ */
+const executeCopy = (copyText) => {
   if (navigator.clipboard) {
     navigator.clipboard
       .writeText(copyText)
@@ -211,47 +234,16 @@ export const createCopyHandler = (getContentCallback) => (event) => {
 };
 
 /**
- * Checks if todo has any content
- * @param {string} title - Todo title
- * @param {string} content - Todo content
- * @param {HTMLElement} titleElement - Title DOM element
- * @param {HTMLElement} contentElement - Content DOM element
- * @returns {boolean} True if todo has content
+ * Handles content copying functionality
+ * @param {Function} getContentCallback - Function to get title and content
+ * @returns {Function} Event handler function
  */
-const hasAnyTodoContent = (title, content, titleElement, contentElement) => {
-  return (
-    title ||
-    content ||
-    (titleElement && titleElement.textContent.trim() !== "New Todo") ||
-    (contentElement && contentElement.textContent.trim() !== "")
-  );
-};
+export const createCopyHandler = (getContentCallback) => (event) => {
+  event.preventDefault();
 
-/**
- * Handles content clearing with user confirmation
- * @param {Function} clearContentCallback - Function to clear content
- * @param {Function} onDeleteCallback - Optional callback after deletion
- * @param {boolean} hasContent - Whether todo has content
- */
-const handleContentClear = (
-  clearContentCallback,
-  onDeleteCallback,
-  hasContent
-) => {
-  const confirmMessage = hasContent
-    ? "Do you really want to delete the content of this todo?"
-    : "Do you want to reset the todo?";
-
-  const successMessage = hasContent ? "Content deleted!" : "Todo reset!";
-
-  if (confirm(confirmMessage)) {
-    clearContentCallback();
-    showMessage(successMessage);
-
-    if (onDeleteCallback) {
-      onDeleteCallback();
-    }
-  }
+  const { title, content } = getContentCallback();
+  const copyText = `${title}\n\n${content}`;
+  executeCopy(copyText);
 };
 
 /**
@@ -283,6 +275,27 @@ export const createContentClearHandler =
   };
 
 /**
+ * Executes todo deletion with error handling
+ * @param {string} todoId - ID of todo to delete
+ * @param {Function} trashTodoCallback - Function to move todo to trash
+ * @param {Function} onDeleteCallback - Optional callback after deletion
+ * @returns {void}
+ */
+const executeTodoDeletion = (todoId, trashTodoCallback, onDeleteCallback) => {
+  try {
+    trashTodoCallback(todoId);
+    showMessage("Todo was moved to trash!");
+
+    if (onDeleteCallback) {
+      onDeleteCallback();
+    }
+  } catch (error) {
+    logActionStatus("error", "Error deleting todo:", error);
+    showMessage("Error deleting todo.", "error");
+  }
+};
+
+/**
  * Handles todo deletion functionality (moves todo to trash)
  * @param {Function} getTodoIdCallback - Function to get current todo ID
  * @param {Function} trashTodoCallback - Function to move todo to trash
@@ -294,106 +307,12 @@ export const createDeleteHandler =
     event.preventDefault();
 
     const todoId = getTodoIdCallback();
-
     if (!todoId) {
       showMessage("No todo found to delete.", "error");
       return;
     }
 
     if (confirm("Do you really want to move this todo to trash?")) {
-      try {
-        trashTodoCallback(todoId);
-        showMessage("Todo was moved to trash!");
-
-        if (onDeleteCallback) {
-          onDeleteCallback();
-        }
-      } catch (error) {
-        logActionStatus("error", "Error deleting todo:", error);
-        showMessage("Error deleting todo.", "error");
-      }
+      executeTodoDeletion(todoId, trashTodoCallback, onDeleteCallback);
     }
   };
-
-/**
- * Creates a temporary textarea for fallback copy operations
- * @param {string} text - Text to copy
- * @returns {HTMLTextAreaElement} Configured textarea element
- */
-const createCopyTextArea = (text) => {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  textArea.style.cssText = "position: fixed; left: -999999px; top: -999999px;";
-  return textArea;
-};
-
-/**
- * Fallback copy function for older browsers
- * @param {string} text - Text to copy
- */
-export const fallbackCopy = (text) => {
-  const textArea = createCopyTextArea(text);
-  document.body.appendChild(textArea);
-  textArea.focus();
-  textArea.select();
-
-  try {
-    document.execCommand("copy");
-    showMessage("Todo copied to clipboard!");
-  } catch (err) {
-    showMessage("Copy failed.");
-  }
-
-  document.body.removeChild(textArea);
-};
-
-/**
- * Fallback share function
- * @param {string} text - Text to share
- */
-const fallbackShare = (text) => {
-  fallbackCopy(text);
-  showMessage("Todo copied - ready to share!");
-};
-
-/**
- * Creates styled message element
- * @param {string} message - Message text
- * @param {string} type - Message type
- * @returns {HTMLDivElement} Styled message element
- */
-const createMessageElement = (message, type) => {
-  const messageDiv = document.createElement("div");
-  messageDiv.textContent = message;
-
-  const backgroundColor =
-    type === "error" ? "rgba(244, 67, 54, 0.9)" : "rgba(76, 175, 80, 0.9)";
-
-  messageDiv.style.cssText = `
-    position: fixed; top: 20px; right: 20px;
-    background: ${backgroundColor}; color: white;
-    padding: 1rem; border-radius: 0.5rem; z-index: 1000;
-    font-size: 0.9rem; max-width: 300px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  `;
-
-  return messageDiv;
-};
-
-/**
- * Shows a message to the user
- * @param {string} message - Message to display
- * @param {string} type - Message type (success, error, info)
- */
-export const showMessage = (message, type = "success") => {
-  logActionStatus("info", `Action message (${type}): ${message}`);
-
-  const messageDiv = createMessageElement(message, type);
-  document.body.appendChild(messageDiv);
-
-  setTimeout(() => {
-    if (document.body.contains(messageDiv)) {
-      document.body.removeChild(messageDiv);
-    }
-  }, 3000);
-};

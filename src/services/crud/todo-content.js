@@ -5,17 +5,30 @@
 
 import { getTodoElements } from "./../../utils/dom-selectors.js";
 
+// ###############################################################
+// DOM Element Validation Utilities
+// ###############################################################
+
 /**
- * Gets todo content from DOM elements
- * @returns {Object|null} Content object with elements and values, or null if elements not found
+ * Validates that todo elements exist
+ * @param {Object} elements - Todo elements object
+ * @returns {boolean} True if elements are valid
  */
-export const getTodoContentFromDOM = () => {
-  const { titleElement, contentElement } = getTodoElements();
+const validateTodoElements = (elements) => {
+  return elements.titleElement && elements.contentElement;
+};
 
-  if (!titleElement || !contentElement) {
-    return null;
-  }
+// ###############################################################
+// Content Extraction Utilities
+// ###############################################################
 
+/**
+ * Creates content object from DOM elements
+ * @param {HTMLElement} titleElement - Title element
+ * @param {HTMLElement} contentElement - Content element
+ * @returns {Object} Content object with elements and values
+ */
+const createContentObject = (titleElement, contentElement) => {
   return {
     titleElement,
     contentElement,
@@ -27,23 +40,77 @@ export const getTodoContentFromDOM = () => {
 };
 
 /**
- * Gets current content for action button handlers
- * @returns {Object} Object with title and content
+ * Gets todo content from DOM elements
+ * @returns {Object|null} Content object with elements and values, or null if elements not found
  */
-export const getContentForActions = () => {
-  const { titleElement, contentElement } = getTodoElements();
+export const getTodoContentFromDOM = () => {
+  const elements = getTodoElements();
 
-  const title = titleElement ? titleElement.textContent.trim() : "";
-  const content = contentElement ? contentElement.textContent.trim() : "";
+  if (!validateTodoElements(elements)) {
+    return null;
+  }
 
+  return createContentObject(elements.titleElement, elements.contentElement);
+};
+
+/**
+ * Extracts text content from element
+ * @param {HTMLElement|null} element - DOM element
+ * @returns {string} Text content or empty string
+ */
+const getElementText = (element) => {
+  return element ? element.textContent.trim() : "";
+};
+
+/**
+ * Logs content extraction for debugging
+ * @param {string} title - Title content
+ * @param {string} content - Content text
+ * @param {HTMLElement} titleElement - Title element
+ * @param {HTMLElement} contentElement - Content element
+ */
+const logContentExtraction = (title, content, titleElement, contentElement) => {
   console.log("getContentForActions called:", {
     title,
     content,
     titleElement,
     contentElement,
   });
+};
+
+/**
+ * Gets current content for action button handlers
+ * @returns {Object} Object with title and content
+ */
+export const getContentForActions = () => {
+  const { titleElement, contentElement } = getTodoElements();
+
+  const title = getElementText(titleElement);
+  const content = getElementText(contentElement);
+
+  logContentExtraction(title, content, titleElement, contentElement);
 
   return { title, content };
+};
+
+// ###############################################################
+// Content Modification Operations
+// ###############################################################
+
+/**
+ * Resets title element to default state
+ * @param {HTMLElement} titleElement - Title element to reset
+ */
+const resetTitleElement = (titleElement) => {
+  if (titleElement) titleElement.textContent = "Neue Todo";
+};
+
+/**
+ * Clears content element
+ * @param {HTMLElement} contentElement - Content element to clear
+ */
+const clearContentElement = (contentElement) => {
+  if (contentElement) contentElement.textContent = "";
 };
 
 /**
@@ -52,6 +119,6 @@ export const getContentForActions = () => {
 export const clearTodoContent = () => {
   const { titleElement, contentElement } = getTodoElements();
 
-  if (titleElement) titleElement.textContent = "Neue Todo";
-  if (contentElement) contentElement.textContent = "";
+  resetTitleElement(titleElement);
+  clearContentElement(contentElement);
 };

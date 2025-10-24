@@ -3,11 +3,15 @@
  * @module todo-validation
  */
 
-import { showMessage } from "./../navigation/navigation-action-buttons.js";
+import { showMessage } from "./../../utils/ui-helpers/message-helpers.js";
 import {
   getTodoTitleElement,
   getTodoContentElement,
 } from "./../../utils/dom-selectors.js";
+
+// ###############################################################
+// DOM Element Validation
+// ###############################################################
 
 /**
  * Validates todo title from DOM element
@@ -33,6 +37,52 @@ export const validateTodoContent = () => {
   return validateContentValue(content);
 };
 
+// ###############################################################
+// Content Value Validation
+// ###############################################################
+
+/**
+ * Validates that content is not empty
+ * @param {string} title - Todo title
+ * @param {string} content - Todo content
+ * @returns {boolean} True if content exists
+ */
+const validateContentExists = (title, content) => {
+  if (!title && !content) {
+    showMessage("Titel oder Inhalt darf nicht leer sein.", "error");
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Validates title is not placeholder text
+ * @param {string} title - Todo title
+ * @param {string} titlePlaceholder - Title placeholder text
+ * @returns {boolean} True if title is valid
+ */
+const validateTitleNotPlaceholder = (title, titlePlaceholder) => {
+  if (isPlaceholderText(title, titlePlaceholder)) {
+    showMessage("Bitte gib einen echten Titel für deine Todo ein.", "error");
+    return false;
+  }
+  return true;
+};
+
+/**
+ * Validates content is not placeholder text
+ * @param {string} content - Todo content
+ * @param {string} contentPlaceholder - Content placeholder text
+ * @returns {boolean} True if content is valid
+ */
+const validateContentNotPlaceholder = (content, contentPlaceholder) => {
+  if (isPlaceholderText(content, contentPlaceholder)) {
+    showMessage("Bitte gib einen echten Inhalt für deine Todo ein.", "error");
+    return false;
+  }
+  return true;
+};
+
 /**
  * Validates todo content values directly
  * @param {string} title - Todo title
@@ -47,49 +97,55 @@ export const validateTodoContentValues = (
   titlePlaceholder,
   contentPlaceholder
 ) => {
-  if (!title && !content) {
-    showMessage("Titel oder Inhalt darf nicht leer sein.", "error");
-    return false;
-  }
-
-  if (isPlaceholderText(title, titlePlaceholder)) {
-    showMessage("Bitte gib einen echten Titel für deine Todo ein.", "error");
-    return false;
-  }
-
-  if (isPlaceholderText(content, contentPlaceholder)) {
-    showMessage("Bitte gib einen echten Inhalt für deine Todo ein.", "error");
-    return false;
-  }
-
+  if (!validateContentExists(title, content)) return false;
+  if (!validateTitleNotPlaceholder(title, titlePlaceholder)) return false;
+  if (!validateContentNotPlaceholder(content, contentPlaceholder)) return false;
   return true;
 };
 
+// ###############################################################
+// Validation Helper Functions
+// ###############################################################
+
 /**
- * Determines if the given text is considered placeholder text.
- *
- * Checks if the trimmed text matches any static placeholder values or the provided placeholder.
- *
- * @param {string} text - The text to check.
- * @param {string} [placeholder] - An optional placeholder to compare against.
- * @returns {boolean} True if the text is a placeholder, false otherwise.
+ * Checks if text matches static placeholders
+ * @param {string} trimmedText - Trimmed text to check
+ * @returns {boolean} True if matches static placeholder
+ */
+const isStaticPlaceholder = (trimmedText) => {
+  const staticPlaceholders = ["Neue Todo"];
+  return staticPlaceholders.includes(trimmedText);
+};
+
+/**
+ * Checks if text matches provided placeholder
+ * @param {string} trimmedText - Trimmed text to check
+ * @param {string} placeholder - Placeholder to compare against
+ * @returns {boolean} True if matches provided placeholder
+ */
+const isProvidedPlaceholder = (trimmedText, placeholder) => {
+  return placeholder && trimmedText === placeholder;
+};
+
+/**
+ * Determines if the given text is considered placeholder text
+ * @param {string} text - The text to check
+ * @param {string} [placeholder] - An optional placeholder to compare against
+ * @returns {boolean} True if the text is a placeholder, false otherwise
  */
 const isPlaceholderText = (text, placeholder) => {
   if (!text) return false;
 
   const trimmedText = text.trim();
-  const staticPlaceholders = ["Neue Todo"];
-
-  if (staticPlaceholders.includes(trimmedText)) {
-    return true;
-  }
-
-  if (placeholder && trimmedText === placeholder) {
-    return true;
-  }
-
-  return false;
+  return (
+    isStaticPlaceholder(trimmedText) ||
+    isProvidedPlaceholder(trimmedText, placeholder)
+  );
 };
+
+// ###############################################################
+// Length Constraint Validation
+// ###############################################################
 
 /**
  * Validates title value with length constraints
