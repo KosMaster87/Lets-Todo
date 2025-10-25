@@ -1,5 +1,3 @@
-// lets-todo-app/src/services/navigation-logout.js
-
 /**
  * @fileoverview Navigation Logout Module
  * @module navigation-logout

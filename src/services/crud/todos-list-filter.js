@@ -6,6 +6,10 @@
 import { getTodos } from "./../../state/main-state.js";
 import { renderTodosList } from "./../../components/pages/todos-list.js";
 
+// ###############################################################
+// Filter Constants and Navigation
+// ###############################################################
+
 /**
  * Valid filter modes for todos list display
  */
@@ -33,6 +37,10 @@ export const getNextFilterMode = (currentMode) => {
   }
 };
 
+// ###############################################################
+// Todo Filtering Logic
+// ###############################################################
+
 /**
  * Filters todos based on filter mode
  * @param {Array} todos - Array of todos
@@ -51,26 +59,72 @@ export const filterTodos = (todos, filterMode) => {
   }
 };
 
+// ###############################################################
+// Rendering Functions
+// ###############################################################
+
+/**
+ * Gets and validates container element
+ * @param {string} containerId - ID of the container element
+ * @returns {HTMLElement|null} Container element or null
+ */
+const getValidatedContainer = (containerId) => {
+  const container = document.getElementById(containerId);
+  if (!container) {
+    console.warn(`Todos container with ID '${containerId}' not found`);
+    return null;
+  }
+  return container;
+};
+
 /**
  * Renders todos list with applied filter
  * @param {string} filterMode - Filter mode to apply
  * @param {string} containerId - ID of the container element
+ * @returns {void}
  */
 export const renderTodosListWithFilter = (
   filterMode,
   containerId = "todosList"
 ) => {
-  const todosContainer = document.getElementById(containerId);
-  if (!todosContainer) {
-    console.warn(`Todos container with ID '${containerId}' not found`);
-    return;
-  }
+  const todosContainer = getValidatedContainer(containerId);
+  if (!todosContainer) return;
 
   const allTodos = getTodos();
   const filteredTodos = filterTodos(allTodos, filterMode);
-
   todosContainer.innerHTML = renderTodosList(filteredTodos);
 };
+
+// ###############################################################
+// UI Configuration and Updates
+// ###############################################################
+
+/**
+ * Gets configuration for all filter mode
+ * @returns {Object} All filter configuration
+ */
+const getAllFilterConfig = () => ({
+  title: "Alle Todos",
+  description: "Zeige alle deine Todos und Aufgaben",
+});
+
+/**
+ * Gets configuration for completed filter mode
+ * @returns {Object} Completed filter configuration
+ */
+const getCompletedFilterConfig = () => ({
+  title: "Erledigte Todos",
+  description: "Zeige nur abgeschlossene Todos",
+});
+
+/**
+ * Gets configuration for pending filter mode
+ * @returns {Object} Pending filter configuration
+ */
+const getPendingFilterConfig = () => ({
+  title: "Offene Todos",
+  description: "Zeige nur ausstehende Todos",
+});
 
 /**
  * Gets filter button configuration for UI display
@@ -80,26 +134,42 @@ export const renderTodosListWithFilter = (
 export const getFilterButtonConfig = (filterMode) => {
   switch (filterMode) {
     case TODOS_LIST_FILTER_MODES.ALL:
-      return {
-        title: "Alle Todos",
-        description: "Zeige alle deine Todos und Aufgaben",
-      };
+      return getAllFilterConfig();
     case TODOS_LIST_FILTER_MODES.COMPLETED:
-      return {
-        title: "Erledigte Todos",
-        description: "Zeige nur abgeschlossene Todos",
-      };
+      return getCompletedFilterConfig();
     case TODOS_LIST_FILTER_MODES.PENDING:
-      return {
-        title: "Offene Todos",
-        description: "Zeige nur ausstehende Todos",
-      };
+      return getPendingFilterConfig();
     default:
-      return {
-        title: "Alle Todos",
-        description: "Zeige alle deine Todos und Aufgaben",
-      };
+      return getAllFilterConfig();
   }
+};
+
+/**
+ * Gets filter button elements by IDs
+ * @param {string} titleId - ID of the title element
+ * @param {string} descId - ID of the description element
+ * @returns {Object|null} Elements object or null if not found
+ */
+const getFilterButtonElements = (titleId, descId) => {
+  const titleElement = document.getElementById(titleId);
+  const descElement = document.getElementById(descId);
+
+  if (!titleElement || !descElement) {
+    return null;
+  }
+
+  return { titleElement, descElement };
+};
+
+/**
+ * Updates DOM elements with filter configuration
+ * @param {Object} elements - DOM elements object
+ * @param {Object} config - Filter configuration
+ * @returns {void}
+ */
+const updateElementsWithConfig = (elements, config) => {
+  elements.titleElement.textContent = config.title;
+  elements.descElement.textContent = config.description;
 };
 
 /**
@@ -114,16 +184,10 @@ export const updateFilterButtonText = (
   titleId = "todosListFilterTitle",
   descId = "todosListFilterDesc"
 ) => {
-  const titleElement = document.getElementById(titleId);
-  const descElement = document.getElementById(descId);
-
-  if (!titleElement || !descElement) {
-    return false; // Elements not available
-  }
+  const elements = getFilterButtonElements(titleId, descId);
+  if (!elements) return false;
 
   const config = getFilterButtonConfig(filterMode);
-  titleElement.textContent = config.title;
-  descElement.textContent = config.description;
-
+  updateElementsWithConfig(elements, config);
   return true;
 };

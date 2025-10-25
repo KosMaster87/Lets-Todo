@@ -144,7 +144,7 @@ export const StorageManager = {
    */
   setAuthData(remember, key, data) {
     const storageType = remember ? StorageTypes.LOCAL : StorageTypes.SESSION;
-    console.log(`💾 Saving auth data to ${storageType} storage (remember: ${remember})`);
+    // console.log(`💾 Saving auth data to ${storageType} storage (remember: ${remember})`);
 
     if (remember) {
       this.setLocalData(key, data);

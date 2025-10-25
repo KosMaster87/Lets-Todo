@@ -60,7 +60,6 @@
   height: 2rem;
 }
 
-/* NEU $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ */
 /* Todo Creation Display */
 .todos-wrapper .todo-display {
   background: rgba(255, 255, 255, 0.95);
@@ -76,7 +75,6 @@
   align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
-  border-bottom: 2px solid #e0e0e0;
 }
 
 .todos-wrapper .todo-title {
@@ -86,7 +84,7 @@
   margin: 0;
   text-align: center;
   flex: 1;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: 0.5rem;
   padding: 0.5rem;
   transition: all 0.3s ease;
@@ -113,7 +111,7 @@
   white-space: pre-wrap;
   word-wrap: break-word;
   padding: 1rem;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   border-radius: 0.5rem;
   transition: all 0.3s ease;
 }
@@ -141,8 +139,6 @@
   gap: 1rem;
   justify-content: center;
   padding: 1.5rem 0;
-  border-top: 2px solid #e0e0e0;
-  border-bottom: 2px solid #e0e0e0;
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
@@ -170,32 +166,4 @@
 .todos-wrapper .action-btn.completed {
   background: rgba(76, 175, 80, 0.2);
   border: 2px solid #4caf50;
-}
-
-/* Todo Meta Information */
-.todos-wrapper .todo-meta-info {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85rem;
-  color: #666;
-  margin-top: 1rem;
-}
-
-.todos-wrapper .todo-creation-date {
-  font-style: italic;
-}
-
-.todos-wrapper .todo-status-badge {
-  padding: 0.3rem 0.8rem;
-  border-radius: 1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.5px;
-}
-
-.todos-wrapper .todo-status-badge.pending {
-  background-color: #e3f2fd;
-  color: #1976d2;
 }

@@ -3,6 +3,17 @@
  * @module register-ui-state
  */
 
+// Import the toast notification system
+import {
+  showSuccessToast,
+  showErrorToast,
+  showInfoToast,
+} from "../../utils/toast-notifications.js";
+
+// ###############################################################
+// Message Type Constants
+// ###############################################################
+
 /**
  * Message types for consistent UI feedback
  */
@@ -11,6 +22,29 @@ export const MESSAGE_TYPES = {
   ERROR: "error",
   INFO: "info",
   WARNING: "warning",
+};
+
+// ###############################################################
+// Button State Management
+// ###############################################################
+
+/**
+ * Gets submit button element
+ * @param {string} buttonId - Button element ID
+ * @returns {HTMLElement|null} Button element or null
+ */
+const getSubmitButton = (buttonId) => {
+  return document.getElementById(buttonId);
+};
+
+/**
+ * Updates button loading appearance
+ * @param {HTMLElement} button - Button element
+ * @param {boolean} isLoading - Loading state
+ */
+const updateButtonAppearance = (button, isLoading) => {
+  button.disabled = isLoading;
+  button.textContent = isLoading ? "Registrierung läuft..." : "Registrieren";
 };
 
 /**
@@ -22,23 +56,31 @@ export const updateRegisterLoadingState = (
   isLoading,
   buttonId = "registerSubmitBtn"
 ) => {
-  const submitBtn = document.getElementById(buttonId);
-  if (!submitBtn) {
-    return false;
-  }
+  const submitBtn = getSubmitButton(buttonId);
+  if (!submitBtn) return false;
 
-  submitBtn.disabled = isLoading;
-  submitBtn.textContent = isLoading ? "Registrierung läuft..." : "Registrieren";
-
+  updateButtonAppearance(submitBtn, isLoading);
   return true;
 };
 
-// Import the toast notification system
-import {
-  showSuccessToast,
-  showErrorToast,
-  showInfoToast,
-} from "../../utils/toast-notifications.js";
+// ###############################################################
+// Message Display Functions
+// ###############################################################
+
+/**
+ * Executes custom handler if provided
+ * @param {Function} handler - Custom handler function
+ * @param {string} message - Message to display
+ * @param {string} type - Message type
+ * @returns {boolean} True if custom handler was used
+ */
+const executeCustomHandler = (handler, message, type) => {
+  if (handler && typeof handler === "function") {
+    handler(message, type);
+    return true;
+  }
+  return false;
+};
 
 /**
  * Shows register success message
@@ -46,8 +88,7 @@ import {
  * @param {Function} customHandler - Optional custom message handler
  */
 export const showRegisterSuccess = (message, customHandler) => {
-  if (customHandler && typeof customHandler === "function") {
-    customHandler(message, MESSAGE_TYPES.SUCCESS);
+  if (executeCustomHandler(customHandler, message, MESSAGE_TYPES.SUCCESS)) {
     return;
   }
 
@@ -60,8 +101,7 @@ export const showRegisterSuccess = (message, customHandler) => {
  * @param {Function} customHandler - Optional custom message handler
  */
 export const showRegisterError = (message, customHandler) => {
-  if (customHandler && typeof customHandler === "function") {
-    customHandler(message, MESSAGE_TYPES.ERROR);
+  if (executeCustomHandler(customHandler, message, MESSAGE_TYPES.ERROR)) {
     return;
   }
 
@@ -75,12 +115,37 @@ export const showRegisterError = (message, customHandler) => {
  * @param {Function} customHandler - Optional custom message handler
  */
 export const showRegisterInfo = (message, customHandler) => {
-  if (customHandler && typeof customHandler === "function") {
-    customHandler(message, MESSAGE_TYPES.INFO);
+  if (executeCustomHandler(customHandler, message, MESSAGE_TYPES.INFO)) {
     return;
   }
 
   showInfoToast(message);
+};
+
+// ###############################################################
+// Form Validation State Management
+// ###############################################################
+
+/**
+ * Gets default form element IDs
+ * @returns {Array} Array of default element IDs
+ */
+const getDefaultElementIds = () => [
+  "registerEmail",
+  "registerPassword",
+  "registerPasswordConfirm",
+  "registerTerms",
+];
+
+/**
+ * Clears validation state for single element
+ * @param {string} elementId - Element ID to clear
+ */
+const clearElementValidation = (elementId) => {
+  const element = document.getElementById(elementId);
+  if (element && typeof element.setCustomValidity === "function") {
+    element.setCustomValidity("");
+  }
 };
 
 /**
@@ -88,21 +153,43 @@ export const showRegisterInfo = (message, customHandler) => {
  * @param {Array} elementIds - Array of input element IDs to clear
  */
 export const clearFormValidation = (elementIds = []) => {
-  const defaultIds = [
-    "registerEmail",
-    "registerPassword",
-    "registerPasswordConfirm",
-    "registerTerms",
-  ];
+  const idsToProcess =
+    elementIds.length > 0 ? elementIds : getDefaultElementIds();
+  idsToProcess.forEach(clearElementValidation);
+};
 
-  const idsToProcess = elementIds.length > 0 ? elementIds : defaultIds;
+// ###############################################################
+// Form Reset Operations
+// ###############################################################
 
-  idsToProcess.forEach((id) => {
-    const element = document.getElementById(id);
-    if (element && typeof element.setCustomValidity === "function") {
-      element.setCustomValidity("");
-    }
-  });
+/**
+ * Gets form element by selector
+ * @param {string} selector - CSS selector for form
+ * @returns {HTMLElement|null} Form element or null
+ */
+const getFormElement = (selector) => {
+  return document.querySelector(selector);
+};
+
+/**
+ * Resets single input element
+ * @param {HTMLElement} input - Input element to reset
+ */
+const resetInputElement = (input) => {
+  input.value = "";
+  input.checked = false;
+  if (typeof input.setCustomValidity === "function") {
+    input.setCustomValidity("");
+  }
+};
+
+/**
+ * Resets all form inputs
+ * @param {HTMLElement} form - Form element
+ */
+const resetFormInputs = (form) => {
+  const inputs = form.querySelectorAll("input");
+  inputs.forEach(resetInputElement);
 };
 
 /**
@@ -110,25 +197,42 @@ export const clearFormValidation = (elementIds = []) => {
  * @param {string} formSelector - CSS selector for the form
  */
 export const resetRegisterForm = (formSelector = ".register-menu") => {
-  const form = document.querySelector(formSelector);
-  if (!form) {
-    return false;
-  }
+  const form = getFormElement(formSelector);
+  if (!form) return false;
 
-  // Reset form fields
-  const inputs = form.querySelectorAll("input");
-  inputs.forEach((input) => {
-    input.value = "";
-    input.checked = false;
-    if (typeof input.setCustomValidity === "function") {
-      input.setCustomValidity("");
-    }
-  });
-
-  // Reset submit button
+  resetFormInputs(form);
   updateRegisterLoadingState(false);
 
   return true;
+};
+
+// ###############################################################
+// Focus Management
+// ###############################################################
+
+/**
+ * Gets field to element ID mapping
+ * @returns {Object} Field mapping object
+ */
+const getFieldMapping = () => ({
+  email: "registerEmail",
+  password: "registerPassword",
+  passwordConfirm: "registerPasswordConfirm",
+  terms: "registerTerms",
+});
+
+/**
+ * Focuses element by ID
+ * @param {string} elementId - Element ID to focus
+ * @returns {boolean} True if element was focused
+ */
+const focusElementById = (elementId) => {
+  const element = document.getElementById(elementId);
+  if (element) {
+    element.focus();
+    return true;
+  }
+  return false;
 };
 
 /**
@@ -136,22 +240,63 @@ export const resetRegisterForm = (formSelector = ".register-menu") => {
  * @param {Object} fieldErrors - Object with field validation errors
  */
 export const focusFirstInvalidField = (fieldErrors) => {
-  const fieldMapping = {
-    email: "registerEmail",
-    password: "registerPassword",
-    passwordConfirm: "registerPasswordConfirm",
-    terms: "registerTerms",
-  };
+  const fieldMapping = getFieldMapping();
 
   for (const [fieldName, errorMessage] of Object.entries(fieldErrors)) {
-    if (errorMessage) {
-      const elementId = fieldMapping[fieldName];
-      const element = document.getElementById(elementId);
-      if (element) {
-        element.focus();
+    if (errorMessage && fieldMapping[fieldName]) {
+      if (focusElementById(fieldMapping[fieldName])) {
         break;
       }
     }
+  }
+};
+
+// ###############################################################
+// Unified Message Handler
+// ###############################################################
+
+/**
+ * Handles success message display
+ * @param {string} message - Message to display
+ * @param {Object} options - Handler options
+ */
+const handleSuccessMessage = (message, options) => {
+  showRegisterSuccess(message, options.successHandler);
+};
+
+/**
+ * Handles error message display
+ * @param {string} message - Message to display
+ * @param {Object} options - Handler options
+ */
+const handleErrorMessage = (message, options) => {
+  showRegisterError(message, options.errorHandler);
+};
+
+/**
+ * Handles info message display
+ * @param {string} message - Message to display
+ * @param {Object} options - Handler options
+ */
+const handleInfoMessage = (message, options) => {
+  showRegisterInfo(message, options.infoHandler);
+};
+
+/**
+ * Handles message display by type
+ * @param {string} message - Message to display
+ * @param {string} type - Message type
+ * @param {Object} options - Handler options
+ */
+const handleMessageByType = (message, type, options) => {
+  if (type === MESSAGE_TYPES.SUCCESS) {
+    handleSuccessMessage(message, options);
+  } else if (type === MESSAGE_TYPES.ERROR) {
+    handleErrorMessage(message, options);
+  } else if (type === MESSAGE_TYPES.INFO) {
+    handleInfoMessage(message, options);
+  } else {
+    showRegisterInfo(message, options.defaultHandler);
   }
 };
 
@@ -162,18 +307,6 @@ export const focusFirstInvalidField = (fieldErrors) => {
  */
 export const createRegisterMessageHandler = (options = {}) => {
   return (message, type = MESSAGE_TYPES.INFO) => {
-    switch (type) {
-      case MESSAGE_TYPES.SUCCESS:
-        showRegisterSuccess(message, options.successHandler);
-        break;
-      case MESSAGE_TYPES.ERROR:
-        showRegisterError(message, options.errorHandler);
-        break;
-      case MESSAGE_TYPES.INFO:
-        showRegisterInfo(message, options.infoHandler);
-        break;
-      default:
-        showRegisterInfo(message, options.defaultHandler);
-    }
+    handleMessageByType(message, type, options);
   };
 };

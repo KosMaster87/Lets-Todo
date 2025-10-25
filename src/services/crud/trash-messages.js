@@ -3,7 +3,7 @@
  * @module trash-messages
  */
 
-import { showMessage } from "./../navigation/navigation-action-buttons.js";
+import { showMessage } from "./../../utils/ui-helpers/message-helpers.js";
 
 /**
  * Shows success message for trash operations

@@ -3,8 +3,6 @@
  * @module navigation-reset-password-confirm
  */
 
-// lets-todo-app/src/services/navigation/navigation-reset-password-confirm.js
-
 import { handleNavigationClick } from "./navigation.js";
 import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
 import {
