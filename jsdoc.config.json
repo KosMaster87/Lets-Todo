@@ -1,0 +1,70 @@
+{
+  "source": {
+    "include": ["src"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(node_modules|\\.test\\.js$|\\.html$)"
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "./node_modules/clean-jsdoc-theme"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "clean-jsdoc-theme": {
+      "theme": "dark",
+      "title": "Let's Todo Frontend Documentation",
+      "description": "Complete frontend documentation for Let's Todo SPA - Vanilla JavaScript ES6+ with component architecture and state management",
+      "logo": "/assets/icons/todo-icon.png",
+      "menu": [
+        {
+          "title": "🏠 Home",
+          "link": "index.html"
+        },
+        {
+          "title": "📚 Global Functions",
+          "link": "global.html"
+        },
+        {
+          "title": "🧩 Components",
+          "link": "module-Components.html"
+        },
+        {
+          "title": "🔄 State Management",
+          "link": "module-State.html"
+        },
+        {
+          "title": "🌐 API Services",
+          "link": "module-API.html"
+        },
+        {
+          "title": "🔗 GitHub Repository",
+          "link": "https://github.com/KosMaster87/lets-todo-app",
+          "target": "_blank"
+        },
+        {
+          "title": "🚀 Live Demo",
+          "link": "https://lets-todo.dev2k.org",
+          "target": "_blank"
+        }
+      ],
+      "search": true,
+      "collapse": false,
+      "sort": true,
+      "sectionOrder": [
+        "Classes",
+        "Modules",
+        "Global",
+        "Namespaces",
+        "Events",
+        "Tutorials",
+        "Interfaces"
+      ],
+      "meta": {
+        "keywords": "JavaScript, SPA, Frontend, Todo, Documentation, JSDoc, ES6, Modules, State Management, PWA"
+      }
+    },
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}
