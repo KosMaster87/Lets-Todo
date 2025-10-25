@@ -8,7 +8,11 @@
     "start": "node server.js",
     "dev": "NODE_ENV=development nodemon server.js",
     "dev:db": "NODE_ENV=development node scripts/setup-dev-db.js",
-    "prod": "NODE_ENV=production node server.js"
+    "prod": "NODE_ENV=production node server.js",
+    "docs": "jsdoc -c jsdoc.config.json",
+    "docs:serve": "npx http-server docs -p 8080 -o",
+    "docs:clean": "rm -rf docs/ && npm run docs",
+    "generate-docs": "jsdoc --configure jsdoc.config.json --verbose"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +29,9 @@
     "uuid": "^11.1.0"
   },
   "devDependencies": {
+    "clean-jsdoc-theme": "^4.3.0",
+    "concurrently": "^9.2.1",
+    "jsdoc": "^4.0.5",
     "nodemon": "^3.1.10"
   }
 }
