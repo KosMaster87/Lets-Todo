@@ -45,12 +45,45 @@ setup_database() {
 
     # Run database migrations
     echo "🔄 Running database migrations..."
+
+    # Migration 1: Add last_login column
+    echo "📝 Running migration: add-last-login-column.js"
     node scripts/add-last-login-column.js
 
     if [ $? -eq 0 ]; then
-        echo "✅ Database migrations completed"
+        echo "✅ Last login column migration completed"
     else
-        echo "⚠️  Migration might have failed or already applied"
+        echo "⚠️  Last login migration might have failed or already applied"
+    fi
+
+    # Migration 2: Add user preferences table
+    echo "📝 Running migration: add-user-preferences-table.js"
+    node scripts/add-user-preferences-table.js
+
+    if [ $? -eq 0 ]; then
+        echo "✅ User preferences table migration completed"
+    else
+        echo "⚠️  User preferences migration might have failed or already applied"
+    fi
+
+    # Migration 3: Add updated_at column
+    echo "📝 Running migration: add-updated-at-column.js"
+    node scripts/add-updated-at-column.js
+
+    if [ $? -eq 0 ]; then
+        echo "✅ Updated_at column migration completed"
+    else
+        echo "⚠️  Updated_at migration might have failed or already applied"
+    fi
+
+    # Migration 4: Add trash columns
+    echo "📝 Running migration: add-trash-columns.js"
+    node scripts/add-trash-columns.js
+
+    if [ $? -eq 0 ]; then
+        echo "✅ Trash columns migration completed"
+    else
+        echo "⚠️  Trash columns migration might have failed or already applied"
     fi
 
     if [ $? -eq 0 ]; then
@@ -62,6 +95,11 @@ setup_database() {
             echo "  - Test user: test@${ENV_TYPE}.local"
             echo "  - Test database: todos_user_1_${ENV_TYPE}"
         fi
+        echo "🔄 Applied migrations:"
+        echo "  - Last login column added to users table"
+        echo "  - User preferences table created for all user databases"
+        echo "  - Updated_at column added to todos table"
+        echo "  - Trash columns added to todos table"
     else
         echo "❌ Database setup failed for $ENV_TYPE"
         echo "💡 Troubleshooting steps:"

@@ -1,6 +1,6 @@
 // lets-todo-api/routing/helpers/cookieHelpers.js
 
-import { ENV } from "../../config/environment.js";
+import { ENV } from "./../../config/environment.js";
 
 /**
  * Creates cookie options for user session

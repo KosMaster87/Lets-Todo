@@ -1,138 +1,174 @@
-# 🚀 Let's Todo API
+# Let's Todo API - Backend (Developer Branch)
 
-Professio### 🔗 Related Projects
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.x-blue.svg)](https://expressjs.com/)
+[![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](https://mysql.com/)
 
-- **[Let's Todo Frontend →](../lets-todo-app)** - Vanilla JS SPA with automatic API integrationjs Express API with multi-environment deployment, database-per-session architecture, and automated SSL setup.
+> **🚧 Developer Branch**: This is the main development branch containing the latest API features and improvements. For production deployment, use the `main` branch.
+
+**Professional Node.js Express API** with multi-environment deployment, database-per-session architecture, and automated SSL setup. This developer branch serves as the integration point for new API features and the testing ground for database optimizations.
 
 ## ✨ Key Features
 
-- **🏗️ Multi-Environment**: Development, Feature, Staging, Production deployments
-- **🗄️ Database-per-Session**: Isolated MySQL databases for each user/guest session
-- **🔒 Secure Authentication**: Cookie-based sessions with bcrypt password hashing
-- **⚡ Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
-- **🌐 Production Ready**: Let's Encrypt SSL, rate limiting, security headers
-- **📊 RESTful API**: Complete CRUD operations with full session isolation
-- **👥 Multi-User Security**: Isolated server users (root/dev2k) with proper privilege separation
-- **🔥 Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
-- **🛠️ Server Management**: Automated user creation and SSH key management tools
-- **📚 Comprehensive Docs**: Detailed guides for development, deployment, and security
+- 🏗️ **Multi-Environment Architecture**: Development, Feature, Staging, Production deployments
+- 🗄️ **Database-per-Session**: Isolated MySQL databases for each user/guest session
+- 🔒 **Secure Authentication**: Cookie-based sessions with bcrypt password hashing
+- ⚡ **Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
+- 🌐 **Production Ready**: Let's Encrypt SSL, rate limiting, security headers
+- 📊 **RESTful API**: Complete CRUD operations with full session isolation
+- 👥 **Multi-User Security**: Isolated server users with proper privilege separation
+- 🔥 **Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
+- 🛠️ **Development Tools**: Comprehensive debugging and testing utilities
+- 📚 **Comprehensive Docs**: Detailed guides for development, deployment, and security
 
-## 📚 Documentation & Guides
+## 🏗️ Architecture Highlights
 
-### 🚀 Deployment & Operations
-
-- **[Complete Deployment Guide](./DEPLOYMENT.md)** - Production setup, SSL, multi-environment
-- **[Security & Firewall Setup](./DEPLOYMENT.md#-firewall-configuration)** - Cloud vs Self-hosted protection
-- **[Multi-User Server Setup](./DEPLOYMENT.md#multi-user-server-architecture)** - Secure user isolation
-- **[Ready-to-use Scripts](./scripts/)** - Firewall, user creation, SSH key management
-
-### 🛠️ Development & Architecture
-
-- **[Development Setup Guide](./DEVELOPMENT.md)** - Database setup, debugging, testing tools
-- **[Architecture & Coding Standards](./copilot-instructions.md)** - Code structure, patterns, conventions
-
-### � Related Projects
-
-- **[Let's Todo Frontend →](../lets-todo-app)** - Vanilla JS SPA with automatic API integration🗄️ Database-per-Session\*\*: Isolated MySQL databases for each user/guest session
-- **🔒 Secure Authentication**: Cookie-based sessions with bcrypt password hashing
-- **⚡ Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
-- **🌐 Production Ready**: Let's Encrypt SSL, rate limiting, security headers
-- **📊 RESTful API**: Complete CRUD operations with full session isolation
-- **🔥 Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
-- **📚 Comprehensive Docs**: Detailed guides for development, deployment, and security
+- **Framework**: Node.js with Express.js
+- **Database**: MySQL/MariaDB with dynamic database creation
+- **Authentication**: Session-based with secure HTTP-only cookies
+- **Deployment**: PM2 process management with Nginx reverse proxy
+- **Security**: Multi-layer protection with environment-specific configurations
+- **Monitoring**: Comprehensive logging and error handling
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- MySQL/MariaDB
-- Git
+- **Node.js** 18+
+- **MySQL/MariaDB** 8.0+
+- **Git**
 
 ### Installation
 
 ```bash
-git clone https://github.com/KosMaster87/lets-todo-api.git
+# Clone the repository
+git clone <repository-url>
 cd lets-todo-api
+
+# Install dependencies
 npm install
-npm run dev:db    # Setup development database
-npm run dev       # Start development server
+
+# Copy environment files
+cp config/env/.env.development.example config/env/.env.development
+cp ecosystem.config.cjs.example ecosystem.config.cjs
+
+# Setup development database (multi-environment support)
+npm run dev:db                    # Development setup (default)
+NODE_ENV=feature npm run dev:db   # Feature environment setup
+NODE_ENV=staging npm run dev:db   # Staging environment setup
+
+# Start development server
+npm run dev
 ```
 
-**🎯 API available at:** http://127.0.0.1:3000
+### Development URLs
 
-> **💡 Full-Stack Setup:** Use with [Let's Todo Frontend](../lets-todo-app) for complete development experience.
+- **Development**: http://127.0.0.1:3000
+- **Feature**: http://127.0.0.1:3003
+- **Staging**: http://127.0.0.1:3004
+- **Production**: http://127.0.0.1:3002
+
+> **💡 Full-Stack Setup:** Use with [Let's Todo Frontend](../lets-todo-app) for complete development experience on http://127.0.0.1:5500
 
 ## 📡 API Reference
 
-### Authentication
+### Authentication Endpoints
 
-```
-POST /api/register       # Create user account + dedicated database
-POST /api/login          # Login user + set session cookie
-POST /api/logout         # Clear session cookie
-```
+| Method | Endpoint        | Description                              |
+| ------ | --------------- | ---------------------------------------- |
+| `POST` | `/api/register` | Create user account + dedicated database |
+| `POST` | `/api/login`    | Login user + set session cookie          |
+| `POST` | `/api/logout`   | Clear session cookie                     |
 
 ### Session Management
 
-```
-POST /api/session/guest     # Start guest session + temp database
-GET  /api/session/validate  # Check current session status
-POST /api/session/guest/end # End guest session + cleanup database
-```
+| Method | Endpoint                 | Description                          |
+| ------ | ------------------------ | ------------------------------------ |
+| `POST` | `/api/session/guest`     | Start guest session + temp database  |
+| `GET`  | `/api/session/validate`  | Check current session status         |
+| `POST` | `/api/session/guest/end` | End guest session + cleanup database |
 
 ### Todos (Session-Isolated)
 
-```
-GET    /api/todos        # Get all todos for current session
-POST   /api/todos        # Create new todo
-GET    /api/todos/:id    # Get specific todo
-PATCH  /api/todos/:id    # Update todo (partial update)
-DELETE /api/todos/:id    # Delete todo
-```
+| Method   | Endpoint         | Description                       |
+| -------- | ---------------- | --------------------------------- |
+| `GET`    | `/api/todos`     | Get all todos for current session |
+| `POST`   | `/api/todos`     | Create new todo                   |
+| `GET`    | `/api/todos/:id` | Get specific todo                 |
+| `PATCH`  | `/api/todos/:id` | Update todo (partial update)      |
+| `DELETE` | `/api/todos/:id` | Delete todo                       |
 
-### API Examples
+### Development API Testing
 
 ```bash
 # Register new user
-curl -X POST http://127.0.0.1:3000/api/register \
+curl -c cookies.txt -X POST http://127.0.0.1:3000/api/register \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"secure123"}'
+  -d '{"email":"dev@test.com","password":"dev123"}'
 
-# Login user
-curl -X POST http://127.0.0.1:3000/api/login \
+# Login user (saves cookies)
+curl -b cookies.txt -X POST http://127.0.0.1:3000/api/login \
   -H "Content-Type: application/json" \
-  -d '{"email":"user@example.com","password":"secure123"}'
+  -d '{"email":"dev@test.com","password":"dev123"}'
 
-# Create todo (requires login cookie)
-curl -X POST http://127.0.0.1:3000/api/todos \
+# Create todo (uses saved cookies)
+curl -b cookies.txt -X POST http://127.0.0.1:3000/api/todos \
   -H "Content-Type: application/json" \
-  -b "cookies.txt" \
-  -d '{"title":"My Todo","description":"Todo description"}'
+  -d '{"title":"Development Todo","description":"Testing API"}'
+
+# Get all todos
+curl -b cookies.txt http://127.0.0.1:3000/api/todos
+
+# Test guest session
+curl -c guest_cookies.txt -X POST http://127.0.0.1:3000/api/session/guest
+curl -b guest_cookies.txt http://127.0.0.1:3000/api/todos  # Should be empty
 ```
 
-## 🏗️ Architecture Overview
+## 🏗️ Architecture Deep Dive
 
-### Database-per-Session
+### Database-per-Session Architecture
 
-Each user and guest gets their own isolated MySQL database:
+Revolutionary session isolation with dedicated databases:
 
-- **User Database**: `todos_user_123` (persistent)
-- **Guest Database**: `todos_guest_uuid` (temporary)
-- **Central Users DB**: `todos_users_dev` (user management)
+```
+Central Management:
+├── todos_users_dev          # User accounts & metadata (development)
+├── todos_users              # User accounts & metadata (feature/staging)
 
-### Multi-Environment Support
+User Sessions (Persistent):
+├── todos_user_123           # Dedicated database for user ID 123
+├── todos_user_456           # Dedicated database for user ID 456
+└── todos_user_...           # Each user gets own database
 
-- **Development** (3000): Local development with debug logging
-- **Feature** (3003): Feature testing environment
-- **Staging** (3004): Pre-production testing
-- **Production** (3002): Live production system
+Guest Sessions (Temporary):
+├── todos_guest_uuid1        # Temporary database for guest session
+├── todos_guest_uuid2        # Automatically cleaned up on session end
+└── todos_guest_...          # Each guest gets own database
+```
 
-### Domain Structure
+### Multi-Environment Configuration
 
-- Production: `lets-todo-api.dev2k.org`
-- Feature: `lets-todo-api-feat.dev2k.org`
-- Staging: `lets-todo-api-stage.dev2k.org`
+| Environment     | Port | Domain                          | Database          | Purpose                              |
+| --------------- | ---- | ------------------------------- | ----------------- | ------------------------------------ |
+| **Development** | 3000 | `127.0.0.1:3000`                | `todos_users_dev` | Local development with debug logging |
+| **Feature**     | 3003 | `lets-todo-api-feat.dev2k.org`  | `todos_users`     | Feature testing environment          |
+| **Staging**     | 3004 | `lets-todo-api-stage.dev2k.org` | `todos_users`     | Pre-production testing               |
+| **Production**  | 3002 | `lets-todo-api.dev2k.org`       | `todos_users`     | Live production system               |
+
+### Connection Pool Strategy
+
+```javascript
+// Dynamic pool management
+const pools = {
+  core: createPool(coreConfig), // System operations
+  user: createPool(userConfig), // User data operations
+  guest: createPool(guestConfig), // Guest session operations
+};
+
+// Pool middleware assigns correct pool per request
+app.use(poolMiddleware); // req.pool = appropriate pool
+```
 
 ## ⚙️ Configuration
 
@@ -206,39 +242,93 @@ The deployment package includes:
 - **CORS Protection**: Environment-specific allowed origins
 - **Environment-aware Cookies**: Secure settings per environment
 
-## 🛠️ Development
+## 🛠️ Development Workflow
 
-### NPM Scripts
+### Available Scripts
+
+| Script           | Command                              | Description                         |
+| ---------------- | ------------------------------------ | ----------------------------------- |
+| `npm run dev`    | `nodemon server.js`                  | Development server with auto-reload |
+| `npm run dev:db` | `node scripts/setup-multi-env-db.js` | Setup/reset development database    |
+| `npm start`      | `node server.js`                     | Production server                   |
+| `npm run prod`   | `NODE_ENV=production npm start`      | Explicit production mode            |
+
+### Multi-Environment Testing
 
 ```bash
-npm run dev      # Development server with auto-reload
-npm run dev:db   # Setup/reset development database
-npm start        # Production server
-npm run prod     # Explicit production mode
+# Test different environments locally
+NODE_ENV=development npm start    # Port 3000
+NODE_ENV=feature npm start        # Port 3003
+NODE_ENV=staging npm start        # Port 3004
+NODE_ENV=production npm start     # Port 3002
 ```
 
-### Testing
+### Development Tools
 
-Recommended tools:
+**Recommended API Testing:**
 
-- **Thunder Client** (VS Code extension)
-- **Postman** (standalone app)
-- **curl** (command line)
+- **curl** (command line) - Quick testing
+- **Browser DevTools** - Network tab for cookie inspection
 
-**⚠️ Important:** Include cookies in requests for authenticated endpoints.
+**Database Inspection:**
 
-## 🔗 Related Projects
+```bash
+# View all user databases
+mysql -e "SHOW DATABASES LIKE 'todos_%';"
+
+# Check specific user's data
+mysql todos_user_123 -e "SELECT * FROM todos;"
+
+# Monitor guest databases (should be temporary)
+mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'todos_guest_%';"
+```
+
+**⚠️ Development Note:** Always include cookies in requests for authenticated endpoints. Use `-c cookies.txt` and `-b cookies.txt` with curl.
+
+## � Security Architecture
+
+### Authentication & Session Security
+
+- **Password Hashing**: bcrypt with configurable salt rounds
+- **Session Cookies**: HTTP-only, secure, domain-specific
+- **Database Isolation**: Complete separation per user/guest session
+- **SQL Injection Prevention**: Parameterized queries only
+
+### Infrastructure Security
+
+- **Multi-Layer Protection**: Application, database, and network level
+- **Environment-Specific Settings**: Different security configs per environment
+- **Rate Limiting**: API request throttling (10 req/sec with burst)
+- **Security Headers**: HSTS, X-Frame-Options, CSP
+
+### Network Security (Production)
+
+- **Reverse Proxy**: Nginx handles all external traffic
+- **Port Isolation**: App ports blocked from direct internet access
+- **SSL/TLS**: Automated Let's Encrypt certificate management
+- **Firewall Integration**: UFW scripts for cloud and self-hosted setups
+
+## 📚 Documentation
+
+- **[Complete Setup & Deployment Guide](DEPLOYMENT.md)** - Local development through production deployment
+- **[Development Guidelines](copilot-instructions.md)** - Architecture patterns and coding standards
+- **[Scripts Documentation](scripts/script-overview.md)** - Database management and utilities
+
+## �🔗 Related Projects
 
 ### [Let's Todo Frontend →](../lets-todo-app)
 
-- Vanilla JavaScript SPA with modular architecture
-- Automatic environment detection and API connection
-- Cookie-based session management
-- Live development on `127.0.0.1:5500`
+- **Architecture**: Vanilla JavaScript ES6+ modules, no build step required
+- **Integration**: Automatic environment detection and API connection
+- **Session Management**: Cookie-based authentication with backend
+- **Development**: Live development server on `127.0.0.1:5500`
+- **Features**: Dark/light themes, PWA-ready, responsive design
 
 ## 🐛 Troubleshooting
 
-### Database Connection Issues
+### Common Development Issues
+
+**Database Connection Issues**
 
 ```bash
 # Check if MariaDB is running
@@ -247,73 +337,145 @@ sudo systemctl status mariadb
 # Test database connection
 mysql -u root -p -e "SELECT 1;"
 
-# View user databases
+# View all todo databases
 mysql -e "SHOW DATABASES LIKE 'todos_%';"
+
+# Check specific user's database
+mysql todos_user_123 -e "DESCRIBE todos;"
 ```
 
-### Environment Issues
+**Environment Detection Issues**
 
 ```bash
 # Force specific environment
 NODE_ENV=production npm start
+NODE_ENV=feature npm start
 
-# Check detected environment
-npm run dev  # Shows environment detection in logs
+# Check detected environment (shows in startup logs)
+npm run dev
+
+# Debug environment variables
+node -e "console.log('NODE_ENV:', process.env.NODE_ENV);"
 ```
 
-### Session/Cookie Issues
-
-- Development: Cookies work between `127.0.0.1:5500` ↔ `127.0.0.1:3000`
-- Production: Cookies are domain-restricted to `.dev2k.org`
-- Modern browsers block insecure cookies
-
-## � Deployment
-
-**Quick Deploy:**
+**Session/Cookie Issues**
 
 ```bash
-./deploy/create-deployment-package.sh  # Create package
-# Copy to server and run deploy.sh
+# Test cookie behavior
+curl -c cookies.txt -X POST http://127.0.0.1:3000/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@dev.local","password":"dev123"}'
+
+# Check saved cookies
+cat cookies.txt
+
+# Test cookie usage
+curl -b cookies.txt http://127.0.0.1:3000/api/session/validate
 ```
 
-**📚 Complete deployment guide with SSL, multi-environment setup, monitoring, and troubleshooting:** **[DEPLOYMENT.md](./DEPLOYMENT.md)**
+**Port Conflicts**
 
-## 🔒 Security Features
+```bash
+# Check what's using ports
+netstat -tlnp | grep :3000
 
-### Built-in Security
+# Kill process on specific port
+lsof -ti:3000 | xargs kill -9
+```
 
-- **Password Protection**: bcrypt hashing with configurable salt rounds
-- **SQL Injection Prevention**: All queries use prepared statements
-- **Session Isolation**: Complete database separation per user/guest
-- **Environment-aware Cookies**: Secure settings based on deployment environment
+### Cookie Domain Rules
 
-### Infrastructure Security
+- **Development**: `127.0.0.1:5500` ↔ `127.0.0.1:3000` (same domain)
+- **Production**: Restricted to `.dev2k.org` domain
+- **Security**: Modern browsers block insecure cookies in production
 
-- **Firewall Protection**: Ready-to-use UFW scripts for cloud and self-hosted setups
-- **Rate Limiting**: Nginx-based API request limiting (10 req/sec with burst)
-- **SSL/TLS**: Automated Let's Encrypt certificate management
-- **Security Headers**: HSTS, X-Frame-Options, Content-Security-Policy
+## 🚀 Deployment
 
-### Network Architecture
+### Quick Production Deployment
 
-- **Reverse Proxy**: All app ports (3000+) blocked from direct internet access
-- **Port Isolation**: Applications only accessible via Nginx (ports 80/443)
-- **SSH Hardening**: IP-based access control for cloud and self-hosted servers
+```bash
+# Create deployment package
+./deploy/create-step-deployment.sh
 
-## �📚 Documentation
+# Upload and deploy to server
+scp lets-todo-step-deployment_*.tar.gz root@server:/tmp/
+ssh root@server
+cd /tmp && tar -xzf lets-todo-step-deployment_*.tar.gz
+cd step-by-step-package && sudo ./deploy.sh prod
+```
 
-- **[Complete Deployment Guide](./DEPLOYMENT.md)** - Production setup, SSL, monitoring
-- **[Architecture & Coding Standards](./copilot-instructions.md)** - For developers
-- **[Detailed Development Setup](./DEVELOPMENT.md)** - Database setup, debugging tools
+### Environment-Specific Deployment
+
+```bash
+sudo ./deploy.sh feat    # Feature environment
+sudo ./deploy.sh stage   # Staging environment
+sudo ./deploy.sh prod    # Production environment
+sudo ./deploy.sh all     # All environments
+```
+
+**📚 Complete deployment guide:** **[DEPLOYMENT.md](DEPLOYMENT.md)**
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+### Development Guidelines
+
+- Follow the **14-line function limit** rule
+- Write comprehensive **JSDoc comments in English**
+- Use **ES6+ modules** with proper imports/exports
+- Implement **parameterized queries** for all database operations
+- Test across **multiple environments** (dev, feature, staging)
+- Maintain **session isolation** in all new features
+
+### Pull Request Process
+
+1. **Create feature branch** from `feature/main-feature`
+2. **Implement feature** following coding standards in `copilot-instructions.md`
+3. **Test thoroughly** across development environments
+4. **Update documentation** for any new API endpoints
+5. **Verify security** - no SQL injection vulnerabilities
+6. **Submit pull request** with comprehensive description
+
+### Testing Checklist
+
+- [ ] API endpoints work with both user and guest sessions
+- [ ] Database isolation maintained between sessions
+- [ ] Proper error handling and logging
+- [ ] Cookie-based authentication functions correctly
+- [ ] Cross-environment compatibility verified
+
+## 🔮 Roadmap
+
+### Planned Features
+
+- [ ] WebSocket integration for real-time updates
+- [ ] Advanced caching strategies with Redis
+- [ ] API versioning system (v2 endpoints)
+- [ ] Enhanced monitoring and analytics
+- [ ] OAuth integration experiments
+
+### Technical Improvements
+
+- [ ] Database connection pool optimization
+- [ ] Enhanced error tracking and reporting
+- [ ] Performance monitoring dashboards
+- [ ] Automated security scanning
+- [ ] Advanced rate limiting strategies
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙋‍♂️ Support
+
+For questions, issues, or contributions:
+
+1. **Check Documentation**: Review `DEPLOYMENT.md` and `copilot-instructions.md`
+2. **Review Troubleshooting**: Common issues section above
+3. **Create GitHub Issue**: For bugs or feature requests
+4. **Contact Development Team**: For urgent support needs
 
 ---
 
 **Built with ❤️ for modern full-stack development**
+
+**Happy coding! 🚀**
