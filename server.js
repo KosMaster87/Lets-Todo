@@ -1,4 +1,7 @@
-// server.js
+/**
+ * @fileoverview Express server setup with user and guest session handling
+ * @module server
+ */
 
 /**
  * Express Server for Todo App with User and Guest Session Management
