@@ -1,4 +1,13 @@
-# Frontend Copilot Instructions - Let's Todo App
+# Developer Branch Copilot Instructions - Let's Todo App
+
+## Development Environment Context
+
+This is the **main development branch** for the Let's Todo App frontend. This branch serves as:
+
+- Primary development environment for new features
+- Integration point for feature branches
+- Testing ground for experimental implementations
+- Reference implementation for other developers
 
 ## Project Conventions
 
@@ -27,7 +36,7 @@
 - Document return values with `@returns {type} Description`.
 - For async functions: use `@async`.
 
-## Additional Best Practices
+## Development-Specific Best Practices
 
 - No inline styles or inline event handlers in HTML.
 - No magic numbers or strings – use constants instead.
@@ -36,6 +45,15 @@
 - No duplicate IDs or class names.
 - Consistent code formatting (e.g., Prettier, EditorConfig).
 - No direct manipulation of state object outside setter functions.
+
+## Development Environment Guidelines
+
+- **Experimental Features**: Feel free to implement and test new approaches
+- **Code Documentation**: Extra verbose comments for complex implementations
+- **Debug Information**: Console logs and debug helpers are acceptable for development
+- **Performance Testing**: Include performance measurement code where beneficial
+- **Feature Flags**: Use feature toggles for experimental functionality
+- **Comprehensive Error Handling**: Detailed error logging and user feedback
 
 ## Reactive UI Updates
 
@@ -46,12 +64,25 @@
 
 ## State Management Pattern
 
-- Central state object in `state.js` with the following structure:
-
-  - `x`: x
-
-- **Getter Functions**: Always use getter functions for safe state access (e.g., `x()`, `x()`)
-- **Setter Functions**: All state changes only through specialized setter functions (e.g., `x()`, `x()`)
+- Central state object in `main-state.js` with comprehensive todo management
+- **Getter Functions**: Always use getter functions for safe state access (e.g., `getTodos()`, `getUser()`)
+- **Setter Functions**: All state changes only through specialized setter functions (e.g., `addTodo()`, `updateTodo()`)
 - Each state change triggers re-rendering of affected components via `notifyListeners()`.
 - No global variables outside the state object.
 - Immutable updates: Never mutate state directly, always create new objects/arrays.
+
+## Development Branch Workflow
+
+- **Feature Integration**: Merge completed feature branches into this branch
+- **Testing Ground**: Test new implementations before production release
+- **Code Reviews**: All changes should be reviewed for quality and consistency
+- **Documentation**: Keep README and documentation up to date with new features
+- **Refactoring**: Continuous improvement and code optimization
+
+## Architecture Overview
+
+- **Services Layer**: CRUD operations in `src/services/crud/`
+- **State Management**: Centralized in `src/state/`
+- **UI Components**: Modular components in `src/components/`
+- **Utilities**: Helper functions in `src/utils/`
+- **Styling**: Theme-based CSS with dark/light mode support

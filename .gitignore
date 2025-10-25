@@ -59,7 +59,7 @@ privateKey.pem
 certificate.pem
 
 # Apache
-.htaccess
+# .htaccess
 
 # Cache
 /.angular/cache
