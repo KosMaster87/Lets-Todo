@@ -25,13 +25,13 @@
  │  ├── 🍪 cookieParser()                                                          │
  │  ├── 📄 express.json()                                                          │
  │  ├── 🌐 cors({ origins, credentials })                                          │
- │  ├── 🐛 debugLog() → Enhanced development logging                               │
+ │  ├── 🐛 debugLog()            → Enhanced development logging                    │
  │  │                                                                              │
- │  ├── 📍 /api          → authRouter (registration, login, password reset)       │
- │  ├── 🛡️  assignPoolMiddleware → User database assignment                        │
- │  ├── ⚡ enhancedPoolMiddleware → Pool caching & optimization                    │
- │  ├── 📍 /api/todos    → todosRouter (CRUD operations)                           │
- │  └── 📍 /api/user     → userRouter (profile, preferences)                       │
+ │  ├── 📍 /api                  → authRouter (registration, login, password reset)│
+ │  ├── 🛡️ assignPoolMiddleware  → User database assignment                        │
+ │  ├── ⚡ enhancedPoolMiddleware→ Pool caching & optimization                     │
+ │  ├── 📍 /api/todos            → todosRouter (CRUD operations)                   │
+ │  └── 📍 /api/user             → userRouter (profile, preferences)               │
  │                                                                                 │
  │  🔥 Development Features:                                                       │
  │  ├── � Hot reload with nodemon                                                 │
@@ -43,7 +43,7 @@
  └─────────────────────────────────────────────────────────────────────────────────┘
 
  ┌─────────────────────────────────────────────────────────────────────────────────┐
- │                      ⚙️  CONFIG/ENVIRONMENT.JS (Dev Config)                      │
+ │                      ⚙️  CONFIG/ENVIRONMENT.JS (Dev Config)                     │
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │                                                                                 │
  │  🌍 ENVIRONMENT       → "development" | "feature" | "staging" | "production"    │
@@ -60,9 +60,9 @@
  │                                                                                 │
  │  🐛 Development Tools:                                                          │
  │  ├── 🔧 debugLog()    → Enhanced conditional logging                            │
- │  ├── 📊 DB_DEBUG     → Query logging toggle                                     │
- │  ├── 🔍 LOG_LEVEL    → "debug" | "info" | "warn" | "error"                      │
- │  └── ⚡ HOT_RELOAD   → Nodemon auto-restart                                     │
+ │  ├── 📊 DB_DEBUG      → Query logging toggle                                    │
+ │  ├── 🔍 LOG_LEVEL     → "debug" | "info" | "warn" | "error"                     │
+ │  └── ⚡ HOT_RELOAD    → Nodemon auto-restart                                    │
  └─────────────────────────────────────────────────────────────────────────────────┘
 
  ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -90,14 +90,14 @@
  │                        🛡️  MIDDLEWARE/POOLMIDDLEWARE.JS                         │
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │                                                                                 │
- │  🎯 assignPoolMiddleware()      → Sets req.pool for authenticated users         │
- │  ⚡ enhancedPoolMiddleware()    → Caches and optimizes pool assignment          │
+ │  🎯 assignPoolMiddleware()       → Sets req.pool for authenticated users        │
+ │  ⚡ enhancedPoolMiddleware()     → Caches and optimizes pool assignment         │
  │  │                                                                              │
- │  ├── 🔍 getUserDbName()        → Helper: Get user's database name               │
- │  ├── 🏊 getOrCreateUserPool()  → Helper: Pool caching logic                     │
+ │  ├── 🔍 getUserDbName()          → Helper: Get user's database name             │
+ │  ├── 🏊 getOrCreateUserPool()    → Helper: Pool caching logic                   │
  │  └── 🧹 clearInvalidUserCookie() → Helper: Cookie cleanup                       │
  │                                                                                 │
- │  🔒 Checks req.cookies.userId → Authenticates requests                          │
+ │  🔒 Checks req.cookies.userId    → Authenticates requests                       │
  └─────────────────────────────────────────────────────────────────────────────────┘
 
  ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -153,12 +153,12 @@
  │                            📧 SERVICES/EMAILSERVICE.JS                          │
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │                                                                                 │
- │  📮 nodemailer transporter → SMTP configuration                                 │
+ │  📮 nodemailer transporter           → SMTP configuration                       │
  │  │                                                                              │
- │  ├── 📨 setupGmailTransporter()    → Gmail SMTP setup                           │
- │  ├── 📨 setupOutlookTransporter()  → Outlook SMTP setup                         │
+ │  ├── 📨 setupGmailTransporter()      → Gmail SMTP setup                         │
+ │  ├── 📨 setupOutlookTransporter()    → Outlook SMTP setup                       │
  │  ├── 📨 setupCustomSmtpTransporter() → Custom SMTP setup                        │
- │  └── 📧 sendPasswordResetEmail()   → Password reset email sender                │
+ │  └── 📧 sendPasswordResetEmail()     → Password reset email sender              │
  └─────────────────────────────────────────────────────────────────────────────────┘
 
  ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -179,7 +179,7 @@
  │  4️⃣  🛡️  Enhanced Middleware → Pool assignment with monitoring                  │
  │         │                      │                                                │
  │         │                      ├── 🔍 Debug: Log request details                │
- │         │                      ├── 🍪 Validate req.cookies.userId              │
+ │         │                      ├── 🍪 Validate req.cookies.userId               │
  │         │                      ├── 🗄️  Query user database name                 │
  │         │                      ├── 🏊 Get/Create user-specific pool             │
  │         │                      ├── 📊 Log pool statistics                       │
@@ -188,7 +188,7 @@
  │  5️⃣  📋 Router Operations → Enhanced CRUD with debugging                        │
  │         │                   │                                                   │
  │         │                   ├── 🔍 Log SQL queries (if DB_DEBUG=true)           │
- │         │                   ├── ⚡ executeQuery() with timing metrics            │
+ │         │                   ├── ⚡ executeQuery() with timing metrics           │
  │         │                   ├── 🚨 Enhanced error handling & logging            │
  │         │                   └── 📊 Performance monitoring                       │
  │         │                                                                       │
@@ -223,7 +223,7 @@
  │  └── 🔄 reloadWatcher  → File change monitoring for hot reload                  │
  │                                                                                 │
  │  🎯 Feature Flags (Experimental):                                               │
- │  ├── ENABLE_QUERY_CACHE    → SQL result caching                                │
+ │  ├── ENABLE_QUERY_CACHE    → SQL result caching                                 │
  │  ├── ENABLE_RATE_LIMITING  → Advanced rate limiting                             │
  │  ├── ENABLE_METRICS_API    → Performance metrics endpoint                       │
  │  └── ENABLE_DEBUG_ROUTES   → Development debugging endpoints                    │
