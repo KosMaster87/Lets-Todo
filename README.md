@@ -21,13 +21,13 @@
 
 ### 📚 **Documentation Hub**
 
-| Type                     | Feature Branch                                           | Topics                    |
-| ------------------------ | -------------------------------------------------------- | ------------------------- |
-| 🔌 **API Documentation** | [feat/docs/](https://lets-todo-api-feat.dev2k.org/docs/) | Endpoints, Database, Auth |
-| 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs/) | Components, State, UI     |
-| 🏗️ **Architecture**      | [overview.md](./overview.md)                             | System Design             |
-| 🚀 **Deployment Guide**  | [DEPLOYMENT.md](./DEPLOYMENT.md)                         | Production Setup          |
-| 👨‍💻 **Dev Guidelines**    | [copilot-instructions.md](./copilot-instructions.md)     | Coding Standards          |
+| Type                     | Feature Branch                                                         | Topics                    |
+| ------------------------ | ---------------------------------------------------------------------- | ------------------------- |
+| 🔌 **API Documentation** | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
+| 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html) | Components, State, UI     |
+| 🏗️ **Architecture**      | [overview.md](./overview.md)                                           | System Design             |
+| 🚀 **Deployment Guide**  | [DEPLOYMENT.md](./DEPLOYMENT.md)                                       | Production Setup          |
+| 👨‍💻 **Dev Guidelines**    | [copilot-instructions.md](./copilot-instructions.md)                   | Coding Standards          |
 
 ### 🔗 **Related Repositories**
 
