@@ -105,7 +105,7 @@ export const renderTodosListWithFilter = (
  */
 const getAllFilterConfig = () => ({
   title: "Alle Todos",
-  description: "Zeige alle deine Todos und Aufgaben",
+  description: "Show all your todos and tasks",
 });
 
 /**

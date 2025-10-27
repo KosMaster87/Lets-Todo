@@ -35,8 +35,8 @@ export const buildPreviewMessage = (parseResult) => {
 
   return `${stats}
 
-  Möchten Sie diese Todos importieren?
-  (Duplikate werden automatisch übersprungen)`;
+  Do you want to import these todos?
+  (Duplicates will be automatically skipped)`;
 };
 
 /**
@@ -48,7 +48,7 @@ export const buildPreviewStats = (parseResult) => {
   const { activeTodos, trashedTodos, totalCount } = parseResult;
 
   return `
-  Gefunden in der Datei:
+  Found in file:
   • ${activeTodos.length} aktive Todos
   • ${trashedTodos.length} gelöschte Todos
   • Insgesamt: ${totalCount} Todos`.trim();
@@ -80,7 +80,7 @@ const createConfirmationToast = (message, onConfirm, onCancel) => {
     <div class="toast-content">
       <div class="toast-message">${message.replace(/\n/g, "<br>")}</div>
       <div class="toast-actions">
-        <button class="toast-btn toast-btn-confirm">Importieren</button>
+        <button class="toast-btn toast-btn-confirm">Import</button>
         <button class="toast-btn toast-btn-cancel">Abbrechen</button>
       </div>
     </div>

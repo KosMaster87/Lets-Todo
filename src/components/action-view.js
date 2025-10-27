@@ -42,7 +42,7 @@ export const renderActionButtons = (options = {}) => {
       <button
         class="${bookmarkClass}"
         id="${getButtonId("bookmarkViewBtn")}"
-        title="Als Lesezeichen markieren"
+        title="Mark as bookmark"
         data-action="bookmark"
         ${todoId ? `data-todo-id="${todoId}"` : ""}
       >
@@ -52,7 +52,7 @@ export const renderActionButtons = (options = {}) => {
       <button
         class="${doneClass}"
         id="${getButtonId("doneTodoBtn")}"
-        title="Todo als erledigt markieren"
+        title="Mark todo as completed"
         data-action="done"
         ${todoId ? `data-todo-id="${todoId}"` : ""}
       >
@@ -62,7 +62,7 @@ export const renderActionButtons = (options = {}) => {
       <button
         class="action-btn share-todo-btn"
         id="${getButtonId("shareTodoBtn")}"
-        title="Todo teilen"
+        title="Share todo"
         data-action="share"
         ${todoId ? `data-todo-id="${todoId}"` : ""}
       >
@@ -72,7 +72,7 @@ export const renderActionButtons = (options = {}) => {
       <button
         class="action-btn copy-todo-btn"
         id="${getButtonId("copyTodoBtn")}"
-        title="Todo kopieren"
+        title="Copy todo"
         data-action="copy"
         ${todoId ? `data-todo-id="${todoId}"` : ""}
       >
@@ -82,7 +82,7 @@ export const renderActionButtons = (options = {}) => {
       <button
         class="action-btn delete-todo-btn"
         id="${getButtonId("deleteTodoBtn")}"
-        title="Todo löschen"
+        title="Delete todo"
         data-action="delete"
         ${todoId ? `data-todo-id="${todoId}"` : ""}
       >

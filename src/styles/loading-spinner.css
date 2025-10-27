@@ -32,7 +32,7 @@
 /* ========================================
    INLINE LOADING SPINNER
    ======================================== */
-/* Für lokale Loading-States (Buttons, Formulare, Token-Validierung) */
+/* For local loading states (buttons, forms, token validation) */
 .loading-spinner {
   display: flex;
   flex-direction: column;

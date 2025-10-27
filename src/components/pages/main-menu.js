@@ -16,12 +16,12 @@ export const renderMainMenuPage = () => {
       <section class="main-menu-intro">
         <header class="app-header">
           <h1 class="app-header-title">Let's Todo App</h1>
-          <p class="app-header-subtitle">Deine Todos, überall verfügbar</p>
+          <p class="app-header-subtitle">Your todos, available everywhere</p>
         </header>
 
         <footer class="app-footer">
-          <h2 class="app-footer-title">Willkommen!</h2>
-          <p class="app-footer-subtitle">Hier hast du die erste Übersicht deiner Möglichkeiten</p>
+          <h2 class="app-footer-title">Welcome!</h2>
+          <p class="app-footer-subtitle">Here you have the first overview of your options</p>
         </footer>
       </section>
 
@@ -73,30 +73,30 @@ const renderGuestMenu = () => {
     ${createMenuButton(
       "guest-btn",
       "guestBtn",
-      "Gast-Sitzung",
-      "Sofort loslegen ohne Registrierung",
+      "Guest Session",
+      "Get started immediately without registration",
       null,
       true
     )}
     ${createMenuButton(
       "register-btn",
       "registerBtn",
-      "Registrieren",
-      "Neues Konto erstellen",
+      "Register",
+      "Create a new account",
       "register"
     )}
     ${createMenuButton(
       "login-btn",
       "loginBtn",
-      "Anmelden",
-      "Mit bestehendem Konto einloggen",
+      "Login",
+      "Login with existing account",
       "login"
     )}
     ${createMenuButton(
       "options-btn",
       "optionsBtn",
-      "Optionen",
-      "Benutzereinstellungen verwalten",
+      "Options",
+      "Manage user settings",
       "options"
     )}
   `;
@@ -108,28 +108,28 @@ const renderGuestMenu = () => {
  * @returns {string} HTML for logged in user menu
  */
 const renderLoggedInMenu = (session) => {
-  const username = session?.userData?.username || "Benutzer";
+  const username = session?.userData?.username || "User";
 
   return `
     ${createMenuButton(
       "dashboard-btn",
       "dashboardBtnLoggedIn",
       "Dashboard",
-      `Willkommen zurück, ${username}!`,
+      `Welcome back, ${username}!`,
       "dashboard"
     )}
     ${createMenuButton(
       "options-btn",
       "optionsBtn",
-      "Optionen",
-      "Benutzereinstellungen verwalten",
+      "Options",
+      "Manage user settings",
       "options"
     )}
     ${createMenuButton(
       "logout-btn",
       "logoutBtn",
-      "Abmelden",
-      "Sitzung beenden und ausloggen",
+      "Logout",
+      "End session and logout",
       "logout"
     )}
   `;

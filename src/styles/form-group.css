@@ -10,7 +10,7 @@
 }
 
 /* Form Elements start */
-/* Soll nur für signup, signin und change passwort  */
+/* Should only be used for signup, signin and change password */
 .form-group {
   display: flex;
   flex-direction: column;

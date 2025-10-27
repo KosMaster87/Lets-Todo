@@ -26,6 +26,7 @@
 @import url("./change-password.css");
 @import url("./reset-password.css");
 @import url("./reset-password-confirm.css");
+@import url("./imprint.css");
 
 /* Todo Application Pages */
 @import url("./todos.css");

@@ -16,6 +16,7 @@ import { renderPersonalDataPage } from "./pages/personal-data.js";
 import { renderChangePasswordPage } from "./pages/change-password.js";
 import { renderResetPasswordPage } from "./pages/reset-password.js";
 import { renderResetPasswordConfirmPage } from "./pages/reset-password-confirm.js";
+import { renderImprintPage } from "./pages/imprint.js";
 import { renderTodosListPage } from "./pages/todos-list.js";
 import { renderTodosPage } from "./pages/todos.js";
 import { renderTrashPage } from "./pages/trash.js";
@@ -94,6 +95,8 @@ const getCurrentViewHTML = (currentView, urlParams = null) => {
       return renderResetPasswordPage();
     case VIEWS.RESET_PASSWORD_CONFIRM:
       return renderResetPasswordConfirmPage(urlParams?.token || "");
+    case VIEWS.IMPRINT:
+      return renderImprintPage();
     case VIEWS.TODOS_LIST:
       return renderTodosListPage();
     case VIEWS.TODOS:

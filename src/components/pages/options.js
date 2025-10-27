@@ -11,10 +11,10 @@ export const renderOptionsPage = () => {
   return `
     <main class="options-wrapper" data-view="options">
       <section class="options-intro">
-        <h2>Einstellungen</h2>
+        <h2>Settings</h2>
         <p>
-          Verwalte deine Benutzereinstellungen und personalisiere deine
-          Erfahrung.
+          Manage your user settings and personalize your
+          experience.
         </p>
       </section>
 
@@ -23,23 +23,31 @@ export const renderOptionsPage = () => {
           <div class="btn-icon theme-toggle-btn-icon"></div>
           <div class="btn-content">
             <h3>Dark/Light Mode</h3>
-            <p>Zwischen hellem und dunklem Design wechseln</p>
+            <p>Switch between light and dark design</p>
           </div>
         </button>
 
         <button class="menu-btn personal-data-btn" id="personalDataBtn">
           <div class="btn-icon personal-data-btn-icon"></div>
           <div class="btn-content">
-            <h3>Persönliche Daten</h3>
-            <p>Deine Kontoinformationen bearbeiten</p>
+            <h3>Personal Data</h3>
+            <p>Edit your account information</p>
+          </div>
+        </button>
+
+        <button class="menu-btn imprint-btn" id="imprintBtn">
+          <div class="btn-icon imprint-btn-icon"></div>
+          <div class="btn-content">
+            <h3>Imprint</h3>
+            <p>Legal information and contact</p>
           </div>
         </button>
 
         <button class="menu-btn options-cancel-btn" id="optionsCancelBtn">
           <div class="btn-icon options-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück</h3>
-            <p>Zurück zum Hauptmenü</p>
+            <h3>Back</h3>
+            <p>Back to main menu</p>
           </div>
         </button>
       </nav>

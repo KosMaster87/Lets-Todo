@@ -16,10 +16,10 @@ export const renderTodosListPage = () => {
   return `
     <main class="todos-list-wrapper" data-view="todos-list">
       <section class="todos-list-intro">
-        <h2>Deine Todos</h2>
+        <h2>Your Todos</h2>
         <p>
-          Hier findest du alle deine gespeicherten Todos. Verwalte sie,
-          bearbeite sie oder erstelle neue.
+          Here you'll find all your saved todos. Manage them,
+          edit them or create new ones.
         </p>
       </section>
 
@@ -30,22 +30,22 @@ export const renderTodosListPage = () => {
         >
           <div class="btn-icon todos-list-filter-btn-icon"></div>
           <div class="btn-content">
-            <h3 id="todosListFilterTitle">Filter & Sortierung</h3>
-            <p id="todosListFilterDesc">Todos filtern und sortieren</p>
+            <h3 id="todosListFilterTitle">Filter & Sorting</h3>
+            <p id="todosListFilterDesc">Filter and sort todos</p>
           </div>
         </button>
 
         <button class="menu-btn todos-list-cancel-btn" id="todosListCancelBtn">
           <div class="btn-icon todos-list-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück zum Menü</h3>
-            <p>Zurück zur Hauptseite</p>
+            <h3>Back to Menu</h3>
+            <p>Back to main page</p>
           </div>
         </button>
       </nav>
 
       <section class="todos-list-container">
-        <h3>Gespeicherte Todos</h3>
+        <h3>Saved Todos</h3>
         <div class="todos-list" id="todosList">
           ${renderTodosList(todos)}
         </div>
@@ -63,7 +63,7 @@ export const renderTodosList = (todos) => {
   if (!todos || todos.length === 0) {
     return `
       <div class="todo-placeholder">
-        <p>Noch keine Todos vorhanden. Erstelle dein erstes Todo!</p>
+        <p>No todos available yet. Create your first todo!</p>
       </div>
     `;
   }
@@ -78,7 +78,7 @@ export const renderTodosList = (todos) => {
 
       <div class="todo-content-display">${(() => {
         const rawContent =
-          todo.content || todo.title || "Kein Inhalt vorhanden...";
+          todo.content || todo.title || "No content available...";
         const truncated = rawContent.substring(0, 150);
         const hasMore = rawContent.length > 150;
         return escapeHtml(truncated) + (hasMore ? "..." : "");
@@ -87,13 +87,13 @@ export const renderTodosList = (todos) => {
       ${renderListActionButtons(todo)}
 
       <div class="todo-meta-info">
-        <span class="todo-creation-date">Erstellt: ${formatDate(
+        <span class="todo-creation-date">Created: ${formatDate(
           todo.created || new Date()
         )}</span>
         <span class="todo-status-badge ${
           todo.completed ? "completed" : "pending"
         }">
-          ${todo.completed ? "Erledigt" : "Ausstehend"}
+          ${todo.completed ? "Completed" : "Pending"}
         </span>
       </div>
     </section>
@@ -108,12 +108,12 @@ export const renderTodosList = (todos) => {
  * @returns {string} Formatted date string
  */
 const formatDate = (date) => {
-  if (!date) return "Unbekannt";
+  if (!date) return "Unknown";
 
   try {
     const dateObj = new Date(date);
     if (isNaN(dateObj.getTime())) {
-      return "Unbekannt";
+      return "Unknown";
     }
 
     const now = new Date();
@@ -121,20 +121,20 @@ const formatDate = (date) => {
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
     if (days === 0) {
-      return "Heute";
+      return "Today";
     } else if (days === 1) {
-      return "Gestern";
+      return "Yesterday";
     } else if (days < 7) {
-      return `vor ${days} Tagen`;
+      return `${days} days ago`;
     } else {
-      return dateObj.toLocaleDateString("de-DE", {
+      return dateObj.toLocaleDateString("en-US", {
         day: "2-digit",
         month: "2-digit",
         year: "numeric",
       });
     }
   } catch (error) {
-    return "Unbekannt";
+    return "Unknown";
   }
 };
 

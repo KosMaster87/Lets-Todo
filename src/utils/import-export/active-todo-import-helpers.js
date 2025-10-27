@@ -59,7 +59,7 @@ export const processSingleActiveTodo = (
   console.log(`🔍 Fixed title: "${title}", content: "${content}"`);
 
   if (!hasValidTitle(title)) {
-    counters.errors.push(`Todo ohne Titel übersprungen`);
+    counters.errors.push(`Todo without title skipped`);
     return;
   }
 
@@ -79,8 +79,8 @@ export const processSingleActiveTodo = (
  */
 export const handleActiveTodoError = (error, todo, errors, ensureString) => {
   console.error(`Error importing active todo:`, error);
-  const todoTitle = ensureString(todo.title) || "Unbekanntes Todo";
-  errors.push(`Fehler beim Importieren: ${todoTitle} - ${error.message}`);
+  const todoTitle = ensureString(todo.title) || "Unknown Todo";
+  errors.push(`Error importing: ${todoTitle} - ${error.message}`);
 };
 
 /**

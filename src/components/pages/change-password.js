@@ -11,10 +11,10 @@ export const renderChangePasswordPage = () => {
   return `
     <main class="change-password-wrapper" data-view="change-password">
       <section class="change-password-intro">
-        <h2>Passwort ändern</h2>
+        <h2>Change Password</h2>
         <p>
-          Gib dein aktuelles Passwort ein und wähle ein neues, sicheres
-          Passwort für dein Konto.
+          Enter your current password and choose a new, secure
+          password for your account.
         </p>
       </section>
 
@@ -24,34 +24,34 @@ export const renderChangePasswordPage = () => {
         <div class="change-password-success" id="changePasswordSuccess" style="display: none;"></div>
 
         <div class="form-group">
-          <label for="currentPassword">Aktuelles Passwort</label>
+          <label for="currentPassword">Current Password</label>
           <input
             type="password"
             id="currentPassword"
             name="currentPassword"
-            placeholder="Dein aktuelles Passwort"
+            placeholder="Your current password"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="newPassword">Neues Passwort</label>
+          <label for="newPassword">New Password</label>
           <input
             type="password"
             id="newPassword"
             name="newPassword"
-            placeholder="Neues Passwort"
+            placeholder="New password"
             required
           />
         </div>
 
         <div class="form-group">
-          <label for="confirmPassword">Passwort bestätigen</label>
+          <label for="confirmPassword">Confirm Password</label>
           <input
             type="password"
             id="confirmPassword"
             name="confirmPassword"
-            placeholder="Neues Passwort bestätigen"
+            placeholder="Confirm new password"
             required
           />
         </div>
@@ -62,8 +62,8 @@ export const renderChangePasswordPage = () => {
         >
           <div class="btn-icon change-password-submit-btn-icon"></div>
           <div class="btn-content">
-            <h3>Passwort speichern</h3>
-            <p>Neues Passwort übernehmen</p>
+            <h3>Save Password</h3>
+            <p>Apply new password</p>
           </div>
         </button>
 
@@ -73,8 +73,8 @@ export const renderChangePasswordPage = () => {
         >
           <div class="btn-icon change-password-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Abbrechen</h3>
-            <p>Zurück zu persönlichen Daten</p>
+            <h3>Cancel</h3>
+            <p>Back to personal data</p>
           </div>
         </button>
       </form>

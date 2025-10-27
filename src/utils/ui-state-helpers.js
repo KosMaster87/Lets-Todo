@@ -333,8 +333,8 @@ const updateDownloadButtonContent = (btnContent, isLoading) => {
       h3.textContent = "Exporting...";
       p.textContent = "Preparing todos for download";
     } else {
-      h3.textContent = "Todos herunterladen";
-      p.textContent = "Alle deine Todos als Datei speichern";
+      h3.textContent = "Download Todos";
+      p.textContent = "Save all your todos as a file";
     }
   }
 };
@@ -378,8 +378,8 @@ const updateUploadButtonContent = (btnContent, isLoading) => {
       h3.textContent = "Importing...";
       p.textContent = "Processing uploaded file";
     } else {
-      h3.textContent = "Todos wiederherstellen";
-      p.textContent = "Todos aus einer Datei importieren";
+      h3.textContent = "Restore Todos";
+      p.textContent = "Import todos from a file";
     }
   }
 };

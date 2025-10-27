@@ -56,6 +56,18 @@
   height: 2rem;
 }
 
+.imprint-btn {
+  border-left: 4px solid #607d8b;
+}
+
+.imprint-btn-icon {
+  background-color: #607d8b;
+  mask: url("/assets/icons/copyright.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
 .options-cancel-btn {
   border-left: 4px solid #ff5722;
   background: rgba(255, 255, 255, 0.2);

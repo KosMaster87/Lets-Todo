@@ -165,8 +165,7 @@ export const handleToggleDone = (todoId, onSuccess, onError) => {
  * @returns {boolean} True if user confirmed deletion
  */
 const confirmDeleteOperation = () => {
-  const confirmMessage =
-    "Möchten Sie diese Todo wirklich in den Papierkorb verschieben?";
+  const confirmMessage = "Do you really want to move this todo to trash?";
   return confirm(confirmMessage);
 };
 

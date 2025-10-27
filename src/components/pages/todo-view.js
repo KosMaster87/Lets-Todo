@@ -20,10 +20,10 @@ export const renderTodoViewPage = () => {
   return `
     <main class="todo-view-wrapper" data-view="todo-view">
       <section class="todo-view-intro">
-        <h2>Deine Todo</h2>
+        <h2>Your Todo</h2>
         <p>
-          Hier siehst du deine Todo im Detail. Du kannst sie bearbeiten,
-          teilen oder löschen.
+          Here you can see your todo in detail. You can edit it,
+          share it or delete it.
         </p>
       </section>
 
@@ -31,41 +31,41 @@ export const renderTodoViewPage = () => {
         <button class="menu-btn todo-view-back-btn" id="todosCancelBtn">
           <div class="btn-icon todo-view-back-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück zu Todos</h3>
-            <p>Zur Todos-Liste zurückkehren</p>
+            <h3>Back to Todos</h3>
+            <p>Return to todos list</p>
           </div>
         </button>
 
         <button class="menu-btn todo-view-save-btn" id="todosSaveBtn">
           <div class="btn-icon todo-view-save-btn-icon"></div>
           <div class="btn-content">
-            <h3>Todo speichern</h3>
-            <p>Änderungen speichern</p>
+            <h3>Save Todo</h3>
+            <p>Save changes</p>
           </div>
         </button>
       </nav>
 
       <section class="todo-display">
         <div class="todo-header">
-          <h3 class="todo-title" id="todoDisplayTitle" contenteditable="true" data-placeholder="Titel deiner Todo eingeben...">${escapeHtml(
+          <h3 class="todo-title" id="todoDisplayTitle" contenteditable="true" data-placeholder="Enter your todo title...">${escapeHtml(
             currentTodo.title || "Untitled"
           )}</h3>
         </div>
 
-        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Schreibe hier den Inhalt deiner Todo...">${escapeHtml(
-          currentTodo.content || currentTodo.title || "Kein Inhalt vorhanden..."
+        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Write your todo content here...">${escapeHtml(
+          currentTodo.content || currentTodo.title || "No content available..."
         )}</div>
 
         ${renderSingleActionButtons(currentTodo)}
 
         <div class="todo-meta-info">
-          <span class="todo-creation-date">Erstellt: ${formatDate(
+          <span class="todo-creation-date">Created: ${formatDate(
             currentTodo.created || new Date()
           )}</span>
           <span class="todo-status-badge ${
             currentTodo.completed ? "completed" : "pending"
           }">
-            ${currentTodo.completed ? "Erledigt" : "Ausstehend"}
+            ${currentTodo.completed ? "Completed" : "Pending"}
           </span>
         </div>
       </section>
@@ -81,9 +81,9 @@ const renderNoTodoSelected = () => {
   return `
     <main class="todo-view-wrapper" data-view="todo-view">
       <section class="todo-view-intro">
-        <h2>Keine Todo ausgewählt</h2>
+        <h2>No Todo Selected</h2>
         <p>
-          Bitte wähle eine Notiz aus der Liste aus, um sie anzuzeigen.
+          Please select a note from the list to display it.
         </p>
       </section>
 
@@ -91,15 +91,15 @@ const renderNoTodoSelected = () => {
         <button class="menu-btn todo-view-back-btn" id="todoViewBackBtn">
           <div class="btn-icon todo-view-back-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück zu Todos</h3>
-            <p>Zur Todos-Liste zurückkehren</p>
+            <h3>Back to Todos</h3>
+            <p>Return to todos list</p>
           </div>
         </button>
       </nav>
 
       <section class="todo-display">
         <div class="todo-placeholder">
-          <p>Keine Todo zum Anzeigen ausgewählt.</p>
+          <p>No todo selected for display.</p>
         </div>
       </section>
     </main>
@@ -117,10 +117,10 @@ const formatDate = (date) => {
   }
 
   if (isNaN(date.getTime())) {
-    return "Ungültiges Datum";
+    return "Invalid date";
   }
 
-  return date.toLocaleDateString("de-DE", {
+  return date.toLocaleDateString("en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

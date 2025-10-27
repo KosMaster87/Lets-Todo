@@ -41,6 +41,7 @@ const setupOptionsNavigation = () => {
   const optionsLinks = [
     { id: "optionsCancelBtn", view: VIEWS.MAIN_MENU },
     { id: "personalDataBtn", view: VIEWS.PERSONAL_DATA },
+    { id: "imprintBtn", view: VIEWS.IMPRINT },
   ];
 
   optionsLinks.forEach(({ id, view }) => {

@@ -14,10 +14,10 @@ export const renderResetPasswordPage = () => {
   return `
     <main class="reset-password-wrapper" data-view="reset-password">
       <section class="reset-password-intro">
-        <h2>Passwort zurücksetzen</h2>
+        <h2>Reset Password</h2>
         <p>
-          Gib deine E-Mail-Adresse ein und wir senden dir einen Link
-          zum Zurücksetzen deines Passworts.
+          Enter your email address and we'll send you a link
+          to reset your password.
         </p>
       </section>
 
@@ -28,12 +28,12 @@ export const renderResetPasswordPage = () => {
 
         <form class="reset-password-form" id="resetPasswordForm">
           <div class="form-group">
-            <label for="resetEmail">E-Mail-Adresse</label>
+            <label for="resetEmail">Email Address</label>
             <input
               type="email"
               id="resetEmail"
               name="resetEmail"
-              placeholder="Deine E-Mail-Adresse"
+              placeholder="Your email address"
               required
               autocomplete="email"
             />
@@ -46,8 +46,8 @@ export const renderResetPasswordPage = () => {
           >
             <div class="btn-icon reset-password-submit-btn-icon"></div>
             <div class="btn-content">
-              <h3>Reset-Link senden</h3>
-              <p>E-Mail mit Zurücksetzen-Link anfordern</p>
+              <h3>Send Reset Link</h3>
+              <p>Request email with reset link</p>
             </div>
           </button>
 
@@ -58,8 +58,8 @@ export const renderResetPasswordPage = () => {
           >
             <div class="btn-icon reset-password-cancel-btn-icon"></div>
             <div class="btn-content">
-              <h3>Zurück zum Login</h3>
-              <p>Passwort doch noch bekannt?</p>
+              <h3>Back to Login</h3>
+              <p>Remember your password?</p>
             </div>
           </button>
         </form>

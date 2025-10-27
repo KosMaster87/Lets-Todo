@@ -114,7 +114,7 @@ export const processSingleTrashedTodo = async (
   const todoData = extractTrashTodoData(todo, ensureString);
 
   if (!todoData) {
-    counters.errors.push(`Todo ohne Titel übersprungen`);
+    counters.errors.push(`Todo without title skipped`);
     return;
   }
 
@@ -132,7 +132,7 @@ export const processSingleTrashedTodo = async (
     if (success) counters.imported++;
   } else {
     counters.errors.push(
-      `Todo "${title}" wurde erstellt, konnte aber nicht gefunden werden für Trash-Verschiebung`
+      `Todo "${title}" was created but could not be found for trash move`
     );
   }
 };
@@ -147,8 +147,8 @@ export const processSingleTrashedTodo = async (
  */
 export const handleTrashedTodoError = (error, todo, errors, ensureString) => {
   console.error(`Error importing trash todo:`, error);
-  const todoTitle = ensureString(todo.title) || "Unbekanntes Todo";
-  errors.push(`Fehler beim Importieren: ${todoTitle} - ${error.message}`);
+  const todoTitle = ensureString(todo.title) || "Unknown Todo";
+  errors.push(`Error importing: ${todoTitle} - ${error.message}`);
 };
 
 /**

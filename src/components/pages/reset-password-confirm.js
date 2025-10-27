@@ -15,10 +15,10 @@ export const renderResetPasswordConfirmPage = (token = "") => {
   return `
     <main class="reset-password-confirm-wrapper" data-view="reset-password-confirm" data-token="${token}">
       <section class="reset-password-confirm-intro">
-        <h2>Neues Passwort setzen</h2>
+        <h2>Set New Password</h2>
         <p>
-          Bitte gib dein neues Passwort ein. Es muss mindestens 6 Zeichen lang sein
-          und sollte aus Sicherheitsgründen eine Kombination aus Buchstaben und Zahlen enthalten.
+          Please enter your new password. It must be at least 6 characters long
+          and should contain a combination of letters and numbers for security reasons.
         </p>
       </section>
 
@@ -26,7 +26,7 @@ export const renderResetPasswordConfirmPage = (token = "") => {
       <div class="token-validation-status" id="tokenValidationStatus">
         <div class="loading-spinner">
           <div class="spinner"></div>
-          <p>Token wird validiert...</p>
+          <p>Validating token...</p>
         </div>
       </div>
 
@@ -38,17 +38,17 @@ export const renderResetPasswordConfirmPage = (token = "") => {
 
         <!-- User Email Display -->
         <div class="reset-user-info" id="resetUserInfo" style="display: none;">
-          <p>Passwort zurücksetzen für: <strong id="resetUserEmail"></strong></p>
+          <p>Reset password for: <strong id="resetUserEmail"></strong></p>
         </div>
 
         <form class="reset-password-confirm-form" id="resetPasswordConfirmForm">
           <div class="form-group">
-            <label for="newPassword">Neues Passwort</label>
+            <label for="newPassword">New Password</label>
             <input
               type="password"
               id="newPassword"
               name="newPassword"
-              placeholder="Mindestens 6 Zeichen"
+              placeholder="At least 6 characters"
               required
               minlength="6"
               autocomplete="new-password"
@@ -56,12 +56,12 @@ export const renderResetPasswordConfirmPage = (token = "") => {
           </div>
 
           <div class="form-group">
-            <label for="confirmPassword">Passwort bestätigen</label>
+            <label for="confirmPassword">Confirm Password</label>
             <input
               type="password"
               id="confirmPassword"
               name="confirmPassword"
-              placeholder="Passwort wiederholen"
+              placeholder="Repeat password"
               required
               minlength="6"
               autocomplete="new-password"
@@ -73,7 +73,7 @@ export const renderResetPasswordConfirmPage = (token = "") => {
             <div class="strength-bar">
               <div class="strength-fill" id="strengthFill"></div>
             </div>
-            <p class="strength-text" id="strengthText">Passwort-Stärke</p>
+            <p class="strength-text" id="strengthText">Password Strength</p>
           </div>
 
           <button
@@ -83,8 +83,8 @@ export const renderResetPasswordConfirmPage = (token = "") => {
           >
             <div class="btn-icon reset-password-confirm-submit-btn-icon"></div>
             <div class="btn-content">
-              <h3>Passwort speichern</h3>
-              <p>Neues Passwort übernehmen</p>
+              <h3>Save Password</h3>
+              <p>Apply new password</p>
             </div>
           </button>
 
@@ -95,8 +95,8 @@ export const renderResetPasswordConfirmPage = (token = "") => {
           >
             <div class="btn-icon reset-password-confirm-cancel-btn-icon"></div>
             <div class="btn-content">
-              <h3>Zum Login</h3>
-              <p>Zurück zur Anmeldung</p>
+              <h3>To Login</h3>
+              <p>Back to login</p>
             </div>
           </button>
         </form>
@@ -105,8 +105,8 @@ export const renderResetPasswordConfirmPage = (token = "") => {
       <!-- Invalid Token Message (initially hidden) -->
       <nav class="invalid-token-message" id="invalidTokenMessage" style="display: none;">
         <div class="error-icon">⚠️</div>
-        <h3>Ungültiger oder abgelaufener Link</h3>
-        <p>Dieser Reset-Link ist nicht mehr gültig. Bitte fordere einen neuen an.</p>
+        <h3>Invalid or Expired Link</h3>
+        <p>This reset link is no longer valid. Please request a new one.</p>
 
         <button
           type="button"
@@ -115,8 +115,8 @@ export const renderResetPasswordConfirmPage = (token = "") => {
         >
           <div class="btn-icon request-new-reset-btn-icon"></div>
           <div class="btn-content">
-            <h3>Neuen Link anfordern</h3>
-            <p>Zurück zur Reset-Anfrage</p>
+            <h3>Request New Link</h3>
+            <p>Back to reset request</p>
           </div>
         </button>
 
@@ -127,8 +127,8 @@ export const renderResetPasswordConfirmPage = (token = "") => {
         >
           <div class="btn-icon back-to-login-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zum Login</h3>
-            <p>Zurück zur Anmeldung</p>
+            <h3>To Login</h3>
+            <p>Back to login</p>
           </div>
         </button>
       </nav>

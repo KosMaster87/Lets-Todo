@@ -122,9 +122,9 @@ const validateUploadedFile = (file, onComplete) => {
  * @returns {void}
  */
 const initializeUploadProcess = (file, containerId) => {
-  showInfoNotification(`Datei "${file.name}" wird verarbeitet...`);
+  showInfoNotification(`File "${file.name}" is being processed...`);
   setUploadButtonState(true);
-  createProgressIndicator(containerId, "Datei wird gelesen...");
+  createProgressIndicator(containerId, "Reading file...");
 };
 
 /**
@@ -334,7 +334,7 @@ const addTrashImportMessage = (parts, result) => {
 const addSkippedMessage = (parts, result) => {
   const totalSkipped = (result.activeSkipped || 0) + (result.trashSkipped || 0);
   if (totalSkipped > 0) {
-    parts.push(`${totalSkipped} Duplikate übersprungen`);
+    parts.push(`${totalSkipped} duplicates skipped`);
   }
 };
 

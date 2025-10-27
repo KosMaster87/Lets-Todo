@@ -14,10 +14,10 @@ export const VALIDATION_MESSAGES = {
   EMAIL_REQUIRED: "E-Mail-Adresse ist erforderlich",
   EMAIL_INVALID: "Ungültige E-Mail-Adresse",
   PASSWORD_REQUIRED: "Passwort ist erforderlich",
-  PASSWORD_TOO_SHORT: "Das Passwort muss mindestens 6 Zeichen lang sein",
+  PASSWORD_TOO_SHORT: "Password must be at least 6 characters long",
   PASSWORD_CONFIRM_REQUIRED: "Passwort-Bestätigung ist erforderlich",
   PASSWORD_MISMATCH: "Die Passwörter stimmen nicht überein",
-  TERMS_NOT_ACCEPTED: "Du musst die Nutzungsbedingungen akzeptieren",
+  TERMS_NOT_ACCEPTED: "You must accept the terms and conditions",
   ALL_FIELDS_REQUIRED: "Bitte fülle alle Felder aus",
 };
 

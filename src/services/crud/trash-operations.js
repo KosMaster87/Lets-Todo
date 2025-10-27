@@ -19,8 +19,8 @@ import {
  */
 const confirmEmptyTrash = () => {
   const message =
-    "Möchten Sie wirklich alle gelöschten Todos endgültig löschen? " +
-    "Diese Aktion kann nicht rückgängig gemacht werden.";
+    "Do you really want to permanently delete all deleted todos? " +
+    "This action cannot be undone.";
   return confirm(message);
 };
 
@@ -29,7 +29,7 @@ const confirmEmptyTrash = () => {
  * @returns {boolean} True if user confirms
  */
 const confirmRestoreTodo = () => {
-  return confirm("Möchten Sie dieses Todo wiederherstellen?");
+  return confirm("Do you want to restore this todo?");
 };
 
 /**
@@ -38,8 +38,8 @@ const confirmRestoreTodo = () => {
  */
 const confirmDeleteForever = () => {
   const message =
-    "Möchten Sie dieses Todo endgültig löschen? " +
-    "Diese Aktion kann nicht rückgängig gemacht werden.";
+    "Do you want to permanently delete this todo? " +
+    "This action cannot be undone.";
   return confirm(message);
 };
 
@@ -56,10 +56,10 @@ const confirmDeleteForever = () => {
 const executeEmptyTrash = async (onSuccess, onError) => {
   try {
     await emptyTrash();
-    onSuccess?.("Papierkorb wurde geleert!");
+    onSuccess?.("Trash was emptied!");
   } catch (error) {
     console.error("Error emptying trash:", error);
-    onError?.("Fehler beim Leeren des Papierkorbs.");
+    onError?.("Error emptying trash.");
   }
 };
 
@@ -96,10 +96,10 @@ const validateTodoId = (todoId, onError) => {
 const executeRestoreTodo = (todoId, onSuccess, onError) => {
   try {
     restoreTodo(todoId);
-    onSuccess?.("Todo wurde wiederhergestellt!");
+    onSuccess?.("Todo was restored!");
   } catch (error) {
     console.error("Error restoring todo:", error);
-    onError?.("Fehler beim Wiederherstellen des Todos.");
+    onError?.("Error restoring todo.");
   }
 };
 
@@ -125,10 +125,10 @@ export const handleRestoreTodo = (todoId, onSuccess, onError) => {
 const executeDeleteForever = async (todoId, onSuccess, onError) => {
   try {
     await deleteTodo(todoId);
-    onSuccess?.("Todo wurde endgültig gelöscht!");
+    onSuccess?.("Todo was permanently deleted!");
   } catch (error) {
     console.error("Error deleting todo forever:", error);
-    onError?.("Fehler beim endgültigen Löschen des Todos.");
+    onError?.("Error permanently deleting todo.");
   }
 };
 

@@ -24,7 +24,7 @@ export const renderDashboardPage = () => {
       <section class="dashboard-intro">
         <h1 class="dashboard-title">Dashboard</h1>
         <p class="dashboard-subtitle">
-          Hier findest du alle wichtigen Funktionen für deine Todos.
+          Here you'll find all the important functions for your todos.
         </p>
         ${createSessionInfo(sessionType)}
       </section>
@@ -36,8 +36,8 @@ export const renderDashboardPage = () => {
         >
           <div class="btn-icon todos-list-dashboard-btn-icon"></div>
           <div class="btn-content">
-            <h3>Todo-Liste</h3>
-            <p>Alle deine gespeicherten Todos anzeigen</p>
+            <h3>Todo List</h3>
+            <p>View all your saved todos</p>
           </div>
         </button>
 
@@ -47,24 +47,24 @@ export const renderDashboardPage = () => {
         >
           <div class="btn-icon create-todo-dashboard-btn-icon"></div>
           <div class="btn-content">
-            <h3>Todo erstellen</h3>
-            <p>Ein neues Todo schreiben</p>
+            <h3>Create Todo</h3>
+            <p>Write a new todo</p>
           </div>
         </button>
 
         <button class="menu-btn trash-dashboard-btn" id="trashDashboardBtn">
           <div class="btn-icon trash-dashboard-btn-icon"></div>
           <div class="btn-content">
-            <h3>Papierkorb</h3>
-            <p>Gelöschte Todos verwalten</p>
+            <h3>Trash</h3>
+            <p>Manage deleted todos</p>
           </div>
         </button>
 
         <button class="menu-btn dashboard-cancel-btn" id="dashboardCancelBtn">
           <div class="btn-icon dashboard-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück zum Menü</h3>
-            <p>Zum Hauptmenü zurückkehren</p>
+            <h3>Back to Menu</h3>
+            <p>Return to main menu</p>
           </div>
         </button>
       </nav>
@@ -72,19 +72,19 @@ export const renderDashboardPage = () => {
       <section class="dashboard-stats">
         <div class="stat-item">
           <div class="stat-number dashboard-total-todos">${todos.length}</div>
-          <div class="stat-label">Todos gesamt</div>
+          <div class="stat-label">Total Todos</div>
         </div>
         <div class="stat-item">
           <div class="stat-number dashboard-completed-todos">${getCompletedCount(
             todos
           )}</div>
-          <div class="stat-label">Erledigt</div>
+          <div class="stat-label">Completed</div>
         </div>
         <div class="stat-item">
           <div class="stat-number dashboard-trash-count">${
             trashedTodos.length
           }</div>
-          <div class="stat-label">Im Papierkorb</div>
+          <div class="stat-label">In Trash</div>
         </div>
       </section>
     </div>
@@ -97,8 +97,8 @@ export const renderDashboardPage = () => {
  * @returns {string} HTML string for session info
  */
 const createSessionInfo = (sessionType) => {
-  const sessionText = sessionType === "user" ? "Benutzer-Modus" : "Gast-Modus";
-  return `<p class="dashboard-session-info">Aktuelle Sitzung: ${sessionText}</p>`;
+  const sessionText = sessionType === "user" ? "User Mode" : "Guest Mode";
+  return `<p class="dashboard-session-info">Current Session: ${sessionText}</p>`;
 };
 
 /**

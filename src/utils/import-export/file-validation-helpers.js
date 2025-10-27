@@ -43,8 +43,7 @@ export const createValidationSuccess = () => ({
  */
 export const createUnsupportedFormatError = () => ({
   isValid: false,
-  error:
-    "Nicht unterstütztes Dateiformat. Nur JSON-Dateien werden unterstützt.",
+  error: "Unsupported file format. Only JSON files are supported.",
 });
 
 /**

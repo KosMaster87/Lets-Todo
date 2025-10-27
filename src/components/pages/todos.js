@@ -13,10 +13,10 @@ export const renderTodosPage = () => {
   return `
     <main class="todos-wrapper" data-view="todos">
       <section class="todos-intro">
-        <h2>Neue Todo erstellen</h2>
+        <h2>Create New Todo</h2>
         <p>
-          Erstelle und bearbeite deine Todos. Organisiere sie mit
-          Lesezeichen und teile sie bei Bedarf.
+          Create and edit your todos. Organize them with
+          bookmarks and share them if needed.
         </p>
       </section>
 
@@ -24,35 +24,35 @@ export const renderTodosPage = () => {
         <button class="menu-btn todos-cancel-btn" id="todosCancelBtn">
           <div class="btn-icon todos-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück zum Dashboard</h3>
-            <p>Zurück zum Dashboard</p>
+            <h3>Back to Dashboard</h3>
+            <p>Return to dashboard</p>
           </div>
         </button>
 
         <button class="menu-btn todos-save-btn" id="todosSaveBtn">
           <div class="btn-icon todos-save-btn-icon"></div>
           <div class="btn-content">
-            <h3>Todo speichern</h3>
-            <p>Dein Todo sichern</p>
+            <h3>Save Todo</h3>
+            <p>Save your todo</p>
           </div>
         </button>
       </nav>
 
       <section class="todo-display">
         <div class="todo-header">
-          <h3 class="todo-title" id="todoDisplayTitle" contenteditable="true" data-placeholder="Titel deiner Todo eingeben...">Neue Todo</h3>
+          <h3 class="todo-title" id="todoDisplayTitle" contenteditable="true" data-placeholder="Enter your todo title...">New Todo</h3>
         </div>
 
-        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Schreibe hier den Inhalt deiner Todo...">
+        <div class="todo-content-display" id="todoContentDisplay" contenteditable="true" data-placeholder="Write your todo content here...">
         </div>
 
         ${renderSingleActionButtons()}
 
         <div class="todo-meta-info">
-          <span class="todo-creation-date">Wird erstellt: ${formatDate(
+          <span class="todo-creation-date">Will be created: ${formatDate(
             new Date()
           )}</span>
-          <span class="todo-status-badge pending">Neu</span>
+          <span class="todo-status-badge pending">New</span>
         </div>
       </section>
     </main>
@@ -70,10 +70,10 @@ const formatDate = (date) => {
   }
 
   if (isNaN(date.getTime())) {
-    return "Ungültiges Datum";
+    return "Invalid date";
   }
 
-  return date.toLocaleDateString("de-DE", {
+  return date.toLocaleDateString("en-US", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

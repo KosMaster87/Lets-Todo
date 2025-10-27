@@ -17,11 +17,11 @@ export const getSupportedFileTypes = () => {
  */
 export const getUploadInstructions = () => {
   return `
-  Unterstütztes Dateiformat:
+  Supported file format:
   • JSON: Vollständige Todos mit allen Metadaten und Timestamps
 
-  Die Datei sollte aus einem vorherigen Export stammen.
-  Duplikate werden automatisch erkannt und übersprungen.
+  The file should come from a previous export.
+  Duplicates are automatically detected and skipped.
   `.trim();
 };
 
@@ -77,8 +77,8 @@ export const getFileTypeDescription = (fileName) => {
   const extension = fileName.toLowerCase().substring(fileName.lastIndexOf("."));
 
   const descriptions = {
-    ".json": "JSON-Datei mit vollständigen Todo-Daten",
+    ".json": "JSON file with complete todo data",
   };
 
-  return descriptions[extension] || "Unbekannter Dateityp";
+  return descriptions[extension] || "Unknown file type";
 };

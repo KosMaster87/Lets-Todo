@@ -11,10 +11,10 @@ export const renderPersonalDataPage = () => {
   return `
     <main class="personal-data-wrapper" data-view="personal-data">
       <section class="personal-data-intro">
-        <h2>Persönliche Daten</h2>
+        <h2>Personal Data</h2>
         <p>
-          Verwalte deine Kontoinformationen und ändere dein Passwort für mehr
-          Sicherheit.
+          Manage your account information and change your password for more
+          security.
         </p>
       </section>
 
@@ -22,32 +22,32 @@ export const renderPersonalDataPage = () => {
         <button class="menu-btn reset-password-btn" id="resetPasswordBtn">
           <div class="btn-icon reset-password-btn-icon"></div>
           <div class="btn-content">
-            <h3>Passwort zurücksetzen</h3>
-            <p>Passwort über E-Mail zurücksetzen</p>
+            <h3>Reset Password</h3>
+            <p>Reset password via email</p>
           </div>
         </button>
 
         <button class="menu-btn change-password-btn" id="changePasswordBtn">
           <div class="btn-icon change-password-btn-icon"></div>
           <div class="btn-content">
-            <h3>Passwort ändern</h3>
-            <p>Aktuelles Passwort sicher ändern</p>
+            <h3>Change Password</h3>
+            <p>Securely change current password</p>
           </div>
         </button>
 
         <button class="menu-btn download-todos-btn" id="downloadTodosBtn">
           <div class="btn-icon download-todos-btn-icon"></div>
           <div class="btn-content">
-            <h3>Todos herunterladen</h3>
-            <p>Alle deine Todos als Datei speichern</p>
+            <h3>Download Todos</h3>
+            <p>Save all your todos as a file</p>
           </div>
         </button>
 
         <button class="menu-btn upload-todos-btn" id="uploadTodosBtn">
           <div class="btn-icon upload-todos-btn-icon"></div>
           <div class="btn-content">
-            <h3>Todos wiederherstellen</h3>
-            <p>Todos aus einer Datei importieren</p>
+            <h3>Restore Todos</h3>
+            <p>Import todos from a file</p>
           </div>
         </button>
 
@@ -57,8 +57,8 @@ export const renderPersonalDataPage = () => {
         >
           <div class="btn-icon personal-data-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück</h3>
-            <p>Zurück zu den Einstellungen</p>
+            <h3>Back</h3>
+            <p>Back to settings</p>
           </div>
         </button>
       </nav>

@@ -13,10 +13,10 @@ export const renderTrashPage = () => {
   return `
     <main class="trash-wrapper" data-view="trash">
       <section class="trash-intro">
-        <h2>Papierkorb</h2>
+        <h2>Trash</h2>
         <p>
-          Hier findest du alle gelöschten Todos. Du kannst sie
-          wiederherstellen oder endgültig löschen.
+          Here you'll find all deleted todos. You can
+          restore them or delete them permanently.
         </p>
       </section>
 
@@ -24,8 +24,8 @@ export const renderTrashPage = () => {
         <button class="menu-btn empty-trash-btn" id="emptyTrashBtn">
           <div class="btn-icon empty-trash-btn-icon"></div>
           <div class="btn-content">
-            <h3>Papierkorb leeren</h3>
-            <p>Alle gelöschten Todos endgültig entfernen</p>
+            <h3>Empty Trash</h3>
+            <p>Permanently remove all deleted todos</p>
           </div>
         </button>
 
@@ -33,21 +33,21 @@ export const renderTrashPage = () => {
           <div class="btn-icon trash-filter-btn-icon"></div>
           <div class="btn-content">
             <h3>Filter</h3>
-            <p>Gelöschte Todos filtern und sortieren</p>
+            <p>Filter and sort deleted todos</p>
           </div>
         </button>
 
         <button class="menu-btn trash-cancel-btn" id="trashCancelBtn">
           <div class="btn-icon trash-cancel-btn-icon"></div>
           <div class="btn-content">
-            <h3>Zurück zum Dashboard</h3>
-            <p>Zurück zum Dashboard</p>
+            <h3>Back to Dashboard</h3>
+            <p>Return to dashboard</p>
           </div>
         </button>
       </nav>
 
       <section class="trash-todos-container">
-        <h3>Gelöschte Todos</h3>
+        <h3>Deleted Todos</h3>
         <div class="trash-todos-list" id="trashTodosList">
           ${renderTrashedTodos()}
         </div>
@@ -63,7 +63,7 @@ export const renderTrashPage = () => {
 export const renderTrashPlaceholder = () => {
   return `
     <div class="trash-todo-placeholder">
-      <p>Keine gelöschten Todos vorhanden</p>
+      <p>No deleted todos available</p>
     </div>
   `;
 };
@@ -82,13 +82,13 @@ export const renderSingleTrashTodo = (todo) => {
         )}</h4>
 
         <div class="trash-todo-actions">
-          <button class="action-btn restore-todo-btn" title="Todo wiederherstellen" data-todo-id="${
+          <button class="action-btn restore-todo-btn" title="Restore todo" data-todo-id="${
             todo.id
           }">
             <div class="action-icon restore-todo-icon"></div>
           </button>
 
-          <button class="action-btn delete-forever-btn" title="Endgültig löschen" data-todo-id="${
+          <button class="action-btn delete-forever-btn" title="Delete permanently" data-todo-id="${
             todo.id
           }">
             <div class="action-icon delete-forever-icon"></div>
@@ -103,11 +103,11 @@ export const renderSingleTrashTodo = (todo) => {
       </div>
 
       <div class="trash-todo-meta">
-        <span class="trash-todo-date">Gelöscht: ${formatDate(
+        <span class="trash-todo-date">Deleted: ${formatDate(
           todo.deletedAt || new Date()
         )}</span>
 
-        <span class="trash-todo-original-date">Erstellt: ${formatDate(
+        <span class="trash-todo-original-date">Created: ${formatDate(
           todo.created || new Date()
         )}</span>
       </div>
@@ -141,7 +141,7 @@ export const formatDate = (date) => {
   }
 
   if (isNaN(date.getTime())) {
-    return "Ungültiges Datum";
+    return "Invalid date";
   }
 
   const now = new Date();
@@ -149,13 +149,13 @@ export const formatDate = (date) => {
   const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
   if (days === 0) {
-    return "Heute";
+    return "Today";
   } else if (days === 1) {
-    return "Gestern";
+    return "Yesterday";
   } else if (days < 7) {
-    return `vor ${days} Tagen`;
+    return `${days} days ago`;
   } else {
-    return date.toLocaleDateString("de-DE", {
+    return date.toLocaleDateString("en-US", {
       day: "2-digit",
       month: "2-digit",
       year: "numeric",

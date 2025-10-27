@@ -18,6 +18,7 @@ import { setupPersonalDataEventListeners } from "./navigation-personal-data.js";
 import { setupChangePasswordEventListeners } from "./navigation-change-password.js";
 import { setupResetPasswordEventListeners } from "./navigation-reset-password.js";
 import { setupResetPasswordConfirmEventListeners } from "./navigation-reset-password-confirm.js";
+import { setupImprintEventListeners } from "./navigation-imprint.js";
 import { setupTodosListNavigation } from "./navigation-todos-list.js";
 import { setupTodosNavigation } from "./navigation-todos.js";
 import { setupTrashNavigation } from "./navigation-trash.js";
@@ -50,6 +51,7 @@ export const setupNavigationListeners = () => {
   setupChangePasswordEventListeners();
   setupResetPasswordEventListeners();
   setupResetPasswordConfirmEventListeners();
+  setupImprintEventListeners();
   setupTodosListNavigation();
   setupTodosNavigation();
   setupTrashNavigation();
@@ -72,7 +74,7 @@ const handlePopState = (event) => {
   const urlInfo = extractViewAndParamsFromURL();
   if (isValidView(urlInfo.view)) {
     setCurrentView(urlInfo.view);
-    // Render über app.js triggern statt direkt
+    // Trigger render via app.js instead of directly
   } else {
     navigateToView(VIEWS.MAIN_MENU);
   }
@@ -84,18 +86,18 @@ const handlePopState = (event) => {
 const loadInitialView = () => {
   const urlInfo = extractViewAndParamsFromURL();
 
-  // DEBUG: URL-Parameter ausgeben
+  // DEBUG: URL parameters output
   // console.log("🔍 loadInitialView - URL Info:", urlInfo);
   // console.log("🔍 Current URL:", window.location.pathname);
 
   if (isValidView(urlInfo.view)) {
-    // URL-Parameter ZUERST setzen, bevor setCurrentView aufgerufen wird!
+    // Set URL parameters FIRST before setCurrentView is called!
     if (urlInfo.params) {
       window.currentUrlParams = urlInfo.params;
-      // console.log("✅ URL-Parameter gesetzt:", window.currentUrlParams);
+      // console.log("✅ URL parameters set:", window.currentUrlParams);
     } else {
       window.currentUrlParams = null;
-      // console.log("ℹ️ Keine URL-Parameter gefunden");
+      // console.log("ℹ️ No URL parameters found");
     }
 
     setCurrentView(urlInfo.view);
@@ -116,7 +118,7 @@ const setupMainMenuNavigation = () => {
     { id: "loginBtn", view: VIEWS.LOGIN },
     { id: "registerBtn", view: VIEWS.REGISTER },
     { id: "optionsBtn", view: VIEWS.OPTIONS },
-    { id: "dashboardBtnLoggedIn", view: VIEWS.DASHBOARD }, // ✅ Dashboard für User
+    { id: "dashboardBtnLoggedIn", view: VIEWS.DASHBOARD }, // ✅ Dashboard for users
   ];
 
   mainMenuLinks.forEach(({ id, view }) => {
@@ -192,7 +194,7 @@ export const navigateToView = (view, params = null) => {
   updateDocumentTitle(view);
   saveSessionToStorage();
 
-  // URL-Parameter für spätere Verwendung speichern
+  // Save URL parameters for later use
   if (params) {
     window.currentUrlParams = params;
   } else {
@@ -219,7 +221,7 @@ export const navigateBack = () => {
 const updateBrowserHistory = (view, params = null) => {
   let url = view === VIEWS.MAIN_MENU ? "/" : `/${view}`;
 
-  // Für Reset-Password-Confirm: Token als URL-Parameter hinzufügen
+  // For Reset-Password-Confirm: Add token as URL parameter
   if (view === VIEWS.RESET_PASSWORD_CONFIRM && params?.token) {
     url = `/${view}/${params.token}`;
   }
@@ -250,7 +252,7 @@ const extractViewAndParamsFromURL = () => {
 
   const view = segments[0];
 
-  // Spezielle Behandlung für Reset-Password-Confirm mit Token
+  // Special handling for Reset-Password-Confirm with token
   if (view === VIEWS.RESET_PASSWORD_CONFIRM && segments[1]) {
     return {
       view: view,

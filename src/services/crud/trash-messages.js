@@ -33,11 +33,11 @@ export const showTrashInfo = (message) => {
  * Predefined success messages for common trash operations
  */
 export const TRASH_MESSAGES = {
-  EMPTY_SUCCESS: "Papierkorb wurde geleert!",
-  RESTORE_SUCCESS: "Todo wurde wiederhergestellt!",
-  DELETE_SUCCESS: "Todo wurde endgültig gelöscht!",
-  EMPTY_ERROR: "Fehler beim Leeren des Papierkorbs.",
-  RESTORE_ERROR: "Fehler beim Wiederherstellen des Todos.",
-  DELETE_ERROR: "Fehler beim endgültigen Löschen des Todos.",
-  INVALID_ID: "Todo-ID fehlt.",
+  EMPTY_SUCCESS: "Trash was emptied!",
+  RESTORE_SUCCESS: "Todo was restored!",
+  DELETE_SUCCESS: "Todo was permanently deleted!",
+  EMPTY_ERROR: "Error emptying trash.",
+  RESTORE_ERROR: "Error restoring todo.",
+  DELETE_ERROR: "Error permanently deleting todo.",
+  INVALID_ID: "Todo-ID missing.",
 };

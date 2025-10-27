@@ -36,7 +36,7 @@ const appState = {
   // User Preferences
   userPreferences: {
     theme: "light",
-    language: "de",
+    language: "en",
     showNotifications: true,
     autoSave: true,
   },

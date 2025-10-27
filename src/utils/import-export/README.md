@@ -52,13 +52,13 @@ src/utils/
 ├── import-export/                      # 🆕 Neuer Import/Export Ordner
 │   ├── README.md                       # Dokumentation
 │   ├── index.js                        # Public API
-│   ├── file-validation-helpers.js      # Datei-Validierung
+│   ├── file-validation-helpers.js      # File validation
 │   ├── json-parsing-helpers.js         # JSON-Parsing
 │   ├── todo-normalization-helpers.js   # Todo-Normalisierung
 │   ├── active-todo-import-helpers.js   # Aktive Todo-Imports
-│   ├── trashed-todo-import-helpers.js  # Papierkorb-Imports
-│   ├── file-input-helpers.js           # Datei-Input-Dialoge
-│   ├── preview-dialog-helpers.js       # Vorschau-Dialoge
+│   ├── trashed-todo-import-helpers.js  # Trash imports
+│   ├── file-input-helpers.js           # File input dialogs
+│   ├── preview-dialog-helpers.js       # Preview dialogs
 │   └── import-export-helpers.js        # Allgemeine Utilities
 ├── constants.js
 ├── contenteditable-handler.js
@@ -73,4 +73,3 @@ src/utils/
 ├── toast-notifications.js
 └── ui-state-helpers.js
 ```
-

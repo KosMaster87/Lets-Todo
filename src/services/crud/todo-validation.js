@@ -49,7 +49,7 @@ export const validateTodoContent = () => {
  */
 const validateContentExists = (title, content) => {
   if (!title && !content) {
-    showMessage("Titel oder Inhalt darf nicht leer sein.", "error");
+    showMessage("Title or content cannot be empty.", "error");
     return false;
   }
   return true;
@@ -63,7 +63,7 @@ const validateContentExists = (title, content) => {
  */
 const validateTitleNotPlaceholder = (title, titlePlaceholder) => {
   if (isPlaceholderText(title, titlePlaceholder)) {
-    showMessage("Bitte gib einen echten Titel für deine Todo ein.", "error");
+    showMessage("Please enter a real title for your todo.", "error");
     return false;
   }
   return true;
@@ -77,7 +77,7 @@ const validateTitleNotPlaceholder = (title, titlePlaceholder) => {
  */
 const validateContentNotPlaceholder = (content, contentPlaceholder) => {
   if (isPlaceholderText(content, contentPlaceholder)) {
-    showMessage("Bitte gib einen echten Inhalt für deine Todo ein.", "error");
+    showMessage("Please enter real content for your todo.", "error");
     return false;
   }
   return true;
@@ -154,12 +154,12 @@ const isPlaceholderText = (text, placeholder) => {
  */
 const validateTitleValue = (title) => {
   if (title.length === 0) {
-    showMessage("Bitte gib einen Titel für deine Todo ein.", "error");
+    showMessage("Please enter a title for your todo.", "error");
     return false;
   }
 
   if (title.length > 100) {
-    showMessage("Der Titel darf maximal 100 Zeichen lang sein.", "error");
+    showMessage("Title may be a maximum of 100 characters long.", "error");
     return false;
   }
 
@@ -173,12 +173,12 @@ const validateTitleValue = (title) => {
  */
 const validateContentValue = (content) => {
   if (content.length === 0) {
-    showMessage("Bitte gib einen Inhalt für deine Todo ein.", "error");
+    showMessage("Please enter content for your todo.", "error");
     return false;
   }
 
   if (content.length > 5000) {
-    showMessage("Der Inhalt darf maximal 5000 Zeichen lang sein.", "error");
+    showMessage("Content may be a maximum of 5000 characters long.", "error");
     return false;
   }
 

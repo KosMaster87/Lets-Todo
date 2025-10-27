@@ -21,6 +21,7 @@ export const VIEWS = {
   CHANGE_PASSWORD: "change-password",
   RESET_PASSWORD: "reset-password",
   RESET_PASSWORD_CONFIRM: "reset-password-confirm",
+  IMPRINT: "imprint",
 };
 
 /**
@@ -28,19 +29,20 @@ export const VIEWS = {
  * @type {Object}
  */
 export const PAGE_TITLES = {
-  [VIEWS.MAIN_MENU]: "Let's Todo - Start",
-  [VIEWS.REGISTER]: "Let's Todo - Registrieren",
-  [VIEWS.LOGIN]: "Let's Todo - Anmelden",
+  [VIEWS.MAIN_MENU]: "Let's Todo - Home",
+  [VIEWS.REGISTER]: "Let's Todo - Register",
+  [VIEWS.LOGIN]: "Let's Todo - Login",
   [VIEWS.DASHBOARD]: "Let's Todo - Dashboard",
   [VIEWS.TODOS_LIST]: "Let's Todo - Todos",
-  [VIEWS.TODOS]: "Let's Todo - Neue Todo",
-  [VIEWS.TODO_VIEW]: "Let's Todo - Todo bearbeiten",
-  [VIEWS.TRASH]: "Let's Todo - Papierkorb",
-  [VIEWS.OPTIONS]: "Let's Todo - Einstellungen",
-  [VIEWS.PERSONAL_DATA]: "Let's Todo - Persönliche Daten",
-  [VIEWS.CHANGE_PASSWORD]: "Let's Todo - Passwort ändern",
-  [VIEWS.RESET_PASSWORD]: "Let's Todo - Passwort zurücksetzen",
-  [VIEWS.RESET_PASSWORD_CONFIRM]: "Let's Todo - Neues Passwort setzen",
+  [VIEWS.TODOS]: "Let's Todo - New Todo",
+  [VIEWS.TODO_VIEW]: "Let's Todo - Edit Todo",
+  [VIEWS.TRASH]: "Let's Todo - Trash",
+  [VIEWS.OPTIONS]: "Let's Todo - Settings",
+  [VIEWS.PERSONAL_DATA]: "Let's Todo - Personal Data",
+  [VIEWS.CHANGE_PASSWORD]: "Let's Todo - Change Password",
+  [VIEWS.RESET_PASSWORD]: "Let's Todo - Reset Password",
+  [VIEWS.RESET_PASSWORD_CONFIRM]: "Let's Todo - Set New Password",
+  [VIEWS.IMPRINT]: "Let's Todo - Imprint",
 };
 
 /**

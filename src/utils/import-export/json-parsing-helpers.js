@@ -47,7 +47,7 @@ export const createSuccessResult = (activeTodos, trashedTodos, metadata) => ({
  */
 export const createParseError = (error) => ({
   success: false,
-  error: `JSON-Parsing Fehler: ${error.message}`,
+  error: `JSON parsing error: ${error.message}`,
 });
 
 /**
@@ -56,7 +56,7 @@ export const createParseError = (error) => ({
  */
 export const createUnknownFormatError = () => ({
   success: false,
-  error: "Unbekanntes JSON-Format",
+  error: "Unknown JSON format",
 });
 
 /**
