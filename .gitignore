@@ -67,4 +67,6 @@ certificate.pem
 
 # Documentation
 docs/
+docs-api/
+docs-app/
 

@@ -9,6 +9,42 @@
 
 **Professional Node.js Express API** with multi-environment deployment, database-per-session architecture, and automated SSL setup. This developer branch serves as the integration point for new API features and the testing ground for database optimizations.
 
+## 🔗 **Quick Access Links**
+
+### 🌐 **Live API Endpoints**
+
+| Environment           | API Base URL                                                           | Status             |
+| --------------------- | ---------------------------------------------------------------------- | ------------------ |
+| 🚀 **Production**     | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org)             | ✅ Stable          |
+| 🧪 **Feature Branch** | [lets-todo-api-feat.dev2k.org](https://lets-todo-api-feat.dev2k.org)   | 🔥 Latest Features |
+| 🔧 **Staging**        | [lets-todo-api-stage.dev2k.org](https://lets-todo-api-stage.dev2k.org) | 🧪 Testing         |
+
+### 📚 **Documentation Hub**
+
+| Type                     | Feature Branch                                           | Topics                    |
+| ------------------------ | -------------------------------------------------------- | ------------------------- |
+| 🔌 **API Documentation** | [feat/docs/](https://lets-todo-api-feat.dev2k.org/docs/) | Endpoints, Database, Auth |
+| 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs/) | Components, State, UI     |
+| 🏗️ **Architecture**      | [overview.md](./overview.md)                             | System Design             |
+| 🚀 **Deployment Guide**  | [DEPLOYMENT.md](./DEPLOYMENT.md)                         | Production Setup          |
+| 👨‍💻 **Dev Guidelines**    | [copilot-instructions.md](./copilot-instructions.md)     | Coding Standards          |
+
+### 🔗 **Related Repositories**
+
+- 📱 **Frontend App**: [lets-todo-app](https://github.com/KosMaster87/lets-todo-app)
+- 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
+
+### **🔧 JSDoc Development**
+
+```bash
+# Generate and serve API documentation
+npm run docs        # Generate JSDoc documentation
+npm run docs:serve  # Serve on http://localhost:8080
+npm run docs:clean  # Clean generated docs
+```
+
+---
+
 ## ✨ Key Features
 
 - 🏗️ **Multi-Environment Architecture**: Development, Feature, Staging, Production deployments
@@ -314,7 +350,7 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 - **[Development Guidelines](copilot-instructions.md)** - Architecture patterns and coding standards
 - **[Scripts Documentation](scripts/script-overview.md)** - Database management and utilities
 
-## �🔗 Related Projects
+## Related Projects
 
 ### [Let's Todo Frontend →](../lets-todo-app)
 
