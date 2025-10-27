@@ -19,11 +19,11 @@
 
 ### 📚 **Documentation Hub**
 
-| Type                     | Production                                         | Feature Branch                                                   | Topics                    |
-| ------------------------ | -------------------------------------------------- | ---------------------------------------------------------------- | ------------------------- |
-| 📱 **Frontend Docs**     | [docs/](https://lets-todo.dev2k.org/docs/)         | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs/)         | Components, State, UI     |
-| 🔌 **API Documentation** | [docs-api/](https://lets-todo.dev2k.org/docs-api/) | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/) | Endpoints, Database, Auth |
-| 🏗️ **Architecture**      | [overview.md](./overview.md)                       | [overview.md](./overview.md)                                     | System Design             |
+| Type                     | Feature Branch                                                   | Topics                    |
+| ------------------------ | ---------------------------------------------------------------- | ------------------------- |
+| 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs/)         | Components, State, UI     |
+| 🔌 **API Documentation** | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/) | Endpoints, Database, Auth |
+| 🏗️ **Architecture**      | [overview.md](./overview.md)                                     | System Design             |
 
 ### 🔗 **Related Repositories**
 
