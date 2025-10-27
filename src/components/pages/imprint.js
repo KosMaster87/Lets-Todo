@@ -22,8 +22,8 @@ export const renderImprintPage = () => {
           <h3>Company Information</h3>
           <p>
             <strong>Let's Todo App</strong><br>
-            Eine Todo-Verwaltungsanwendung<br>
-            Entwickelt von Konstantin Aksenov
+            A todo management application<br>
+            Developed by Konstantin Aksenov
           </p>
         </div>
 
