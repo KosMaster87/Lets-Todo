@@ -76,3 +76,5 @@ testem.log
 
 # Documentation
 docs/
+docs-api/
+docs-app/

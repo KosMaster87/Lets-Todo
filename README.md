@@ -1,59 +1,104 @@
-# Let's Todo App - Frontend (Developer Branch)
+# 📝 Let's Todo - Complete Project Suite
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
 [![ES Modules](https://img.shields.io/badge/ES-Modules-blue.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+[![PWA Ready](https://img.shields.io/badge/PWA-Ready-purple.svg)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
 
-> **🚧 Developer Branch**: This is the main development branch containing the latest features and improvements. For production deployment, use the `main` branch.
+> Modern, lightweight Todo application with comprehensive documentation and multi-environment deployment strategy.
 
-## 🎯 Overview
+## 🔗 **Quick Access Links**
 
-Let's Todo App Frontend is a modern, lightweight Single Page Application built with vanilla JavaScript ES6+ modules. This developer branch serves as the integration point for new features and the testing ground for experimental implementations.
+### 🌐 **Live Applications**
 
-### ✨ Key Features
+| Environment           | Application                                                            | Status             |
+| --------------------- | ---------------------------------------------------------------------- | ------------------ |
+| 🚀 **Production**     | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)                     | ✅ Stable          |
+| 🧪 **Feature Branch** | [lets-todo-app-feat.dev2k.org](https://lets-todo-app-feat.dev2k.org)   | 🔥 Latest Features |
+| 🔧 **Staging**        | [lets-todo-app-stage.dev2k.org](https://lets-todo-app-stage.dev2k.org) | 🧪 Testing         |
 
-- 📝 **Complete Todo Management**: Create, read, update, delete todos with rich content support
-- 👤 **User Authentication**: Secure login/registration system with session management
-- 🌓 **Dark/Light Theme**: Seamless theme switching with user preference persistence
-- 📱 **Responsive Design**: Mobile-first approach with touch-friendly interface
-- 🔄 **Real-time Sync**: Live updates between frontend and backend
-- 📤 **Import/Export**: JSON-based data portability
-- 🗑️ **Trash System**: Soft delete with restore functionality
-- 🎨 **Modern UI**: Clean, intuitive interface with accessibility support
+### 📚 **Documentation Hub**
 
-### 🏗️ Architecture
+| Type                     | Production                                         | Feature Branch                                                   | Topics                    |
+| ------------------------ | -------------------------------------------------- | ---------------------------------------------------------------- | ------------------------- |
+| 📱 **Frontend Docs**     | [docs/](https://lets-todo.dev2k.org/docs/)         | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs/)         | Components, State, UI     |
+| 🔌 **API Documentation** | [docs-api/](https://lets-todo.dev2k.org/docs-api/) | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/) | Endpoints, Database, Auth |
+| 🏗️ **Architecture**      | [overview.md](./overview.md)                       | [overview.md](./overview.md)                                     | System Design             |
 
-- **Framework**: Vanilla JavaScript (ES6+ Modules)
-- **Module System**: Native ES modules (no bundler required)
-- **Server**: Express.js development server with LiveReload
-- **State Management**: Centralized reactive state system
-- **Routing**: Client-side SPA routing
-- **Styling**: CSS3 with CSS Variables for theming
-- **API Integration**: RESTful backend communication
+### 🔗 **Related Repositories**
 
-## 🚀 Quick Start
+- 🖥️ **Backend API**: [lets-todo-api](https://github.com/KosMaster87/lets-todo-api)
+- 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
 
-### Prerequisites
+---
 
-- **Node.js** 16+
-- **npm** or **yarn**
-- **Git**
+## 🎯 Project Overview
 
-### Installation
+Let's Todo is a comprehensive task management solution featuring a modern vanilla JavaScript frontend and a robust Node.js backend API. Built with developer experience in mind, it showcases clean architecture patterns without heavy framework dependencies.
+
+## ✨ **Core Features**
+
+### 📝 **Todo Management**
+
+- ✅ **CRUD Operations**: Create, read, update, delete with rich text support
+- 🏷️ **Smart Organization**: Categories, priorities, and custom sorting
+- 🗑️ **Trash System**: Soft delete with one-click restore functionality
+- � **Data Portability**: JSON import/export with validation
+
+### � **User Experience**
+
+- � **Secure Authentication**: Cookie-based sessions with password reset
+- 🌓 **Theme System**: Seamless dark/light mode with user preferences
+- 📱 **Responsive Design**: Mobile-first with touch-optimized interactions
+- ♿ **Accessibility**: WCAG compliant with screen reader support
+
+### 🏗️ **Technical Architecture**
+
+- 🚀 **Zero Bundle**: Vanilla JavaScript ES6+ modules (no webpack/rollup)
+- ⚡ **Performance**: Lazy loading and efficient state management
+- 🔄 **Real-time Sync**: LiveReload development + API synchronization
+- 📊 **Documentation**: Auto-generated JSDoc with clean theme
+
+### 🛠️ **Developer Features**
+
+- 🔧 **Hot Reload**: Instant updates without page refresh
+- 📋 **JSDoc Integration**: Professional documentation generation
+- 🧪 **Multi-Environment**: Development, feature, staging, production
+- 🔍 **Debug Tools**: Enhanced logging and state inspection
+
+## 🚀 **Quick Start**
+
+### **🔧 Technology Stack**
+
+| Layer        | Technology              | Purpose                      |
+| ------------ | ----------------------- | ---------------------------- |
+| **Frontend** | Vanilla JavaScript ES6+ | Zero-dependency SPA          |
+| **Styling**  | CSS3 + CSS Variables    | Modern theming system        |
+| **Server**   | Express.js + LiveReload | Development experience       |
+| **State**    | Custom reactive system  | Centralized data flow        |
+| **Docs**     | JSDoc + Clean Theme     | Auto-generated documentation |
+
+### **⚡ Development Setup**
 
 ```bash
-# Clone the repository
-git clone <repository-url>
+# Clone the frontend repository
+git clone https://github.com/KosMaster87/lets-todo-app.git
 cd lets-todo-app
 
 # Install dependencies
 npm install
 
-# Start development server
+# Start development server with hot reload
 npm run dev
+# 🌐 Opens: http://localhost:3001
+
+# Generate documentation
+npm run docs
+npm run docs:serve
+# 📚 Opens: http://localhost:8081
 ```
 
-### Development URLs
+### **🌐 Development URLs**
 
 - **Frontend**: http://127.0.0.1:5500
 - **Backend API**: http://127.0.0.1:3000
@@ -282,28 +327,52 @@ npm run dev
 # Check browser network tab for errors
 ```
 
-## 📚 Documentation
+## 🏗️ **Complete System Architecture**
 
-- **[Deployment Guide](DEPLOYMENT.md)**: Production deployment instructions
-- **[Development Guidelines](copilot-instructions.md)**: Coding standards and conventions
-- **[API Documentation](../lets-todo-api/README.md)**: Backend API reference
+This frontend works seamlessly with the backend API. For the complete development experience:
 
-## 🤝 Contributing
+### **🔗 Backend Repository**
 
-### Development Guidelines
+- **Repository**: [lets-todo-api](https://github.com/KosMaster87/lets-todo-api)
+- **Technology**: Node.js + Express + MySQL
+- **Features**: Multi-environment deployment, database-per-session isolation
+- **Documentation**: Auto-generated API docs with JSDoc
 
-- Follow the 14-line function limit rule
-- Write comprehensive JSDoc comments
-- Use semantic HTML and accessible markup
-- Test across different browsers and devices
-- Maintain consistent code formatting
+### **📋 Documentation Hub**
 
-### Pull Request Process
+| Document              | Purpose               | Location                                                      |
+| --------------------- | --------------------- | ------------------------------------------------------------- |
+| 📱 **Frontend Guide** | This README           | Current file                                                  |
+| 🔌 **API Reference**  | Backend documentation | [lets-todo-api](https://github.com/KosMaster87/lets-todo-api) |
+| 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](./DEPLOYMENT.md)                              |
+| 🏗️ **Architecture**   | System overview       | [overview.md](./overview.md)                                  |
+| 👨‍💻 **Dev Guidelines** | Coding standards      | [copilot-instructions.md](./copilot-instructions.md)          |
 
-1. Update documentation for any new features
-2. Ensure all functions have proper JSDoc comments
-3. Test functionality across different screen sizes
-4. Verify accessibility compliance
+## 🤝 **Contributing & Development**
+
+### **🎯 Branch Strategy**
+
+- 🚀 **`main`**: Production-ready stable release
+- 🧪 **`feature/main-feature`**: Developer integration branch (current)
+- 🔧 **`staging`**: Pre-production testing
+- ⚡ **`feature/*`**: Individual feature development
+
+### **💻 Development Workflow**
+
+```bash
+# 1. Fork and clone both repositories
+git clone https://github.com/KosMaster87/lets-todo-app.git
+git clone https://github.com/KosMaster87/lets-todo-api.git
+
+# 2. Start backend API (Terminal 1)
+cd lets-todo-api && npm install && npm run dev
+
+# 3. Start frontend (Terminal 2)
+cd lets-todo-app && npm install && npm run dev
+
+# 4. Generate documentation (Optional)
+npm run docs && npm run docs:serve
+```
 
 ## 🔮 Roadmap
 
