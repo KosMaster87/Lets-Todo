@@ -34,6 +34,32 @@
 - 📱 **Frontend App**: [lets-todo-app](https://github.com/KosMaster87/lets-todo-app)
 - 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
 
+## 🌿 **Professional Branch Structure**
+
+This repository demonstrates a professional development workflow with automated staging preparation:
+
+| Branch | Purpose | Content | Audience |
+|--------|---------|---------|----------|
+| 🚀 **`feature/main-feature`** | **Development** | • Full JSDoc documentation<br>• Development scripts & tools<br>• Detailed code comments<br>• Debug logging | **Developers & Code Reviewers** |
+| 🔄 **`feature/staging-prepare`** | **Demo/Process** | • Shows cleanup transformation<br>• Automated build process<br>• DevOps pipeline example | **DevOps Engineers & Tech Leads** |
+| 🎯 **`staging`** | **Production-Ready** | • Clean, optimized code<br>• No debug output<br>• Deployment-ready<br>• Minimal comments | **Production Deployment** |
+| 🏛️ **`main`** | **Stable Release** | • Tested production code<br>• Release documentation<br>• Version tags | **End Users & Deployments** |
+
+### 🤖 **Automated Staging Workflow**
+
+```bash
+# One-command staging preparation
+npm run staging:prepare
+```
+
+**This automated workflow:**
+1. ✅ Creates temporary `feature/staging-prepare` branch
+2. ✅ Removes JSDoc documentation (2500+ lines)
+3. ✅ Eliminates debug logs and development comments
+4. ✅ Deletes development scripts and tools
+5. ✅ Merges clean code into `staging` branch
+6. ✅ Keeps demo branch for process transparency
+
 ### **🔧 JSDoc Development**
 
 ```bash
