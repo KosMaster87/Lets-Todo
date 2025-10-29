@@ -50,6 +50,12 @@ class StagingCleanup {
         return "";
       });
 
+      // 4. Disable DEBUG_MODE for production
+      content = content.replace(/export const DEBUG_MODE = true;/g, () => {
+        this.removedDebugLogs++;
+        return "export const DEBUG_MODE = false;";
+      });
+
       // 5. Clean up multiple empty lines (max 2 consecutive)
       content = content.replace(/\n\s*\n\s*\n+/g, "\n\n");
 
