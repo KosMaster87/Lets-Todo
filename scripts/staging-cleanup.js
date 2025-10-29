@@ -141,21 +141,31 @@ class StagingCleanup {
    */
   removeDevelopmentScripts() {
     try {
-      console.log("\n🧹 Removing development files and directories from staging branch...");
+      console.log(
+        "\n🧹 Removing development files and directories from staging branch..."
+      );
 
       let removedCount = 0;
 
       // Remove development/deployment directories
-      ['deploy', 'nginx', 'docs', 'scripts'].forEach(dir => {
-        if (fs.existsSync(dir)) {
-          fs.rmSync(dir, { recursive: true, force: true });
-          console.log(`✅ Removed directory: ${dir}/`);
-          removedCount++;
+      ["deploy", "nginx", "docs", "docs-api", "docs-app", "scripts"].forEach(
+        (dir) => {
+          if (fs.existsSync(dir)) {
+            fs.rmSync(dir, { recursive: true, force: true });
+            console.log(`✅ Removed directory: ${dir}/`);
+            removedCount++;
+          }
         }
-      });
+      );
 
       // Remove development documentation files
-      ['copilot-instructions.md', 'overview.md', 'DEPLOYMENT.md', 'jsdoc.config.json', 'nodemon.json'].forEach(file => {
+      [
+        "copilot-instructions.md",
+        "overview.md",
+        "DEPLOYMENT.md",
+        "jsdoc.config.json",
+        "nodemon.json",
+      ].forEach((file) => {
         if (fs.existsSync(file)) {
           fs.unlinkSync(file);
           console.log(`✅ Removed file: ${file}`);
@@ -164,7 +174,9 @@ class StagingCleanup {
       });
 
       if (removedCount > 0) {
-        console.log(`🎯 Removed ${removedCount} development items - staging is now production-ready!`);
+        console.log(
+          `🎯 Removed ${removedCount} development items - staging is now production-ready!`
+        );
       } else {
         console.log("🎯 No development files found - already clean!");
       }
