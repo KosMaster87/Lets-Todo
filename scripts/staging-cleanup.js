@@ -44,11 +44,14 @@ class StagingCleanup {
         return "";
       });
 
-      // 3. Remove ALL console.log statements (production ready)
-      content = content.replace(/^\s*console\.log\([^)]*\);?\s*$/gm, () => {
-        this.removedDebugLogs++;
-        return "";
-      });
+      // 3. Remove ALL console statements (production ready)
+      content = content.replace(
+        /^\s*console\.(log|warn|info|error|debug)\([\s\S]*?\);?\s*$/gm,
+        () => {
+          this.removedDebugLogs++;
+          return "";
+        }
+      );
 
       // 4. Disable DEBUG_MODE for production
       content = content.replace(/export const DEBUG_MODE = true;/g, () => {
