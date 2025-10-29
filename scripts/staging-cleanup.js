@@ -44,11 +44,14 @@ class StagingCleanup {
         return "";
       });
 
-      // 3. Remove ALL console.log statements (production ready)
-      content = content.replace(/^\s*console\.log\([^)]*\);?\s*$/gm, () => {
-        this.removedDebugLogs++;
-        return "";
-      });
+      // 3. Remove ALL console statements (production ready)
+      content = content.replace(
+        /^\s*console\.(log|warn|info|error|debug)\([\s\S]*?\);?\s*$/gm,
+        () => {
+          this.removedDebugLogs++;
+          return "";
+        }
+      );
 
       // 5. Clean up multiple empty lines (max 2 consecutive)
       content = content.replace(/\n\s*\n\s*\n+/g, "\n\n");
