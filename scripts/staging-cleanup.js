@@ -141,23 +141,39 @@ class StagingCleanup {
    */
   removeDevelopmentScripts() {
     try {
-      console.log("\n🧹 Removing development scripts from staging branch...");
+      console.log("\n🧹 Removing development files and directories from staging branch...");
 
-      // Check if scripts directory exists
-      if (fs.existsSync("scripts/")) {
-        // Remove the entire scripts directory
-        fs.rmSync("scripts/", { recursive: true, force: true });
-        console.log("✅ Development scripts removed");
-        console.log("🎯 Staging branch is now production-ready!");
+      let removedCount = 0;
+
+      // Remove development/deployment directories
+      ['deploy', 'nginx', 'docs', 'scripts'].forEach(dir => {
+        if (fs.existsSync(dir)) {
+          fs.rmSync(dir, { recursive: true, force: true });
+          console.log(`✅ Removed directory: ${dir}/`);
+          removedCount++;
+        }
+      });
+
+      // Remove development documentation files
+      ['copilot-instructions.md', 'overview.md', 'DEPLOYMENT.md', 'jsdoc.config.json', 'nodemon.json'].forEach(file => {
+        if (fs.existsSync(file)) {
+          fs.unlinkSync(file);
+          console.log(`✅ Removed file: ${file}`);
+          removedCount++;
+        }
+      });
+
+      if (removedCount > 0) {
+        console.log(`🎯 Removed ${removedCount} development items - staging is now production-ready!`);
       } else {
-        console.log("🎯 No development scripts found - already clean!");
+        console.log("🎯 No development files found - already clean!");
       }
     } catch (error) {
       console.error(
-        "⚠️  Warning: Could not remove scripts directory:",
+        "⚠️  Warning: Could not remove development files:",
         error.message
       );
-      console.log("💡 You may need to remove it manually: rm -rf scripts/");
+      console.log("💡 You may need to remove them manually");
     }
   }
 }
