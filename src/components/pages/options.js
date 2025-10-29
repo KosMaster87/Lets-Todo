@@ -1,5 +1,6 @@
 /**
  * @fileoverview Options Page Component
+ * @description Renders the options/settings page
  * @module options
  */
 

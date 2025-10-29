@@ -1,5 +1,6 @@
 /**
  * @fileoverview Data Persistence Manager
+ * @description Manages saving and loading of todos, trash, and session data
  * @module data-persistence
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Change Password Navigation Module
+ * @description Manages navigation and form handling for the change password view
  * @module navigation-change-password
  */
 

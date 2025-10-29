@@ -1,5 +1,7 @@
 /**
  * @fileoverview Navigation event handling for todos list view
+ * @description Sets up navigation event handlers for todos list view including filter toggling,
+ * todo actions, and cancel button navigation.
  * @module navigation-todos-list
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation Service
+ * @description Manages application navigation, browser history, and view rendering
  * @module navigation
  */
 

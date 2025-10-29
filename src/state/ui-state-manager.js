@@ -1,5 +1,7 @@
 /**
  * @fileoverview UI state management utilities
+ * @description Functions to manage UI state such as current view, loading state,
+ * user preferences, errors, and notifications.
  * @module ui-state-manager
  */
 

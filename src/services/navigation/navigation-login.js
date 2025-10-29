@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation Login Module
+ * @description Handles navigation events and form submissions for the login page
  * @module navigation-login
  */
 

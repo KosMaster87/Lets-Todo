@@ -1,5 +1,6 @@
 /**
  * @fileoverview User Authentication API services
+ * @description Provides functions for user registration, login, logout, and session management
  * @module api-auth
  */
 

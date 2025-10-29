@@ -1,5 +1,6 @@
 /**
  * @fileoverview Download and Export Utilities
+ * @description Helper functions for downloading and exporting todos in JSON format
  * @module download-helpers
  */
 

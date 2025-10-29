@@ -1,5 +1,6 @@
 /**
  * @fileoverview Generic notification system for application-wide user feedback
+ * @description Provides functions to show success, error, info, and warning notifications
  * @module notifications
  */
 

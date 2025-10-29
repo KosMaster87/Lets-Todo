@@ -1,5 +1,6 @@
 /**
  * @fileoverview Import/Export utilities for data handling
+ * @description Provides helper functions for validating and processing import/export operations
  * @module import-export-helpers
  */
 

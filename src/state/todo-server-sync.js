@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Server Synchronization Manager
+ * @description Manages synchronization of todo items between local state and remote server.
  * @module todo-server-sync
  */
 

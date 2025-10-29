@@ -1,5 +1,6 @@
 /**
  * @fileoverview Storage management system
+ * @description Unified storage manager for sessionStorage, localStorage, and in-memory storage
  * @module storage
  */
 

@@ -1,5 +1,7 @@
 /**
  * @fileoverview Navigation event handling for trash view
+ * @description Sets up navigation and action handlers for the trash view,
+ * including emptying trash, restoring todos, and deleting todos permanently.
  * @module navigation-trash
  */
 

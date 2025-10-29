@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Content CRUD Operations
+ * @description Functions for managing todo content in the DOM
  * @module todo-content
  */
 

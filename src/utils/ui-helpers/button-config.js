@@ -1,5 +1,7 @@
 /**
  * @fileoverview Button Configuration Utilities for Action Buttons
+ * @description Provides utility functions to create configurations for action buttons
+ * such as bookmark, done, share, copy, and delete in the to-do application.
  * @module button-config
  */
 

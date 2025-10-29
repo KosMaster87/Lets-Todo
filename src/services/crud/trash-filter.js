@@ -1,5 +1,6 @@
 /**
  * @fileoverview Trash Filter Module
+ * @description Provides filtering, sorting, and rendering logic for trashed todos
  * @module trash-filter
  */
 

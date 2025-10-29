@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todos List Page Component
+ * @description Renders the todos list page with todos from state
  * @module todos-list
  */
 

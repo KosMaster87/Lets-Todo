@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo View Page Component
+ * @description Renders the todo view page with details and actions
  * @module todo-view
  */
 

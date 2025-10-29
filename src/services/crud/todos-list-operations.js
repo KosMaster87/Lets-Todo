@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todos List Operations Service
+ * @description Handles operations on todos such as open, bookmark toggle, done toggle, and delete
  * @module todos-list-operations
  */
 

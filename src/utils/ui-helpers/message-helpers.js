@@ -1,5 +1,6 @@
 /**
  * @fileoverview Message Display Utilities
+ * @description Utility functions for displaying styled messages to users
  * @module message-helpers
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todos List Utilities Service
+ * @description Utility functions for managing and formatting todos
  * @module todos-list-utils
  */
 

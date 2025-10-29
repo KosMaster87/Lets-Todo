@@ -1,5 +1,6 @@
 /**
  * @fileoverview Register Page Component
+ * @description Renders the register page HTML
  * @module register
  */
 

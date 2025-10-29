@@ -1,5 +1,6 @@
 /**
  * @fileoverview Imprint Navigation Module
+ * @description Handles navigation events for the imprint page
  * @module navigation-imprint
  */
 

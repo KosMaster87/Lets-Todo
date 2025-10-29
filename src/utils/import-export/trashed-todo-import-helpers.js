@@ -1,5 +1,6 @@
 /**
  * @fileoverview Trashed Todo Import Processing Utilities
+ * @description Helper functions for processing trashed todo imports
  * @module trashed-todo-import-helpers
  */
 

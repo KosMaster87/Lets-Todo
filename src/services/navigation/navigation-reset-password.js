@@ -1,5 +1,6 @@
 /**
  * @fileoverview Reset password navigation module
+ * @description Handles navigation and form submission for password reset
  * @module navigation-reset-password
  */
 

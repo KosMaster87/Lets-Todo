@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Action Setup Module
+ * @description Sets up action buttons and handlers for todo views
  * @module todo-action-setup
  */
 
@@ -134,7 +135,7 @@ export const setupTodosActionButtons = (
     getBookmarkStateFromDOM,
     getCompletedStateFromDOM
   );
-  
+
   initializeActionButtons(
     actionButtonConfig,
     currentStates,

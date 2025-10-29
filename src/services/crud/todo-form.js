@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Form State Management
+ * @description Manages state and UI for the todo form (create/edit)
  * @module todo-form
  */
 

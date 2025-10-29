@@ -1,5 +1,6 @@
 /**
  * @fileoverview Central contenteditable handler for todo elements
+ * @description Manages contenteditable behavior, validation, and event handling
  * @module contenteditable-handler
  */
 

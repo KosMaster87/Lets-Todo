@@ -1,5 +1,6 @@
 /**
  * @fileoverview Reset Password Confirmation Page Component
+ * @description Renders the reset password confirmation page with form and token validation
  * @module reset-password-confirm-page
  * @since 1.0.0
  */

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Operations Manager - Core CRUD Operations
+ * @description Provides core operations for managing todos including add, update, trash, restore, and delete
  * @module todo-operations
  */
 

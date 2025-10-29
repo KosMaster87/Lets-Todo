@@ -1,5 +1,6 @@
 /**
  * @fileoverview Main Menu Page Component
+ * @description Renders the main menu page with navigation optionsw
  * @module main-menu
  */
 

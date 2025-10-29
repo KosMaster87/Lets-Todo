@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation Register Module
+ * @description Sets up event listeners and handlers for the user registration process
  * @module navigation-register
  */
 

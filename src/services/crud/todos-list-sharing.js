@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todos List Sharing Service
+ * @description Provides functions to share or copy todos using Web Share API or clipboard
  * @module todos-list-sharing
  */
 

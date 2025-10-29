@@ -1,5 +1,6 @@
 /**
  * @fileoverview Personal Data Navigation Module
+ * @description Sets up navigation and event listeners for personal data management
  * @module navigation-personal-data
  */
 

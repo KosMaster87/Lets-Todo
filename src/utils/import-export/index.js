@@ -1,5 +1,6 @@
 /**
  * @fileoverview Import/Export Utilities - Public API
+ * @description Centralized export of all import/export utility functions and constants
  * @module import-export
  */
 

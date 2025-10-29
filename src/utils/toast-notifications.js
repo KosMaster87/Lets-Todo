@@ -1,5 +1,6 @@
 /**
  * @fileoverview Toast notification utility for user feedback
+ * @description Provides functions to show toast notifications
  * @module toast-notifications
  */
 

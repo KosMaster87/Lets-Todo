@@ -1,5 +1,7 @@
 /**
  * @fileoverview Form Helper Functions for Password Management
+ * @description Utility functions for handling password change form inputs,
+ * validation, and user feedback within the application.
  * @module form-helpers
  */
 

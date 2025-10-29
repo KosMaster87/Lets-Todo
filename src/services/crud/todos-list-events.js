@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo List Events Handling
+ * @description Handles user interactions with todo items in the list view, such as opening, bookmarking, marking as done, sharing, copying, and deleting todos.
  * @module todos-list-events
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todos Page Component
+ * @description Renders the todos creation page.
  * @module todos
  */
 

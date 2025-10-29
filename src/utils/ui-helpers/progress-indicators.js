@@ -1,5 +1,7 @@
 /**
  * @fileoverview UI Progress Indicators and State Management Utilities
+ * @description Provides functions to create and manage progress indicators,
+ * loading spinners, and file selection dialogs within the UI.
  * @module progress-indicators
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview UI state management utilities
+ * @description Helper functions to manage UI states for buttons and messages
  * @module ui-state-helpers
  */
 

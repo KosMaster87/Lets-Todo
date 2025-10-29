@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo API services
+ * @description Functions to interact with the backend Todo API
  * @module api-todos
  */
 

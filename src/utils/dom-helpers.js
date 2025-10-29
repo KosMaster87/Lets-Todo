@@ -1,5 +1,6 @@
 /**
  * @fileoverview DOM manipulation utilities
+ * @description Provides helper functions for showing/hiding elements and displaying messages
  * @module dom-helpers
  */
 

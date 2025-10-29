@@ -1,5 +1,6 @@
 /**
  * @fileoverview Registration Form Validation Utilities
+ * @description Provides functions to validate registration form inputs
  * @module register-validation
  */
 

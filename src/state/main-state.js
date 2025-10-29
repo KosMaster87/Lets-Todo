@@ -1,5 +1,7 @@
 /**
  * @fileoverview Central application state management for Let's Todo App
+ * @description Manages the global state, session, todos, UI state, and provides
+ * reactive listener support.
  * @module main-state
  */
 

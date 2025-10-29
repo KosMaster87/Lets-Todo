@@ -1,5 +1,6 @@
 /**
  * @fileoverview File input utilities for file selection and upload
+ * @description Provides helper functions for creating and managing file inputs
  * @module file-input-helpers
  */
 

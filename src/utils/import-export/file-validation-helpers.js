@@ -1,5 +1,6 @@
 /**
  * @fileoverview File Validation Utilities
+ * @description Helper functions for validating imported files
  * @module file-validation-helpers
  */
 

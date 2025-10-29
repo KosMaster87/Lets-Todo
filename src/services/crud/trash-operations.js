@@ -1,5 +1,7 @@
 /**
  * @fileoverview Trash Operations Service
+ * @description Handles operations related to trash management such as emptying trash,
+ * restoring todos, and permanently deleting todos.
  * @module trash-operations
  */
 

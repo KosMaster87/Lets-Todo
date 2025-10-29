@@ -1,5 +1,6 @@
 /**
  * @fileoverview Reset Password Page Component
+ * @description Renders the reset password page with email input form
  * @module reset-password-page
  * @since 1.0.0
  */

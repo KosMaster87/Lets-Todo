@@ -1,5 +1,6 @@
 /**
  * @fileoverview Password strength calculation utilities
+ * @description Provides functions to evaluate and categorize password strength
  * @module password-strength
  */
 

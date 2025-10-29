@@ -1,5 +1,6 @@
 /**
  * @fileoverview Login Page Component
+ * @description Renders the login page HTML
  * @module login
  */
 

@@ -1,5 +1,7 @@
 /**
  * @fileoverview Todos List Filter Module
+ * @description Provides filtering functionality for the todos list, including
+ * filter modes, rendering logic, and UI updates.
  * @module todos-list-filter
  */
 

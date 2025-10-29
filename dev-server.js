@@ -1,7 +1,7 @@
-// lets-todo/app/dev-server.js
-
 /**
  * @fileoverview Development Server for Let's Todo App
+ * @description Serves the frontend application with static file serving,
+ * SPA routing fallback, LiveReload integration, and automatic port selection.
  * @module dev-server
  */
 

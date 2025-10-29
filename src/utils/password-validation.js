@@ -1,5 +1,6 @@
 /**
  * @fileoverview Pure password validation logic utilities
+ * @description Provides functions for validating password inputs
  * @module password-validation
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation Options Module
+ * @description Handles navigation and event listeners for the options/settings page
  * @module navigation-options
  */
 

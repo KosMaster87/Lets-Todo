@@ -1,5 +1,6 @@
 /**
  * @fileoverview Content Validation and Clearing Utilities
+ * @description Utility functions to check and clear todo content with user confirmation
  * @module content-helpers
  */
 

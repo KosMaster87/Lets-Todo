@@ -1,5 +1,6 @@
 /**
  * @fileoverview Dashboard Page Component
+ * @description Renders the dashboard page with navigation and stats
  * @module dashboard-page
  */
 

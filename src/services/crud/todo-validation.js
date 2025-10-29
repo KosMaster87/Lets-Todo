@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Validation Utilities
+ * @description Provides functions to validate todo titles and content
  * @module todo-validation
  */
 

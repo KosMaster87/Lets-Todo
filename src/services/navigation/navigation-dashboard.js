@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation Dashboard Module
+ * @description Manages navigation and event handling for the dashboard page
  * @module navigation-dashboard
  */
 

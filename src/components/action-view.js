@@ -1,5 +1,6 @@
 /**
  * @fileoverview Action View Component
+ * @description Renders action buttons for todo items
  * @module action-view
  */
 

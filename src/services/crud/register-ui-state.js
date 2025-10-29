@@ -1,5 +1,6 @@
 /**
  * @fileoverview Registration UI State Management
+ * @description Manages loading states, messages, and form resets for user registration
  * @module register-ui-state
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation Logout Module
+ * @description Handles user logout functionality and navigation events
  * @module navigation-logout
  */
 

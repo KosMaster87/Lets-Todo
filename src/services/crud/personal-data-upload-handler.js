@@ -1,5 +1,6 @@
 /**
  * @fileoverview Personal Data Upload Handler - File Selection and Upload Process
+ * @description Manages the file selection dialog, upload process, and user notifications
  * @module personal-data-upload-handler
  */
 

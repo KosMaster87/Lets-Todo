@@ -1,5 +1,6 @@
 /**
  * @fileoverview API handler utilities
+ * @description Provides standardized API request handling with error management
  * @module api-handler
  */
 

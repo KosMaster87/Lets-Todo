@@ -1,5 +1,6 @@
 /**
  * @fileoverview Sample data utilities for todos and trash
+ * @description Functions to initialize and create sample todo and trashed todo data for demo purposes in Let's Todo app
  * @module sample-data
  */
 

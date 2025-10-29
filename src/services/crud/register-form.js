@@ -1,5 +1,6 @@
 /**
  * @fileoverview Registration Form Handlers and Validation
+ * @description Provides functions to setup and validate registration form
  * @module register-form
  */
 

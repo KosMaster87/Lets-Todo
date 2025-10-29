@@ -1,5 +1,6 @@
 /**
  * @fileoverview Application-wide constants
+ * @description Defines constants used throughout the Let's Todo application
  * @module constants
  */
 

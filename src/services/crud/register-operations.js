@@ -1,5 +1,6 @@
 /**
  * @fileoverview Registration Operations and Error Handling
+ * @description Manages user registration process, error handling, and success navigation
  * @module register-operations
  */
 

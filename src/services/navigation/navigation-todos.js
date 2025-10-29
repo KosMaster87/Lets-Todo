@@ -1,5 +1,6 @@
 /**
  * @fileoverview Navigation event handling for individual todo view (create/edit)
+ * @description Sets up navigation and action handlers for the todo view
  * @module navigation-todos
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Event Listener System for State Management
+ * @description Provides functions to manage state change listeners
  * @module listeners
  */
 

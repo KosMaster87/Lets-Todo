@@ -1,5 +1,6 @@
 /**
  * @fileoverview Clipboard and Copy Utilities
+ * @description Provides helper functions for clipboard operations and fallback mechanisms
  * @module clipboard-helpers
  */
 

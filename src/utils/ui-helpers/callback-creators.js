@@ -1,5 +1,7 @@
 /**
  * @fileoverview Callback Creator Utilities for UI Actions
+ * @description Provides functions to create standardized success callbacks
+ * for UI actions like toggling bookmarks and marking todos as done.
  * @module callback-creators
  */
 

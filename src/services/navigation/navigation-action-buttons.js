@@ -1,5 +1,6 @@
 /**
  * @fileoverview Action Buttons Module
+ * @description Sets up and manages action buttons for todo items
  * @module navigation-action-buttons
  */
 

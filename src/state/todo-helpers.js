@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Helper Functions
+ * @description Utility functions for managing todos in the application state
  * @module todo-helpers
  */
 

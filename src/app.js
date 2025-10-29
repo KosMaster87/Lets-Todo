@@ -1,5 +1,7 @@
 /**
  * @fileoverview Main application initializer for Let's Todo App
+ * @description Initializes the Let's Todo application, sets up state listeners,
+ * user preferences, theme system, session status, navigation, and renders components.
  * @module app
  */
 

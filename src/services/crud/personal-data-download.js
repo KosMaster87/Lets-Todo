@@ -1,5 +1,6 @@
 /**
  * @fileoverview Personal Data Download Service - JSON Export Only
+ * @description Provides functionality to download personal data (todos) in JSON format
  * @module personal-data-download
  */
 

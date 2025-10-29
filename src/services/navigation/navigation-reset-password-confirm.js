@@ -1,5 +1,7 @@
 /**
  * @fileoverview Password reset confirmation module
+ * @description Handles the password reset confirmation process, including token validation,
+ * password input validation, and submission to the API.
  * @module navigation-reset-password-confirm
  */
 

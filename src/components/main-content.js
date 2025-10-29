@@ -1,5 +1,6 @@
 /**
  * @fileoverview Main Content Component
+ * @description Renders the main content area based on the current view
  * @module main-content
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Session Management System
+ * @description Manages user sessions, including loading, saving, and clearing session data.
  * @module session-manager
  */
 

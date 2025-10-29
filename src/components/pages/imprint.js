@@ -1,5 +1,6 @@
 /**
  * @fileoverview Imprint Page Component
+ * @description Renders the imprint page with company and developer information
  * @module imprint
  */
 

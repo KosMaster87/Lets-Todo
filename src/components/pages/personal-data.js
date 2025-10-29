@@ -1,5 +1,6 @@
 /**
  * @fileoverview Personal Data Page Component
+ * @description Renders the personal data management page
  * @module personal-data
  */
 

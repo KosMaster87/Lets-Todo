@@ -1,5 +1,7 @@
 /**
  * @fileoverview Personal Data Upload Core - File Processing & Import Logic
+ * @description Handles validation, parsing, normalization, duplicate detection,
+ * and import operations for personal data upload in todo application.
  * @module personal-data-upload
  */
 

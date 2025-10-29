@@ -1,5 +1,6 @@
 /**
  * @fileoverview Trash Messages Service
+ * @description Provides user messages for trash operations
  * @module trash-messages
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Unified Password API Services
+ * @description Provides functions for password change and reset operations
  * @module password-api
  */
 

@@ -1,5 +1,6 @@
 /**
  * @fileoverview Trash Page Component
+ * @description Renders the Trash page with deleted todos and actions
  * @module trash
  */
 

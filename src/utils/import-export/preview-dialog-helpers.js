@@ -1,5 +1,6 @@
 /**
  * @fileoverview Preview dialog utilities with toast-based confirmations
+ * @description Functions to show import preview dialogs and handle user responses
  * @module preview-dialog-helpers
  */
 

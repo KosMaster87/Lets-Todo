@@ -1,5 +1,6 @@
 /**
  * @fileoverview Todo Object Normalization and Processing Utilities
+ * @description Helper functions for normalizing, validating, and processing todo objects
  * @module todo-normalization-helpers
  */
 

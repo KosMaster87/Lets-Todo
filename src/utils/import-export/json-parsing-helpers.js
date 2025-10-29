@@ -1,5 +1,6 @@
 /**
  * @fileoverview JSON Parsing and Data Processing Utilities
+ * @description Helper functions for parsing and processing JSON data exports
  * @module json-parsing-helpers
  */
 

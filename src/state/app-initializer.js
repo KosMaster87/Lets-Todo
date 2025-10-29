@@ -1,5 +1,6 @@
 /**
  * @fileoverview Application Initializer
+ * @description Initializes application state, loads data, and applies user preferences
  * @module app-initializer
  */
 

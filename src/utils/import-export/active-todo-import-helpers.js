@@ -1,5 +1,6 @@
 /**
  * @fileoverview Active Todo Import Processing Utilities
+ * @description Helper functions for processing active todo imports, such as selecting todos, validating titles, and creating import results.
  * @module active-todo-import-helpers
  */
 

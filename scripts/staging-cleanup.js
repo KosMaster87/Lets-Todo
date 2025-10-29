@@ -1,5 +1,13 @@
 #!/usr/bin/env node
 
+/**
+ * @fileoverview Staging branch cleanup script
+ * @description Cleans up development artifacts, comments, and debug logs from staging branch
+ * to prepare for production deployment.
+ *
+ * @module staging-cleanup
+ */
+
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";

@@ -1,7 +1,7 @@
 /* ========================================
    FULLSCREEN LOADING OVERLAY
    ======================================== */
-/* Für app-weite Loading-States (Login, Seitenumleitung, etc.) */
+/* For app-wide loading states (login, page redirects, etc.) */
 .loading-overlay {
   position: fixed;
   top: 0;
@@ -51,7 +51,7 @@
   animation: spin 3s ease-in-out infinite;
 }
 
-/* Kleinere Variante für Buttons */
+/* Smaller variant for buttons */
 .spinner-small {
   width: 20px;
   height: 20px;

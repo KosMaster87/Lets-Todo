@@ -1,5 +1,6 @@
 /**
  * @fileoverview Change Password Page Component
+ * @description Renders the change password page.
  * @module change-password
  */
 

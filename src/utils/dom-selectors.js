@@ -1,5 +1,6 @@
 /**
  * @fileoverview DOM element selectors and validation utilities for todo components
+ * @description Provides functions to select and validate DOM elements related to todos
  * @module dom-selectors
  */
 

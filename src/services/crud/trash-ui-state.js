@@ -1,5 +1,7 @@
 /**
  * @fileoverview Trash UI State Service
+ * @description Manages UI state for trash functionality, including filter button updates
+ * and action event handlers.
  * @module trash-ui-state
  */
 

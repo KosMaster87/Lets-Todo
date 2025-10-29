@@ -1,5 +1,6 @@
 /**
  * @fileoverview Password DOM manipulation and UI utilities
+ * @description Functions for updating password strength indicators and managing focus
  * @module password-dom
  */
 
