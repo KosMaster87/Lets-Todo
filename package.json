@@ -13,7 +13,7 @@
     "docs:serve": "npx http-server docs -p 8080 -o",
     "docs:clean": "rm -rf docs/ && npm run docs",
     "generate-docs": "jsdoc --configure jsdoc.config.json --verbose",
-    "staging:prepare": "git checkout -b feature/staging-prepare && node scripts/staging-cleanup.js && git add . && git commit -m 'chore: Prepare code for production staging' && git push origin feature/staging-prepare && git checkout staging && git merge feature/staging-prepare --no-edit && echo '🎉 Staging updated! feature/staging-prepare kept for demonstration'"
+    "staging:prepare": "git checkout -B feature/staging-prepare && node scripts/staging-cleanup.js && git add . && git commit -m 'chore: Prepare code for production staging' && git push -f origin feature/staging-prepare && git checkout staging && git merge feature/staging-prepare --no-edit && echo '🎉 Staging updated! feature/staging-prepare kept for demonstration'"
   },
   "keywords": [],
   "author": "",
