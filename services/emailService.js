@@ -55,7 +55,7 @@ class EmailService {
       service: "gmail",
       auth: {
         user: ENV.EMAIL_USER,
-        pass: ENV.EMAIL_PASSWORD, // App-Password, nicht normales Passwort!
+        pass: ENV.EMAIL_PASSWORD, // App password, not a regular password!
       },
     });
     debugLog("📧 Gmail SMTP Transporter initialisiert");
