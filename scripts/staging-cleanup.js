@@ -30,9 +30,9 @@ class StagingCleanup {
         return "";
       });
 
-      // 2. Remove commented-out console.log statements
-      content = content.replace(/^\s*\/\/\s*console\.log.*$/gm, () => {
-        this.removedDebugLogs++;
+      // 2. Remove ALL single-line comments (// comments)
+      content = content.replace(/^\s*\/\/.*$/gm, () => {
+        this.removedComments++;
         return "";
       });
 
@@ -41,15 +41,6 @@ class StagingCleanup {
         /^\s*console\.log\(.*(?:DEBUG|debug|📝|✅|🔧).*\);?\s*$/gm,
         () => {
           this.removedDebugLogs++;
-          return "";
-        }
-      );
-
-      // 4. Remove development comments
-      content = content.replace(
-        /^\s*\/\/\s*(TODO|FIXME|DEBUG|HACK|NOTE|TEMP).*$/gm,
-        () => {
-          this.removedComments++;
           return "";
         }
       );
