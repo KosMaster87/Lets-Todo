@@ -64,7 +64,6 @@ class StagingCleanup {
       if (content !== originalContent) {
         fs.writeFileSync(filePath, content, "utf8");
         this.processedFiles++;
-
       }
     } catch (error) {
       console.error(`❌ Error processing ${filePath}:`, error.message);
@@ -124,13 +123,41 @@ class StagingCleanup {
     console.log(`   • Time taken: ${endTime - startTime}ms`);
 
     if (this.processedFiles > 0) {
-
+      console.log("\n✅ Staging cleanup completed successfully!");
       console.log("💡 Review changes with: git diff");
       console.log(
         '💡 Commit changes with: git add . && git commit -m "chore: Clean staging branch for production"'
       );
     } else {
       console.log("\n🎯 No files needed cleaning - already production ready!");
+    }
+
+    // Self-cleanup: Remove development scripts from staging
+    this.removeDevelopmentScripts();
+  }
+
+  /**
+   * Remove development scripts and tools from staging branch
+   */
+  removeDevelopmentScripts() {
+    try {
+      console.log("\n🧹 Removing development scripts from staging branch...");
+
+      // Check if scripts directory exists
+      if (fs.existsSync("scripts/")) {
+        // Remove the entire scripts directory
+        fs.rmSync("scripts/", { recursive: true, force: true });
+        console.log("✅ Development scripts removed");
+        console.log("🎯 Staging branch is now production-ready!");
+      } else {
+        console.log("🎯 No development scripts found - already clean!");
+      }
+    } catch (error) {
+      console.error(
+        "⚠️  Warning: Could not remove scripts directory:",
+        error.message
+      );
+      console.log("💡 You may need to remove it manually: rm -rf scripts/");
     }
   }
 }
