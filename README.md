@@ -30,6 +30,35 @@
 - 🖥️ **Backend API**: [lets-todo-api](https://github.com/KosMaster87/lets-todo-api)
 - 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
 
+## 🌿 **Professional Branch Structure**
+
+This repository demonstrates a professional frontend development workflow with automated staging preparation:
+
+| Branch                           | Purpose              | Content                                                                                                                     | Audience                            |
+| -------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| 🚀 **`feature/main-feature`**    | **Development**      | • Complete JSDoc documentation<br>• Development tools & scripts<br>• Detailed component comments<br>• Debug console outputs | **Frontend Developers & Reviewers** |
+| 🔄 **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Build process automation<br>• DevOps pipeline demonstration                             | **Tech Leads & DevOps Engineers**   |
+| 🎯 **`staging`**                 | **Production-Ready** | • Optimized component code<br>• No debug console logs<br>• Deployment-ready assets<br>• Minimal documentation               | **Production Deployment**           |
+| 🏛️ **`main`**                    | **Stable Release**   | • Production-tested code<br>• User-facing documentation<br>• Release version tags                                           | **End Users & Deployments**         |
+
+### 🤖 **Automated Frontend Staging Workflow**
+
+```bash
+# One-command frontend staging preparation
+npm run staging:prepare
+```
+
+**This automated workflow:**
+
+1. ✅ Creates temporary `feature/staging-prepare` branch
+2. ✅ Removes JSDoc documentation (5300+ lines cleaned)
+3. ✅ Eliminates debug logs and development comments
+4. ✅ Deletes development scripts and build tools
+5. ✅ Merges optimized code into `staging` branch
+6. ✅ Preserves demo branch for workflow transparency
+
+**Portfolio Impact:** Demonstrates both comprehensive development practices (feature branch) and production deployment readiness (staging branch).
+
 ---
 
 ## 🎯 Project Overview
