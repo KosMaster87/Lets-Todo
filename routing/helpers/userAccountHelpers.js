@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/userAccountHelpers.js
+/**
+ * @fileoverview User account helper functions for routing
+ * @description Helper functions for user account management and authentication
+ * @module routing/helpers/userAccountHelpers
+ */
 
 import { userPool, userPools } from "./../../db.js";
 import { hashPassword, verifyPassword } from "./authHelpers.js";

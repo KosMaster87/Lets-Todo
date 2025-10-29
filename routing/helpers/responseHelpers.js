@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/responseHelpers.js
+/**
+ * @fileoverview Response helper functions for routing
+ * @description Standardized response functions for success and error handling
+ * @module routing/helpers/responseHelpers
+ */
 
 /**
  * HTTP Status Codes as constants

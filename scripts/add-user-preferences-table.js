@@ -1,4 +1,10 @@
-// lets-todo-api/scripts/add-user-preferences-table.js
+/**
+ * @fileoverview Migration Script: Add user_preferences table to all user databases
+ * @description Creates a new table to store user preferences as JSON data
+ * in each individual user database (not the central users database).
+ *
+ * @module scripts/add-user-preferences-table
+ */
 
 import mysql from "mysql2/promise";
 import { ENV, debugLog, errorLog } from "../config/environment.js";

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
 /**
- * E-Mail Debug Script für Server-Testing
- * Testet die E-Mail-Konfiguration und -Verbindung
+ * @fileoverview Email debug script for server testing
+ * @description Tests email configuration and connection
+ *
+ * @module debug-email
  */
 
 import { emailService } from "../services/emailService.js";

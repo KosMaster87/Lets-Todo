@@ -1,8 +1,8 @@
-// lets-todo-api/config/environment.js
-
 /**
- * Backend Environment Configuration
- * Multi-Environment Support: development, feature, staging, production
+ * @fileoverview Backend Environment Configuration
+ * @description Multi-Environment Support: development, feature, staging, production
+ *
+ * @module config/environment
  */
 
 import dotenv from "dotenv";

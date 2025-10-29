@@ -1,4 +1,9 @@
-// lets-todo-api/routing/userRouter.js
+/**
+ * @fileoverview User Router
+ * @description Router for handling user-related operations such as
+ *              preferences and profile management.
+ * @module routing/userRouter
+ */
 
 import { Router } from "express";
 import { debugLog, errorLog } from "./../config/environment.js";
@@ -17,8 +22,6 @@ import {
 } from "./helpers/responseHelpers.js";
 
 const router = Router();
-
-// #################################################
 
 /**
  * Middleware: Validate user session for all user routes
@@ -75,8 +78,6 @@ const addUserInfoToRequest = (req, userId, sessionResult) => {
   req.userEmail = sessionResult.email;
 };
 
-// #################################################
-
 /**
  * GET /api/user/preferences - Load user preferences
  * Returns user preferences from the database or default values
@@ -124,8 +125,6 @@ const handlePreferencesLoadError = (err, res) => {
   errorLog("Error loading user preferences:", err);
   return sendServerError(res, "Fehler beim Laden der Benutzereinstellungen");
 };
-
-// #################################################
 
 /**
  * PUT /api/user/preferences - Save/update user preferences
@@ -195,8 +194,6 @@ const handlePreferencesSaveError = (err, res) => {
     "Fehler beim Speichern der Benutzereinstellungen"
   );
 };
-
-// #################################################
 
 /**
  * GET /api/user/profile - Get user profile information

@@ -1,8 +1,7 @@
-// lets-todo-api/middleware/poolMiddleware.js
-
 /**
- * Database Pool Assignment Middleware
- * Assigns the correct DB pool to each request (User or Guest)
+ * @fileoverview Database Pool Assignment Middleware
+ * @description Assigns the correct DB pool to each request (User or Guest)
+ * @module middleware/poolMiddleware
  */
 
 import mysql from "mysql2/promise";

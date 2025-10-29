@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
-// scripts/add-trash-columns.js
-// Migration script to add trash columns to todos table
+/**
+ * @fileoverview Database migration script to add trash columns
+ * @description Adds trashed and trashed_at columns to todos table for soft-deletion
+ * @module scripts/add-trash-columns
+ */
 
 import mysql from "mysql2/promise";
 import { ENV } from "../config/environment.js";

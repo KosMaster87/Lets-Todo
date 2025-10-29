@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/passwordResetHelpers.js
+/**
+ * @fileoverview Password reset helper functions for routing
+ * @description Helper functions to manage password reset operations securely
+ * @module routing/helpers/passwordResetHelpers
+ */
 
 import crypto from "crypto";
 import { userPool } from "./../../db.js";

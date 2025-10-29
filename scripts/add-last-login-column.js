@@ -1,6 +1,12 @@
 /**
+ * @fileoverview Database migration script to add last_login column
+ * @description Adds last_login column to users table for better inactivity detection
+ * @module scripts/add-last-login-column
+ */
+
+/**
  * 🔄 Database Migration: Add last_login column
- * Fügt last_login Spalte zur users Tabelle hinzu für bessere Inaktivitäts-Erkennung
+ * Adds last_login column to users table for better inactivity detection
  *
  * Usage: NODE_ENV=feat node scripts/add-last-login-column.js
  */

@@ -1,4 +1,8 @@
-// lets-todo-api/routing/authRouter.js
+/**
+ * @fileoverview Router for user authentication and account management
+ * @description Handles user registration, login, logout, password changes, and password resets.
+ * @module routing/authRouter
+ */
 
 import { Router } from "express";
 import { ENV, debugLog, errorLog } from "./../config/environment.js";

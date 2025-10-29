@@ -1,4 +1,8 @@
-// lets-todo-api/routing/todosRouter.js
+/**
+ * @fileoverview Router for managing todo items
+ * @description Provides CRUD operations for todos including retrieval, creation, updating, trashing, restoring, and deletion.
+ * @module routing/todosRouter
+ */
 
 import { Router } from "express";
 

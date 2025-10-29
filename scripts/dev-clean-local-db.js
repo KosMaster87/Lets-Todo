@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-// scripts/dev-clean-local-db.js
-// 🏠 LOKAL: Script to clean all LOCAL todo databases while preserving structure
-// ⚠️  NUR für lokale Development-Umgebung (127.0.0.1) verwenden!
+/**
+ * @fileoverview Script to clean all LOCAL todo databases while preserving structure
+ * @description This script connects to the local MySQL database and removes all user-specific todo databases.
+ * @module scripts/dev-clean-local-db
+ */
 
 import mysql from "mysql2/promise";
 import { ENV } from "../config/environment.js";

@@ -1,11 +1,18 @@
 /**
- * 🌐 MULTI-ENVIRONMENT Database Setup Script
- * Erstellt Datenbanken für ALLE Environments basierend auf NODE_ENV:
+ * @fileoverview MULTI-ENVIRONMENT Database Setup Script
+ * @description Creates databases for ALL environments based on NODE_ENV
  *
- * 🏠 development  → Lokale DBs (127.0.0.1)
- * 🚀 feat        → Feature Server DBs
- * 🎭 staging     → Staging Server DBs
- * 🏭 production  → Production Server DBs
+ * @module scripts/setup-multi-env-db
+ */
+
+/**
+ * 🌐 MULTI-ENVIRONMENT Database Setup Script
+ * Creates databases for ALL environments based on NODE_ENV:
+ *
+ * 🏠 development  → Local DBs (127.0.0.1)
+ * 🚀 feat         → Feature Server DBs
+ * 🎭 staging      → Staging Server DBs
+ * 🏭 production   → Production Server DBs
  *
  * Usage: NODE_ENV=development node scripts/setup-multi-env-db.js
  */
@@ -20,14 +27,14 @@ import {
 } from "../config/environment.js";
 
 /**
- * Setup für Datenbank (Multi-Environment Support)
- * Unterstützt: development, feature, staging, production
+ * Database setup (Multi-Environment Support)
+ * Supports: development, feature, staging, production
  */
 async function setupDatabase() {
   try {
-    infoLog(`Starte ${ENVIRONMENT} Database Setup...`);
+    infoLog(`Starting ${ENVIRONMENT} Database Setup...`);
 
-    // Verbindung ohne spezifische Datenbank
+    // Connection without specific database
     const connection = await mysql.createConnection({
       host: ENV.DB_HOST,
       port: ENV.DB_PORT,
@@ -35,12 +42,12 @@ async function setupDatabase() {
       password: ENV.DB_PASSWORD,
     });
 
-    // 1. Users-Datenbank erstellen
+    // 1. Create users database
     const usersDB = ENV.DB_USERS;
     await connection.execute(`CREATE DATABASE IF NOT EXISTS \`${usersDB}\``);
-    infoLog(`Users-Datenbank erstellt: ${usersDB}`);
+    infoLog(`Users database created: ${usersDB}`);
 
-    // 2. Users-Tabelle erstellen
+    // 2. Create users table
     await connection.execute(`USE \`${usersDB}\``);
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS users (
@@ -51,9 +58,9 @@ async function setupDatabase() {
         created BIGINT
       );
     `);
-    infoLog("Users-Tabelle erstellt");
+    infoLog("Users table created");
 
-    // 3. Password-Reset-Tokens Tabelle erstellen
+    // 3. Create password reset tokens table
     await connection.execute(`
       CREATE TABLE IF NOT EXISTS password_reset_tokens (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -70,24 +77,24 @@ async function setupDatabase() {
         FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
     `);
-    infoLog("Password-Reset-Tokens Tabelle erstellt");
+    infoLog("Password reset tokens table created");
 
-    // 3. Test-Benutzer erstellen (für alle non-production Environments)
+    // 3. Create test user (for all non-production environments)
     if (ENVIRONMENT !== "production") {
       try {
-        // Environment-spezifische Test-User
+        // Environment-specific test user
         const envSuffix = ENVIRONMENT === "development" ? "dev" : ENVIRONMENT;
         const testEmail = `test@${envSuffix}.local`;
-        const testPasswordHash = "$2b$10$abcdefghijklmnopqrstuvwxyz123456"; // Dummy-Hash
+        const testPasswordHash = "$2b$10$abcdefghijklmnopqrstuvwxyz123456"; // Dummy hash
         const testDBName = `todos_user_1_${envSuffix}`;
 
         await connection.execute(
           `INSERT IGNORE INTO users (email, password_hash, db_name, created) VALUES (?, ?, ?, ?)`,
           [testEmail, testPasswordHash, testDBName, Date.now()]
         );
-        infoLog(`Test-User erstellt: ${testEmail}`);
+        infoLog(`Test user created: ${testEmail}`);
 
-        // Test-User-Datenbank erstellen
+        // Create test user database
         await connection.execute(
           `CREATE DATABASE IF NOT EXISTS \`${testDBName}\``
         );
@@ -102,60 +109,58 @@ async function setupDatabase() {
             updated BIGINT
           );
         `);
-        infoLog(`Test-User-Datenbank erstellt: ${testDBName}`);
+        infoLog(`Test user database created: ${testDBName}`);
 
-        // Environment-spezifische Test-Todos erstellen
+        // Create environment-specific test todos
         if (ENVIRONMENT === "development") {
           await connection.execute(`
             INSERT IGNORE INTO todos (id, title, description, completed, created, updated) VALUES
-            (1, 'Welcome to Let\\'s Todo API', 'Diese Todo wurde automatisch vom Setup-Script erstellt', 0, ${Date.now()}, ${Date.now()}),
-            (2, 'Test the API', 'Teste die verschiedenen Endpoints mit Thunder Client oder curl', 0, ${Date.now()}, ${Date.now()}),
-            (3, 'Completed Example', 'Dies ist ein Beispiel einer erledigten Todo', 1, ${Date.now()}, ${Date.now()})
+            (1, 'Welcome to Let\\'s Todo API', 'This todo was automatically created by the setup script', 0, ${Date.now()}, ${Date.now()}),
+            (2, 'Test the API', 'Test the various endpoints with Thunder Client or curl', 0, ${Date.now()}, ${Date.now()}),
+            (3, 'Completed Example', 'This is an example of a completed todo', 1, ${Date.now()}, ${Date.now()})
           `);
-          infoLog("Test-Todos für Development erstellt");
+          infoLog("Test todos for development created");
         }
       } catch (err) {
-        debugLog("Test-User bereits vorhanden oder Fehler:", err.message);
+        debugLog("Test user already exists or error:", err.message);
       }
     }
 
     await connection.end();
-    infoLog(`✅ ${ENVIRONMENT} Database Setup abgeschlossen!`);
+    infoLog(`✅ ${ENVIRONMENT} Database Setup completed!`);
 
-    // Environment-spezifische Abschluss-Meldungen
-    console.log(
-      `\n🎯 ${ENVIRONMENT.toUpperCase()} Database Setup abgeschlossen!`
-    );
+    // Environment-specific completion messages
+    console.log(`\n🎯 ${ENVIRONMENT.toUpperCase()} Database Setup completed!`);
 
     if (ENVIRONMENT === "development") {
-      console.log("\n🚀 Sie können jetzt starten mit:");
+      console.log("\n🚀 You can now start with:");
       console.log("npm run dev");
-      console.log("\n👤 Test-User Zugangsdaten:");
+      console.log("\n👤 Test user credentials:");
       console.log("Email: test@dev.local");
-      console.log("Password: beliebig (Dummy-Hash)");
+      console.log("Password: anything (dummy hash)");
     } else if (ENVIRONMENT === "feature") {
-      console.log("\n🚀 Feature Environment ist bereit!");
-      console.log("👤 Test-User: test@feature.local");
+      console.log("\n🚀 Feature environment is ready!");
+      console.log("👤 Test user: test@feature.local");
       console.log("Port: 3003");
     } else if (ENVIRONMENT === "staging") {
-      console.log("\n🚀 Staging Environment ist bereit!");
-      console.log("👤 Test-User: test@staging.local");
+      console.log("\n🚀 Staging environment is ready!");
+      console.log("👤 Test user: test@staging.local");
       console.log("Port: 3004");
     } else {
-      console.log("\n🚀 Production-Datenbank ist bereit!");
-      console.log("⚠️  Kein Test-User in Production erstellt.");
+      console.log("\n🚀 Production database is ready!");
+      console.log("⚠️  No test user created in production.");
     }
   } catch (error) {
-    errorLog("❌ Database Setup Fehler:", error);
-    console.log("\n💡 Mögliche Lösungen:");
-    console.log("1. MariaDB/MySQL läuft: sudo systemctl start mariadb");
-    console.log("2. Zugangsdaten in .env prüfen");
-    console.log("3. User-Berechtigung prüfen");
+    errorLog("❌ Database Setup Error:", error);
+    console.log("\n💡 Possible solutions:");
+    console.log("1. MariaDB/MySQL running: sudo systemctl start mariadb");
+    console.log("2. Check credentials in .env");
+    console.log("3. Check user permissions");
     process.exit(1);
   }
 }
 
-// Script ausführen
+// Execute script
 if (import.meta.url === `file://${process.argv[1]}`) {
   setupDatabase();
 }

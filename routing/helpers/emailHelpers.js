@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/emailHelpers.js
+/**
+ * @fileoverview Email helper functions for routing
+ * @description Helper functions to send emails with proper logging and error handling
+ * @module routing/helpers/emailHelpers
+ */
 
 import { emailService } from "./../../services/emailService.js";
 import { debugLog, errorLog } from "./../../config/environment.js";

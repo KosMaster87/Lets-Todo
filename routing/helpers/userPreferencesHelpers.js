@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/userPreferencesHelpers.js
+/**
+ * @fileoverview User preferences helper functions for routing
+ * @description Helper functions to manage user preferences with proper logging and error handling
+ * @module routing/helpers/userPreferencesHelpers
+ */
 
 import { userPools } from "./../../db.js";
 import { createUserPool } from "./dbHelpers.js";

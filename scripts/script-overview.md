@@ -1,21 +1,20 @@
 ```bash
-📁 SCRIPTS-STRUKTUR
-═══════════════════
+📁 SCRIPTS STRUCTURE
+════════════════════
 
-🏠 LOKALE DEVELOPMENT (127.0.0.1):
-├── dev-clean-local-db.js                 - Löscht nur lokale DBs
+🏠 LOCAL DEVELOPMENT (127.0.0.1):
+├── dev-clean-local-db.js                 - Deletes only local DBs
 └── setup-multi-env-db.js                 - NODE_ENV=development
 
 🌐 SERVER (feat/stage/prod):
-├── cleanup-server-db.sh                  - Löscht Server-DBs (installiert in /usr/local/bin/)
+├── cleanup-server-db.sh                  - Deletes server DBs (installed in /usr/local/bin/)
 └── setup-multi-env-db.js                 - NODE_ENV=feat|staging|production
 ```
 
 ```bash
-# Das Bash-Template sorgt für System-Level Setup (User, Permissions), während das Node.js Script die Application-Level Datenbank-Erstellung übernimmt.
-# Deployment Prozess:
+# The Bash template handles system-level setup (User, Permissions), while the Node.js script handles application-level database creation.
+# Deployment Process:
 create-step-deployment.sh
   └── database-setup (Bash Template)
       └── setup-multi-env-db.js (Node.js Logic)
 ```
-

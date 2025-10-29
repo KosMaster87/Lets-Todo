@@ -1,4 +1,8 @@
-// lets-todo-api/services/emailService.js
+/**
+ * @fileoverview Email service for password reset and other notifications
+ * @description Provides functions for sending emails
+ * @module services/emailService
+ */
 
 import nodemailer from "nodemailer";
 import {
@@ -9,7 +13,7 @@ import {
 } from "./../config/environment.js";
 
 /**
- * E-Mail-Service für Password-Reset und andere Benachrichtigungen
+ * Email service for password reset and other notifications
  */
 class EmailService {
   constructor() {
@@ -18,7 +22,7 @@ class EmailService {
   }
 
   /**
-   * Initialisiert den E-Mail-Transporter basierend auf Umgebungsvariablen
+   * Initializes the email transporter based on environment variables
    */
   initializeTransporter() {
     try {
@@ -44,7 +48,7 @@ class EmailService {
   }
 
   /**
-   * Erstellt Gmail SMTP Transporter
+   * Creates Gmail SMTP transporter
    */
   setupGmailTransporter() {
     this.transporter = nodemailer.createTransport({
@@ -58,7 +62,7 @@ class EmailService {
   }
 
   /**
-   * Erstellt Outlook SMTP Transporter
+   * Creates Outlook SMTP transporter
    */
   setupOutlookTransporter() {
     this.transporter = nodemailer.createTransport({
@@ -72,7 +76,7 @@ class EmailService {
   }
 
   /**
-   * Erstellt Custom SMTP Transporter
+   * Creates custom SMTP transporter
    */
   setupCustomSmtpTransporter() {
     this.transporter = nodemailer.createTransport({
@@ -88,10 +92,10 @@ class EmailService {
   }
 
   /**
-   * Sendet eine Password-Reset-E-Mail
-   * @param {string} toEmail - Empfänger E-Mail-Adresse
-   * @param {string} resetToken - Reset-Token für den Link
-   * @param {string} userName - Name des Users (optional)
+   * Sends a password reset email
+   * @param {string} toEmail - Recipient email address
+   * @param {string} resetToken - Reset token for the link
+   * @param {string} userName - User name (optional)
    */
   async sendPasswordResetEmail(toEmail, resetToken, userName = null) {
     const resetLink = `${ENV.FRONTEND_URL}/reset-password-confirm/${resetToken}`;
@@ -108,8 +112,8 @@ class EmailService {
   }
 
   /**
-   * Sendet eine E-Mail
-   * @param {Object} mailOptions - E-Mail-Optionen
+   * Sends an email
+   * @param {Object} mailOptions - Email options
    */
   async sendEmail(mailOptions) {
     try {
@@ -140,9 +144,9 @@ class EmailService {
   }
 
   /**
-   * Generiert HTML-Template für Password-Reset-E-Mail
-   * @param {string} resetLink - Reset-Link URL
-   * @param {string} userName - Name des Users (optional)
+   * Generates HTML template for password reset email
+   * @param {string} resetLink - Reset link URL
+   * @param {string} userName - User name (optional)
    */
   generatePasswordResetHTML(resetLink, userName = null) {
     const greeting = userName ? `Hallo ${userName}` : "Hallo";
@@ -215,9 +219,9 @@ class EmailService {
   }
 
   /**
-   * Generiert Text-Version für Password-Reset-E-Mail
-   * @param {string} resetLink - Reset-Link URL
-   * @param {string} userName - Name des Users (optional)
+   * Generates text version for password reset email
+   * @param {string} resetLink - Reset link URL
+   * @param {string} userName - User name (optional)
    */
   generatePasswordResetText(resetLink, userName = null) {
     const greeting = userName ? `Hallo ${userName}` : "Hallo";
@@ -244,7 +248,7 @@ class EmailService {
   }
 
   /**
-   * Testet die E-Mail-Konfiguration
+   * Tests the email configuration
    */
   async testConnection() {
     if (!this.transporter) {
@@ -263,5 +267,5 @@ class EmailService {
   }
 }
 
-// Singleton-Instanz exportieren
+// Export singleton instance
 export const emailService = new EmailService();

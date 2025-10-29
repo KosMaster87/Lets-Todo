@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/dbHelpers.js
+/**
+ * @fileoverview Database helper functions for user databases
+ * @description Functions to create user databases, tables, indexes, and validate user sessions
+ * @module routing/helpers/dbHelpers
+ */
 
 import mysql from "mysql2/promise";
 import { corePool } from "./../../db.js";

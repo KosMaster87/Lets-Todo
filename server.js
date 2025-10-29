@@ -1,5 +1,6 @@
 /**
  * @fileoverview Express server setup with user and guest session handling
+ * @description Sets up middleware, routes, and starts the server
  * @module server
  */
 

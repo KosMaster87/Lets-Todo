@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Cron Job Setup für Inactive User Cleanup
+# Cron Job Setup for Inactive User Cleanup
 #
 # Installation:
 # 1. chmod +x scripts/setup-user-cleanup-cron.sh
 # 2. ./scripts/setup-user-cleanup-cron.sh
 #
-# Oder manuell in crontab -e einfügen:
+# Or manually add to crontab -e:
 # 0 3 1 * * cd /path/to/lets-todo-api && DRY_RUN=false DAYS_INACTIVE=90 ./scripts/cleanup-inactive-users.sh >> /var/log/user-cleanup.log 2>&1
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -16,134 +16,134 @@ echo "🔧 Setting up Inactive User Cleanup Cron Job..."
 echo "📁 Project Directory: $PROJECT_DIR"
 echo ""
 
-# Benutzer-Konfiguration abfragen
-echo "⚙️  Konfiguration:"
+# Get user configuration
+echo "⚙️  Configuration:"
 echo ""
 
-# Standard-Werte
+# Default values
 DEFAULT_DAYS=90
-DEFAULT_SCHEDULE="0 3 1 * *"  # Monatlich am 1. um 03:00 Uhr
+DEFAULT_SCHEDULE="0 3 1 * *"  # Monthly on 1st at 03:00
 
-echo "📅 Wie viele Tage Inaktivität bis zur Löschung? (Standard: $DEFAULT_DAYS)"
+echo "📅 How many days of inactivity before deletion? (Default: $DEFAULT_DAYS)"
 read -r DAYS_INPUT
 DAYS_INACTIVE=${DAYS_INPUT:-$DEFAULT_DAYS}
 
 echo ""
-echo "⏰ Cron-Zeitplan wählen:"
-echo "   1) Monatlich (1. des Monats, 03:00 Uhr) - Empfohlen"
-echo "   2) Wöchentlich (Sonntags, 03:00 Uhr)"
-echo "   3) Custom (eigene Eingabe)"
+echo "⏰ Choose cron schedule:"
+echo "   1) Monthly (1st of month, 03:00 AM) - Recommended"
+echo "   2) Weekly (Sundays, 03:00 AM)"
+echo "   3) Custom (manual input)"
 echo ""
-read -p "Auswahl (1-3): " SCHEDULE_CHOICE
+read -p "Choice (1-3): " SCHEDULE_CHOICE
 
 case $SCHEDULE_CHOICE in
     1)
         CRON_SCHEDULE="0 3 1 * *"
-        DESCRIPTION="Monatlich am 1. um 03:00 Uhr"
+        DESCRIPTION="Monthly on 1st at 03:00 AM"
         ;;
     2)
         CRON_SCHEDULE="0 3 * * 0"
-        DESCRIPTION="Wöchentlich sonntags um 03:00 Uhr"
+        DESCRIPTION="Weekly on Sundays at 03:00 AM"
         ;;
     3)
-        echo "Bitte Cron-Zeitplan eingeben (Format: Min Std Tag Mon Wochentag):"
-        echo "Beispiele:"
-        echo "  0 3 1 * *     = Monatlich am 1. um 03:00"
-        echo "  0 2 * * 0     = Wöchentlich sonntags um 02:00"
-        echo "  30 4 15 * *   = Monatlich am 15. um 04:30"
+        echo "Please enter cron schedule (Format: Min Hour Day Month Weekday):"
+        echo "Examples:"
+        echo "  0 3 1 * *     = Monthly on 1st at 03:00"
+        echo "  0 2 * * 0     = Weekly on Sundays at 02:00"
+        echo "  30 4 15 * *   = Monthly on 15th at 04:30"
         read -r CRON_SCHEDULE
         DESCRIPTION="Custom: $CRON_SCHEDULE"
         ;;
     *)
         CRON_SCHEDULE="0 3 1 * *"
-        DESCRIPTION="Monatlich am 1. um 03:00 Uhr (Standard)"
+        DESCRIPTION="Monthly on 1st at 03:00 AM (Default)"
         ;;
 esac
 
 echo ""
-echo "🔍 Dry-Run Test aktivieren? (j/N)"
-echo "   (Empfohlen beim ersten Setup - führt nur Simulation aus)"
+echo "🔍 Enable Dry-Run test? (y/N)"
+echo "   (Recommended for first setup - runs simulation only)"
 read -r DRY_RUN_INPUT
-if [[ "$DRY_RUN_INPUT" =~ ^[jJ]$ ]]; then
+if [[ "$DRY_RUN_INPUT" =~ ^[yY]$ ]]; then
     DRY_RUN_VALUE="true"
-    DRY_RUN_DESC=" (DRY-RUN Modus)"
+    DRY_RUN_DESC=" (DRY-RUN Mode)"
 else
     DRY_RUN_VALUE="false"
     DRY_RUN_DESC=""
 fi
 
-# Cron-Eintrag zusammenbauen
+# Build cron entry
 CRON_ENTRY="$CRON_SCHEDULE cd $PROJECT_DIR && DRY_RUN=$DRY_RUN_VALUE DAYS_INACTIVE=$DAYS_INACTIVE ./scripts/cleanup-inactive-users.sh >> /var/log/user-cleanup.log 2>&1"
 
 echo ""
-echo "📋 Konfiguration Zusammenfassung:"
-echo "   • Inaktivitäts-Zeitraum: $DAYS_INACTIVE Tage"
-echo "   • Zeitplan: $DESCRIPTION$DRY_RUN_DESC"
+echo "📋 Configuration Summary:"
+echo "   • Inactivity period: $DAYS_INACTIVE days"
+echo "   • Schedule: $DESCRIPTION$DRY_RUN_DESC"
 echo "   • Logfile: /var/log/user-cleanup.log"
 echo ""
-echo "🔧 Cron-Eintrag:"
+echo "🔧 Cron entry:"
 echo "   $CRON_ENTRY"
 echo ""
 
-# Bestätigung einholen
-read -p "❓ Cron Job mit dieser Konfiguration erstellen? (j/N): " CONFIRM
-if [[ ! "$CONFIRM" =~ ^[jJ]$ ]]; then
-    echo "❌ Abgebrochen"
+# Get confirmation
+read -p "❓ Create cron job with this configuration? (y/N): " CONFIRM
+if [[ ! "$CONFIRM" =~ ^[yY]$ ]]; then
+    echo "❌ Cancelled"
     exit 0
 fi
 
-# Prüfen ob bereits vorhanden
+# Check if already exists
 if crontab -l 2>/dev/null | grep -q "cleanup-inactive-users.sh"; then
-    echo "⚠️  User-Cleanup Cron Job bereits vorhanden:"
+    echo "⚠️  User-Cleanup Cron Job already exists:"
     crontab -l | grep "cleanup-inactive-users.sh"
     echo ""
-    echo "Möchten Sie ihn ersetzen? (j/N)"
+    echo "Do you want to replace it? (y/N)"
     read -r REPLACE_RESPONSE
-    if [[ ! "$REPLACE_RESPONSE" =~ ^[jJ]$ ]]; then
-        echo "❌ Abgebrochen"
+    if [[ ! "$REPLACE_RESPONSE" =~ ^[yY]$ ]]; then
+        echo "❌ Cancelled"
         exit 0
     fi
 
-    # Alten Eintrag entfernen
+    # Remove old entry
     crontab -l | grep -v "cleanup-inactive-users.sh" | crontab -
-    echo "🗑️  Alter Cron Job entfernt"
+    echo "🗑️  Old cron job removed"
 fi
 
-# Neuen Eintrag hinzufügen
+# Add new entry
 (crontab -l 2>/dev/null; echo "$CRON_ENTRY") | crontab -
 
 echo ""
-echo "✅ User-Cleanup Cron Job erfolgreich hinzugefügt!"
+echo "✅ User-Cleanup Cron Job successfully added!"
 echo ""
 echo "📊 Details:"
-echo "   • Zeitplan: $DESCRIPTION"
-echo "   • Inaktivitäts-Grenze: $DAYS_INACTIVE Tage"
+echo "   • Schedule: $DESCRIPTION"
+echo "   • Inactivity limit: $DAYS_INACTIVE days"
 echo "   • Dry-Run: $DRY_RUN_VALUE"
 echo "   • Logfile: /var/log/user-cleanup.log"
 echo ""
 
 if [[ "$DRY_RUN_VALUE" == "true" ]]; then
-    echo "🧪 WICHTIG: Dry-Run Modus ist aktiviert!"
-    echo "   Der Job wird nur simulieren, aber nicht löschen."
-    echo "   Nach dem ersten Test können Sie den Cron Job bearbeiten:"
+    echo "🧪 IMPORTANT: Dry-Run mode is enabled!"
+    echo "   The job will only simulate, but not delete."
+    echo "   After the first test you can edit the cron job:"
     echo "   crontab -e"
-    echo "   Ändern Sie DRY_RUN=true zu DRY_RUN=false"
+    echo "   Change DRY_RUN=true to DRY_RUN=false"
 fi
 
 echo ""
-echo "🔍 Manuelle Tests:"
-echo "   # Dry-Run Test (empfohlen zuerst)"
+echo "🔍 Manual tests:"
+echo "   # Dry-Run test (recommended first)"
 echo "   DRY_RUN=true DAYS_INACTIVE=$DAYS_INACTIVE ./scripts/cleanup-inactive-users.sh"
 echo ""
-echo "   # Echte Ausführung (nach Test)"
+echo "   # Real execution (after test)"
 echo "   DRY_RUN=false DAYS_INACTIVE=$DAYS_INACTIVE ./scripts/cleanup-inactive-users.sh"
 echo ""
-echo "📋 Aktuelle Cron Jobs:"
+echo "📋 Current cron jobs:"
 crontab -l
 
 echo ""
-echo "💡 Tipps:"
-echo "   • Überwachen Sie die Logs: tail -f /var/log/user-cleanup.log"
-echo "   • Testen Sie zuerst manuell mit DRY_RUN=true"
-echo "   • Backup vor dem ersten echten Lauf empfohlen"
-echo "   • Cron Jobs bearbeiten: crontab -e"
+echo "💡 Tips:"
+echo "   • Monitor logs: tail -f /var/log/user-cleanup.log"
+echo "   • Test manually first with DRY_RUN=true"
+echo "   • Backup recommended before first real run"
+echo "   • Edit cron jobs: crontab -e"

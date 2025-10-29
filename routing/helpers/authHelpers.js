@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/authHelpers.js
+/**
+ * @fileoverview Authentication helper functions
+ * @description Provides utility functions for password hashing, input validation, and email format checking.
+ * @module routing/helpers/authHelpers
+ */
 
 import bcrypt from "bcrypt";
 

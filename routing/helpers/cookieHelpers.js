@@ -1,4 +1,8 @@
-// lets-todo-api/routing/helpers/cookieHelpers.js
+/**
+ * @fileoverview Cookie helper functions
+ * @description Provides utility functions for creating and clearing cookies with appropriate options.
+ * @module routing/helpers/cookieHelpers
+ */
 
 import { ENV } from "./../../config/environment.js";
 

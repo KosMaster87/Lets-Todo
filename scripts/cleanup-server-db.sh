@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
 # 🌐 cleanup-server-db.sh
-# Löscht ALLE Server-Datenbanken für Todos (Guest + User), behält nur zentrale User-DB
-# 🚀 Für SERVER-Environments: feat/staging/production
-# ⚠️  WARNUNG: Löscht alle User-Daten unwiderruflich!
+# Deletes ALL server databases for todos (Guest + User), keeps only central User-DB
+# 🚀 For SERVER environments: feat/staging/production
+# ⚠️  WARNING: Deletes all user data irreversibly!
 
-# —————— Konfiguration ——————
-# Option 1: Environment Variable (empfohlen für CI/CD)
+# —————— Configuration ——————
+# Option 1: Environment Variable (recommended for CI/CD)
 if [[ -n "$MYSQL_ROOT_PASSWORD" ]]; then
   MYSQL="mysql -u root -p'${MYSQL_ROOT_PASSWORD}'"
 # Option 2: MySQL Config File ~/.my.cnf (empfohlen für Server)

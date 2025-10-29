@@ -2,8 +2,7 @@
 
 /**
  * @fileoverview Migration Script: Add updated_at column to users table
- *
- * Adds a proper updated_at timestamp column to the users table for tracking
+ * @description Adds a proper updated_at timestamp column to the users table for tracking
  * password changes and other user data modifications.
  *
  * @module add-updated-at-column

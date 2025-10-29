@@ -1,7 +1,6 @@
 /**
  * @fileoverview Database Migration: Add password_reset_tokens table
- *
- * Creates the password_reset_tokens table for secure password reset functionality.
+ * @description Creates the password_reset_tokens table for secure password reset functionality.
  * This table stores temporary tokens with expiration times for password reset requests.
  *
  * Key Features:
