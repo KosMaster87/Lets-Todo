@@ -17,9 +17,19 @@ export const getApiBase = () => {
     return "http://127.0.0.1:3000/api";
   }
 
-  // Production/VPS
+  // Feature environment
   if (hostname.includes("lets-todo-app-feat.dev2k.org")) {
     return "https://lets-todo-api-feat.dev2k.org/api";
+  }
+
+  // Staging environment
+  if (hostname.includes("lets-todo-app-stage.dev2k.org")) {
+    return "https://lets-todo-api-stage.dev2k.org/api";
+  }
+
+  // Production environment
+  if (hostname.includes("lets-todo-app.dev2k.org")) {
+    return "https://lets-todo-api.dev2k.org/api";
   }
 
   // Fallback to local
