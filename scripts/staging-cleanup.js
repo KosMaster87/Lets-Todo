@@ -146,11 +146,37 @@ class StagingCleanup {
 
       let removedCount = 0;
 
-      // Remove development/deployment directories
-      ["deploy", "nginx", "docs", "scripts"].forEach((dir) => {
+      // Remove development/deployment directories (but keep scripts for release.js)
+      ["deploy", "nginx", "docs"].forEach((dir) => {
         if (fs.existsSync(dir)) {
           fs.rmSync(dir, { recursive: true, force: true });
           console.log(`✅ Removed directory: ${dir}/`);
+          removedCount++;
+        }
+      });
+
+      // Remove specific development scripts but keep release.js and staging-cleanup.js
+      const scriptsToRemove = [
+        "scripts/README.md",
+        "scripts/script-overview.md",
+        "scripts/setup-multi-env-db.js",
+        "scripts/debug-email.js",
+        "scripts/dev-clean-local-db.js",
+        "scripts/add-last-login-column.js",
+        "scripts/add-password-reset-tokens-table.js",
+        "scripts/add-trash-columns.js",
+        "scripts/add-updated-at-column.js",
+        "scripts/add-user-preferences-table.js",
+        "scripts/cleanup-inactive-users.sh",
+        "scripts/cleanup-server-db.sh",
+        "scripts/setup-user-cleanup-cron.sh",
+        "scripts/.my.cnf.example",
+      ];
+
+      scriptsToRemove.forEach((scriptPath) => {
+        if (fs.existsSync(scriptPath)) {
+          fs.unlinkSync(scriptPath);
+          console.log(`✅ Removed file: ${scriptPath}`);
           removedCount++;
         }
       });
