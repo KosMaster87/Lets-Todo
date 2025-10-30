@@ -120,7 +120,16 @@ class BackendReleaseManager {
     if (lastTag) {
       gitLogCommand = `git log ${lastTag}..HEAD --oneline --no-merges`;
     } else {
-      gitLogCommand = `git log --oneline --no-merges`;
+      // For first release, limit to commits from the last 30 days or max 20 commits
+      // This prevents including all historical commits in a monorepo
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const dateFilter = thirtyDaysAgo.toISOString().split("T")[0];
+
+      console.log(
+        `ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`
+      );
+      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
     }
 
     let commits;
@@ -133,9 +142,9 @@ class BackendReleaseManager {
         .toString()
         .trim();
     } catch (error) {
-      // If no previous version tag exists, get all commits
-      console.log("ℹ️  No previous version tag found, using all commits");
-      commits = this.execCommand(`git log --oneline --no-merges`, true);
+      // If command fails, fall back to recent commits only
+      console.log("ℹ️  Falling back to recent commits (last 10)");
+      commits = this.execCommand(`git log --oneline --no-merges -n 10`, true);
     }
 
     if (!commits) {
