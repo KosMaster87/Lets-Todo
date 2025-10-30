@@ -97,24 +97,54 @@ class ReleaseManager {
    * Generate changelog based on git commits
    */
   generateChangelog(fromVersion, toVersion) {
-    console.log(
-      `📝 Generating changelog from ${fromVersion} to ${toVersion}...`
-    );
+    console.log(`📝 Generating changelog from last release to ${toVersion}...`);
+
+    // Get the last git tag instead of package.json version
+    let lastTag;
+    try {
+      lastTag = execSync("git describe --tags --abbrev=0", {
+        cwd: this.projectRoot,
+        encoding: "utf8",
+        stdio: "pipe",
+      })
+        .toString()
+        .trim();
+      console.log(`📋 Found last tag: ${lastTag}`);
+    } catch (error) {
+      console.log("ℹ️  No previous tags found, limiting to recent commits");
+      lastTag = null;
+    }
 
     // Get commits since last version
     let gitLogCommand;
-    if (fromVersion && fromVersion !== "0.0.0") {
-      gitLogCommand = `git log v${fromVersion}..HEAD --oneline --no-merges`;
+    if (lastTag) {
+      gitLogCommand = `git log ${lastTag}..HEAD --oneline --no-merges`;
     } else {
-      gitLogCommand = `git log --oneline --no-merges`;
+      // For first release, limit to commits from the last 30 days or max 20 commits
+      // This prevents including all historical commits in a monorepo
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      const dateFilter = thirtyDaysAgo.toISOString().split("T")[0];
+
+      console.log(
+        `ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`
+      );
+      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
     }
 
     let commits;
     try {
-      commits = this.execCommand(gitLogCommand, true);
+      commits = execSync(gitLogCommand, {
+        cwd: this.projectRoot,
+        encoding: "utf8",
+        stdio: "pipe",
+      })
+        .toString()
+        .trim();
     } catch (error) {
-      // If no previous version tag exists, get all commits
-      commits = this.execCommand(`git log --oneline --no-merges`, true);
+      // If command fails, fall back to recent commits only
+      console.log("ℹ️  Falling back to recent commits (last 10)");
+      commits = this.execCommand(`git log --oneline --no-merges -n 10`, true);
     }
 
     if (!commits) {
