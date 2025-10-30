@@ -153,7 +153,7 @@ class StagingCleanup {
       let removedCount = 0;
 
       // Remove development/deployment directories
-      ["deploy", "nginx", "docs", "docs-api", "docs-app", "scripts"].forEach(
+      ["deploy", "nginx", "docs", "docs-api", "docs-app"].forEach(
         (dir) => {
           if (fs.existsSync(dir)) {
             fs.rmSync(dir, { recursive: true, force: true });
@@ -162,6 +162,21 @@ class StagingCleanup {
           }
         }
       );
+
+      // Remove specific development scripts but keep release.js
+      const scriptsToRemove = [
+        "scripts/staging-cleanup.js",
+        "scripts/README.md",
+        "scripts/script-overview.md"
+      ];
+      
+      scriptsToRemove.forEach((scriptPath) => {
+        if (fs.existsSync(scriptPath)) {
+          fs.unlinkSync(scriptPath);
+          console.log(`✅ Removed file: ${scriptPath}`);
+          removedCount++;
+        }
+      });
 
       // Remove development documentation files
       [
