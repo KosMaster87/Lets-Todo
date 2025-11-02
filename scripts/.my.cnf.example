@@ -6,3 +6,20 @@ password = YOUR_PASSWORD_HERE
 # 1. Copy this file to ~/.my.cnf on the server
 # 2. Set proper permissions: chmod 600 ~/.my.cnf
 # 3. Then use: mysql (without -u and -p flags)
+
+
+echo "[client]
+user=root
+password=" > ~/.my.cnf
+
+
+# Die Datei ist in /root/:
+ls -la /root/.my.cnf
+
+# Oder gehe ins Home-Verzeichnis:
+cd ~
+ls -la .my.cnf
+
+# Oder prüfe den Inhalt:
+cat ~/.my.cnf
+
