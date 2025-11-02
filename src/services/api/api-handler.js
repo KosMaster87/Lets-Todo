@@ -18,17 +18,17 @@ export const getApiBase = () => {
   }
 
   // Feature environment
-  if (hostname.includes("lets-todo-app-feat.dev2k.org")) {
+  if (hostname.includes("lets-todo-feat.dev2k.org")) {
     return "https://lets-todo-api-feat.dev2k.org/api";
   }
 
   // Staging environment
-  if (hostname.includes("lets-todo-app-stage.dev2k.org")) {
+  if (hostname.includes("lets-todo-stage.dev2k.org")) {
     return "https://lets-todo-api-stage.dev2k.org/api";
   }
 
   // Production environment
-  if (hostname.includes("lets-todo-app.dev2k.org")) {
+  if (hostname.includes("lets-todo.dev2k.org")) {
     return "https://lets-todo-api.dev2k.org/api";
   }
 
