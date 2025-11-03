@@ -352,7 +352,7 @@ class BackendReleaseManager {
 
   cleanup(releaseBranch) {
     try {
-      this.execCommand("git checkout staging");
+      this.execCommand("git checkout production");
 
       this.execCommand(`git branch -D ${releaseBranch}`);
 
