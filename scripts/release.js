@@ -328,7 +328,7 @@ class BackendReleaseManager {
     try {
       this.execCommand("git checkout staging");
 
-      this.execCommand(`git branch -d ${releaseBranch}`);
+      this.execCommand(`git branch -D ${releaseBranch}`);
 
       const keepReleaseBranches = process.env.KEEP_RELEASE_BRANCHES === "true";
       if (!keepReleaseBranches) {
