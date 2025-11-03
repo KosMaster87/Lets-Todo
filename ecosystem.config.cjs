@@ -8,6 +8,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "1G",
+      env: {
+        NODE_ENV: "production",
+      },
       env_file: "config/env/.env.production",
       log_file: "./logs/prod-combined.log",
       out_file: "./logs/prod-out.log",
@@ -22,6 +25,9 @@ module.exports = {
       autorestart: true,
       watch: true,
       max_memory_restart: "1G",
+      env: {
+        NODE_ENV: "feature",
+      },
       env_file: "config/env/.env.feature",
       log_file: "./logs/feat-combined.log",
       out_file: "./logs/feat-out.log",
@@ -36,6 +42,9 @@ module.exports = {
       autorestart: true,
       watch: false,
       max_memory_restart: "1G",
+      env: {
+        NODE_ENV: "staging",
+      },
       env_file: "config/env/.env.staging",
       log_file: "./logs/stage-combined.log",
       out_file: "./logs/stage-out.log",
