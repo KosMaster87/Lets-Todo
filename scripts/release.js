@@ -80,13 +80,21 @@ class BackendReleaseManager {
   generateChangelog(fromVersion, toVersion) {
     let lastTag;
     try {
-      lastTag = execSync("git describe --tags --abbrev=0", {
+      const allTags = execSync("git tag --sort=-version:refname", {
         cwd: this.projectRoot,
         encoding: "utf8",
         stdio: "pipe",
       })
         .toString()
-        .trim();
+        .trim()
+        .split("\n")
+        .filter((tag) => tag.trim());
+
+      if (allTags.length > 0) {
+        lastTag = allTags[0];
+      } else {
+        lastTag = null;
+      }
     } catch (error) {
       lastTag = null;
     }
@@ -95,11 +103,7 @@ class BackendReleaseManager {
     if (lastTag) {
       gitLogCommand = `git log ${lastTag}..HEAD --oneline --no-merges`;
     } else {
-      const thirtyDaysAgo = new Date();
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-      const dateFilter = thirtyDaysAgo.toISOString().split("T")[0];
-
-      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
+      gitLogCommand = `git log --oneline --no-merges -n 20`;
     }
 
     let commits;
@@ -112,7 +116,7 @@ class BackendReleaseManager {
         .toString()
         .trim();
     } catch (error) {
-      commits = this.execCommand(`git log --oneline --no-merges -n 10`, true);
+      commits = "";
     }
 
     if (!commits) {
@@ -132,6 +136,10 @@ class BackendReleaseManager {
     commitLines.forEach((line) => {
       const commit = line.replace(/^[a-f0-9]+\s/, ""); // Remove hash
 
+      if (commit.match(/^chore[\(:]/i)) {
+        return;
+      }
+
       if (commit.match(/^(feat|feature)[\(:]/i)) {
         changes.added.push(commit.replace(/^(feat|feature)[\(:]\s*/i, ""));
       } else if (commit.match(/^fix[\(:]/i)) {
@@ -144,6 +152,12 @@ class BackendReleaseManager {
         changes.removed.push(commit.replace(/^(remove|delete)[\(:]\s*/i, ""));
       } else if (commit.match(/^(security|sec)[\(:]/i)) {
         changes.security.push(commit.replace(/^(security|sec)[\(:]\s*/i, ""));
+      } else if (commit.match(/^(docs|doc)[\(:]/i)) {
+        return;
+      } else if (commit.match(/^(style|format)[\(:]/i)) {
+        return;
+      } else if (commit.match(/^(test|tests)[\(:]/i)) {
+        return;
       } else {
         changes.other.push(commit);
       }
@@ -198,6 +212,18 @@ class BackendReleaseManager {
         changelogEntry += `- ${change}\n`;
       });
       changelogEntry += "\n";
+    }
+
+    const hasChanges =
+      changes.added.length > 0 ||
+      changes.changed.length > 0 ||
+      changes.fixed.length > 0 ||
+      changes.security.length > 0 ||
+      changes.removed.length > 0 ||
+      changes.other.length > 0;
+
+    if (!hasChanges) {
+      changelogEntry += "- Minor updates and improvements\n\n";
     }
 
     return changelogEntry;
