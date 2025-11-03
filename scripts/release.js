@@ -28,7 +28,7 @@ class BackendReleaseManager {
     this.releaseNotes = [];
   }
 
-  execCommand(command, silent = false) {
+  execCommand(command, silent = false, throwOnError = true) {
     try {
       const result = execSync(command, {
         cwd: this.projectRoot,
@@ -37,6 +37,9 @@ class BackendReleaseManager {
       });
       return result?.toString().trim();
     } catch (error) {
+      if (throwOnError) {
+        throw error;
+      }
       process.exit(1);
     }
   }
@@ -273,12 +276,14 @@ class BackendReleaseManager {
     try {
       this.execCommand(
         `git merge ${releaseBranch} --no-ff -m "Release API v${version}"`,
+        true,
         true
       );
     } catch (error) {
       const conflicts = this.execCommand(
         "git diff --name-only --diff-filter=U",
-        true
+        true,
+        false
       );
 
       if (conflicts) {
@@ -290,12 +295,16 @@ class BackendReleaseManager {
             file === "CHANGELOG.md" ||
             file === "scripts/release.js"
           ) {
-            this.execCommand(`git checkout --theirs ${file}`);
+            this.execCommand(`git checkout --theirs ${file}`, false, false);
           }
         });
 
-        this.execCommand("git add .");
-        this.execCommand(`git commit -m "Release API v${version}"`);
+        this.execCommand("git add .", false, false);
+        this.execCommand(
+          `git commit -m "Release API v${version}"`,
+          false,
+          false
+        );
       } else {
         throw error;
       }
