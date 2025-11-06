@@ -134,7 +134,7 @@ class BackendReleaseManager {
     // Get commits since last version
     let gitLogCommand;
     if (lastTag) {
-      gitLogCommand = `git log ${lastTag}..staging --oneline --no-merges`;
+      gitLogCommand = `git log ${lastTag}..HEAD --oneline --no-merges`;
     } else {
       // For first release, limit to commits from the last 30 days or max 20 commits
       // This prevents including all historical commits in a monorepo
@@ -145,7 +145,7 @@ class BackendReleaseManager {
       console.log(
         `ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`
       );
-      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20 staging`;
+      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
     }
 
     let commits;
