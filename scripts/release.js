@@ -47,6 +47,22 @@ class BackendReleaseManager {
   }
 
   /**
+   * Execute shell command that might fail (for merge operations)
+   */
+  execCommandSafe(command, silent = false) {
+    try {
+      const result = execSync(command, {
+        cwd: this.projectRoot,
+        encoding: "utf8",
+        stdio: silent ? "pipe" : "inherit",
+      });
+      return result?.toString().trim();
+    } catch (error) {
+      throw error; // Re-throw instead of exit
+    }
+  }
+
+  /**
    * Validate semantic version format
    */
   isValidVersion(version) {
@@ -351,12 +367,12 @@ class BackendReleaseManager {
 
     try {
       // Merge release branch
-      this.execCommand(
+      this.execCommandSafe(
         `git merge ${releaseBranch} --no-ff -m "Release API v${version}"`
       );
     } catch (error) {
       console.log("⚠️  Merge conflicts detected, resolving automatically...");
-      
+
       // Check for conflicts
       const conflicts = this.execCommand(
         "git diff --name-only --diff-filter=U",
@@ -381,9 +397,7 @@ class BackendReleaseManager {
 
         // Complete the merge
         this.execCommand("git add .");
-        this.execCommand(
-          `git commit -m "Release API v${version}"`
-        );
+        this.execCommand(`git commit -m "Release API v${version}"`);
         console.log("✅ Merge conflicts resolved automatically");
       } else {
         throw error;
