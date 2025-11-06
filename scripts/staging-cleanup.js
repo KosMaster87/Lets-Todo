@@ -155,8 +155,9 @@ class StagingCleanup {
         }
       });
 
-      // Remove specific development scripts but keep release.js and staging-cleanup.js
+      // Remove specific development scripts but keep release.js
       const scriptsToRemove = [
+        "scripts/staging-cleanup.js",
         "scripts/README.md",
         "scripts/script-overview.md",
         "scripts/setup-multi-env-db.js",
