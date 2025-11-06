@@ -47,6 +47,22 @@ class ReleaseManager {
   }
 
   /**
+   * Execute shell command that might fail (for merge operations)
+   */
+  execCommandSafe(command, silent = false) {
+    try {
+      const result = execSync(command, {
+        cwd: this.projectRoot,
+        encoding: "utf8",
+        stdio: silent ? "pipe" : "inherit",
+      });
+      return result?.toString().trim();
+    } catch (error) {
+      throw error; // Re-throw instead of exit
+    }
+  }
+
+  /**
    * Validate semantic version format
    */
   isValidVersion(version) {
@@ -99,17 +115,25 @@ class ReleaseManager {
   generateChangelog(fromVersion, toVersion) {
     console.log(`📝 Generating changelog from last release to ${toVersion}...`);
 
-    // Get the last git tag instead of package.json version
+    // Get the last git tag by version sorting instead of git describe
     let lastTag;
     try {
-      lastTag = execSync("git describe --tags --abbrev=0", {
+      const tags = execSync("git tag --sort=-version:refname", {
         cwd: this.projectRoot,
         encoding: "utf8",
         stdio: "pipe",
       })
         .toString()
-        .trim();
-      console.log(`📋 Found last tag: ${lastTag}`);
+        .trim()
+        .split("\n")
+        .filter((tag) => tag.trim());
+
+      if (tags.length > 0) {
+        lastTag = tags[0]; // Most recent tag
+        console.log(`📋 Found last tag: ${lastTag}`);
+      } else {
+        throw new Error("No tags found");
+      }
     } catch (error) {
       console.log("ℹ️  No previous tags found, limiting to recent commits");
       lastTag = null;
@@ -158,6 +182,7 @@ class ReleaseManager {
       changed: [],
       fixed: [],
       removed: [],
+      security: [],
       other: [],
     };
 
@@ -175,6 +200,8 @@ class ReleaseManager {
         );
       } else if (commit.match(/^(remove|delete)[\(:]/i)) {
         changes.removed.push(commit.replace(/^(remove|delete)[\(:]\s*/i, ""));
+      } else if (commit.match(/^(security|sec)[\(:]/i)) {
+        changes.security.push(commit.replace(/^(security|sec)[\(:]\s*/i, ""));
       } else {
         changes.other.push(commit);
       }
@@ -203,6 +230,14 @@ class ReleaseManager {
     if (changes.fixed.length > 0) {
       changelogEntry += "### Fixed\n";
       changes.fixed.forEach((change) => {
+        changelogEntry += `- ${change}\n`;
+      });
+      changelogEntry += "\n";
+    }
+
+    if (changes.security.length > 0) {
+      changelogEntry += "### Security\n";
+      changes.security.forEach((change) => {
         changelogEntry += `- ${change}\n`;
       });
       changelogEntry += "\n";
@@ -338,10 +373,44 @@ class ReleaseManager {
     this.execCommand("git checkout production");
     this.execCommand("git pull origin production");
 
-    // Merge release branch
-    this.execCommand(
-      `git merge ${releaseBranch} --no-ff -m "Release v${version}"`
-    );
+    try {
+      // Merge release branch
+      this.execCommandSafe(
+        `git merge ${releaseBranch} --no-ff -m "Release v${version}"`
+      );
+    } catch (error) {
+      console.log("⚠️  Merge conflicts detected, resolving automatically...");
+
+      // Check for conflicts
+      const conflicts = this.execCommand(
+        "git diff --name-only --diff-filter=U",
+        true
+      );
+
+      if (conflicts) {
+        const conflictFiles = conflicts.split("\n").filter((f) => f.trim());
+        console.log(`📝 Resolving conflicts in: ${conflictFiles.join(", ")}`);
+
+        conflictFiles.forEach((file) => {
+          if (
+            file === "package.json" ||
+            file === "CHANGELOG.md" ||
+            file === "scripts/release.js"
+          ) {
+            // Use incoming changes (theirs) for these files
+            this.execCommand(`git checkout --theirs ${file}`);
+            console.log(`✅ Resolved ${file} using incoming changes`);
+          }
+        });
+
+        // Complete the merge
+        this.execCommand("git add .");
+        this.execCommand(`git commit -m "Release v${version}"`);
+        console.log("✅ Merge conflicts resolved automatically");
+      } else {
+        throw error;
+      }
+    }
 
     // Push to production
     this.execCommand("git push origin production");
@@ -385,15 +454,13 @@ class ReleaseManager {
     console.log("🧹 Cleaning up...");
 
     try {
-      // Switch back to staging
-      this.execCommand("git checkout staging");
+      // Stay on production branch instead of switching back to staging
 
-      // Delete local release branch
-      this.execCommand(`git branch -d ${releaseBranch}`);
-
-      // Optionally delete remote release branch
-      const keepReleaseBranches = process.env.KEEP_RELEASE_BRANCHES === "true";
+      // Keep release branches by default (like in the API)
+      const keepReleaseBranches = process.env.KEEP_RELEASE_BRANCHES !== "false";
       if (!keepReleaseBranches) {
+        // Delete local release branch
+        this.execCommand(`git branch -D ${releaseBranch}`);
         this.execCommand(`git push origin --delete ${releaseBranch}`);
         console.log(`✅ Deleted release branch: ${releaseBranch}`);
       } else {
