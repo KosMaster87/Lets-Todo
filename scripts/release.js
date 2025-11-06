@@ -115,17 +115,25 @@ class BackendReleaseManager {
   generateChangelog(fromVersion, toVersion) {
     console.log(`📝 Generating changelog from last release to ${toVersion}...`);
 
-    // Get the last git tag instead of package.json version
+    // Get the last git tag by version sorting instead of git describe
     let lastTag;
     try {
-      lastTag = execSync("git describe --tags --abbrev=0", {
+      const tags = execSync("git tag --sort=-version:refname", {
         cwd: this.projectRoot,
         encoding: "utf8",
         stdio: "pipe",
       })
         .toString()
-        .trim();
-      console.log(`📋 Found last tag: ${lastTag}`);
+        .trim()
+        .split("\n")
+        .filter((tag) => tag.trim());
+
+      if (tags.length > 0) {
+        lastTag = tags[0]; // Most recent tag
+        console.log(`📋 Found last tag: ${lastTag}`);
+      } else {
+        throw new Error("No tags found");
+      }
     } catch (error) {
       console.log("ℹ️  No previous tags found, limiting to recent commits");
       lastTag = null;
