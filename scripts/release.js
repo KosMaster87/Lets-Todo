@@ -370,7 +370,8 @@ class BackendReleaseManager {
         conflictFiles.forEach((file) => {
           if (
             file === "package.json" ||
-            file === "CHANGELOG.md"
+            file === "CHANGELOG.md" ||
+            file === "scripts/release.js"
           ) {
             // Use incoming changes (theirs) for these files
             this.execCommand(`git checkout --theirs ${file}`);
