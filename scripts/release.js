@@ -134,7 +134,7 @@ class BackendReleaseManager {
     // Get commits since last version
     let gitLogCommand;
     if (lastTag) {
-      gitLogCommand = `git log ${lastTag}..HEAD --oneline --no-merges`;
+      gitLogCommand = `git log ${lastTag}..staging --oneline --no-merges`;
     } else {
       // For first release, limit to commits from the last 30 days or max 20 commits
       // This prevents including all historical commits in a monorepo
@@ -145,7 +145,7 @@ class BackendReleaseManager {
       console.log(
         `ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`
       );
-      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
+      gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20 staging`;
     }
 
     let commits;
@@ -446,15 +446,13 @@ class BackendReleaseManager {
     console.log("🧹 Cleaning up...");
 
     try {
-      // Switch back to staging
-      this.execCommand("git checkout staging");
+      // Stay on production branch instead of switching back to staging
 
-      // Delete local release branch (force delete since it's merged to production)
-      this.execCommand(`git branch -D ${releaseBranch}`);
-
-      // Optionally delete remote release branch
-      const keepReleaseBranches = process.env.KEEP_RELEASE_BRANCHES === "true";
+      // Keep release branches by default (like in the app)
+      const keepReleaseBranches = process.env.KEEP_RELEASE_BRANCHES !== "false";
       if (!keepReleaseBranches) {
+        // Delete local release branch
+        this.execCommand(`git branch -D ${releaseBranch}`);
         this.execCommand(`git push origin --delete ${releaseBranch}`);
         console.log(`✅ Deleted release branch: ${releaseBranch}`);
       } else {
