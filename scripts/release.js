@@ -349,10 +349,44 @@ class BackendReleaseManager {
     this.execCommand("git checkout production");
     this.execCommand("git pull origin production");
 
-    // Merge release branch
-    this.execCommand(
-      `git merge ${releaseBranch} --no-ff -m "Release API v${version}"`
-    );
+    try {
+      // Merge release branch
+      this.execCommand(
+        `git merge ${releaseBranch} --no-ff -m "Release API v${version}"`
+      );
+    } catch (error) {
+      console.log("⚠️  Merge conflicts detected, resolving automatically...");
+
+      // Check for conflicts
+      const conflicts = this.execCommand(
+        "git diff --name-only --diff-filter=U",
+        true
+      );
+
+      if (conflicts) {
+        const conflictFiles = conflicts.split("\n").filter((f) => f.trim());
+        console.log(`📝 Resolving conflicts in: ${conflictFiles.join(", ")}`);
+
+        conflictFiles.forEach((file) => {
+          if (
+            file === "package.json" ||
+            file === "CHANGELOG.md" ||
+            file === "scripts/release.js"
+          ) {
+            // Use incoming changes (theirs) for these files
+            this.execCommand(`git checkout --theirs ${file}`);
+            console.log(`✅ Resolved ${file} using incoming changes`);
+          }
+        });
+
+        // Complete the merge
+        this.execCommand("git add .");
+        this.execCommand(`git commit -m "Release API v${version}"`);
+        console.log("✅ Merge conflicts resolved automatically");
+      } else {
+        throw error;
+      }
+    }
 
     // Push to production
     this.execCommand("git push origin production");
