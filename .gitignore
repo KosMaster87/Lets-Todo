@@ -5,26 +5,14 @@ node_modules/
 package-lock.json
 
 # Development
-dev-server.js
+# dev-server.js
 
-# Environment files - Keep example files for reference
+# Environment files
 config/env/.env
-config/env/.env.production
+config/env/.env.development
 config/env/.env.feature
 config/env/.env.staging
-config/env/.env.development
-
-# Deployment packages and temp files
-deploy/package/
-deploy/*.tar.gz
-deploy/*.zip
-# Dynamic deployment packages and directories
-deploy/*-package/
-deploy/simple-package/
-deploy/modular-package/
-deploy/step-by-step-package/
-deploy/lets-todo-*deployment_*.tar.gz
-deploy/lets-todo-*deployment_*.zip
+config/env/.env.production
 
 # IDE/Editor
 .vscode/
@@ -57,16 +45,34 @@ Thumbs.db
 /dist
 /bazel-out
 
+# Coverage reports
+# /coverage
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json
+
 # SSL certificates
 csr.pem
 privateKey.pem
 certificate.pem
 
 # Apache
-.htaccess
+# .htaccess
+
+# Cache
+/.angular/cache
+.sass-cache/
+
+# Runtime
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
 
 # Documentation
 docs/
-docs-api/
-docs-app/
 
+# Netlify
+.netlify/
