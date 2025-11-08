@@ -29,7 +29,7 @@ const app = express();
 /**
  * TODO
  *
- * Strukturverbesserungen (optional)
+ * Structural improvements (optional)
  * Middleware setup in functions
  * Add error handler
  * Implement graceful shutdown

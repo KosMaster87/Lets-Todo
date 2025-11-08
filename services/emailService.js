@@ -33,16 +33,13 @@ class EmailService {
       } else if (ENV.EMAIL_PROVIDER === "smtp") {
         this.setupCustomSmtpTransporter();
       } else if (ENVIRONMENT === "development" && !ENV.EMAIL_PROVIDER) {
-        debugLog("📧 Development Modus - E-Mails werden in Console ausgegeben");
+        debugLog("📧 Development mode - Emails will be printed to console");
         return;
       } else {
-        throw new Error("Kein gültiger E-Mail-Provider konfiguriert");
+        throw new Error("No valid email provider configured");
       }
     } catch (error) {
-      errorLog(
-        "❌ Fehler beim Initialisieren des E-Mail-Transporters:",
-        error.message
-      );
+      errorLog("❌ Error initializing email transporter:", error.message);
       this.transporter = null;
     }
   }
@@ -58,7 +55,7 @@ class EmailService {
         pass: ENV.EMAIL_PASSWORD, // App password, not a regular password!
       },
     });
-    debugLog("📧 Gmail SMTP Transporter initialisiert");
+    debugLog("📧 Gmail SMTP Transporter initialized");
   }
 
   /**
@@ -72,7 +69,7 @@ class EmailService {
         pass: ENV.EMAIL_PASSWORD,
       },
     });
-    debugLog("📧 Outlook SMTP Transporter initialisiert");
+    debugLog("📧 Outlook SMTP Transporter initialized");
   }
 
   /**
@@ -88,7 +85,7 @@ class EmailService {
         pass: ENV.EMAIL_PASSWORD,
       },
     });
-    debugLog(`📧 Custom SMTP Transporter initialisiert (${ENV.EMAIL_HOST})`);
+    debugLog(`📧 Custom SMTP Transporter initialized (${ENV.EMAIL_HOST})`);
   }
 
   /**
@@ -103,7 +100,7 @@ class EmailService {
     const mailOptions = {
       from: `"${ENV.APP_NAME || "Let's Todo"}" <${ENV.EMAIL_USER}>`,
       to: toEmail,
-      subject: "Passwort zurücksetzen - Let's Todo",
+      subject: "Reset Password - Let's Todo",
       html: this.generatePasswordResetHTML(resetLink, userName),
       text: this.generatePasswordResetText(resetLink, userName),
     };
@@ -119,7 +116,7 @@ class EmailService {
     try {
       // Development Modus - nur in Console ausgeben
       if (!this.transporter) {
-        console.log("\n📧 ===== E-MAIL (DEVELOPMENT) =====");
+        console.log("\n📧 ===== EMAIL (DEVELOPMENT) =====");
         console.log("From:", mailOptions.from);
         console.log("To:", mailOptions.to);
         console.log("Subject:", mailOptions.subject);
@@ -130,7 +127,7 @@ class EmailService {
 
       // Echte E-Mail senden
       const info = await this.transporter.sendMail(mailOptions);
-      debugLog(`📧 E-Mail erfolgreich gesendet: ${info.messageId}`);
+      debugLog(`📧 Email sent successfully: ${info.messageId}`);
 
       return {
         success: true,
@@ -138,8 +135,8 @@ class EmailService {
         mode: "production",
       };
     } catch (error) {
-      errorLog("❌ Fehler beim E-Mail-Versand:", error.message);
-      throw new Error(`E-Mail-Versand fehlgeschlagen: ${error.message}`);
+      errorLog("❌ Error sending email:", error.message);
+      throw new Error(`Email sending failed: ${error.message}`);
     }
   }
 
@@ -149,7 +146,7 @@ class EmailService {
    * @param {string} userName - User name (optional)
    */
   generatePasswordResetHTML(resetLink, userName = null) {
-    const greeting = userName ? `Hallo ${userName}` : "Hallo";
+    const greeting = userName ? `Hello ${userName}` : "Hello";
 
     return `
     <!DOCTYPE html>
@@ -157,7 +154,7 @@ class EmailService {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Passwort zurücksetzen</title>
+        <title>Reset Password</title>
         <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -179,38 +176,38 @@ class EmailService {
     <body>
         <div class="container">
             <div class="header">
-                <h1>🔐 Passwort zurücksetzen</h1>
+                <h1>🔐 Reset Password</h1>
             </div>
 
             <div class="content">
                 <h2>${greeting}!</h2>
 
-                <p>Du hast eine Anfrage zum Zurücksetzen deines Passworts für <strong>Let's Todo</strong> gestellt.</p>
+                <p>You have requested to reset your password for <strong>Let's Todo</strong>.</p>
 
-                <p>Klicke auf den folgenden Button, um ein neues Passwort zu erstellen:</p>
+                <p>Click the following button to create a new password:</p>
 
                 <div style="text-align: center;">
-                    <a href="${resetLink}" class="button">Passwort zurücksetzen</a>
+                    <a href="${resetLink}" class="button">Reset Password</a>
                 </div>
 
                 <div class="warning">
-                    <strong>⚠️ Wichtige Sicherheitshinweise:</strong>
+                    <strong>⚠️ Important Security Notice:</strong>
                     <ul>
-                        <li>Dieser Link ist nur <strong>1 Stunde</strong> gültig</li>
-                        <li>Der Link kann nur <strong>einmal</strong> verwendet werden</li>
-                        <li>Falls du diese Anfrage nicht gestellt hast, ignoriere diese E-Mail</li>
+                        <li>This link is valid for <strong>1 hour</strong> only</li>
+                        <li>The link can be used <strong>only once</strong></li>
+                        <li>If you did not request this, please ignore this email</li>
                     </ul>
                 </div>
 
-                <p>Falls der Button nicht funktioniert, kopiere diesen Link in deinen Browser:</p>
+                <p>If the button doesn't work, copy this link into your browser:</p>
                 <p style="word-break: break-all; background: #f8f9fa; padding: 10px; border-radius: 3px;">
                     ${resetLink}
                 </p>
             </div>
 
             <div class="footer">
-                <p>Diese E-Mail wurde automatisch erstellt. Bitte antworte nicht auf diese E-Mail.</p>
-                <p>© ${new Date().getFullYear()} Let's Todo - Deine persönliche Todo-Verwaltung</p>
+                <p>This email was automatically generated. Please do not reply to this email.</p>
+                <p>© ${new Date().getFullYear()} Let's Todo - Your Personal Todo Management</p>
             </div>
         </div>
     </body>
@@ -224,25 +221,25 @@ class EmailService {
    * @param {string} userName - User name (optional)
    */
   generatePasswordResetText(resetLink, userName = null) {
-    const greeting = userName ? `Hallo ${userName}` : "Hallo";
+    const greeting = userName ? `Hello ${userName}` : "Hello";
 
     return `
     ${greeting}!
 
-    Du hast eine Anfrage zum Zurücksetzen deines Passworts für Let's Todo gestellt.
+    You have requested to reset your password for Let's Todo.
 
-    Um ein neues Passwort zu erstellen, öffne folgenden Link in deinem Browser:
+    To create a new password, open the following link in your browser:
     ${resetLink}
 
-    WICHTIGE SICHERHEITSHINWEISE:
-    - Dieser Link ist nur 1 Stunde gültig
-    - Der Link kann nur einmal verwendet werden
-    - Falls du diese Anfrage nicht gestellt hast, ignoriere diese E-Mail
+    IMPORTANT SECURITY NOTICE:
+    - This link is valid for 1 hour only
+    - The link can be used only once
+    - If you did not request this, please ignore this email
 
-    Falls du Probleme hast, wende dich an den Support.
+    If you have any problems, please contact support.
 
     ---
-    Diese E-Mail wurde automatisch erstellt.
+    This email was automatically generated.
     © ${new Date().getFullYear()} Let's Todo
     `.trim();
   }
@@ -252,14 +249,14 @@ class EmailService {
    */
   async testConnection() {
     if (!this.transporter) {
-      return { success: false, error: "Kein E-Mail-Transporter konfiguriert" };
+      return { success: false, error: "No email transporter configured" };
     }
 
     try {
       await this.transporter.verify();
       return {
         success: true,
-        message: "E-Mail-Konfiguration erfolgreich getestet",
+        message: "Email configuration successfully tested",
       };
     } catch (error) {
       return { success: false, error: error.message };
