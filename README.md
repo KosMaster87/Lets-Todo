@@ -25,8 +25,8 @@
 | ------------------------ | ---------------------------------------------------------------------- | ------------------------- |
 | 🔌 **API Documentation** | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
 | 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html) | Components, State, UI     |
-| 🏗️ **Architecture**      | [overview.md](./overview.md)                                           | System Design             |
-| 🚀 **Deployment Guide**  | [DEPLOYMENT.md](./DEPLOYMENT.md)                                       | Production Setup          |
+| 🏗️ **Architecture**      | [overview.md](.github/docs/overview.md)                                | System Design             |
+| 🚀 **Deployment Guide**  | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            | Production Setup          |
 | 👨‍💻 **Dev Guidelines**    | [copilot-instructions.md](./copilot-instructions.md)                   | Coding Standards          |
 
 ### 🔗 **Related Repositories**
@@ -373,9 +373,10 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 
 ## 📚 Documentation
 
-- **[Complete Setup & Deployment Guide](DEPLOYMENT.md)** - Local development through production deployment
+- **[Complete Setup & Deployment Guide](.github/docs/DEPLOYMENT.md)** - Local development through production deployment
 - **[Development Guidelines](copilot-instructions.md)** - Architecture patterns and coding standards
-- **[Scripts Documentation](scripts/script-overview.md)** - Database management and utilities
+- **[Scripts Overview](.github/docs/scripts-overview.md)** - Database management and utilities
+- **[Staging Cleanup Guide](.github/docs/staging-cleanup.md)** - Automated staging preparation workflow
 
 ## Related Projects
 
@@ -476,7 +477,7 @@ sudo ./deploy.sh prod    # Production environment
 sudo ./deploy.sh all     # All environments
 ```
 
-**📚 Complete deployment guide:** **[DEPLOYMENT.md](DEPLOYMENT.md)**
+**📚 Complete deployment guide:** **[DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)**
 
 ## 🤝 Contributing
 
