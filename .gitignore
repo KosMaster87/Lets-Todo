@@ -1,5 +1,3 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
 # Dependencies
 node_modules/
 package-lock.json
@@ -23,7 +21,17 @@ config/env/.env.production
 .history/*
 
 # CI/CD
-.github/
+# Keep .github folder (workflows, docs)
+# Explicitly allow .github/docs/
+!.github/
+!.github/workflows/
+!.github/docs/
+
+# Generated documentation & reports
+# Ignore generated TypeDoc/JSDoc output in project root
+/docs/
+# But keep .github/docs/ (tracked above)
+/coverage
 
 # Logs
 *.log
@@ -44,9 +52,6 @@ Thumbs.db
 # Build output
 /dist
 /bazel-out
-
-# Coverage reports
-# /coverage
 
 # Firebase
 .firebase
@@ -75,9 +80,3 @@ public/api/contact/contact_logs.txt
 /libpeerconnection.log
 testem.log
 /typings
-
-# Documentation
-docs/
-
-# Netlify
-.netlify/

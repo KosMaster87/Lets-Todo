@@ -23,7 +23,8 @@
 | ------------------------ | -------------------------------------------------------------------------- | ------------------------- |
 | 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html)     | Components, State, UI     |
 | 🔌 **API Documentation** | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
-| 🏗️ **Architecture**      | [overview.md](./overview.md)                                               | System Design             |
+| 🏗️ **Architecture**      | [overview.md](.github/docs/overview.md)                                    | System Design             |
+| 🔧 **Import/Export**     | [import-export.md](.github/docs/import-export.md)                          | Import/Export Utilities   |
 
 ### 🔗 **Related Repositories**
 
@@ -373,8 +374,9 @@ This frontend works seamlessly with the backend API. For the complete developmen
 | --------------------- | --------------------- | ------------------------------------------------------------- |
 | 📱 **Frontend Guide** | This README           | Current file                                                  |
 | 🔌 **API Reference**  | Backend documentation | [lets-todo-api](https://github.com/KosMaster87/lets-todo-api) |
-| 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](./DEPLOYMENT.md)                              |
-| 🏗️ **Architecture**   | System overview       | [overview.md](./overview.md)                                  |
+| 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                   |
+| 🏗️ **Architecture**   | System overview       | [overview.md](.github/docs/overview.md)                       |
+| 🔧 **Import/Export**  | Utilities overview    | [import-export.md](.github/docs/import-export.md)             |
 | 👨‍💻 **Dev Guidelines** | Coding standards      | [copilot-instructions.md](./copilot-instructions.md)          |
 
 ## 🤝 **Contributing & Development**

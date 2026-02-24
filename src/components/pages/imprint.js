@@ -32,15 +32,14 @@ export const renderImprintPage = () => {
           <h3>Developer</h3>
           <p>
             Konstantin Aksenov<br>
-            Concordia-Straße<br>
-            9370 Loma Plata
+            26810 Westoverledingen<br>
+            Germany
           </p>
         </div>
 
         <div class="imprint-section">
           <h3>Contact</h3>
           <p>
-            Phone: +595 994 221200<br>
             E-Mail: konstantin.aksenov@dev2k.org
           </p>
         </div>
@@ -49,8 +48,8 @@ export const renderImprintPage = () => {
           <h3>Responsible for content according to § 55 Abs. 2 RStV</h3>
           <p>
             Konstantin Aksenov<br>
-            Concordia-Straße<br>
-            9370 Loma Plata
+            26810 Westoverledingen<br>
+            Germany
           </p>
         </div>
 
