@@ -84,6 +84,18 @@ Let's Todo is a comprehensive task management solution featuring a modern vanill
 
 ### 🏗️ **Technical Architecture**
 
+```mermaid
+graph TD
+    A["👤 User / Browser"] -->|Interacts with| B["📱 SPA – Vanilla JS\nNo Framework · ES6 Modules"]
+    B --> C["🧩 Components\nUI · Pages · Dialogs"]
+    B --> D["🔄 State Management\nmain-state.js · session-manager.js"]
+    B --> E["🔌 API Services\napi-client.js · CRUD"]
+    D <-->|Reactive Updates| C
+    C -->|User Actions| E
+    E -->|HTTPS / Cookie Auth| F["⚙️ Node.js / Express API\nlets-todo-api.dev2k.org"]
+    E <-->|Sync| D
+```
+
 - 🚀 **Zero Bundle**: Vanilla JavaScript ES6+ modules (no webpack/rollup)
 - ⚡ **Performance**: Lazy loading and efficient state management
 - 🔄 **Real-time Sync**: LiveReload development + API synchronization
