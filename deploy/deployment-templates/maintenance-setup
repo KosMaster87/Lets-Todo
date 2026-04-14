@@ -1,0 +1,95 @@
+#!/bin/bash
+
+# ============================================================================
+# Maintenance Setup Template
+# Configures logrotation, journald limits, and recurring storage maintenance
+# ============================================================================
+
+setup_maintenance() {
+    local BASE_PROJECT_DIR="$1"
+
+    echo "🧰 Setting up maintenance automation..."
+
+    # Configure PM2 logrotate for dev2k user processes (idempotent)
+    echo "🪵 Configuring PM2 logrotate module..."
+    sudo -u dev2k bash -lc "pm2 install pm2-logrotate >/dev/null 2>&1 || true"
+    sudo -u dev2k bash -lc "pm2 set pm2-logrotate:max_size 20M"
+    sudo -u dev2k bash -lc "pm2 set pm2-logrotate:retain 7"
+    sudo -u dev2k bash -lc "pm2 set pm2-logrotate:compress true"
+    sudo -u dev2k bash -lc "pm2 set pm2-logrotate:rotateInterval '0 0 * * *'"
+
+    # Rotate PM2 daemon logs for both root and dev2k PM2 homes
+    echo "🔁 Configuring PM2 daemon logrotate policy..."
+    cat > /etc/logrotate.d/pm2-daemon <<'EOF'
+/root/.pm2/pm2.log /root/.pm2/pm2__*.log /home/dev2k/.pm2/pm2.log /home/dev2k/.pm2/pm2__*.log /opt/dev2k-space/home/.pm2/pm2.log /opt/dev2k-space/home/.pm2/pm2__*.log {
+    daily
+    rotate 7
+    size 20M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    copytruncate
+    su root root
+}
+EOF
+
+    # Cap system journal growth
+    echo "📉 Configuring journald size limits..."
+    mkdir -p /etc/systemd/journald.conf.d
+    cat > /etc/systemd/journald.conf.d/99-size-limits.conf <<'EOF'
+[Journal]
+SystemMaxUse=100M
+RuntimeMaxUse=50M
+SystemMaxFileSize=20M
+RuntimeMaxFileSize=10M
+MaxRetentionSec=7day
+EOF
+    systemctl restart systemd-journald || true
+
+    # Install recurring maintenance script
+    echo "🛠️  Installing maintenance script..."
+    cat > /usr/local/sbin/vps-maintenance.sh <<EOF
+#!/usr/bin/env bash
+set -euo pipefail
+
+apt clean
+journalctl --vacuum-time=7d
+
+find ${BASE_PROJECT_DIR}/lets-todo-prod/logs -type f -name '*.log' -size +50M -exec truncate -s 0 {} \; 2>/dev/null || true
+find ${BASE_PROJECT_DIR}/lets-todo-feat/logs -type f -name '*.log' -size +50M -exec truncate -s 0 {} \; 2>/dev/null || true
+find ${BASE_PROJECT_DIR}/lets-todo-stage/logs -type f -name '*.log' -size +50M -exec truncate -s 0 {} \; 2>/dev/null || true
+
+find /root/.pm2 -maxdepth 1 -type f -name 'pm2__*.log' -size +50M -delete 2>/dev/null || true
+find /home/dev2k/.pm2 -maxdepth 1 -type f -name 'pm2__*.log' -size +50M -delete 2>/dev/null || true
+find /opt/dev2k-space/home/.pm2 -maxdepth 1 -type f -name 'pm2__*.log' -size +50M -delete 2>/dev/null || true
+
+echo "[\$(date -u +'%Y-%m-%dT%H:%M:%SZ')] maintenance done"
+df -h /
+EOF
+    chmod 700 /usr/local/sbin/vps-maintenance.sh
+
+    # Ensure root cron entry exists exactly once
+    echo "⏱️  Ensuring weekly maintenance cron job exists..."
+    local CRON_LINE="30 3 * * 0 /usr/local/sbin/vps-maintenance.sh >> /var/log/vps-maintenance.log 2>&1"
+    local TMP_CRON_FILE
+    TMP_CRON_FILE="$(mktemp)"
+
+    crontab -l 2>/dev/null > "$TMP_CRON_FILE" || true
+    if ! grep -Fq "$CRON_LINE" "$TMP_CRON_FILE"; then
+        echo "# Weekly VPS maintenance (Sun 03:30 UTC)" >> "$TMP_CRON_FILE"
+        echo "$CRON_LINE" >> "$TMP_CRON_FILE"
+        crontab "$TMP_CRON_FILE"
+        echo "✅ Cron job added"
+    else
+        echo "ℹ️  Cron job already exists"
+    fi
+
+    rm -f "$TMP_CRON_FILE"
+
+    # Run once so server starts in healthy state
+    echo "🚀 Running one-time maintenance now..."
+    /usr/local/sbin/vps-maintenance.sh >/tmp/vps-maintenance-bootstrap.log 2>&1 || true
+
+    echo "✅ Maintenance setup completed"
+}

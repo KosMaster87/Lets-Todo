@@ -337,6 +337,14 @@ case "$ENVIRONMENT" in
         ;;
 esac
 
+# Step 8: Maintenance setup (run once)
+if type setup_maintenance >/dev/null 2>&1; then
+    log_step "STEP 8: Maintenance Setup"
+    setup_maintenance "$BASE_PROJECT_DIR"
+else
+    log_warning "setup_maintenance function not found in templates"
+fi
+
 log_success "🎉 MODULAR DEPLOYMENT COMPLETED FOR: $ENVIRONMENT"
 echo ""
 echo "📋 Summary:"
@@ -384,6 +392,7 @@ echo "4. ✅ Node.js Dependencies (nodejs-dependencies.sh)"
 echo "5. ✅ Database Setup (database-setup.sh)"
 echo "6. ✅ PM2 Process Setup (pm2-setup.sh)"
 echo "7. ✅ Email Service Setup (email-service-setup.sh)"
+echo "8. ✅ Maintenance Setup (maintenance-setup.sh)"
 echo ""
 echo "📊 Package contents:"
 tar -tzf "$PACKAGE_NAME" | head -20

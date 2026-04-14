@@ -87,6 +87,19 @@ npm run docs:clean  # Clean generated docs
 
 ## 🏗️ Architecture Highlights
 
+```mermaid
+graph TD
+    A["🌐 Browser / SPA Frontend"] -->|HTTPS| B["🔀 Nginx Reverse Proxy\nlets-todo-api.dev2k.org"]
+    B -->|Proxy Pass :3002| C["⚙️ Node.js / Express API\nPM2 Process Manager"]
+    C -->|Cookie Session Check| D{"🔒 Auth Valid?"}
+    D -->|✅ Authenticated| E["📦 Pool Middleware\nSelects DB connection"]
+    D -->|❌ Unauthorized| F["401 Response"]
+    E --> G[("🗄️ todos_user_123\nUser Database")]
+    E --> H[("🗄️ todos_user_456\nUser Database")]
+    E --> I[("🗄️ todos_guest_uuid\nGuest DB · Auto-cleanup")]
+    E --> J[("🗄️ todos_users\nCentral User Registry")]
+```
+
 - **Framework**: Node.js with Express.js
 - **Database**: MySQL/MariaDB with dynamic database creation
 - **Authentication**: Session-based with secure HTTP-only cookies

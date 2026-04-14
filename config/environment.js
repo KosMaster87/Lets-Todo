@@ -37,6 +37,22 @@ dotenv.config({ path: envFile });
 
 console.log(`🔧 Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
 
+function envBool(value, fallback = false) {
+  if (value === undefined || value === null || value === "") {
+    return fallback;
+  }
+
+  const normalized = String(value).trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(normalized)) {
+    return true;
+  }
+  if (["0", "false", "no", "off"].includes(normalized)) {
+    return false;
+  }
+
+  return fallback;
+}
+
 /**
  * Environment detection based on NODE_ENV
  */
@@ -93,7 +109,7 @@ const CONFIG = {
     COOKIE_SECURE: false,
 
     // Logging
-    DEBUG: Boolean(process.env.DEBUG) || true,
+    DEBUG: envBool(process.env.DEBUG, true),
     LOG_LEVEL: process.env.LOG_LEVEL || "verbose",
 
     // E-Mail Configuration
@@ -102,7 +118,7 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || false,
+    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, false),
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL: process.env.FRONTEND_URL || "http://127.0.0.1:5500",
   },
@@ -131,7 +147,7 @@ const CONFIG = {
     COOKIE_SECURE: true,
 
     // Logging
-    DEBUG: Boolean(process.env.DEBUG) || true,
+    DEBUG: envBool(process.env.DEBUG, true),
     LOG_LEVEL: process.env.LOG_LEVEL || "debug",
 
     // E-Mail Configuration
@@ -140,7 +156,7 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || false,
+    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, false),
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL:
       process.env.FRONTEND_URL || "https://lets-todo-app-feat.dev2k.org",
@@ -167,7 +183,7 @@ const CONFIG = {
     COOKIE_SECURE: true,
 
     // Logging
-    DEBUG: Boolean(process.env.DEBUG) || false,
+    DEBUG: envBool(process.env.DEBUG, false),
     LOG_LEVEL: process.env.LOG_LEVEL || "warn",
 
     // E-Mail Configuration
@@ -176,7 +192,7 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production should use SSL
+    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true), // Production should use SSL
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL:
       process.env.FRONTEND_URL || "https://lets-todo-app-stage.dev2k.org",
@@ -203,8 +219,8 @@ const CONFIG = {
     COOKIE_SECURE: true,
 
     // Logging
-    DEBUG: Boolean(process.env.DEBUG) || false,
-    LOG_LEVEL: process.env.LOG_LEVEL || "info",
+    DEBUG: envBool(process.env.DEBUG, false),
+    LOG_LEVEL: process.env.LOG_LEVEL || "error",
 
     // E-Mail Configuration
     EMAIL_PROVIDER: process.env.EMAIL_PROVIDER || "",
@@ -212,7 +228,7 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: Boolean(process.env.EMAIL_SECURE) || true, // Production should use SSL
+    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true), // Production should use SSL
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo.dev2k.org",
   },
@@ -251,4 +267,4 @@ debugLog(`Backend Environment Detection: ${ENVIRONMENT}`, {
   debug: ENV.DEBUG,
 });
 
-export { ENV, ENVIRONMENT, debugLog, infoLog, errorLog };
+export { debugLog, ENV, ENVIRONMENT, errorLog, infoLog };
