@@ -17,4 +17,4 @@ This folder contains operational helper scripts for database tasks, cleanup, and
 
 ## Entry Point
 
-- [scripts/INDEX.md](scripts/INDEX.md): Complete overview with purpose per script.
+- [_INDEX.md](_INDEX.md): Complete overview with purpose per script.

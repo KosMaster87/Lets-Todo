@@ -6,7 +6,7 @@ This folder contains the deployment generator for the VPS.
 
 - Builds a transportable deployment package.
 - Generates a `deploy.sh` script that executes modular setup steps.
-- Uses templates from [deploy/deployment-templates](deploy/deployment-templates).
+- Uses templates from [deployment-templates](deployment-templates).
 
 ## Quick Start
 
@@ -16,9 +16,9 @@ This folder contains the deployment generator for the VPS.
 
 ## Key Files
 
-- [deploy/create-step-deployment.sh](deploy/create-step-deployment.sh): Generator for the package and `deploy.sh`.
-- [deploy/deployment-templates](deploy/deployment-templates): Modular deployment steps.
-- [deploy/INDEX.md](deploy/INDEX.md): Quick overview of all templates.
+- [create-step-deployment.sh](create-step-deployment.sh): Generator for the package and `deploy.sh`.
+- [deployment-templates](deployment-templates): Modular deployment steps.
+- [_INDEX.md](_INDEX.md): Quick overview of all templates.
 
 ## Note
 
