@@ -1,6 +1,5 @@
 # Let's Todo API - Backend (Developer Branch)
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-18%2B-green.svg)](https://nodejs.org/)
 [![Express](https://img.shields.io/badge/Express-4.x-blue.svg)](https://expressjs.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](https://mysql.com/)
@@ -27,7 +26,7 @@
 | 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html) | Components, State, UI     |
 | 🏗️ **Architecture**      | [overview.md](.github/docs/overview.md)                                | System Design             |
 | 🚀 **Deployment Guide**  | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            | Production Setup          |
-| 👨‍💻 **Dev Guidelines**    | [copilot-instructions.md](./copilot-instructions.md)                   | Coding Standards          |
+| 👨‍💻 **Dev Guidelines**    | `copilot-instructions.md` (optional, local only)                       | Coding Standards          |
 
 ### 🔗 **Related Repositories**
 
@@ -387,7 +386,7 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 ## 📚 Documentation
 
 - **[Complete Setup & Deployment Guide](.github/docs/DEPLOYMENT.md)** - Local development through production deployment
-- **[Development Guidelines](copilot-instructions.md)** - Architecture patterns and coding standards
+- **Development Guidelines**: optional local `copilot-instructions.md` — architecture patterns and coding standards
 - **[Scripts Overview](.github/docs/scripts-overview.md)** - Database management and utilities
 - **[Staging Cleanup Guide](.github/docs/staging-cleanup.md)** - Automated staging preparation workflow
 
@@ -506,7 +505,7 @@ sudo ./deploy.sh all     # All environments
 ### Pull Request Process
 
 1. **Create feature branch** from `feature/main-feature`
-2. **Implement feature** following coding standards in `copilot-instructions.md`
+2. **Implement feature** following the rules above and any optional local `copilot-instructions.md`
 3. **Test thoroughly** across development environments
 4. **Update documentation** for any new API endpoints
 5. **Verify security** - no SQL injection vulnerabilities
@@ -540,13 +539,14 @@ sudo ./deploy.sh all     # All environments
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+No project license file is currently included. `package.json` declares ISC, while an older
+README version advertised MIT; confirm the intended project license separately.
 
 ## 🙋‍♂️ Support
 
 For questions, issues, or contributions:
 
-1. **Check Documentation**: Review `DEPLOYMENT.md` and `copilot-instructions.md`
+1. **Check Documentation**: Review `.github/docs/DEPLOYMENT.md` and any optional local `copilot-instructions.md`
 2. **Review Troubleshooting**: Common issues section above
 3. **Create GitHub Issue**: For bugs or feature requests
 4. **Contact Development Team**: For urgent support needs

@@ -421,7 +421,7 @@ DB_PASSWORD="your_db_password"
 
 ### Adding New Deployment Steps
 
-1. **Create template:** [`deploy/deployment-templates/my-new-step`](deploy/deployment-templates/)
+1. **Create template:** [`deploy/deployment-templates/my-new-step`](../../deploy/deployment-templates/)
 2. **Add function:** `setup_my_feature() { ... }`
 3. **Regenerate package:** `./deploy/create-step-deployment.sh`
 4. **Deploy:** Template automatically included!
