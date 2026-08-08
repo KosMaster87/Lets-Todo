@@ -92,7 +92,6 @@ The development server provides:
    ```
 
 2. **Access Application**
-
    - Frontend: `http://127.0.0.1:5500`
    - Backend API: `http://127.0.0.1:3000`
    - LiveReload: Port 35729
@@ -115,7 +114,6 @@ The application can be deployed as static files to any web server:
    ```
 
 2. **Upload to Web Server**
-
    - Upload all files to web root
    - Ensure `.htaccess` is included for Apache servers
 
@@ -265,12 +263,10 @@ npm run dev
 ### Performance Optimization
 
 1. **Enable Compression**
-
    - Configure gzip/brotli on web server
    - Use appropriate cache headers
 
 2. **Optimize Assets**
-
    - Compress images
    - Minify CSS (optional)
    - Enable browser caching
@@ -298,6 +294,6 @@ The application is PWA-ready with:
 
 ## 📚 Additional Resources
 
-- [Project Documentation](README.md)
-- [API Documentation](../lets-todo-api/README.md)
-- [Development Guidelines](copilot-instructions.md)
+- [Project Documentation](../../README.md)
+- [API Documentation](../../../lets-todo-api/README.md)
+- Development guidelines: optional local `copilot-instructions.md`

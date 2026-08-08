@@ -1,6 +1,5 @@
 # 📝 Let's Todo - Complete Project Suite
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
 [![ES Modules](https://img.shields.io/badge/ES-Modules-blue.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
 [![PWA Ready](https://img.shields.io/badge/PWA-Ready-purple.svg)](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps)
@@ -163,9 +162,8 @@ lets-todo-app/
 ├── 📄 index.html                # Main application entry point
 ├── 🔧 dev-server.js             # Express development server
 ├── 📦 package.json              # Dependencies and scripts
-├── 📋 DEPLOYMENT.md             # Deployment instructions
-├── 📖 copilot-instructions.md   # Development guidelines
-├──
+├── 📋 .github/docs/DEPLOYMENT.md # Deployment instructions
+├── 📖 copilot-instructions.md   # Optional local guidelines (not versioned)
 ├── 📂 src/                      # Source code
 │   ├── 📄 app.js                # Application initialization
 │   ├── 📂 components/           # UI components
@@ -389,7 +387,7 @@ This frontend works seamlessly with the backend API. For the complete developmen
 | 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                   |
 | 🏗️ **Architecture**   | System overview       | [overview.md](.github/docs/overview.md)                       |
 | 🔧 **Import/Export**  | Utilities overview    | [import-export.md](.github/docs/import-export.md)             |
-| 👨‍💻 **Dev Guidelines** | Coding standards      | [copilot-instructions.md](./copilot-instructions.md)          |
+| 👨‍💻 **Dev Guidelines** | Coding standards      | `copilot-instructions.md` (optional, local only)              |
 
 ## 🤝 **Contributing & Development**
 
@@ -436,7 +434,7 @@ npm run docs && npm run docs:serve
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+No project license file or package license metadata is currently included.
 
 ## 🙋‍♂️ Support
 
