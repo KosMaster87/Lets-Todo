@@ -65,18 +65,18 @@ const startServer = async () => {
   try {
     const port = await findAvailablePort(DEFAULT_PORT);
     app.listen(port, "127.0.0.1", () => {
-      console.log(`🚀 lets-todo frontend running on http://127.0.0.1:${port}`);
+      console.log(`lets-todo frontend running on http://127.0.0.1:${port}`);
       if (port !== DEFAULT_PORT) {
-        console.log(`⚠️  Port ${DEFAULT_PORT} occupied, using port ${port}`);
+        console.log(` Port ${DEFAULT_PORT} occupied, using port ${port}`);
       }
       if (process.env.NODE_ENV !== "production") {
-        console.log(`🔄 LiveReload active on port 35729`);
+        console.log(`LiveReload active on port 35729`);
       }
-      console.log(`🔗 Backend API: http://127.0.0.1:3000`);
-      console.log(`🍪 Cookie domain compatibility: ✅`);
+      console.log(`Backend API: http://127.0.0.1:3000`);
+      console.log(`Cookie domain compatibility:`);
     });
   } catch (error) {
-    console.error("❌ Error starting server:", error.message);
+    console.error("Error starting server:", error.message);
     process.exit(1);
   }
 };

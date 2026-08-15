@@ -35,7 +35,7 @@ export const AppInitializer = {
    * @returns {Promise<Object>} Loaded data object
    */
   async loadAllData(appState, notifyListeners) {
-    // console.log("🚀 Starting application data initialization...");
+    // console.log("Starting application data initialization...");
 
     // 1. Load session data first to determine session type
     SessionManager.loadFromStorage(appState, notifyListeners);
@@ -56,7 +56,7 @@ export const AppInitializer = {
     // 4. Save preferences to ensure localStorage is up to date
     PreferencesManager.save(loadedData.userPreferences);
 
-    // console.log("✅ Application data initialization complete");
+    // console.log("Application data initialization complete");
     return loadedData;
   },
 
@@ -67,7 +67,7 @@ export const AppInitializer = {
   applyUserPreferences(userPreferences) {
     if (userPreferences.theme) {
       document.body.setAttribute("data-theme", userPreferences.theme);
-      // console.log(`🎨 Theme applied: ${userPreferences.theme}`);
+      // console.log(`Theme applied: ${userPreferences.theme}`);
     }
 
     if (userPreferences.language) {

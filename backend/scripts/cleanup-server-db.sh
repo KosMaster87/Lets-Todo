@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 #
-# 🌐 cleanup-server-db.sh
+# cleanup-server-db.sh
 # Deletes ALL server databases for todos (Guest + User), keeps only central User-DB
-# 🚀 For SERVER environments: feat/staging/production
-# ⚠️  WARNING: Deletes all user data irreversibly!
+# For SERVER environments: feat/staging/production
+# WARNING: Deletes all user data irreversibly!
 
 # ------ Configuration ------
 # Option 1: Environment Variable (recommended for CI/CD)
@@ -11,11 +11,11 @@ if [[ -n "$MYSQL_ROOT_PASSWORD" ]]; then
   MYSQL="mysql -u root -p'${MYSQL_ROOT_PASSWORD}'"
 # Option 2: MySQL Config File ~/.my.cnf (empfohlen für Server)
 elif [[ -f ~/.my.cnf ]]; then
-  MYSQL="mysql"  # Credentials aus ~/.my.cnf
+  MYSQL="mysql" # Credentials aus ~/.my.cnf
 else
-  echo "❌ Error: Keine MySQL-Credentials gefunden!"
-  echo "💡 Option 1: MYSQL_ROOT_PASSWORD='your_password' ./cleanup-server-db.sh"
-  echo "💡 Option 2: Erstelle ~/.my.cnf mit [client] user=root, password=xxx"
+  echo "Error: Keine MySQL-Credentials gefunden!"
+  echo "Option 1: MYSQL_ROOT_PASSWORD='your_password' ./cleanup-server-db.sh"
+  echo "Option 2: Erstelle ~/.my.cnf mit [client] user=root, password=xxx"
   exit 1
 fi
 
@@ -23,18 +23,18 @@ fi
 PATTERNS=("todos_guest_" "todos_user_")
 EXCLUDE_DBS=("todos_users" "todos_main")
 
-echo "🧹 TODOS DATABASE CLEANUP"
+echo "TODOS DATABASE CLEANUP"
 echo "=========================="
 
 # ------ Löschlogik ------
 total_deleted=0
 
 for pattern in "${PATTERNS[@]}"; do
-  echo "🔍 Suche nach Datenbanken mit Muster: ${pattern}% ..."
+  echo "Suche nach Datenbanken mit Muster: ${pattern}% ..."
   DBS=$(${MYSQL} -Nse "SHOW DATABASES LIKE '${pattern}%';" 2>/dev/null)
 
   if [[ -z "$DBS" ]]; then
-    echo "   Keine Datenbanken gefunden."
+    echo " Keine Datenbanken gefunden."
     continue
   fi
 
@@ -55,35 +55,35 @@ for pattern in "${PATTERNS[@]}"; do
   done
 
   if [[ -z "$TO_DELETE" ]]; then
-    echo "   Keine zu löschenden Datenbanken gefunden (nach Filterung)."
+    echo " Keine zu löschenden Datenbanken gefunden (nach Filterung)."
     continue
   fi
 
-  echo "🗑️  Folgende Datenbanken werden gelöscht:"
-  echo "$TO_DELETE" | tr ' ' '\n' | sed 's/^/     • /'
+  echo " Folgende Datenbanken werden gelöscht:"
+  echo "$TO_DELETE" | tr ' ' '\n' | sed 's/^/ • /'
   echo
 
   for db in $TO_DELETE; do
-    echo "   Dropping $db ..."
+    echo " Dropping $db ..."
     ${MYSQL} -e "DROP DATABASE IF EXISTS \`${db}\`;" 2>/dev/null
     ((total_deleted++))
   done
 done
 
 echo ""
-echo "✅ Fertig. Es wurden $total_deleted Datenbanken gelöscht."
-echo "🏛️  Die zentralen Datenbanken bleiben erhalten:"
+echo "Fertig. Es wurden $total_deleted Datenbanken gelöscht."
+echo " Die zentralen Datenbanken bleiben erhalten:"
 for exclude_db in "${EXCLUDE_DBS[@]}"; do
-  echo "     • $exclude_db"
+  echo " • $exclude_db"
 done
 
 # ------ User-Daten bereinigen ------
 echo ""
-echo "🧹 Leere zentrale User-Tabelle..."
+echo "Leere zentrale User-Tabelle..."
 ${MYSQL} -e "DELETE FROM todos_users.users;" 2>/dev/null
 ${MYSQL} -e "DELETE FROM todos_users.password_reset_tokens;" 2>/dev/null
-echo "✅ User-Daten geleert"
+echo "User-Daten geleert"
 
 echo ""
-echo "🎯 Server-Datenbank-Cleanup abgeschlossen!"
-echo "🚀 Führe jetzt aus: NODE_ENV=feat node scripts/setup-multi-env-db.js"
+echo "Server-Datenbank-Cleanup abgeschlossen!"
+echo "Führe jetzt aus: NODE_ENV=feat node scripts/setup-multi-env-db.js"

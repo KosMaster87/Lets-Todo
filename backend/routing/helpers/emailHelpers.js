@@ -42,7 +42,7 @@ const constructFullName = (user) => {
  * @param {Object} emailResult - Email result object
  */
 const logEmailSuccess = (emailResult) => {
-  debugLog(`📧 Password reset email sent: ${emailResult.messageId} (${emailResult.mode})`);
+  debugLog(`Password reset email sent: ${emailResult.messageId} (${emailResult.mode})`);
 };
 
 /**
@@ -50,7 +50,7 @@ const logEmailSuccess = (emailResult) => {
  * @param {Error} emailError - Email error object
  */
 const logEmailError = (emailError) => {
-  errorLog("❌ Error sending email:", emailError.message);
+  errorLog("Error sending email:", emailError.message);
   // Still handle as successful (Security: no info about email problems)
 };
 

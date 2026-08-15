@@ -6,7 +6,7 @@
  * - Guest-Pools: Dynamische Pools pro Gast-Session
  */
 
-//  db.js
+// db.js
 import mysql from "mysql2/promise";
 import { ENV, debugLog, errorLog } from "./config/environment.js";
 
@@ -71,7 +71,7 @@ const userPool = mysql.createPool({
     conn.release();
   } catch (err) {
     errorLog("Core-Pool Verbindungsfehler:", err.message);
-    console.error("💡 Prüfen Sie: DB läuft? Zugangsdaten korrekt? Netzwerk ok?");
+    console.error("Prüfen Sie: DB läuft? Zugangsdaten korrekt? Netzwerk ok?");
 
     // Fail-Fast: App beenden statt fehlerhaft zu starten
     // PM2 startet die App automatisch neu, wenn DB wieder verfügbar

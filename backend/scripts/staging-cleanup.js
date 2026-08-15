@@ -65,7 +65,7 @@ class StagingCleanup {
         this.processedFiles++;
       }
     } catch (error) {
-      console.error(`❌ Error processing ${filePath}:`, error.message);
+      console.error(`Error processing ${filePath}:`, error.message);
     }
   }
 
@@ -87,7 +87,7 @@ class StagingCleanup {
         }
       }
     } catch (error) {
-      console.error(`❌ Error processing directory ${dirPath}:`, error.message);
+      console.error(`Error processing directory ${dirPath}:`, error.message);
     }
   }
 
@@ -95,15 +95,15 @@ class StagingCleanup {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const backupDir = `backup-${timestamp}`;
 
-    console.log(`📦 Creating backup in ${backupDir}/`);
+    console.log(`Creating backup in ${backupDir}/`);
 
     // This would be implemented with a proper backup strategy
     // For now, we rely on git for version control
-    console.log(`💡 Use 'git stash' or create a backup branch before running cleanup`);
+    console.log(`Use 'git stash' or create a backup branch before running cleanup`);
   }
 
   run() {
-    console.log("🚀 Starting staging cleanup process...\n");
+    console.log("Starting staging cleanup process...\n");
 
     const startTime = Date.now();
 
@@ -112,21 +112,21 @@ class StagingCleanup {
 
     const endTime = Date.now();
 
-    console.log("\n📊 Cleanup Summary:");
-    console.log(`   • Files processed: ${this.processedFiles}`);
-    console.log(`   • JSDoc blocks removed: ${this.removedJsDocBlocks}`);
-    console.log(`   • Debug logs removed: ${this.removedDebugLogs}`);
-    console.log(`   • Dev comments removed: ${this.removedComments}`);
-    console.log(`   • Time taken: ${endTime - startTime}ms`);
+    console.log("\nCleanup Summary:");
+    console.log(` • Files processed: ${this.processedFiles}`);
+    console.log(` • JSDoc blocks removed: ${this.removedJsDocBlocks}`);
+    console.log(` • Debug logs removed: ${this.removedDebugLogs}`);
+    console.log(` • Dev comments removed: ${this.removedComments}`);
+    console.log(` • Time taken: ${endTime - startTime}ms`);
 
     if (this.processedFiles > 0) {
-      console.log("\n✅ Staging cleanup completed successfully!");
-      console.log("💡 Review changes with: git diff");
+      console.log("\nStaging cleanup completed successfully!");
+      console.log("Review changes with: git diff");
       console.log(
-        '💡 Commit changes with: git add . && git commit -m "chore: Clean staging branch for production"'
+        'Commit changes with: git add . && git commit -m "chore: Clean staging branch for production"'
       );
     } else {
-      console.log("\n🎯 No files needed cleaning - already production ready!");
+      console.log("\nNo files needed cleaning - already production ready!");
     }
 
     // Self-cleanup: Remove development scripts from staging
@@ -138,7 +138,7 @@ class StagingCleanup {
    */
   removeDevelopmentScripts() {
     try {
-      console.log("\n🧹 Removing development files and directories from staging branch...");
+      console.log("\nRemoving development files and directories from staging branch...");
 
       let removedCount = 0;
 
@@ -146,7 +146,7 @@ class StagingCleanup {
       ["deploy", "nginx", "docs"].forEach((dir) => {
         if (fs.existsSync(dir)) {
           fs.rmSync(dir, { recursive: true, force: true });
-          console.log(`✅ Removed directory: ${dir}/`);
+          console.log(`Removed directory: ${dir}/`);
           removedCount++;
         }
       });
@@ -173,7 +173,7 @@ class StagingCleanup {
       scriptsToRemove.forEach((scriptPath) => {
         if (fs.existsSync(scriptPath)) {
           fs.unlinkSync(scriptPath);
-          console.log(`✅ Removed file: ${scriptPath}`);
+          console.log(`Removed file: ${scriptPath}`);
           removedCount++;
         }
       });
@@ -188,21 +188,19 @@ class StagingCleanup {
       ].forEach((file) => {
         if (fs.existsSync(file)) {
           fs.unlinkSync(file);
-          console.log(`✅ Removed file: ${file}`);
+          console.log(`Removed file: ${file}`);
           removedCount++;
         }
       });
 
       if (removedCount > 0) {
-        console.log(
-          `🎯 Removed ${removedCount} development items - staging is now production-ready!`
-        );
+        console.log(`Removed ${removedCount} development items - staging is now production-ready!`);
       } else {
-        console.log("🎯 No development files found - already clean!");
+        console.log("No development files found - already clean!");
       }
     } catch (error) {
-      console.error("⚠️  Warning: Could not remove development files:", error.message);
-      console.log("💡 You may need to remove them manually");
+      console.error(" Warning: Could not remove development files:", error.message);
+      console.log("You may need to remove them manually");
     }
   }
 }

@@ -1,6 +1,6 @@
 # Staging Cleanup Script
 
-## 🎯 Purpose
+## Purpose
 
 This script automatically converts development code to production-ready code by removing:
 
@@ -15,7 +15,7 @@ This script automatically converts development code to production-ready code by 
 - Production console.log for server startup and errors
 - Important business logic comments
 
-## 🚀 Usage
+## Usage
 
 ### NPM Scripts (Recommended)
 
@@ -37,7 +37,7 @@ node scripts/staging-cleanup.js
 ./scripts/staging-cleanup.sh
 ```
 
-## 📋 Workflow
+## Workflow
 
 1. **Development Branch (`feature/main-feature`)**
 
@@ -52,7 +52,7 @@ node scripts/staging-cleanup.js
    - No debug output
    - Clean, professional codebase
 
-## 🔧 What Gets Removed
+## What Gets Removed
 
 ### JSDoc Blocks
 
@@ -70,7 +70,7 @@ node scripts/staging-cleanup.js
 ```javascript
 // REMOVED
 console.log("DEBUG: User data:", userData);
-console.log("🔧 Configuration loaded:", config);
+console.log("Configuration loaded:", config);
 // console.log('Commented debug log');
 ```
 
@@ -84,7 +84,7 @@ console.log("🔧 Configuration loaded:", config);
 // HACK: Quick fix for deployment
 ```
 
-## ✅ What Stays
+## What Stays
 
 ### Production Logs
 
@@ -113,7 +113,7 @@ try {
 const tax = calculateTax(amount, userLocation);
 ```
 
-## 📊 Results
+## Results
 
 **API Project:**
 
@@ -130,7 +130,7 @@ const tax = calculateTax(amount, userLocation);
 - 27 dev comments removed
 - 5,346 lines reduced
 
-## 🎯 Portfolio Benefits
+## Portfolio Benefits
 
 1. **Shows Professional Understanding**
 
@@ -146,14 +146,14 @@ const tax = calculateTax(amount, userLocation);
    - Automated deployment preparation
    - Consistent code transformation
 
-## ⚠️ Safety
+## Safety
 
 - Always run on the `staging` branch
 - Use git to track changes: `git diff`
 - Test thoroughly before deployment
 - Keep `feature/main-feature` as your documented version
 
-## 🔄 Update Workflow
+## Update Workflow
 
 ```bash
 # 1. Develop on feature branch (with full documentation)
@@ -167,7 +167,7 @@ git merge feature/main-feature
 npm run staging:cleanup
 
 # 3. Review and deploy
-git diff  # Review changes
+git diff # Review changes
 git add .
 git commit -m "chore: Prepare staging for production deployment"
 git push origin staging

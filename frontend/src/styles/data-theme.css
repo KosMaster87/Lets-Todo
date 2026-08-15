@@ -266,7 +266,7 @@ body[data-theme="dark"] {
 }
 
 [data-theme="dark"] .checkbox-group input[type="checkbox"]:checked::after {
-  content: "✓" !important;
+  content: "" !important;
   position: absolute !important;
   top: 50% !important;
   left: 50% !important;

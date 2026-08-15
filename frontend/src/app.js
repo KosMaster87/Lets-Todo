@@ -46,9 +46,9 @@ const initializeApp = async () => {
  * Uses the clean listener API instead of direct array manipulation.
  */
 const registerStateListeners = () => {
-  // console.log("📝 Registering state listeners using clean API");
+  // console.log("Registering state listeners using clean API");
   addListener(renderAllComponents);
-  // console.log("✅ Main render listener registered");
+  // console.log("Main render listener registered");
 };
 
 /**
@@ -96,7 +96,7 @@ const initializeSampleDataIfNeeded = (sessionType, currentTodos, currentTrashedT
     initializeAllSampleData(addTodo, setTrashedTodos, currentTodos, currentTrashedTodos);
   } else {
     // console.log(
-    //   `👤 User session detected - skipping sample data initialization`
+    // `User session detected - skipping sample data initialization`
     // );
   }
 };

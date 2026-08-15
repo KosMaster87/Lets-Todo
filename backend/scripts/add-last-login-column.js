@@ -5,7 +5,7 @@
  */
 
 /**
- * 🔄 Database Migration: Add last_login column
+ * Database Migration: Add last_login column
  * Adds last_login column to users table for better inactivity detection
  *
  * Usage: NODE_ENV=feat node scripts/add-last-login-column.js
@@ -16,7 +16,7 @@ import { ENV, debugLog, infoLog, errorLog, ENVIRONMENT } from "../config/environ
 
 async function addLastLoginColumn() {
   try {
-    infoLog(`🔄 Adding last_login column to ${ENVIRONMENT} database...`);
+    infoLog(`Adding last_login column to ${ENVIRONMENT} database...`);
 
     const connection = await mysql.createConnection({
       host: ENV.DB_HOST,
@@ -39,7 +39,7 @@ async function addLastLoginColumn() {
     );
 
     if (columns.length > 0) {
-      infoLog("✅ last_login Spalte existiert bereits!");
+      infoLog("last_login Spalte existiert bereits!");
     } else {
       // Füge last_login Spalte hinzu
       await connection.execute(`
@@ -47,7 +47,7 @@ async function addLastLoginColumn() {
         ADD COLUMN last_login BIGINT DEFAULT NULL
         COMMENT 'Unix timestamp (ms) of last login activity'
       `);
-      infoLog("✅ last_login Spalte hinzugefügt!");
+      infoLog("last_login Spalte hinzugefügt!");
 
       // Setze last_login für bestehende User auf created-Wert (Fallback)
       await connection.execute(`
@@ -55,24 +55,24 @@ async function addLastLoginColumn() {
         SET last_login = created
         WHERE last_login IS NULL AND created IS NOT NULL
       `);
-      infoLog("📅 Bestehende User: last_login auf created-Wert gesetzt");
+      infoLog("Bestehende User: last_login auf created-Wert gesetzt");
     }
 
     // Zeige aktuelle Tabellen-Struktur
     const [tableInfo] = await connection.execute(`DESCRIBE users`);
-    console.log("\n📋 Aktuelle users-Tabelle Struktur:");
+    console.log("\nAktuelle users-Tabelle Struktur:");
     tableInfo.forEach((row) => {
       console.log(
-        `  ${row.Field}: ${row.Type} ${
+        ` ${row.Field}: ${row.Type} ${
           row.Null === "YES" ? "(nullable)" : "(not null)"
         } ${row.Default ? `default: ${row.Default}` : ""}`
       );
     });
 
     await connection.end();
-    infoLog(`✅ ${ENVIRONMENT} Database Migration abgeschlossen!`);
+    infoLog(`${ENVIRONMENT} Database Migration abgeschlossen!`);
   } catch (error) {
-    errorLog("❌ Migration Fehler:", error);
+    errorLog("Migration Fehler:", error);
     process.exit(1);
   }
 }

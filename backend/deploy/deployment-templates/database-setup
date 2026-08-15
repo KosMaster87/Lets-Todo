@@ -11,10 +11,10 @@ setup_database() {
     local PORT="$3"
     local PROJECT_DIR="$4"
 
-    echo "🗄️  Setting up database for $ENV_TYPE environment..."
+    echo " Setting up database for $ENV_TYPE environment..."
 
     # Switch to project directory and run the Node.js setup script
-    echo "🏗️  Running automated database setup script..."
+    echo " Running automated database setup script..."
     cd "$PROJECT_DIR"
 
     # Set the environment and run the setup script
@@ -29,8 +29,8 @@ setup_database() {
     node scripts/setup-multi-env-db.js
 
     if [ $? -ne 0 ]; then
-        echo "❌ Database setup failed for $ENV_TYPE"
-        echo "💡 Troubleshooting steps:"
+        echo "Database setup failed for $ENV_TYPE"
+        echo "Troubleshooting steps:"
         echo "1. Check if MariaDB/MySQL is running: sudo systemctl status mariadb"
         echo "2. Verify environment configuration in config/env/.env.$ENV_TYPE"
         echo "3. Check database root permissions"
@@ -38,35 +38,35 @@ setup_database() {
     fi
 
     # Run database migrations
-    echo "🔄 Running database migrations..."
+    echo "Running database migrations..."
 
     # Migration 1: Add last_login column
-    echo "📝 Running migration: add-last-login-column.js"
+    echo "Running migration: add-last-login-column.js"
     node scripts/add-last-login-column.js
 
     # Migration 2: Add user preferences table
-    echo "📝 Running migration: add-user-preferences-table.js"
+    echo "Running migration: add-user-preferences-table.js"
     node scripts/add-user-preferences-table.js
 
     # Migration 3: Add updated_at column
-    echo "📝 Running migration: add-updated-at-column.js"
+    echo "Running migration: add-updated-at-column.js"
     node scripts/add-updated-at-column.js
 
     # Migration 4: Add trash columns
-    echo "📝 Running migration: add-trash-columns.js"
+    echo "Running migration: add-trash-columns.js"
     node scripts/add-trash-columns.js
 
-    echo "✅ Database setup completed successfully for $ENV_TYPE"
-    echo "📋 Created databases:"
-    echo "  - todos_users (user management)"
-    echo "  - todos_main (todo data)"
+    echo "Database setup completed successfully for $ENV_TYPE"
+    echo "Created databases:"
+    echo " - todos_users (user management)"
+    echo " - todos_main (todo data)"
     if [ "$ENV_TYPE" != "production" ]; then
-        echo "  - Test user: test@${ENV_TYPE}.local"
-        echo "  - Test database: todos_user_1_${ENV_TYPE}"
+        echo " - Test user: test@${ENV_TYPE}.local"
+        echo " - Test database: todos_user_1_${ENV_TYPE}"
     fi
-    echo "🔄 Applied migrations:"
-    echo "  - Last login column added to users table"
-    echo "  - User preferences table created for all user databases"
-    echo "  - Updated_at column added to todos table"
-    echo "  - Trash columns added to todos table"
+    echo "Applied migrations:"
+    echo " - Last login column added to users table"
+    echo " - User preferences table created for all user databases"
+    echo " - Updated_at column added to todos table"
+    echo " - Trash columns added to todos table"
 }
