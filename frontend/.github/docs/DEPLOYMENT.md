@@ -53,12 +53,12 @@ This document provides comprehensive deployment instructions for the Let's Todo 
 2. **Install Dependencies**
 
    ```bash
-   npm install
+   pnpm install
    ```
 
 3. **Start Development Server**
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 ## Development Setup
@@ -75,20 +75,20 @@ The development server provides:
 
 ### Available Scripts
 
-| Script               | Command                                                                      | Description                                  |
-| -------------------- | ---------------------------------------------------------------------------- | -------------------------------------------- |
-| `npm run dev`        | `concurrently -n SERVER,RELOAD "nodemon dev-server.js" "npm run livereload"` | Full development environment with hot reload |
-| `npm run start`      | `node dev-server.js`                                                         | Start server without live reload             |
-| `npm run watch`      | `nodemon dev-server.js --watch src --watch assets/styles`                    | Server with file watching                    |
-| `npm run livereload` | `livereload . --wait 500 --debug --extraExts js,css,html`                    | LiveReload service only                      |
-| `npm run docs`       | `jsdoc -c jsdoc.json`                                                        | Generate JSDoc documentation                 |
+| Script                | Command                                                                       | Description                                  |
+| --------------------- | ----------------------------------------------------------------------------- | -------------------------------------------- |
+| `pnpm run dev`        | `concurrently -n SERVER,RELOAD "nodemon dev-server.js" "pnpm run livereload"` | Full development environment with hot reload |
+| `pnpm run start`      | `node dev-server.js`                                                          | Start server without live reload             |
+| `pnpm run watch`      | `nodemon dev-server.js --watch src --watch assets/styles`                     | Server with file watching                    |
+| `pnpm run livereload` | `livereload . --wait 500 --debug --extraExts js,css,html`                     | LiveReload service only                      |
+| `pnpm run docs`       | `jsdoc -c jsdoc.json`                                                         | Generate JSDoc documentation                 |
 
 ### Development Workflow
 
 1. **Start Development Environment**
 
    ```bash
-   npm run dev
+   pnpm run dev
    ```
 
 2. **Access Application**
@@ -240,7 +240,7 @@ server {
 
 ```bash
 # Ensure both services are running
-npm run dev
+pnpm run dev
 
 # Check if port 35729 is blocked by firewall
 ```

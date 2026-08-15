@@ -4,10 +4,12 @@ node_modules/
 # Environment files (real secrets; only *.example is tracked)
 backend/config/env/.env*
 !backend/config/env/*.example
+/.env
+!/.env.example
 
 # Generated documentation
-/lets-todo-api/docs/
-/lets-todo-app/docs/
+/backend/docs/
+/frontend/docs/
 /coverage
 
 # Logs

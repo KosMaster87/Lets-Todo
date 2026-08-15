@@ -1,0 +1,20 @@
+node_modules/
+**/node_modules/
+.git/
+.husky/
+
+# Real secrets - runtime config comes from docker-compose env_file, not the image
+backend/config/env/.env
+backend/config/env/.env.development
+backend/config/env/.env.staging
+backend/config/env/.env.production
+
+# Frontend source not needed in the backend image
+frontend/src/
+frontend/assets/
+frontend/*.md
+
+docs/
+coverage/
+*.log
+.DS_Store

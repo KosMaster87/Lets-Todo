@@ -1,6 +1,6 @@
 /**
  * @fileoverview Backend Environment Configuration
- * @description Multi-Environment Support: development, feature, staging, production
+ * @description Multi-Environment Support: development, staging, production
  *
  * @module config/environment
  */
@@ -14,11 +14,9 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 
 // Environment name mapping (deployment uses short names)
 const envMapping = {
-  feat: "feature",
   stage: "staging",
   prod: "production",
   development: "development",
-  feature: "feature",
   staging: "staging",
   production: "production",
 };
@@ -27,7 +25,6 @@ const actualEnv = envMapping[NODE_ENV] || NODE_ENV;
 
 const envFiles = {
   development: "config/env/.env.development",
-  feature: "config/env/.env.feature",
   staging: "config/env/.env.staging",
   production: "config/env/.env.production",
 };
@@ -79,7 +76,7 @@ function detectEnvironment() {
 const ENVIRONMENT = detectEnvironment();
 
 /**
- * Environment-specific configuration for all 4 environments
+ * Environment-specific configuration for all 3 environments
  */
 const CONFIG = {
   development: {
@@ -123,44 +120,6 @@ const CONFIG = {
     FRONTEND_URL: process.env.FRONTEND_URL || "http://127.0.0.1:5500",
   },
 
-  feature: {
-    // Database
-    DB_HOST: process.env.DB_HOST || "localhost",
-    DB_PORT: Number(process.env.DB_PORT) || 3306,
-    DB_USER: process.env.DB_USER,
-    DB_PASSWORD: process.env.DB_PASSWORD,
-    DB_NAME: process.env.DB_NAME || "todos_main",
-    DB_USERS: process.env.DB_USERS || "todos_users",
-
-    // Server
-    HTTP_PORT: Number(process.env.PORT) || 3003,
-    HTTP_HOST: "0.0.0.0",
-
-    // CORS - Feature Environment
-    CORS_ORIGINS: [
-      "https://lets-todo-app-feat.dev2ksoftware.com",
-      "http://localhost:3000", // For local testing
-    ],
-
-    // Cookies
-    COOKIE_DOMAIN: ".dev2ksoftware.com",
-    COOKIE_SECURE: true,
-
-    // Logging
-    DEBUG: envBool(process.env.DEBUG, true),
-    LOG_LEVEL: process.env.LOG_LEVEL || "debug",
-
-    // E-Mail Configuration
-    EMAIL_PROVIDER: process.env.EMAIL_PROVIDER || "",
-    EMAIL_USER: process.env.EMAIL_USER || "",
-    EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
-    EMAIL_HOST: process.env.EMAIL_HOST || "",
-    EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, false),
-    APP_NAME: process.env.APP_NAME || "Let's Todo",
-    FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo-app-feat.dev2ksoftware.com",
-  },
-
   staging: {
     // Database
     DB_HOST: process.env.DB_HOST || "localhost",
@@ -175,7 +134,7 @@ const CONFIG = {
     HTTP_HOST: "0.0.0.0",
 
     // CORS - Staging Environment
-    CORS_ORIGINS: ["https://lets-todo-app-stage.dev2ksoftware.com"],
+    CORS_ORIGINS: ["https://staging-lets-todo.dev2ksoftware.com"],
 
     // Cookies
     COOKIE_DOMAIN: ".dev2ksoftware.com",
@@ -191,9 +150,9 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true), // Production should use SSL
+    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true),
     APP_NAME: process.env.APP_NAME || "Let's Todo",
-    FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo-app-stage.dev2ksoftware.com",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://staging-lets-todo.dev2ksoftware.com",
   },
 
   production: {
@@ -226,7 +185,7 @@ const CONFIG = {
     EMAIL_PASSWORD: process.env.EMAIL_PASSWORD || "",
     EMAIL_HOST: process.env.EMAIL_HOST || "",
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
-    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true), // Production should use SSL
+    EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true),
     APP_NAME: process.env.APP_NAME || "Let's Todo",
     FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo.dev2ksoftware.com",
   },
@@ -248,7 +207,7 @@ function debugLog(message, data = null) {
 
 function infoLog(message, data = null) {
   if (ENV.LOG_LEVEL === "verbose" || ENV.LOG_LEVEL === "info") {
-    console.log(`ℹ[${ENVIRONMENT.toUpperCase()}] ${message}`, data || "");
+    console.log(`[${ENVIRONMENT.toUpperCase()}] ${message}`, data || "");
   }
 }
 
