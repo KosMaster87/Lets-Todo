@@ -1,0 +1,99 @@
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.login-intro {
+  text-align: center;
+  color: white;
+}
+
+.login-intro h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.login-intro p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.login-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+}
+
+.login-submit-btn {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  border-left: 4px solid #4caf50;
+}
+
+.login-submit-btn .btn-content h3,
+.login-submit-btn .btn-content p {
+  color: white;
+}
+
+.login-submit-btn-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/login.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.login-cancel-btn {
+  border-left: 4px solid #ff5722;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.login-cancel-btn .btn-content h3,
+.login-cancel-btn .btn-content p {
+  color: white;
+}
+
+.login-cancel-btn-icon {
+  background-color: #ff5722;
+  mask: url("/assets/icons/person_cancel.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.login-forgot-password {
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.link-button:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+/* Loading animation */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

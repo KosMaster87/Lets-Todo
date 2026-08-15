@@ -1,0 +1,113 @@
+.todos-list-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+}
+
+.todos-list-intro {
+  text-align: center;
+  color: white;
+}
+
+.todos-list-intro h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.todos-list-intro p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.todos-list-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+/* Todos List Container */
+.todos-list-container {
+  margin-top: 2rem;
+}
+
+.todos-list-container h3 {
+  color: #333;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.todos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Todos List Specific Action Icons */
+.todos-list .action-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.todos-list .done-todo-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/done.svg") no-repeat center;
+  mask-size: contain;
+}
+
+.todos-list .delete-todo-icon {
+  background-color: #f44336;
+  mask: url("/assets/icons/delete.svg") no-repeat center;
+  mask-size: contain;
+}
+
+/* Todos List Buttons */
+.todos-list-filter-btn {
+  border-left: 4px solid #2196f3;
+}
+
+.todos-list-filter-btn-icon {
+  background-color: #2196f3;
+  mask: url("/assets/icons/filter_list.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.todos-list-cancel-btn {
+  border-left: 4px solid #ff5722;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.todos-list-cancel-btn .btn-content h3,
+.todos-list-cancel-btn .btn-content p {
+  color: white;
+}
+
+.todos-list-cancel-btn-icon {
+  background-color: #ff5722;
+  mask: url("/assets/icons/arrow_back.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Todos List Placeholder */
+.todo-placeholder {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.8rem;
+  padding: 2rem;
+  text-align: center;
+  color: white;
+  opacity: 0.7;
+}
+
+.todo-placeholder p {
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}

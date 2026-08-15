@@ -1,0 +1,102 @@
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  flex: 1;
+}
+
+.dashboard-intro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-align: center;
+  color: white;
+}
+
+.dashboard-subtitle {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-session-info {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  line-height: 1.4;
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -1rem;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #ccc, transparent);
+    opacity: 0.6;
+  }
+}
+
+/* --- */
+
+.dashboard-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+}
+
+.todos-list-dashboard-btn {
+  border-left: 4px solid #2196f3;
+}
+
+.todos-list-dashboard-btn-icon {
+  background-color: #2196f3;
+  mask: url("/assets/icons/notes.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.create-todo-dashboard-btn {
+  border-left: 4px solid #4caf50;
+}
+
+.create-todo-dashboard-btn-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/add_note.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.trash-dashboard-btn {
+  border-left: 4px solid #f44336;
+}
+
+.trash-dashboard-btn-icon {
+  background-color: #f44336;
+  mask: url("/assets/icons/delete.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.dashboard-cancel-btn {
+  border-left: 4px solid #ff5722;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.dashboard-cancel-btn .btn-content h3,
+.dashboard-cancel-btn .btn-content p {
+  color: white;
+}
+
+.dashboard-cancel-btn-icon {
+  background-color: #ff5722;
+  mask: url("/assets/icons/arrow_back.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}

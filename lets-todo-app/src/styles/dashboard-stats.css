@@ -1,0 +1,26 @@
+.dashboard-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+}
+
+.stat-item {
+  text-align: center;
+  color: white;
+}
+
+.stat-number {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  color: #4caf50;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}

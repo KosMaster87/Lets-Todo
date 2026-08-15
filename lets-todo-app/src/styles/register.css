@@ -1,0 +1,66 @@
+.register-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.register-intro {
+  text-align: center;
+  color: white;
+}
+
+.register-intro h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.register-intro p {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.register-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+}
+
+.register-submit-btn {
+  background: linear-gradient(135deg, #2196f3, #1976d2);
+  border-left: 4px solid #4caf50;
+}
+
+.register-submit-btn .btn-content h3,
+.register-submit-btn .btn-content p {
+  color: white;
+}
+
+.register-submit-btn-icon {
+  background-color: #4caf50;
+  mask: url("/assets/icons/person_add.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}
+
+.register-cancel-btn {
+  border-left: 4px solid #ff5722;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.register-cancel-btn .btn-content h3,
+.register-cancel-btn .btn-content p {
+  color: white;
+}
+
+.register-cancel-btn-icon {
+  background-color: #ff5722;
+  mask: url("/assets/icons/person_cancel.svg") no-repeat center;
+  mask-size: contain;
+  width: 2rem;
+  height: 2rem;
+}

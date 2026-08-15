@@ -1,0 +1,520 @@
+[data-theme="dark"] {
+  --primary-bg: #1a1a1a;
+  --secondary-bg: #2a2a2aab;
+  --text-primary: #ffffff;
+  --text-secondary: #cccccc;
+}
+
+body[data-theme="dark"] {
+  background-image: linear-gradient(
+    180deg,
+    #414175 0%,
+    #1e2e59 100%
+  ) !important;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Der Style der Menü-Buttons einer jeden Seite. */
+[data-theme="dark"] .menu-btn {
+  background: var(--secondary-bg);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .btn-content h3,
+[data-theme="dark"] .btn-content p {
+  color: var(--text-primary);
+}
+
+/* Hover effects for menu buttons in dark mode */
+[data-theme="dark"] .menu-btn:hover::before {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode for menu button icons - keep original colors but adjust opacity */
+[data-theme="dark"] .guest-btn-icon,
+[data-theme="dark"] .register-btn-icon,
+[data-theme="dark"] .login-btn-icon,
+[data-theme="dark"] .logout-btn-icon,
+[data-theme="dark"] .options-btn-icon,
+[data-theme="dark"] .dashboard-btn-icon {
+  opacity: 0.9;
+}
+
+/* TODO */
+/* Der Style im Header einer jeder Seite. */
+[data-theme="dark"] .page-item {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .page-title {
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .page-description {
+  color: var(--text-secondary);
+}
+
+/* Dark mode styles for specific button types across different pages */
+
+/* Todos page buttons */
+[data-theme="dark"] .todos-save-btn,
+[data-theme="dark"] .todos-cancel-btn {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .todos-save-btn .btn-content h3,
+[data-theme="dark"] .todos-save-btn .btn-content p,
+[data-theme="dark"] .todos-cancel-btn .btn-content h3,
+[data-theme="dark"] .todos-cancel-btn .btn-content p {
+  color: var(--text-primary);
+}
+
+/* Todo-view page buttons */
+[data-theme="dark"] .todo-view-save-btn,
+[data-theme="dark"] .todo-view-back-btn {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .todo-view-save-btn .btn-content h3,
+[data-theme="dark"] .todo-view-save-btn .btn-content p,
+[data-theme="dark"] .todo-view-back-btn .btn-content h3,
+[data-theme="dark"] .todo-view-back-btn .btn-content p {
+  color: var(--text-primary);
+}
+
+/* Todos-list page buttons */
+[data-theme="dark"] .todos-list-filter-btn,
+[data-theme="dark"] .todos-list-cancel-btn {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .todos-list-filter-btn .btn-content h3,
+[data-theme="dark"] .todos-list-filter-btn .btn-content p,
+[data-theme="dark"] .todos-list-cancel-btn .btn-content h3,
+[data-theme="dark"] .todos-list-cancel-btn .btn-content p {
+  color: var(--text-primary);
+}
+
+/* Dashboard page buttons */
+[data-theme="dark"] .dashboard-todos-btn,
+[data-theme="dark"] .dashboard-trash-btn,
+[data-theme="dark"] .dashboard-logout-btn {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .dashboard-todos-btn .btn-content h3,
+[data-theme="dark"] .dashboard-todos-btn .btn-content p,
+[data-theme="dark"] .dashboard-trash-btn .btn-content h3,
+[data-theme="dark"] .dashboard-trash-btn .btn-content p,
+[data-theme="dark"] .dashboard-logout-btn .btn-content h3,
+[data-theme="dark"] .dashboard-logout-btn .btn-content p {
+  color: var(--text-primary);
+}
+
+/* Options page buttons */
+[data-theme="dark"] .theme-toggle-btn,
+[data-theme="dark"] .personal-data-btn,
+[data-theme="dark"] .options-cancel-btn {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .theme-toggle-btn .btn-content h3,
+[data-theme="dark"] .theme-toggle-btn .btn-content p,
+[data-theme="dark"] .personal-data-btn .btn-content h3,
+[data-theme="dark"] .personal-data-btn .btn-content p,
+[data-theme="dark"] .options-cancel-btn .btn-content h3,
+[data-theme="dark"] .options-cancel-btn .btn-content p {
+  color: var(--text-primary);
+}
+
+/* Form submit and cancel buttons */
+[data-theme="dark"] .form-submit-btn,
+[data-theme="dark"] .form-cancel-btn {
+  background: var(--secondary-bg);
+}
+
+[data-theme="dark"] .form-submit-btn .btn-content h3,
+[data-theme="dark"] .form-submit-btn .btn-content p,
+[data-theme="dark"] .form-cancel-btn .btn-content h3,
+[data-theme="dark"] .form-cancel-btn .btn-content p {
+  color: var(--text-primary);
+}
+
+/* ===========================================
+   INPUT FIELDS - DARK MODE
+   =========================================== */
+
+/* All input types */
+[data-theme="dark"] input[type="text"],
+[data-theme="dark"] input[type="email"],
+[data-theme="dark"] input[type="password"],
+[data-theme="dark"] input[type="search"],
+[data-theme="dark"] textarea {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Focus states for inputs */
+[data-theme="dark"] input[type="text"]:focus,
+[data-theme="dark"] input[type="email"]:focus,
+[data-theme="dark"] input[type="password"]:focus,
+[data-theme="dark"] input[type="search"]:focus,
+[data-theme="dark"] textarea:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+  background: rgba(45, 45, 45, 1) !important;
+  outline: none !important;
+}
+
+/* Placeholder text */
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #999999 !important;
+}
+
+/* Specific input IDs (like registerEmail) */
+[data-theme="dark"] #registerEmail,
+[data-theme="dark"] #registerPassword,
+[data-theme="dark"] #registerPasswordConfirm,
+[data-theme="dark"] #loginEmail,
+[data-theme="dark"] #loginPassword,
+[data-theme="dark"] #resetPasswordEmail,
+[data-theme="dark"] #resetPasswordConfirmPassword,
+[data-theme="dark"] #resetPasswordConfirmPasswordConfirm,
+[data-theme="dark"] #changePasswordCurrent,
+[data-theme="dark"] #changePasswordNew,
+[data-theme="dark"] #changePasswordConfirm,
+[data-theme="dark"] #personalDataEmail,
+[data-theme="dark"] #personalDataFirstName,
+[data-theme="dark"] #personalDataLastName {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+/* Contenteditable elements (for todo editing) */
+[data-theme="dark"] [contenteditable="true"] {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 1px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] [contenteditable="true"]:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+  background: rgba(45, 45, 45, 1) !important;
+  outline: none !important;
+}
+
+/* ===========================================
+   FORM GROUPS - DARK MODE
+   =========================================== */
+
+/* Form group labels */
+[data-theme="dark"] .form-group label {
+  color: var(--text-primary) !important;
+}
+
+/* Form group inputs (from form-group.css) */
+[data-theme="dark"] .form-group input[type="text"],
+[data-theme="dark"] .form-group input[type="email"],
+[data-theme="dark"] .form-group input[type="password"] {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-theme="dark"] .form-group input[type="text"]:focus,
+[data-theme="dark"] .form-group input[type="email"]:focus,
+[data-theme="dark"] .form-group input[type="password"]:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4) !important;
+  background: rgba(45, 45, 45, 1) !important;
+}
+
+/* Form validation states */
+[data-theme="dark"] .form-group input.invalid {
+  border-color: #f44336 !important;
+  box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.3) !important;
+}
+
+[data-theme="dark"] .form-group input.valid {
+  border-color: #4caf50 !important;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.3) !important;
+}
+
+/* Checkbox groups */
+[data-theme="dark"] .checkbox-group label {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  background-color: #3a3a3a !important;
+  border: 2px solid #666666 !important;
+  border-radius: 4px !important;
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  position: relative !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:checked {
+  background-color: #0066cc !important;
+  border-color: #0066cc !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:checked::after {
+  content: "✓" !important;
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  color: white !important;
+  font-size: 0.9rem !important;
+  font-weight: bold !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:hover {
+  border-color: #0088ff !important;
+  box-shadow: 0 2px 8px rgba(0, 102, 204, 0.3) !important;
+}
+
+[data-theme="dark"] .checkbox-group input[type="checkbox"]:focus {
+  outline: none !important;
+  border-color: #0066cc !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2) !important;
+}
+
+/* Form controls (todo creation) */
+[data-theme="dark"] .form-control {
+  background: rgba(45, 45, 45, 0.9) !important;
+  border: 2px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .form-control:focus {
+  border-color: #0066cc !important;
+  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.4) !important;
+}
+
+/* ===========================================
+   TODO DISPLAY AREAS - DARK MODE
+   =========================================== */
+
+/* Main todo display container */
+[data-theme="dark"] .todo-display {
+  background: rgba(45, 45, 45, 0.95) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid #555555;
+}
+
+/* Todo header */
+[data-theme="dark"] .todo-header {
+  border-bottom: unset;
+}
+
+/* Todo title */
+[data-theme="dark"] .todo-title {
+  border: 1px solid #555555;
+  background: rgba(83, 83, 83, 0.253) !important;
+  color: var(--text-primary) !important;
+}
+
+/* Todo content display */
+[data-theme="dark"] .todo-content-display {
+  background: rgba(83, 83, 83, 0.253) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid #555555;
+}
+
+/* Todo view actions */
+[data-theme="dark"] .todo-view-actions {
+  background: rgba(83, 83, 83, 0.253) !important;
+  border: 1px solid #555555;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Todo meta info */
+[data-theme="dark"] .todo-meta-info {
+  background: rgba(83, 83, 83, 0.253) !important;
+  border: 1px solid #555555;
+  color: var(--text-secondary) !important;
+}
+
+/* Todo creation date */
+[data-theme="dark"] .todo-creation-date {
+  color: var(--text-secondary) !important;
+}
+
+/* Todo status badges */
+[data-theme="dark"] .todo-status-badge {
+  color: var(--text-secondary) !important;
+  border: 1px solid #555555;
+}
+
+[data-theme="dark"] .todo-status-badge.completed {
+  background: rgba(76, 175, 80, 0.2) !important;
+  color: #4caf50 !important;
+  border: 1px solid #4caf50 !important;
+}
+
+[data-theme="dark"] .todo-status-badge.pending {
+  background: rgba(255, 152, 0, 0.2) !important;
+  color: #ff9800 !important;
+  border: 1px solid #ff9800 !important;
+}
+
+/* Todos list container heading */
+[data-theme="dark"] .todos-list-container h3 {
+  color: var(--text-primary) !important;
+}
+
+/* ===========================================
+   RESET PASSWORD CONFIRM - DARK MODE
+   =========================================== */
+
+/* Reset user info display */
+[data-theme="dark"] .reset-user-info {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid #555555 !important;
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .reset-user-info p {
+  color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .reset-user-info strong {
+  color: #66b3ff !important;
+}
+
+/* Token validation status */
+[data-theme="dark"] .token-validation-status {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border: 1px solid #555555;
+  color: var(--text-primary) !important;
+}
+
+/* Password strength indicator */
+[data-theme="dark"] .strength-bar {
+  background-color: #444444 !important;
+}
+
+[data-theme="dark"] .strength-text {
+  color: var(--text-secondary) !important;
+}
+
+/* Error and success messages */
+[data-theme="dark"] .reset-password-confirm-error {
+  background-color: rgba(248, 115, 121, 0.2) !important;
+  color: #ff6b6b !important;
+  border: 1px solid #ff6b6b !important;
+}
+
+[data-theme="dark"] .reset-password-confirm-success {
+  background-color: rgba(76, 175, 80, 0.2) !important;
+  color: #4caf50 !important;
+  border: 1px solid #4caf50 !important;
+}
+
+/* Invalid token message */
+[data-theme="dark"] .invalid-token-message h3 {
+  color: #ff6b6b !important;
+}
+
+[data-theme="dark"] .invalid-token-message p {
+  color: var(--text-secondary) !important;
+}
+
+/* ===========================================
+   TRASH TODO ITEMS - DARK MODE
+   =========================================== */
+
+/* Main trash todo item container */
+[data-theme="dark"] .trash-todo-item {
+  background: rgba(45, 45, 45, 0.95) !important;
+  border-left: 4px solid #ff6b6b !important;
+  border-top: 1px solid #555555;
+  border-right: 1px solid #555555;
+  border-bottom: 1px solid #555555;
+}
+
+[data-theme="dark"] .trash-todo-item:hover {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Trash todo header */
+[data-theme="dark"] .trash-todo-header {
+  border-bottom: 1px solid #555555;
+}
+
+/* Trash todo title */
+[data-theme="dark"] .trash-todo-title {
+  color: var(--text-primary) !important;
+}
+
+/* Trash todo content text */
+[data-theme="dark"] .trash-todo-text {
+  color: var(--text-primary) !important;
+}
+
+/* Trash todo metadata */
+[data-theme="dark"] .trash-todo-meta {
+  color: var(--text-secondary) !important;
+}
+
+[data-theme="dark"] .trash-todo-date {
+  color: #ff6b6b !important;
+}
+
+[data-theme="dark"] .trash-todo-original-date {
+  color: var(--text-secondary) !important;
+}
+
+/* Action Buttons Dark Mode */
+[data-theme="dark"] .action-btn {
+  background: rgba(42, 42, 42, 0.9);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .action-btn:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .action-btn:active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] .action-btn.bookmark-view-btn:hover {
+  background: rgba(255, 152, 0, 0.2);
+}
+
+[data-theme="dark"] .action-btn.done-todo-btn:hover {
+  background: rgba(76, 175, 80, 0.2);
+}
+
+[data-theme="dark"] .action-btn.share-todo-btn:hover {
+  background: rgba(156, 39, 176, 0.2);
+}
+
+[data-theme="dark"] .action-btn.copy-todo-btn:hover {
+  background: rgba(33, 150, 243, 0.2);
+}
+
+[data-theme="dark"] .action-btn.delete-todo-btn:hover {
+  background: rgba(244, 67, 54, 0.2);
+}
+
+/* Trash todo placeholder */
+[data-theme="dark"] .trash-todo-placeholder {
+  background: rgba(45, 45, 45, 0.3) !important;
+  border: 1px solid #555555;
+  color: var(--text-primary) !important;
+}
