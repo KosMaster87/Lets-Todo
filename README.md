@@ -3,6 +3,14 @@
 > **pnpm-Monorepo** für _Let's Todo_ - eine Full-Stack Todo-App mit Vanilla JavaScript
 > Frontend und Node.js/Express Backend.
 
+> **Hinweis zum Branch:** Der GitHub-Default-Branch ist `dev` (aktive Entwicklung, volle
+> JSDoc, Debug-Logs) - ein einfacher `git clone` landet also dort. Die stabile,
+> produktionsgleiche Version steht immer auf **`main`**:
+>
+> ```bash
+> git clone --branch main https://github.com/KosMaster87/Lets-Todo.git
+> ```
+
 ---
 
 ## Live
