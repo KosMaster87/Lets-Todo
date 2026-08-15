@@ -67,7 +67,7 @@ export const SESSION_TYPES = {
  * @type {Object}
  */
 export const API_ENDPOINTS = {
-  BASE_URL: "https://lets-todo-api.dev2k.org/api",
+  BASE_URL: "https://lets-todo-api.dev2ksoftware.com/api",
   AUTH: {
     LOGIN: "/auth/login",
     REGISTER: "/auth/register",

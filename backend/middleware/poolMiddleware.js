@@ -182,5 +182,5 @@ async function getUserDbName(userId) {
  * @param {Object} res - Express Response Object
  */
 function clearInvalidUserCookie(res) {
-  res.clearCookie("userId", { domain: ".dev2k.org", path: "/" });
+  res.clearCookie("userId", { domain: ".dev2ksoftware.com", path: "/" });
 }

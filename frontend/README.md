@@ -10,20 +10,20 @@
 
 ### **Live Applications**
 
-| Environment        | Application                                                            | Status          |
-| ------------------ | ---------------------------------------------------------------------- | --------------- |
-| **Production**     | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)                     | Stable          |
-| **Feature Branch** | [lets-todo-app-feat.dev2k.org](https://lets-todo-app-feat.dev2k.org)   | Latest Features |
-| **Staging**        | [lets-todo-app-stage.dev2k.org](https://lets-todo-app-stage.dev2k.org) | Testing         |
+| Environment        | Application                                                                            | Status          |
+| ------------------ | -------------------------------------------------------------------------------------- | --------------- |
+| **Production**     | [lets-todo.dev2ksoftware.com](https://lets-todo.dev2ksoftware.com)                     | Stable          |
+| **Feature Branch** | [lets-todo-app-feat.dev2ksoftware.com](https://lets-todo-app-feat.dev2ksoftware.com)   | Latest Features |
+| **Staging**        | [lets-todo-app-stage.dev2ksoftware.com](https://lets-todo-app-stage.dev2ksoftware.com) | Testing         |
 
 ### **Documentation Hub**
 
-| Type                  | Feature Branch                                                             | Topics                    |
-| --------------------- | -------------------------------------------------------------------------- | ------------------------- |
-| **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html)     | Components, State, UI     |
-| **API Documentation** | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
-| **Architecture**      | [overview.md](.github/docs/overview.md)                                    | System Design             |
-| **Import/Export**     | [import-export.md](.github/docs/import-export.md)                          | Import/Export Utilities   |
+| Type                  | Feature Branch                                                                     | Topics                    |
+| --------------------- | ---------------------------------------------------------------------------------- | ------------------------- |
+| **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2ksoftware.com/docs-app/index.html)     | Components, State, UI     |
+| **API Documentation** | [feat/docs-api/](https://lets-todo-app-feat.dev2ksoftware.com/docs-api/index.html) | Endpoints, Database, Auth |
+| **Architecture**      | [overview.md](.github/docs/overview.md)                                            | System Design             |
+| **Import/Export**     | [import-export.md](.github/docs/import-export.md)                                  | Import/Export Utilities   |
 
 ### **Related Repositories**
 
@@ -91,7 +91,7 @@ graph TD
     B --> E["API Services\napi-client.js · CRUD"]
     D <-->|Reactive Updates| C
     C -->|User Actions| E
-    E -->|HTTPS / Cookie Auth| F["Node.js / Express API\nlets-todo-api.dev2k.org"]
+    E -->|HTTPS / Cookie Auth| F["Node.js / Express API\nlets-todo-api.dev2ksoftware.com"]
     E <-->|Sync| D
 ```
 
