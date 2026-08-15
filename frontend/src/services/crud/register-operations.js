@@ -100,7 +100,7 @@ export const handleUserRegistration = async (userData, onSuccess, onError, onLoa
  * @returns {string} Default error message
  */
 const getDefaultErrorMessage = () => {
-  return "Registrierung fehlgeschlagen. Bitte versuche es erneut.";
+  return "Registration failed. Please try again.";
 };
 
 /**
@@ -191,7 +191,7 @@ export const processRegistrationError = (error) => {
  * @returns {string} Default success message
  */
 const getDefaultSuccessMessage = () => {
-  return "Registrierung erfolgreich! Du kannst dich jetzt anmelden.";
+  return "Registration successful! You can now log in.";
 };
 
 /**
@@ -227,7 +227,7 @@ const getRegistrationTargetView = (result) => {
 export const handleRegistrationSuccess = (result, userData, onMessage) => {
   // TODO: Future enhancements can be added here:
   // Personalized success message
-  // const welcomeMessage = `Willkommen ${result.username || userData.email}! Registrierung erfolgreich.`;
+  // const welcomeMessage = `Welcome ${result.username || userData.email}! Registration successful.`;
   // Analytics tracking, etc.
 
   const successMessage = getDefaultSuccessMessage();

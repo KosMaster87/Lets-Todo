@@ -146,8 +146,8 @@ export const renderTrashWithFilter = (filterMode, containerId = "trashTodosList"
  * @returns {Object} Filter configuration object
  */
 const getAllFilterConfig = () => ({
-  title: "Alle anzeigen",
-  description: "Alle gelöschten Todos anzeigen",
+  title: "Show all",
+  description: "Show all deleted todos",
 });
 
 /**
@@ -155,8 +155,8 @@ const getAllFilterConfig = () => ({
  * @returns {Object} Filter configuration object
  */
 const getRecentFilterConfig = () => ({
-  title: "Neueste zuerst",
-  description: "Kürzlich gelöschte Todos zuerst",
+  title: "Newest first",
+  description: "Recently deleted todos first",
 });
 
 /**
@@ -164,8 +164,8 @@ const getRecentFilterConfig = () => ({
  * @returns {Object} Filter configuration object
  */
 const getOldFilterConfig = () => ({
-  title: "Älteste zuerst",
-  description: "Älteste gelöschte Todos zuerst",
+  title: "Oldest first",
+  description: "Oldest deleted todos first",
 });
 
 /**

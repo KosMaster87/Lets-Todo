@@ -140,7 +140,7 @@ const updateProgressIndicator = (containerId, message) => {
  * @returns {Object|null} Parse result or null if failed
  */
 const processFileContent = (content, containerId, onComplete) => {
-  updateProgressIndicator(containerId, "Todos werden analysiert...");
+  updateProgressIndicator(containerId, "Analyzing todos...");
 
   const parseResult = parseJSONImport(content);
   if (!parseResult.success) {
@@ -160,7 +160,7 @@ const processFileContent = (content, containerId, onComplete) => {
  * @returns {Promise<Object>} Import result
  */
 const executeImportProcess = async (parseResult, options, containerId) => {
-  updateProgressIndicator(containerId, "Todos werden importiert...");
+  updateProgressIndicator(containerId, "Importing todos...");
   return await importTodosFromParseResult(parseResult, options);
 };
 
@@ -196,7 +196,7 @@ const handleImportFailure = (importResult, onComplete) => {
 const handleUploadError = (error, containerId, onComplete) => {
   console.error("Upload error:", error);
   removeProgressIndicator(containerId);
-  showErrorNotification(`Upload-Fehler: ${error.message}`);
+  showErrorNotification(`Upload error: ${error.message}`);
   onComplete?.(false, error.message);
 };
 
@@ -281,7 +281,7 @@ const createSuccessResult = (activeResult, trashResult, parseData) => ({
  */
 const createErrorResult = (error) => ({
   success: false,
-  error: `Import-Fehler: ${error.message}`,
+  error: `Import error: ${error.message}`,
 });
 
 /**
@@ -303,7 +303,7 @@ export const showUploadSuccessMessage = (result) => {
  */
 const addActiveImportMessage = (parts, result) => {
   if (result.activeImported > 0) {
-    parts.push(`${result.activeImported} aktive Todos importiert`);
+    parts.push(`${result.activeImported} active todos imported`);
   }
 };
 
@@ -315,7 +315,7 @@ const addActiveImportMessage = (parts, result) => {
  */
 const addTrashImportMessage = (parts, result) => {
   if (result.trashImported > 0) {
-    parts.push(`${result.trashImported} gelöschte Todos wiederhergestellt`);
+    parts.push(`${result.trashImported} deleted todos restored`);
   }
 };
 
@@ -340,7 +340,7 @@ const addSkippedMessage = (parts, result) => {
  */
 const addErrorsMessage = (parts, result) => {
   if (result.errors.length > 0) {
-    parts.push(`${result.errors.length} Fehler aufgetreten`);
+    parts.push(`${result.errors.length} errors occurred`);
   }
 };
 
@@ -357,7 +357,7 @@ const buildSuccessMessage = (result) => {
   addSkippedMessage(parts, result);
   addErrorsMessage(parts, result);
 
-  return parts.length > 0 ? parts.join(", ") : "Import erfolgreich abgeschlossen";
+  return parts.length > 0 ? parts.join(", ") : "Import completed successfully";
 };
 
 /**

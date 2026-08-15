@@ -16,7 +16,7 @@ import { getCurrentTodo } from "./../../state/main-state.js";
  * @param {HTMLElement} contentElement - Content DOM element
  */
 export const clearFormAfterNewTodo = (titleElement, contentElement) => {
-  titleElement.textContent = "Neue Todo";
+  titleElement.textContent = "New Todo";
   contentElement.textContent = "";
   resetBookmarkUI();
 };
@@ -75,7 +75,7 @@ export const updateTodoStatusBadge = (completed) => {
   const statusBadge = document.querySelector(".todo-status-badge");
   if (statusBadge) {
     statusBadge.className = "todo-status-badge " + (completed ? "completed" : "pending");
-    statusBadge.textContent = completed ? "Erledigt" : "Neu";
+    statusBadge.textContent = completed ? "Done" : "New";
   }
 };
 

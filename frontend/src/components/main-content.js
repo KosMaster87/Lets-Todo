@@ -37,7 +37,7 @@ export const renderMainContent = (urlParams = null) => {
   // console.log("URL Params passed:", urlParams);
   // console.log("Global URL Params:", window.currentUrlParams);
 
-  // Fallback zu globalen URL-Parametern wenn nicht direkt übergeben
+  // Fallback to global URL parameters when not passed directly
   const params = urlParams || window.currentUrlParams || null;
   // console.log("Final params:", params);
 
@@ -45,7 +45,7 @@ export const renderMainContent = (urlParams = null) => {
   updatePageTitle(currentView);
   updateBodyClass(currentView);
 
-  // Spezielle Initialisierung für Reset-Password-Confirm
+  // Special initialization for Reset-Password-Confirm
   if (currentView === VIEWS.RESET_PASSWORD_CONFIRM && params) {
     // console.log(
     // "Calling initializeResetPasswordConfirm with token:",

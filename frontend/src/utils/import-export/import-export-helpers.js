@@ -19,7 +19,7 @@ export const getSupportedFileTypes = () => {
 export const getUploadInstructions = () => {
   return `
   Supported file format:
-  • JSON: Vollständige Todos mit allen Metadaten und Timestamps
+  • JSON: Complete todos with all metadata and timestamps
 
   The file should come from a previous export.
   Duplicates are automatically detected and skipped.

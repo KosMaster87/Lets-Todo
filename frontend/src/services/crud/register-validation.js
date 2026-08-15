@@ -12,14 +12,14 @@
  * Validation error messages
  */
 export const VALIDATION_MESSAGES = {
-  EMAIL_REQUIRED: "E-Mail-Adresse ist erforderlich",
-  EMAIL_INVALID: "Ungültige E-Mail-Adresse",
-  PASSWORD_REQUIRED: "Passwort ist erforderlich",
+  EMAIL_REQUIRED: "Email address is required",
+  EMAIL_INVALID: "Invalid email address",
+  PASSWORD_REQUIRED: "Password is required",
   PASSWORD_TOO_SHORT: "Password must be at least 6 characters long",
-  PASSWORD_CONFIRM_REQUIRED: "Passwort-Bestätigung ist erforderlich",
-  PASSWORD_MISMATCH: "Die Passwörter stimmen nicht überein",
+  PASSWORD_CONFIRM_REQUIRED: "Password confirmation is required",
+  PASSWORD_MISMATCH: "Passwords do not match",
   TERMS_NOT_ACCEPTED: "You must accept the terms and conditions",
-  ALL_FIELDS_REQUIRED: "Bitte fülle alle Felder aus",
+  ALL_FIELDS_REQUIRED: "Please fill in all fields",
 };
 
 // ###############################################################

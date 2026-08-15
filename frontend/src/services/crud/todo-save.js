@@ -23,7 +23,7 @@ import { clearFormAfterNewTodo } from "./todo-form.js";
  * @returns {Object} Update object
  */
 export const createTodoUpdate = (title, content, currentCompletedState, currentBookmarkState) => ({
-  title: title || "Neue Todo",
+  title: title || "New Todo",
   content: content,
   lastModified: new Date().toISOString(),
   completed: currentCompletedState,
@@ -39,7 +39,7 @@ export const createTodoUpdate = (title, content, currentCompletedState, currentB
  * @returns {Object} New todo object
  */
 export const createNewTodo = (title, content, currentCompletedState, currentBookmarkState) => ({
-  title: title || "Neue Todo",
+  title: title || "New Todo",
   content: content,
   created: new Date(),
   completed: currentCompletedState,
@@ -70,7 +70,7 @@ export const handleSuccessfulSave = () => {
  */
 const handleTodoUpdate = (currentTodo, title, content, completedState, bookmarkState) => {
   updateTodo(currentTodo.id, createTodoUpdate(title, content, completedState, bookmarkState));
-  showMessage("Todo erfolgreich aktualisiert!");
+  showMessage("Todo updated successfully!");
 };
 
 /**
@@ -92,7 +92,7 @@ const handleTodoCreation = (
   contentElement
 ) => {
   addTodo(createNewTodo(title, content, completedState, bookmarkState));
-  showMessage("Neue Todo erfolgreich erstellt!");
+  showMessage("New todo created successfully!");
   clearFormAfterNewTodo(titleElement, contentElement);
 };
 
@@ -102,7 +102,7 @@ const handleTodoCreation = (
  * @returns {void}
  */
 const handleSaveError = (error) => {
-  showMessage("Fehler beim Speichern des Todos.", "error");
+  showMessage("Error saving the todo.", "error");
   console.error("Save error:", error);
 };
 

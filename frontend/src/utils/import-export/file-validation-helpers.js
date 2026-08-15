@@ -15,7 +15,7 @@ export const IMPORT_FORMATS = {
  */
 export const validateFileExists = (file) => {
   if (!file) {
-    return { isValid: false, error: "Keine Datei ausgewählt." };
+    return { isValid: false, error: "No file selected." };
   }
   return null;
 };
@@ -65,5 +65,5 @@ export const createFileReader = (resolve, reject) => {
  * @returns {Error} File read error object
  */
 export const createFileReadError = () => {
-  return new Error("Datei konnte nicht gelesen werden");
+  return new Error("File could not be read");
 };

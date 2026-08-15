@@ -103,7 +103,7 @@ export const renderTodosListWithFilter = (filterMode, containerId = "todosList")
  * @returns {Object} All filter configuration
  */
 const getAllFilterConfig = () => ({
-  title: "Alle Todos",
+  title: "All Todos",
   description: "Show all your todos and tasks",
 });
 
@@ -112,8 +112,8 @@ const getAllFilterConfig = () => ({
  * @returns {Object} Completed filter configuration
  */
 const getCompletedFilterConfig = () => ({
-  title: "Erledigte Todos",
-  description: "Zeige nur abgeschlossene Todos",
+  title: "Completed Todos",
+  description: "Show only completed todos",
 });
 
 /**
@@ -121,8 +121,8 @@ const getCompletedFilterConfig = () => ({
  * @returns {Object} Pending filter configuration
  */
 const getPendingFilterConfig = () => ({
-  title: "Offene Todos",
-  description: "Zeige nur ausstehende Todos",
+  title: "Pending Todos",
+  description: "Show only pending todos",
 });
 
 /**

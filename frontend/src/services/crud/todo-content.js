@@ -104,7 +104,7 @@ export const getContentForActions = () => {
  * @param {HTMLElement} titleElement - Title element to reset
  */
 const resetTitleElement = (titleElement) => {
-  if (titleElement) titleElement.textContent = "Neue Todo";
+  if (titleElement) titleElement.textContent = "New Todo";
 };
 
 /**

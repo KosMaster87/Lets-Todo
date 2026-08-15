@@ -106,7 +106,7 @@ export const validateTodoContentValues = (title, content, titlePlaceholder, cont
  * @returns {boolean} True if matches static placeholder
  */
 const isStaticPlaceholder = (trimmedText) => {
-  const staticPlaceholders = ["Neue Todo"];
+  const staticPlaceholders = ["New Todo"];
   return staticPlaceholders.includes(trimmedText);
 };
 

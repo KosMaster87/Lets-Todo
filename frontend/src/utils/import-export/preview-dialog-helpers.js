@@ -50,9 +50,9 @@ export const buildPreviewStats = (parseResult) => {
 
   return `
   Found in file:
-  • ${activeTodos.length} aktive Todos
-  • ${trashedTodos.length} gelöschte Todos
-  • Insgesamt: ${totalCount} Todos`.trim();
+  • ${activeTodos.length} active todos
+  • ${trashedTodos.length} deleted todos
+  • Total: ${totalCount} todos`.trim();
 };
 
 /**
@@ -82,7 +82,7 @@ const createConfirmationToast = (message, onConfirm, onCancel) => {
       <div class="toast-message">${message.replace(/\n/g, "<br>")}</div>
       <div class="toast-actions">
         <button class="toast-btn toast-btn-confirm">Import</button>
-        <button class="toast-btn toast-btn-cancel">Abbrechen</button>
+        <button class="toast-btn toast-btn-cancel">Cancel</button>
       </div>
     </div>
   `;
