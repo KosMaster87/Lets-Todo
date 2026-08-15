@@ -21,10 +21,10 @@ This script automatically converts development code to production-ready code by 
 
 ```bash
 # Clean current staging branch
-npm run staging:cleanup
+pnpm run staging:cleanup
 
 # Full workflow: merge feature branch and cleanup
-npm run staging:prepare
+pnpm run staging:prepare
 ```
 
 ### Direct Execution
@@ -164,7 +164,7 @@ git commit -m "feat: Add new feature with documentation"
 # 2. Merge to staging and cleanup for production
 git checkout staging
 git merge dev
-npm run staging:cleanup
+pnpm run staging:cleanup
 
 # 3. Review and deploy
 git diff # Review changes

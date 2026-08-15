@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "NODE_ENV=development nodemon server.js",
-    "dev:db": "NODE_ENV=development node scripts/setup-dev-db.js",
+    "dev:db": "NODE_ENV=development node scripts/setup-multi-env-db.js",
     "prod": "NODE_ENV=production node server.js",
     "docs": "jsdoc -c jsdoc.config.json",
     "docs:serve": "pnpm dlx http-server docs -p 8080 -o",

@@ -10,7 +10,6 @@
  * Creates databases for ALL environments based on NODE_ENV:
  *
  * development → Local DBs (127.0.0.1)
- * feat → Feature Server DBs
  * staging → Staging Server DBs
  * production → Production Server DBs
  *
@@ -22,15 +21,15 @@ import { ENV, debugLog, infoLog, errorLog, ENVIRONMENT } from "../config/environ
 
 /**
  * Database setup (Multi-Environment Support)
- * Supports: development, feature, staging, production
+ * Supports: development, staging, production
  */
 async function setupDatabase() {
   try {
     infoLog(`Starting ${ENVIRONMENT} Database Setup...`);
 
-    // For deployment environments (feature, staging, production), use root access via /root/.my.cnf
+    // For deployment environments (staging, production), use root access via /root/.my.cnf
     // For development, use configured user credentials
-    const isDeploymentEnv = ["feature", "staging", "production"].includes(ENVIRONMENT);
+    const isDeploymentEnv = ["staging", "production"].includes(ENVIRONMENT);
     const dbConfig = {
       host: ENV.DB_HOST,
       port: ENV.DB_PORT,
@@ -189,10 +188,6 @@ async function setupDatabase() {
       console.log("\nTest user credentials:");
       console.log("Email: test@dev.local");
       console.log("Password: anything (dummy hash)");
-    } else if (ENVIRONMENT === "feature") {
-      console.log("\nFeature environment is ready!");
-      console.log("Test user: test@feature.local");
-      console.log("Port: 3003");
     } else if (ENVIRONMENT === "staging") {
       console.log("\nStaging environment is ready!");
       console.log("Test user: test@staging.local");
