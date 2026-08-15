@@ -31,6 +31,7 @@ import {
   createBookmarkSuccessHandler,
   createDoneSuccessHandler,
 } from "./../../utils/ui-helpers/callback-creators.js";
+import { debugLog } from "./../../utils/logger.js";
 
 let todosListFilterMode = TODOS_LIST_FILTER_MODES.ALL;
 
@@ -187,7 +188,7 @@ function handleShareAction(todoId) {
   handleShareTodo(
     todoId,
     (message) => {
-      console.log(message);
+      debugLog(message);
     },
     (error) => {
       console.error("Failed to share todo:", error);
@@ -205,7 +206,7 @@ function handleCopyAction(todoId) {
   handleCopyTodo(
     todoId,
     (message) => {
-      console.log(message);
+      debugLog(message);
     },
     (error) => {
       console.error("Failed to copy todo:", error);
@@ -224,7 +225,7 @@ function handleDeleteAction(todoId) {
     todoId,
     (message) => {
       renderTodosListWithFilter(todosListFilterMode);
-      console.log(message);
+      debugLog(message);
     },
     (error) => {
       console.error(error);

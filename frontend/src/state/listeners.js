@@ -4,6 +4,8 @@
  * @module listeners
  */
 
+import { debugLog } from "./../utils/logger.js";
+
 /**
  * Creates listener management functions for a given state object
  * @param {Object} state - The state object that contains the listeners array
@@ -34,7 +36,7 @@ export const createListenerManager = (state) => {
     const index = state.listeners.indexOf(listener);
     if (index > -1) {
       state.listeners.splice(index, 1);
-      console.log(`Removed state listener (${state.listeners.length} remaining)`);
+      debugLog(`Removed state listener (${state.listeners.length} remaining)`);
     } else {
       console.warn("Listener not found, cannot remove");
     }
@@ -66,7 +68,7 @@ export const createListenerManager = (state) => {
   const clearAllListeners = () => {
     const count = state.listeners.length;
     state.listeners.length = 0; // Clear array while keeping the reference
-    console.log(`Cleared all ${count} listeners`);
+    debugLog(`Cleared all ${count} listeners`);
   };
 
   return {

@@ -4,6 +4,8 @@
  * @module trashed-todo-import-helpers
  */
 
+import { debugLog } from "./../logger.js";
+
 /**
  * Determines which trash todos to import based on options
  * @param {Array} trashedTodos - All trashed todos
@@ -81,7 +83,7 @@ export const findCreatedTodo = (title, content, todo, getTodos) => {
  * @returns {Promise<boolean>} True if successful
  */
 export const moveToTrashWithRetry = async (createdTodo, title, trashTodo) => {
-  console.log(`Moving to trash: ID ${createdTodo.id}`);
+  debugLog(`Moving to trash: ID ${createdTodo.id}`);
 
   try {
     await trashTodo(createdTodo.id);
@@ -118,7 +120,7 @@ export const processSingleTrashedTodo = async (
   }
 
   const { title, content } = todoData;
-  console.log(`Importing trash todo: "${title}"`);
+  debugLog(`Importing trash todo: "${title}"`);
 
   const todoObject = createTrashImportTodoObject(title, content, todo);
   await addTodo(todoObject);

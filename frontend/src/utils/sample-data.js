@@ -4,6 +4,8 @@
  * @module sample-data
  */
 
+import { debugLog } from "./logger.js";
+
 /**
  * Initializes all sample data (todos + trash) if no data exists
  * @param {Function} addTodoFn - Function to add todos to state
@@ -34,7 +36,7 @@ const initializeSampleTodos = (addTodoFn, existingTodos) => {
 
   const sampleTodos = createSampleTodos();
   sampleTodos.forEach((todo) => addTodoFn(todo));
-  console.log("Sample todos initialized in state");
+  debugLog("Sample todos initialized in state");
   return true;
 };
 
@@ -49,7 +51,7 @@ const initializeSampleTrashedTodos = (setTrashedTodosFn, existingTrashedTodos) =
 
   const sampleTrashedTodos = createSampleTrashedTodos();
   setTrashedTodosFn(sampleTrashedTodos);
-  console.log("Sample trashed todos initialized in state");
+  debugLog("Sample trashed todos initialized in state");
   return true;
 };
 

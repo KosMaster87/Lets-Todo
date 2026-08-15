@@ -7,6 +7,7 @@
 import { SessionPersistence, TodosPersistence, TrashPersistence } from "./data-persistence.js";
 import { StorageManager } from "./storage.js";
 import { VIEWS } from "./../utils/constants.js";
+import { debugLog } from "./../utils/logger.js";
 
 /**
  * Validates if a view is valid
@@ -208,7 +209,7 @@ export const SessionManager = {
     this.restoreGuestData(appState);
     notifyListeners();
 
-    console.log("User logged out, user data cleared, guest data restored");
+    debugLog("User logged out, user data cleared, guest data restored");
   },
 
   /**
@@ -219,7 +220,7 @@ export const SessionManager = {
       StorageManager.removeData("local", "todoapp-user-todos");
       StorageManager.removeData("local", "todoapp-user-trash");
 
-      console.log("User data cleared from localStorage");
+      debugLog("User data cleared from localStorage");
     } catch (error) {
       console.error("Error clearing user data from storage:", error);
     }
@@ -250,11 +251,11 @@ export const SessionManager = {
     if (this.hasExistingGuestData(guestData)) {
       appState.todos = guestData.todos;
       appState.trashedTodos = guestData.trashedTodos;
-      console.log("Guest data restored from storage");
+      debugLog("Guest data restored from storage");
     } else {
       appState.todos = [];
       appState.trashedTodos = [];
-      console.log("Fresh guest session initialized");
+      debugLog("Fresh guest session initialized");
     }
   },
 

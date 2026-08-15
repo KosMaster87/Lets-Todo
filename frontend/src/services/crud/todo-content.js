@@ -5,6 +5,7 @@
  */
 
 import { getTodoElements } from "./../../utils/dom-selectors.js";
+import { debugLog } from "./../../utils/logger.js";
 
 // ###############################################################
 // DOM Element Validation Utilities
@@ -71,7 +72,7 @@ const getElementText = (element) => {
  * @param {HTMLElement} contentElement - Content element
  */
 const logContentExtraction = (title, content, titleElement, contentElement) => {
-  console.log("getContentForActions called:", {
+  debugLog("getContentForActions called:", {
     title,
     content,
     titleElement,

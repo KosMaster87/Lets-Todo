@@ -17,6 +17,7 @@ import {
 } from "./state/main-state.js";
 import { renderMainContent } from "./components/main-content.js";
 import { initializeAllSampleData } from "./utils/sample-data.js";
+import { debugLog } from "./utils/logger.js";
 import {
   initializeNavigation,
   setupNavigationListeners,
@@ -77,7 +78,7 @@ const initializeTheme = () => {
     const preferences = getUserPreferences();
     const savedTheme = preferences?.theme || "light";
     document.body.setAttribute("data-theme", savedTheme);
-    console.log(`Theme initialized: ${savedTheme}`);
+    debugLog(`Theme initialized: ${savedTheme}`);
   } catch (error) {
     console.error("Failed to load theme preference:", error);
     document.body.setAttribute("data-theme", "light");

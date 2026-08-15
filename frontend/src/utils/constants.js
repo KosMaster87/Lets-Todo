@@ -48,9 +48,10 @@ export const PAGE_TITLES = {
 
 /**
  * Debug mode flag for development logging
+ * Enabled only for local development hosts, disabled on staging and production
  * @type {boolean}
  */
-export const DEBUG_MODE = true;
+export const DEBUG_MODE = ["localhost", "127.0.0.1"].includes(window.location.hostname);
 
 /**
  * Session types

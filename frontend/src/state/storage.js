@@ -5,6 +5,7 @@
  */
 
 import { getApiBase, apiHandler } from "./../services/api/api-handler.js";
+import { debugLog } from "./../utils/logger.js";
 
 /**
  * Storage types enum for clear categorization
@@ -122,7 +123,7 @@ export const StorageManager = {
    */
   setMemoryData(key, data) {
     memoryStorage.set(key, data);
-    console.log(`Memory data saved: ${key}`);
+    debugLog(`Memory data saved: ${key}`);
   },
 
   /**
@@ -162,13 +163,13 @@ export const StorageManager = {
   getAuthData(key) {
     const localData = this.getLocalData(key);
     if (localData) {
-      console.log(`Auth data loaded from localStorage (persistent)`);
+      debugLog(`Auth data loaded from localStorage (persistent)`);
       return localData;
     }
 
     const sessionData = this.getSessionData(key);
     if (sessionData) {
-      console.log(`Auth data loaded from sessionStorage (temporary)`);
+      debugLog(`Auth data loaded from sessionStorage (temporary)`);
       return sessionData;
     }
 
@@ -182,7 +183,7 @@ export const StorageManager = {
   removeAuthData(key) {
     this.removeData(StorageTypes.LOCAL, key);
     this.removeData(StorageTypes.SESSION, key);
-    console.log(`Auth data removed from both storage types`);
+    debugLog(`Auth data removed from both storage types`);
   },
 
   /**
@@ -271,7 +272,7 @@ export const PreferencesManager = {
     if (savedPrefs) {
       return this.mergePreferences(defaultPrefs, savedPrefs);
     } else {
-      console.log("ℹNo saved preferences found, using defaults");
+      debugLog("ℹNo saved preferences found, using defaults");
       return defaultPrefs;
     }
   },
@@ -305,7 +306,7 @@ export const PreferencesManager = {
   clear() {
     try {
       StorageManager.removeData(StorageTypes.LOCAL, StorageKeys.LOCAL.USER_PREFERENCES);
-      console.log("User preferences cleared from storage");
+      debugLog("User preferences cleared from storage");
     } catch (error) {
       console.error("Error clearing user preferences:", error);
     }
@@ -375,7 +376,7 @@ export const PreferencesManager = {
   processServerPreferences(response) {
     const preferences = response.preferences;
     this.save(preferences);
-    console.log("Preferences synced from server:", preferences);
+    debugLog("Preferences synced from server:", preferences);
     return preferences;
   },
 
@@ -414,7 +415,7 @@ export const PreferencesManager = {
    * @returns {boolean} Success status for guest sessions
    */
   handleGuestSync() {
-    console.log("ℹSkipping server sync for guest session");
+    debugLog("ℹSkipping server sync for guest session");
     return true;
   },
 
@@ -424,7 +425,7 @@ export const PreferencesManager = {
    * @returns {Promise<Object>} Server response
    */
   async sendPreferencesToServer(preferences) {
-    console.log("Syncing preferences to server...", preferences);
+    debugLog("Syncing preferences to server...", preferences);
     const endpoint = this.createPreferencesEndpoint();
     return await apiHandler(endpoint, "PUT", preferences);
   },
@@ -446,7 +447,7 @@ export const PreferencesManager = {
    * @returns {boolean} Success status
    */
   handleSyncToServerSuccess() {
-    console.log("Preferences synced to server successfully");
+    debugLog("Preferences synced to server successfully");
     return true;
   },
 
@@ -494,7 +495,7 @@ export const PreferencesManager = {
       return serverPrefs;
     }
 
-    console.log("Server sync failed, using localStorage fallback");
+    debugLog("Server sync failed, using localStorage fallback");
     return this.load(defaultPreferences);
   },
 };

@@ -22,6 +22,7 @@ import { renderTodosListPage } from "./pages/todos-list.js";
 import { renderTodosPage } from "./pages/todos.js";
 import { renderTrashPage } from "./pages/trash.js";
 import { renderTodoViewPage } from "./pages/todo-view.js";
+import { debugLog } from "./../utils/logger.js";
 
 /**
  * Renders the main content based on the current view.
@@ -52,7 +53,7 @@ export const renderMainContent = (urlParams = null) => {
     // );
     initializeResetPasswordConfirm(params.token);
   } else if (currentView === VIEWS.RESET_PASSWORD_CONFIRM) {
-    console.log("Reset-Password-Confirm view detected but NO params found!");
+    debugLog("Reset-Password-Confirm view detected but NO params found!");
   }
 };
 

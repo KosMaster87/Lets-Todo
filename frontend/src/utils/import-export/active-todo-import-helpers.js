@@ -4,6 +4,8 @@
  * @module active-todo-import-helpers
  */
 
+import { debugLog } from "./../logger.js";
+
 /**
  * Determines which todos to import based on options
  * @param {Array} activeTodos - All active todos
@@ -47,12 +49,12 @@ export const createImportTodoObject = (todo, title, content) => ({
  * @returns {void}
  */
 export const processSingleActiveTodo = (todo, counters, ensureString, addTodo) => {
-  console.log(`Raw active todo object:`, todo);
+  debugLog(`Raw active todo object:`, todo);
 
   const title = ensureString(todo.title).trim() || "Importiertes Todo";
   const content = ensureString(todo.content).trim();
 
-  console.log(`Fixed title: "${title}", content: "${content}"`);
+  debugLog(`Fixed title: "${title}", content: "${content}"`);
 
   if (!hasValidTitle(title)) {
     counters.errors.push(`Todo without title skipped`);
@@ -60,7 +62,7 @@ export const processSingleActiveTodo = (todo, counters, ensureString, addTodo) =
   }
 
   const todoObject = createImportTodoObject(todo, title, content);
-  console.log(`Importing active todo: "${title}"`);
+  debugLog(`Importing active todo: "${title}"`);
   addTodo(todoObject);
   counters.imported++;
 };

@@ -20,6 +20,7 @@ import {
   handleInvalidRestoreServerId,
   handleInvalidDeleteServerId,
 } from "./todo-helpers.js";
+import { debugLog } from "./../utils/logger.js";
 
 export const TodoServerSync = {
   /**
@@ -75,9 +76,7 @@ export const TodoServerSync = {
       appState.todos[todoIndex].lastModified = new Date().toISOString();
       TodosPersistence.save(appState.todos, appState.sessionType);
       notifyListeners();
-      console.log(
-        `Todo synced to server with server ID: ${serverId}, keeping client ID: ${clientId}`
-      );
+      debugLog(`Todo synced to server with server ID: ${serverId}, keeping client ID: ${clientId}`);
     }
   },
 
@@ -105,7 +104,7 @@ export const TodoServerSync = {
   async syncUpdatedTodoToServer(updatedTodo) {
     if (updatedTodo && updatedTodo.serverId) {
       await updateTodoOnServer(updatedTodo.serverId, updatedTodo);
-      console.log(`Todo updated on server (server ID: ${updatedTodo.serverId})`);
+      debugLog(`Todo updated on server (server ID: ${updatedTodo.serverId})`);
     }
   },
 
@@ -137,7 +136,7 @@ export const TodoServerSync = {
    */
   async syncTrashToServer(serverIdToUse) {
     await trashTodoOnServer(serverIdToUse);
-    console.log(`Todo trashed on server (server ID: ${serverIdToUse})`);
+    debugLog(`Todo trashed on server (server ID: ${serverIdToUse})`);
   },
 
   /**
@@ -168,7 +167,7 @@ export const TodoServerSync = {
    */
   async syncRestoreToServer(serverId) {
     await restoreTodoOnServer(serverId);
-    console.log(`Todo restored on server (server ID: ${serverId})`);
+    debugLog(`Todo restored on server (server ID: ${serverId})`);
   },
 
   /**
@@ -179,7 +178,7 @@ export const TodoServerSync = {
    */
   async handleDeleteServerSync(todoToDelete, todoId, sessionType) {
     if (!shouldSyncToServer(sessionType)) {
-      console.log("Guest session - no server sync needed");
+      debugLog("Guest session - no server sync needed");
       return;
     }
 
@@ -201,9 +200,9 @@ export const TodoServerSync = {
    * @param {number} serverId - Server ID to use
    */
   async syncDeleteToServer(serverId) {
-    console.log(`Attempting to delete todo ${serverId} on server...`);
+    debugLog(`Attempting to delete todo ${serverId} on server...`);
     const result = await deleteTodoFromServer(serverId);
-    console.log(`Todo deleted on server (server ID: ${serverId}):`, result);
+    debugLog(`Todo deleted on server (server ID: ${serverId}):`, result);
   },
 
   /**
@@ -214,7 +213,7 @@ export const TodoServerSync = {
     const { sessionType, trashedTodos } = appState;
 
     if (!shouldSyncTrashToServer(sessionType, trashedTodos.length)) {
-      console.log("Guest session or empty trash - no server sync needed");
+      debugLog("Guest session or empty trash - no server sync needed");
       return;
     }
 
@@ -230,12 +229,12 @@ export const TodoServerSync = {
    * @param {Array} trashedTodos - Array of trashed todos
    */
   async deleteAllTrashOnServer(trashedTodos) {
-    console.log("Deleting all trash todos on server...");
+    debugLog("Deleting all trash todos on server...");
 
     const deletePromises = this.createTrashDeletePromises(trashedTodos);
     await Promise.all(deletePromises);
 
-    console.log(`All ${trashedTodos.length} trash todos deleted on server`);
+    debugLog(`All ${trashedTodos.length} trash todos deleted on server`);
   },
 
   /**
