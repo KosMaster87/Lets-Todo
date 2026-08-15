@@ -292,12 +292,12 @@ curl -I http://127.0.0.1:3000/api/session/validate
 
 ## Environment Overview
 
-| Environment     | Domain                          | Port | Purpose                       |
-| --------------- | ------------------------------- | ---- | ----------------------------- |
-| **Development** | `127.0.0.1:3000`                | 3000 | Local development             |
-| **Feature**     | `lets-todo-api-feat.dev2k.org`  | 3003 | Feature development & testing |
-| **Staging**     | `lets-todo-api-stage.dev2k.org` | 3004 | Pre-production testing        |
-| **Production**  | `lets-todo-api.dev2k.org`       | 3002 | Live production system        |
+| Environment     | Domain                                  | Port | Purpose                       |
+| --------------- | --------------------------------------- | ---- | ----------------------------- |
+| **Development** | `127.0.0.1:3000`                        | 3000 | Local development             |
+| **Feature**     | `lets-todo-api-feat.dev2ksoftware.com`  | 3003 | Feature development & testing |
+| **Staging**     | `lets-todo-api-stage.dev2ksoftware.com` | 3004 | Pre-production testing        |
+| **Production**  | `lets-todo-api.dev2ksoftware.com`       | 3002 | Live production system        |
 
 ## Quick Deployment
 
@@ -321,9 +321,9 @@ tar -xzf lets-todo-step-deployment_*.tar.gz -C step-by-step-package/
 cd step-by-step-package/
 
 # Deploy specific environment or all
-sudo ./deploy.sh prod # → https://lets-todo-api.dev2k.org
-sudo ./deploy.sh feat # → https://lets-todo-api-feat.dev2k.org
-sudo ./deploy.sh stage # → https://lets-todo-api-stage.dev2k.org
+sudo ./deploy.sh prod # → https://lets-todo-api.dev2ksoftware.com
+sudo ./deploy.sh feat # → https://lets-todo-api-feat.dev2ksoftware.com
+sudo ./deploy.sh stage # → https://lets-todo-api-stage.dev2ksoftware.com
 sudo ./deploy.sh all # → All environments
 
 # Later cleanup (optional)
@@ -404,9 +404,9 @@ Update these values in the generated `deploy.sh`:
 
 ```bash
 # Domain configuration
-PROD_DOMAIN="lets-todo-api.dev2k.org"
-FEAT_DOMAIN="lets-todo-api-feat.dev2k.org"
-STAGE_DOMAIN="lets-todo-api-stage.dev2k.org"
+PROD_DOMAIN="lets-todo-api.dev2ksoftware.com"
+FEAT_DOMAIN="lets-todo-api-feat.dev2ksoftware.com"
+STAGE_DOMAIN="lets-todo-api-stage.dev2ksoftware.com"
 ADMIN_EMAIL="your.email@domain.com"
 
 # Database configuration

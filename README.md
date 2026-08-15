@@ -7,10 +7,10 @@
 
 ## Live
 
-| Umgebung           | URL                                                        |
-| ------------------ | ---------------------------------------------------------- |
-| **Production App** | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)         |
-| **Production API** | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org) |
+| Umgebung           | URL                                                                        |
+| ------------------ | -------------------------------------------------------------------------- |
+| **Production App** | [lets-todo.dev2ksoftware.com](https://lets-todo.dev2ksoftware.com)         |
+| **Production API** | [lets-todo-api.dev2ksoftware.com](https://lets-todo-api.dev2ksoftware.com) |
 
 ---
 
@@ -86,4 +86,4 @@ pnpm run format:check # nur prüfen, nicht schreiben
 ## Entwickler
 
 **Konstantin Aksenov**
-[GitHub](https://github.com/KosMaster87/lets-todo) · [Konstantin.Aksenov@dev2k.org](mailto:Konstantin.Aksenov@dev2k.org)
+[GitHub](https://github.com/KosMaster87/lets-todo) · [konstantin@dev2ksoftware.com](mailto:konstantin@dev2ksoftware.com)

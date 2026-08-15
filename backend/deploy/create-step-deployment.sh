@@ -109,7 +109,7 @@ BASE_PROJECT_DIR="/opt/dev2k-space/home/projects"
 PROD_DOMAIN="lets-todo-api.dev2k.org"
 FEAT_DOMAIN="lets-todo-api-feat.dev2k.org"
 STAGE_DOMAIN="lets-todo-api-stage.dev2k.org"
-ADMIN_EMAIL="konstantin.aksenov@dev2k.org"
+ADMIN_EMAIL="konstantin@dev2ksoftware.com"
 
 # Port configuration
 PROD_PORT=3002
