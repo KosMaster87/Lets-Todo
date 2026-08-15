@@ -1,0 +1,82 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Development
+# dev-server.js
+
+# Environment files
+config/env/.env
+config/env/.env.development
+config/env/.env.feature
+config/env/.env.staging
+config/env/.env.production
+
+# IDE/Editor
+.vscode/
+.idea/
+.project
+.classpath
+*.sublime-workspace
+.history/*
+
+# CI/CD
+# Keep .github folder (workflows, docs)
+# Explicitly allow .github/docs/
+!.github/
+!.github/workflows/
+!.github/docs/
+
+# Generated documentation & reports
+# Ignore generated TypeDoc/JSDoc output in project root
+/docs/
+# But keep .github/docs/ (tracked above)
+/coverage
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
+/.directory
+
+# Temporary files
+*.tmp
+*.temp
+/tmp
+/out-tsc
+
+# Build output
+/dist
+/bazel-out
+
+# Firebase
+.firebase
+*-debug.log
+.runtimeconfig.json
+
+# SSL certificates
+csr.pem
+privateKey.pem
+certificate.pem
+
+# Apache
+# .htaccess
+
+# PHP files with sensitive data
+public/api/contact/contact.php
+public/api/contact/rate_limit.json
+public/api/contact/contact_logs.txt
+
+# Cache
+/.angular/cache
+.sass-cache/
+
+# Runtime
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings

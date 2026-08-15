@@ -1,0 +1,219 @@
+#!/bin/bash
+
+# ============================================================================
+# SSL Certificates Setup Template
+# Manages Let's Encrypt SSL certificate creation and renewal
+# ============================================================================
+
+setup_ssl_cert() {
+    local ENV_TYPE="$1"
+    local DOMAIN="$2"
+    local EMAIL="$3"
+
+    echo "🔒 Setting up SSL certificates for $ENV_TYPE environment..."
+
+    # Determine domains for certificate
+    local cert_domains="-d $DOMAIN"
+
+    # Note: For production with www support, ensure DNS record exists:
+    # www.lets-todo-api.dev2k.org → lets-todo-api.dev2k.org (CNAME)
+    # Then uncomment the next line:
+    # if [ "$ENV_TYPE" = "prod" ]; then
+    #     cert_domains="-d $DOMAIN -d www.$DOMAIN"
+    # fi
+
+    # Check if certificate already exists
+    local cert_path="/etc/letsencrypt/live/$DOMAIN"
+
+    if [ ! -d "$cert_path" ]; then
+        echo "📜 Requesting new SSL certificate..."
+
+        # Request certificate using webroot method
+        certbot certonly \
+            --webroot \
+            -w /var/www/certbot \
+            $cert_domains \
+            --email "$EMAIL" \
+            --agree-tos \
+            --non-interactive \
+            --no-eff-email
+
+        if [ $? -eq 0 ]; then
+            echo "✅ SSL certificate successfully created for $ENV_TYPE"
+        else
+            echo "❌ Failed to create SSL certificate for $ENV_TYPE"
+            return 1
+        fi
+    else
+        echo "✅ SSL certificate already exists for $ENV_TYPE"
+    fi
+
+    # Ensure SSL configuration files exist
+    echo "🔧 Setting up SSL configuration files..."
+    if [ ! -f /etc/letsencrypt/options-ssl-nginx.conf ]; then
+        echo "Creating missing SSL options file..."
+        cat > /etc/letsencrypt/options-ssl-nginx.conf << 'EOFOPTIONS'
+# This file contains important security parameters. If you modify this file
+# manually, Certbot will be unable to automatically provide future security
+# updates. Instead, Certbot will print and log an error description with a path to
+# the up-to-date file that you will need to refer to when manually updating this file.
+
+ssl_session_cache shared:le_nginx_SSL:10m;
+ssl_session_timeout 1440m;
+ssl_session_tickets off;
+
+ssl_protocols TLSv1.2 TLSv1.3;
+ssl_prefer_server_ciphers off;
+
+ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
+EOFOPTIONS
+    fi
+
+    if [ ! -f /etc/letsencrypt/ssl-dhparams.pem ]; then
+        echo "Creating DH parameters file..."
+        openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
+    fi
+
+    # Enable automatic renewal
+    echo "⏰ Setting up automatic certificate renewal..."
+    if command -v systemctl >/dev/null 2>&1; then
+        systemctl enable --now certbot.timer || echo "Warning: certbot.timer setup failed"
+    fi
+
+    # Test renewal
+    echo "🧪 Testing certificate renewal..."
+    certbot renew --dry-run || echo "Warning: certbot renew dry-run failed. Check logs."
+
+    # Update nginx configuration with SSL
+    update_nginx_ssl "$ENV_TYPE" "$DOMAIN"
+}
+
+update_nginx_ssl() {
+    local ENV_TYPE="$1"
+    local DOMAIN="$2"
+
+    echo "🔧 Updating Nginx configuration with SSL for $ENV_TYPE..."
+
+    # Clean up old configurations that might conflict
+    echo "🧹 Cleaning up old nginx configurations..."
+    rm -f /etc/nginx/sites-enabled/lets-todo-api.dev2k.org.conf
+    rm -f /etc/nginx/sites-available/lets-todo-api.dev2k.org.conf
+    rm -f /etc/nginx/sites-enabled/default    # Determine paths based on environment
+    local server_name
+    local cert_domain
+    if [ "$ENV_TYPE" = "prod" ]; then
+        server_name="$DOMAIN www.$DOMAIN"
+        cert_domain="$DOMAIN"
+    else
+        server_name="$DOMAIN"
+        cert_domain="$DOMAIN"
+    fi
+
+    # Create rate limit configuration if not present
+    if [ ! -f /etc/nginx/conf.d/api_rate_limit.conf ]; then
+        echo "⚡ Creating rate limit configuration..."
+        cat > /etc/nginx/conf.d/api_rate_limit.conf << 'EOFRATE'
+# Rate limit for /api/ endpoints
+limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+EOFRATE
+    fi
+
+    # Create SSL-enabled nginx configuration
+    cat > "/etc/nginx/sites-available/lets-todo-$ENV_TYPE" << EOF
+# ──────────────────────────────────────────────────────────────────────────────
+# File: /etc/nginx/sites-available/lets-todo-$ENV_TYPE
+# Environment: $ENV_TYPE ($DOMAIN)
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ##########################################################
+# 0) HTTP Server (Port 80) for IP + Domains:
+#    → Allow ACME Challenge, redirect all other requests → HTTPS
+#    → ACME Challenge: Automatic Certificate Management Environment
+# ##########################################################
+server {
+    listen 80;
+    listen [::]:80;
+    server_name $server_name;
+
+    # ACME Challenge (Certbot HTTP-01) allowed
+    location /.well-known/acme-challenge/ {
+        alias /var/www/certbot/.well-known/acme-challenge/;
+        try_files \$uri =404;
+    }
+
+    # All other HTTP requests → HTTPS
+    # After SSL setup → HTTPS Redirect
+    location / {
+        return 301 https://\$host\$request_uri;
+    }
+}
+
+# ##########################################################
+# 1) HTTPS Server (Port 443) for $cert_domain
+# ##########################################################
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name $server_name;
+
+    # ─── SSL/TLS via Let's Encrypt ───────────────────────────
+    ssl_certificate     /etc/letsencrypt/live/$cert_domain/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$cert_domain/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+
+    # ─── Security Headers ────────────────────────────────────
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options DENY;
+    add_header Referrer-Policy "no-referrer-when-downgrade";
+
+    # ─── Logging (if not globally defined) ───────────────────
+    access_log  /var/log/nginx/lets-todo-api-$ENV_TYPE.log;
+    error_log   /var/log/nginx/lets-todo-api-$ENV_TYPE.error.log warn;
+
+    # ─── Reverse Proxy & Rate Limit for /api/ ────────────────
+    location ^~ /api/ {
+        limit_req zone=api burst=20 nodelay;
+        proxy_pass         http://127.0.0.1:$(get_port_for_env $ENV_TYPE);
+        proxy_http_version 1.1;
+        proxy_set_header   Host               \$host;
+        proxy_set_header   X-Real-IP          \$remote_addr;
+        proxy_set_header   X-Forwarded-For    \$proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Proto  \$scheme;
+        proxy_set_header   Upgrade            \$http_upgrade;
+        proxy_set_header   Connection         "upgrade";
+
+        # Cookie adjustments
+        proxy_cookie_domain ~^\\.${cert_domain}\$ .dev2k.org;
+        proxy_cookie_path ~*^/.* /;          # Path adjustment
+        proxy_pass_header Set-Cookie;        # Forward Set-Cookie header
+
+        # Timeout settings
+        proxy_connect_timeout 60s;
+        proxy_read_timeout 60s;
+        proxy_send_timeout 60s;
+    }
+
+    # ─── All other paths → 404 ───────────────────────────────
+    location / {
+        return 404;
+    }
+}
+EOF
+
+    # Test and reload nginx
+    nginx -t
+    systemctl reload nginx
+
+    echo "✅ Nginx SSL configuration for $ENV_TYPE updated and reloaded"
+}
+
+get_port_for_env() {
+    case "$1" in
+        "prod") echo "3002" ;;
+        "feat") echo "3003" ;;
+        "stage") echo "3004" ;;
+        *) echo "3000" ;;
+    esac
+}

@@ -1,0 +1,74 @@
+{
+  "source": {
+    "include": [
+      "./server.js",
+      "./db.js",
+      "./routing/",
+      "./middleware/",
+      "./services/",
+      "./config/",
+      "./scripts/"
+    ],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "(node_modules|\\.test\\.js$|deploy/|nginx/|debug-email\\.js$)"
+  },
+  "opts": {
+    "destination": "./docs",
+    "recurse": true,
+    "template": "./node_modules/clean-jsdoc-theme"
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "clean-jsdoc-theme": {
+      "theme": "dark",
+      "title": "Let's Todo API Documentation",
+      "description": "Complete API documentation for Let's Todo backend with multi-environment support and database-per-session architecture",
+      "logo": "/assets/icons/todo-icon.png",
+      "menu": [
+        {
+          "title": "🏠 Home",
+          "link": "index.html"
+        },
+        {
+          "title": "📚 Global Functions",
+          "link": "global.html"
+        },
+        {
+          "title": "🗄️ Database Layer",
+          "link": "module-Database.html"
+        },
+        {
+          "title": "🔐 Authentication",
+          "link": "module-Auth.html"
+        },
+        {
+          "title": "🔗 GitHub Repository",
+          "link": "https://github.com/KosMaster87/lets-todo-api",
+          "target": "_blank"
+        },
+        {
+          "title": "🚀 Live API",
+          "link": "https://lets-todo-api.dev2k.org",
+          "target": "_blank"
+        }
+      ],
+      "search": true,
+      "collapse": false,
+      "sort": true,
+      "sectionOrder": [
+        "Classes",
+        "Modules",
+        "Global",
+        "Namespaces",
+        "Events",
+        "Tutorials",
+        "Interfaces"
+      ],
+      "meta": {
+        "keywords": "JavaScript, Node.js, Express, API, Todo, Documentation, JSDoc, ES6, MySQL, Multi-Environment"
+      }
+    },
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}
