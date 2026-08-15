@@ -390,9 +390,11 @@ const handleSuccessfulResetRequest = async (email, result, res) => {
     } (${email}) - Token: ${result.resetToken.substring(0, 8)}...`
   );
 
-  return sendSuccess(res, "Reset-Link wurde an deine E-Mail-Adresse gesendet.", {
-    debug: createResetDebugData(result, email),
-  });
+  return sendSuccess(
+    res,
+    "Reset-Link wurde an deine E-Mail-Adresse gesendet.",
+    ENV.DEBUG ? { debug: createResetDebugData(result, email) } : undefined
+  );
 };
 
 // #################################################

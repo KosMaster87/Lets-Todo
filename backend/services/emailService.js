@@ -71,14 +71,17 @@ class EmailService {
    * Creates custom SMTP transporter
    */
   setupCustomSmtpTransporter() {
+    // ENV.EMAIL_SECURE is already a boolean (see envBool() in config/environment.js) -
+    // comparing it to the string "true" was always false, which happened to produce the
+    // right result for TLS but left nodemailer's opportunistic STARTTLS enabled, which
+    // fails against a plain-internal relay (e.g. an unauthenticated Docker-network relay)
+    // that doesn't terminate TLS on that listener.
     this.transporter = nodemailer.createTransport({
       host: ENV.EMAIL_HOST,
       port: ENV.EMAIL_PORT || 587,
-      secure: ENV.EMAIL_SECURE === "true",
-      auth: {
-        user: ENV.EMAIL_USER,
-        pass: ENV.EMAIL_PASSWORD,
-      },
+      secure: ENV.EMAIL_SECURE,
+      ignoreTLS: !ENV.EMAIL_SECURE,
+      auth: ENV.EMAIL_USER ? { user: ENV.EMAIL_USER, pass: ENV.EMAIL_PASSWORD } : undefined,
     });
     debugLog(`Custom SMTP Transporter initialized (${ENV.EMAIL_HOST})`);
   }
