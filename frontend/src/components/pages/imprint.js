@@ -20,36 +20,26 @@ export const renderImprintPage = () => {
 
       <section class="imprint-content">
         <div class="imprint-section">
-          <h3>Company Information</h3>
+          <h3>Responsible for Content</h3>
           <p>
-            <strong>Let's Todo App</strong><br>
-            A todo management application<br>
-            Developed by Konstantin Aksenov
-          </p>
-        </div>
-
-        <div class="imprint-section">
-          <h3>Developer</h3>
-          <p>
-            Konstantin Aksenov<br>
-            26810 Westoverledingen<br>
-            Germany
+            <strong>Developer2K Software</strong><br>
+            Sole Proprietor: Konstantin Aksenov<br>
+            Remote
           </p>
         </div>
 
         <div class="imprint-section">
           <h3>Contact</h3>
           <p>
-            E-Mail: konstantin@dev2ksoftware.com
+            E-Mail: konstantin@dev2ksoftware.com<br>
+            Website: <a href="https://lets-todo.dev2ksoftware.com/">https://lets-todo.dev2ksoftware.com/</a>
           </p>
         </div>
 
         <div class="imprint-section">
-          <h3>Responsible for content according to § 55 Abs. 2 RStV</h3>
+          <h3>Technical Information</h3>
           <p>
-            Konstantin Aksenov<br>
-            26810 Westoverledingen<br>
-            Germany
+            This website was built with Vanilla JavaScript and Node.js/Express. For technical inquiries, please contact us via the email address above.
           </p>
         </div>
 
