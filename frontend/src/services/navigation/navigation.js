@@ -84,17 +84,17 @@ const loadInitialView = () => {
   const urlInfo = extractViewAndParamsFromURL();
 
   // DEBUG: URL parameters output
-  // console.log("🔍 loadInitialView - URL Info:", urlInfo);
-  // console.log("🔍 Current URL:", window.location.pathname);
+  // console.log("loadInitialView - URL Info:", urlInfo);
+  // console.log("Current URL:", window.location.pathname);
 
   if (isValidView(urlInfo.view)) {
     // Set URL parameters FIRST before setCurrentView is called!
     if (urlInfo.params) {
       window.currentUrlParams = urlInfo.params;
-      // console.log("✅ URL parameters set:", window.currentUrlParams);
+      // console.log("URL parameters set:", window.currentUrlParams);
     } else {
       window.currentUrlParams = null;
-      // console.log("ℹ️ No URL parameters found");
+      // console.log("ℹNo URL parameters found");
     }
 
     setCurrentView(urlInfo.view);
@@ -113,7 +113,7 @@ const setupMainMenuNavigation = () => {
     { id: "loginBtn", view: VIEWS.LOGIN },
     { id: "registerBtn", view: VIEWS.REGISTER },
     { id: "optionsBtn", view: VIEWS.OPTIONS },
-    { id: "dashboardBtnLoggedIn", view: VIEWS.DASHBOARD }, // ✅ Dashboard for users
+    { id: "dashboardBtnLoggedIn", view: VIEWS.DASHBOARD }, // Dashboard for users
   ];
 
   mainMenuLinks.forEach(({ id, view }) => {

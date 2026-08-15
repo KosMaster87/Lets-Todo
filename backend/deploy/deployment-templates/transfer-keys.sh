@@ -16,7 +16,7 @@ NC='\033[0m' # No Color
 
 # Function for error handling
 error_exit() {
-  echo -e "${RED}❌ Error: $1${NC}" >&2
+  echo -e "${RED}Error: $1${NC}" >&2
   exit 1
 }
 
@@ -41,7 +41,7 @@ validate_input() {
 
 # Find SSH keys automatically
 find_keys() {
-  echo -e "${BLUE}🔍 Available SSH keys:${NC}"
+  echo -e "${BLUE}Available SSH keys:${NC}"
   local key_count=0
   local key_files=()
   
@@ -49,16 +49,16 @@ find_keys() {
     if [ -f "$key" ]; then
       key_count=$((key_count + 1))
       key_files+=("$key")
-      echo "  $key_count) $(basename "$key")"
+      echo " $key_count) $(basename "$key")"
     fi
   done
   
   if [ $key_count -eq 0 ]; then
-    echo -e "${YELLOW}⚠️  No SSH keys found in ~/.ssh/${NC}"
+    echo -e "${YELLOW} No SSH keys found in ~/.ssh/${NC}"
     return 1
   fi
   
-  echo -e "  0) Specify custom path"
+  echo -e " 0) Specify custom path"
   echo ""
   
   while true; do
@@ -77,7 +77,7 @@ find_keys() {
 }
 
 # Main script
-echo -e "${BLUE}🔑 SSH Key Transfer Utility${NC}"
+echo -e "${BLUE}SSH Key Transfer Utility${NC}"
 echo -e "${YELLOW}Transfer your SSH public key for passwordless authentication${NC}"
 echo ""
 
@@ -87,7 +87,7 @@ read -p "Username on server: " USERNAME
 
 # Key selection
 if find_keys; then
-  echo -e "${GREEN}✓ Selected key: $(basename "$KEY_PATH")${NC}"
+  echo -e "${GREEN}Selected key: $(basename "$KEY_PATH")${NC}"
 else
   read -p "Path to public key file: " KEY_PATH
 fi
@@ -103,19 +103,19 @@ read -p "Choose option (1/2): " OPTION
 
 case "$OPTION" in
   1)
-    echo -e "${YELLOW}🗑️  Replacing existing keys...${NC}"
+    echo -e "${YELLOW} Replacing existing keys...${NC}"
     PRIVATE_KEY="${KEY_PATH%.pub}"
     
     # Clear existing keys and set up fresh
     if ssh -i "$PRIVATE_KEY" -o ConnectTimeout=10 "$USERNAME@$SERVER_IP" \
        "mkdir -p ~/.ssh && chmod 700 ~/.ssh && echo '' > ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"; then
-      echo -e "${GREEN}✓ Cleared existing keys${NC}"
+      echo -e "${GREEN}Cleared existing keys${NC}"
     else
       error_exit "Could not clear existing keys - check connectivity and permissions"
     fi
     ;;
   2)
-    echo -e "${YELLOW}➕ Adding key to existing keys...${NC}"
+    echo -e "${YELLOW}Adding key to existing keys...${NC}"
     ;;
   *)
     error_exit "Invalid option. Please choose 1 or 2"
@@ -123,39 +123,39 @@ case "$OPTION" in
 esac
 
 # Transfer the key
-echo -e "${YELLOW}🔑 Transferring SSH key...${NC}"
+echo -e "${YELLOW}Transferring SSH key...${NC}"
 if ssh-copy-id -f -i "$KEY_PATH" "$USERNAME@$SERVER_IP"; then
-  echo -e "${GREEN}✓ Key transferred successfully${NC}"
+  echo -e "${GREEN}Key transferred successfully${NC}"
 else
   error_exit "Key transfer failed - check server connectivity and username"
 fi
 
 # Connection test
-echo -e "\n${GREEN}🧪 Testing connection...${NC}"
+echo -e "\n${GREEN}Testing connection...${NC}"
 PRIVATE_KEY="${KEY_PATH%.pub}"
 
 if ssh -i "$PRIVATE_KEY" -o ConnectTimeout=5 -o StrictHostKeyChecking=no "$USERNAME@$SERVER_IP" exit 2>/dev/null; then
-  echo -e "${GREEN}  ✅ Passwordless SSH login successful!${NC}"
-  echo -e "${GREEN}  🎯 Connection command: ssh -i $PRIVATE_KEY $USERNAME@$SERVER_IP${NC}"
+  echo -e "${GREEN} Passwordless SSH login successful!${NC}"
+  echo -e "${GREEN} Connection command: ssh -i $PRIVATE_KEY $USERNAME@$SERVER_IP${NC}"
 else
   error_exit "Connection test failed - key may not be properly configured"
 fi
 
 # Summary
-echo -e "\n${BLUE}📋 Summary${NC}"
-echo -e "${GREEN}✅ SSH key successfully transferred!${NC}"
+echo -e "\n${BLUE}Summary${NC}"
+echo -e "${GREEN}SSH key successfully transferred!${NC}"
 echo ""
 echo -e "${YELLOW}Connection details:${NC}"
-echo "  Server: $SERVER_IP"
-echo "  User: $USERNAME"  
-echo "  Key: $(basename "$KEY_PATH")"
+echo " Server: $SERVER_IP"
+echo " User: $USERNAME"  
+echo " Key: $(basename "$KEY_PATH")"
 echo ""
 echo -e "${YELLOW}Quick connect:${NC}"
-echo "  ssh $USERNAME@$SERVER_IP"
+echo " ssh $USERNAME@$SERVER_IP"
 echo ""
 echo -e "${YELLOW}Next steps:${NC}"
 echo "1. Test passwordless login"
 echo "2. Run deployment scripts"
 echo "3. Consider disabling password authentication for enhanced security"
 
-echo -e "\n${GREEN}🎉 SSH key transfer completed!${NC}"
+echo -e "\n${GREEN}SSH key transfer completed!${NC}"

@@ -18,32 +18,32 @@
       "logo": "/assets/icons/todo-icon.png",
       "menu": [
         {
-          "title": "🏠 Home",
+          "title": "Home",
           "link": "index.html"
         },
         {
-          "title": "📚 Global Functions",
+          "title": "Global Functions",
           "link": "global.html"
         },
         {
-          "title": "🧩 Components",
+          "title": "Components",
           "link": "module-Components.html"
         },
         {
-          "title": "🔄 State Management",
+          "title": "State Management",
           "link": "module-State.html"
         },
         {
-          "title": "🌐 API Services",
+          "title": "API Services",
           "link": "module-API.html"
         },
         {
-          "title": "🔗 GitHub Repository",
+          "title": "GitHub Repository",
           "link": "https://github.com/KosMaster87/lets-todo/tree/main/frontend",
           "target": "_blank"
         },
         {
-          "title": "🚀 Live Demo",
+          "title": "Live Demo",
           "link": "https://lets-todo.dev2k.org",
           "target": "_blank"
         }

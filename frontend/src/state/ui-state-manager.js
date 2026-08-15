@@ -92,10 +92,10 @@ export const UIStateManager = {
     if (!DEBUG_MODE) return;
 
     const messages = {
-      start: "🔄 Auto-syncing preferences to server for registered user",
-      success: "✅ Preferences successfully synced to server",
-      warning: "⚠️ Preferences saved locally but server sync failed",
-      error: "❌ Server sync error (preferences still saved locally):",
+      start: "Auto-syncing preferences to server for registered user",
+      success: "Preferences successfully synced to server",
+      warning: "Preferences saved locally but server sync failed",
+      error: "Server sync error (preferences still saved locally):",
     };
 
     if (type === "error" && error) {

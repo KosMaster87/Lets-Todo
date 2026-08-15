@@ -26,28 +26,28 @@
       "logo": "/assets/icons/todo-icon.png",
       "menu": [
         {
-          "title": "🏠 Home",
+          "title": "Home",
           "link": "index.html"
         },
         {
-          "title": "📚 Global Functions",
+          "title": "Global Functions",
           "link": "global.html"
         },
         {
-          "title": "🗄️ Database Layer",
+          "title": "Database Layer",
           "link": "module-Database.html"
         },
         {
-          "title": "🔐 Authentication",
+          "title": "Authentication",
           "link": "module-Auth.html"
         },
         {
-          "title": "🔗 GitHub Repository",
+          "title": "GitHub Repository",
           "link": "https://github.com/KosMaster87/lets-todo/tree/main/backend",
           "target": "_blank"
         },
         {
-          "title": "🚀 Live API",
+          "title": "Live API",
           "link": "https://lets-todo-api.dev2k.org",
           "target": "_blank"
         }

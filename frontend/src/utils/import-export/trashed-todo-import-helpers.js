@@ -81,13 +81,13 @@ export const findCreatedTodo = (title, content, todo, getTodos) => {
  * @returns {Promise<boolean>} True if successful
  */
 export const moveToTrashWithRetry = async (createdTodo, title, trashTodo) => {
-  console.log(`🗑️ Moving to trash: ID ${createdTodo.id}`);
+  console.log(`Moving to trash: ID ${createdTodo.id}`);
 
   try {
     await trashTodo(createdTodo.id);
     return true;
   } catch (trashError) {
-    console.warn(`⚠️ Trash sync failed for "${title}", but todo is trashed locally`);
+    console.warn(`Trash sync failed for "${title}", but todo is trashed locally`);
     return true; // Still count as success since it's in correct local state
   }
 };
@@ -118,7 +118,7 @@ export const processSingleTrashedTodo = async (
   }
 
   const { title, content } = todoData;
-  console.log(`📥 Importing trash todo: "${title}"`);
+  console.log(`Importing trash todo: "${title}"`);
 
   const todoObject = createTrashImportTodoObject(title, content, todo);
   await addTodo(todoObject);

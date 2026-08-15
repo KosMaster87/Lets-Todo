@@ -1,22 +1,22 @@
 # ------------------------------------------------------
-# 🔁 Apache Configuration for SPA
+# Apache Configuration for SPA
 # ------------------------------------------------------
 RewriteEngine On
 
 # ------------------------------------------------------
-# 🔒 Force HTTPS
+# Force HTTPS
 # ------------------------------------------------------
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # ------------------------------------------------------
-# 🛡️ API Routes Protection - Don't redirect to index.html
+# API Routes Protection - Don't redirect to index.html
 # ------------------------------------------------------
 RewriteCond %{REQUEST_URI} ^/api/
 RewriteRule . - [L]
 
 # ------------------------------------------------------
-# ⚙️ SPA Routing - Router Fallback
+# SPA Routing - Router Fallback
 # ------------------------------------------------------
 # If the requested file or directory doesn't exist,
 # and it's not an API call, redirect to index.html
@@ -26,7 +26,7 @@ RewriteCond %{REQUEST_URI} !^/api/
 RewriteRule . /index.html [L]
 
 # ------------------------------------------------------
-# 🚀 Cache Static Assets
+# Cache Static Assets
 # ------------------------------------------------------
 <IfModule mod_expires.c>
     ExpiresActive on
@@ -43,7 +43,7 @@ RewriteRule . /index.html [L]
 </IfModule>
 
 # ------------------------------------------------------
-# 🔐 Security Headers
+# Security Headers
 # ------------------------------------------------------
 <IfModule mod_headers.c>
     # Prevent MIME type sniffing
@@ -63,7 +63,7 @@ RewriteRule . /index.html [L]
 </IfModule>
 
 # ------------------------------------------------------
-# 🐘 PHP Configuration (Production)
+# PHP Configuration (Production)
 # ------------------------------------------------------
 <IfModule mod_php.c>
     php_flag display_errors Off

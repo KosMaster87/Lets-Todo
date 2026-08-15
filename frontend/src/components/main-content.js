@@ -31,14 +31,14 @@ export const renderMainContent = (urlParams = null) => {
   const mainElement = document.getElementById("mainContent");
   const currentView = getCurrentView();
 
-  // console.log("🖼️ renderMainContent called");
-  // console.log("📋 Current View:", currentView);
-  // console.log("📋 URL Params passed:", urlParams);
-  // console.log("📋 Global URL Params:", window.currentUrlParams);
+  // console.log("renderMainContent called");
+  // console.log("Current View:", currentView);
+  // console.log("URL Params passed:", urlParams);
+  // console.log("Global URL Params:", window.currentUrlParams);
 
   // Fallback zu globalen URL-Parametern wenn nicht direkt übergeben
   const params = urlParams || window.currentUrlParams || null;
-  // console.log("📋 Final params:", params);
+  // console.log("Final params:", params);
 
   mainElement.innerHTML = createMainContentHTML(currentView, params);
   updatePageTitle(currentView);
@@ -47,12 +47,12 @@ export const renderMainContent = (urlParams = null) => {
   // Spezielle Initialisierung für Reset-Password-Confirm
   if (currentView === VIEWS.RESET_PASSWORD_CONFIRM && params) {
     // console.log(
-    //   "🚀 Calling initializeResetPasswordConfirm with token:",
-    //   params.token
+    // "Calling initializeResetPasswordConfirm with token:",
+    // params.token
     // );
     initializeResetPasswordConfirm(params.token);
   } else if (currentView === VIEWS.RESET_PASSWORD_CONFIRM) {
-    console.log("⚠️ Reset-Password-Confirm view detected but NO params found!");
+    console.log("Reset-Password-Confirm view detected but NO params found!");
   }
 };
 

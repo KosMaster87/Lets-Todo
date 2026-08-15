@@ -35,7 +35,7 @@ export const TodoServerSync = {
       const serverResponse = await this.saveTodoToServerApi(todoWithId);
       this.processServerResponse(appState, todoWithId, serverResponse, notifyListeners);
     } catch (error) {
-      console.warn("⚠️ Failed to sync todo to server:", error);
+      console.warn("Failed to sync todo to server:", error);
     }
   },
 
@@ -76,7 +76,7 @@ export const TodoServerSync = {
       TodosPersistence.save(appState.todos, appState.sessionType);
       notifyListeners();
       console.log(
-        `✅ Todo synced to server with server ID: ${serverId}, keeping client ID: ${clientId}`
+        `Todo synced to server with server ID: ${serverId}, keeping client ID: ${clientId}`
       );
     }
   },
@@ -94,7 +94,7 @@ export const TodoServerSync = {
       const updatedTodo = appState.todos.find((t) => t.id === todoId);
       await this.syncUpdatedTodoToServer(updatedTodo);
     } catch (error) {
-      console.warn("⚠️ Failed to sync update to server:", error);
+      console.warn("Failed to sync update to server:", error);
     }
   },
 
@@ -105,7 +105,7 @@ export const TodoServerSync = {
   async syncUpdatedTodoToServer(updatedTodo) {
     if (updatedTodo && updatedTodo.serverId) {
       await updateTodoOnServer(updatedTodo.serverId, updatedTodo);
-      console.log(`✅ Todo updated on server (server ID: ${updatedTodo.serverId})`);
+      console.log(`Todo updated on server (server ID: ${updatedTodo.serverId})`);
     }
   },
 
@@ -127,7 +127,7 @@ export const TodoServerSync = {
         await this.syncTrashToServer(serverId);
       }
     } catch (error) {
-      console.warn("⚠️ Failed to sync trash to server:", error);
+      console.warn("Failed to sync trash to server:", error);
     }
   },
 
@@ -137,7 +137,7 @@ export const TodoServerSync = {
    */
   async syncTrashToServer(serverIdToUse) {
     await trashTodoOnServer(serverIdToUse);
-    console.log(`✅ Todo trashed on server (server ID: ${serverIdToUse})`);
+    console.log(`Todo trashed on server (server ID: ${serverIdToUse})`);
   },
 
   /**
@@ -158,7 +158,7 @@ export const TodoServerSync = {
         await this.syncRestoreToServer(serverId);
       }
     } catch (error) {
-      console.warn("⚠️ Failed to sync restore to server:", error);
+      console.warn("Failed to sync restore to server:", error);
     }
   },
 
@@ -168,7 +168,7 @@ export const TodoServerSync = {
    */
   async syncRestoreToServer(serverId) {
     await restoreTodoOnServer(serverId);
-    console.log(`✅ Todo restored on server (server ID: ${serverId})`);
+    console.log(`Todo restored on server (server ID: ${serverId})`);
   },
 
   /**
@@ -179,7 +179,7 @@ export const TodoServerSync = {
    */
   async handleDeleteServerSync(todoToDelete, todoId, sessionType) {
     if (!shouldSyncToServer(sessionType)) {
-      console.log("👤 Guest session - no server sync needed");
+      console.log("Guest session - no server sync needed");
       return;
     }
 
@@ -192,7 +192,7 @@ export const TodoServerSync = {
         await this.syncDeleteToServer(serverId);
       }
     } catch (error) {
-      console.error("❌ Failed to sync delete to server:", error);
+      console.error("Failed to sync delete to server:", error);
     }
   },
 
@@ -201,9 +201,9 @@ export const TodoServerSync = {
    * @param {number} serverId - Server ID to use
    */
   async syncDeleteToServer(serverId) {
-    console.log(`🌐 Attempting to delete todo ${serverId} on server...`);
+    console.log(`Attempting to delete todo ${serverId} on server...`);
     const result = await deleteTodoFromServer(serverId);
-    console.log(`✅ Todo deleted on server (server ID: ${serverId}):`, result);
+    console.log(`Todo deleted on server (server ID: ${serverId}):`, result);
   },
 
   /**
@@ -214,14 +214,14 @@ export const TodoServerSync = {
     const { sessionType, trashedTodos } = appState;
 
     if (!shouldSyncTrashToServer(sessionType, trashedTodos.length)) {
-      console.log("👤 Guest session or empty trash - no server sync needed");
+      console.log("Guest session or empty trash - no server sync needed");
       return;
     }
 
     try {
       await this.deleteAllTrashOnServer(trashedTodos);
     } catch (error) {
-      console.error("❌ Failed to delete some todos on server:", error);
+      console.error("Failed to delete some todos on server:", error);
     }
   },
 
@@ -230,12 +230,12 @@ export const TodoServerSync = {
    * @param {Array} trashedTodos - Array of trashed todos
    */
   async deleteAllTrashOnServer(trashedTodos) {
-    console.log("🌐 Deleting all trash todos on server...");
+    console.log("Deleting all trash todos on server...");
 
     const deletePromises = this.createTrashDeletePromises(trashedTodos);
     await Promise.all(deletePromises);
 
-    console.log(`✅ All ${trashedTodos.length} trash todos deleted on server`);
+    console.log(`All ${trashedTodos.length} trash todos deleted on server`);
   },
 
   /**

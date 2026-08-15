@@ -84,9 +84,9 @@ export const TodoOperations = {
    * @param {Function} notifyListeners - Function to notify state listeners
    */
   async trash(appState, todoId, notifyListeners) {
-    console.log(`🔍 trashTodo called with ID: ${todoId}, type: ${typeof todoId}`);
+    console.log(`trashTodo called with ID: ${todoId}, type: ${typeof todoId}`);
     const todo = findTodoById(appState, todoId);
-    console.log(`🔎 Found todo:`, todo);
+    console.log(`Found todo:`, todo);
 
     if (todo) {
       this.moveTodoToTrashLocally(appState, todoId, todo, notifyListeners);
@@ -109,7 +109,7 @@ export const TodoOperations = {
     TrashPersistence.save(appState.trashedTodos, appState.sessionType);
 
     console.log(
-      `🗑️ Todo ${todoId} moved to trash, notifying ${appState.listeners?.length || 0} listeners`
+      `Todo ${todoId} moved to trash, notifying ${appState.listeners?.length || 0} listeners`
     );
     notifyListeners();
   },
@@ -178,7 +178,7 @@ export const TodoOperations = {
    * @param {Function} notifyListeners - Function to notify state listeners
    */
   async emptyTrash(appState, notifyListeners) {
-    console.log(`🗑️ Emptying trash with ${appState.trashedTodos.length} todos`);
+    console.log(`Emptying trash with ${appState.trashedTodos.length} todos`);
 
     await TodoServerSync.handleEmptyTrashServerSync(appState);
     this.emptyTrashLocally(appState, notifyListeners);

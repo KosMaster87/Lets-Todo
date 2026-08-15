@@ -4,18 +4,18 @@
 
 ## � Table of Contents
 
-- [🏠 Local Development Setup](#-local-development-setup)
-- [🔧 Development Environment](#-development-environment)
-- [🗄️ Database Development](#️-database-development)
-- [🔍 Debugging & Troubleshooting](#-debugging--troubleshooting)
-- [�🚀 Production Deployment](#-production-deployment)
-- [🎛️ Environment Configuration](#️-environment-configuration)
+- [Local Development Setup](#-local-development-setup)
+- [Development Environment](#-development-environment)
+- [Database Development](#-database-development)
+- [Debugging & Troubleshooting](#-debugging--troubleshooting)
+- [�Production Deployment](#-production-deployment)
+- [Environment Configuration](#-environment-configuration)
 
 ---
 
-# 🏠 Local Development Setup
+# Local Development Setup
 
-## 🔧 Initial Development Setup
+## Initial Development Setup
 
 ### MariaDB Installation (Fedora)
 
@@ -71,9 +71,9 @@ cp config/env/.env.development.example config/env/.env.development
 cp ecosystem.config.cjs.example ecosystem.config.cjs
 
 # Setup development database (multi-environment support)
-npm run dev:db                    # Development setup (default)
-NODE_ENV=feature npm run dev:db   # Feature environment setup
-NODE_ENV=staging npm run dev:db   # Staging environment setup
+npm run dev:db # Development setup (default)
+NODE_ENV=feature npm run dev:db # Feature environment setup
+NODE_ENV=staging npm run dev:db # Staging environment setup
 
 # Start development server
 npm run dev
@@ -81,7 +81,7 @@ npm run dev
 
 ---
 
-# 🗄️ Database Development
+# Database Development
 
 ## Multi-Environment Database Management
 
@@ -140,13 +140,13 @@ mysql $USER_DB -e "SELECT * FROM todos;"
 
 ---
 
-# 🔍 Debugging & Troubleshooting
+# Debugging & Troubleshooting
 
 ## Environment Detection Debugging
 
 ```bash
 # Check which environment is detected
-npm run dev  # Shows environment detection in startup logs
+npm run dev # Shows environment detection in startup logs
 
 # Force specific environment
 NODE_ENV=production npm start
@@ -184,8 +184,8 @@ mysql -h 127.0.0.1 -u root -p -e "SELECT 1;"
 
 ```bash
 # 1. Start fresh
-npm run dev:db          # Reset database
-npm run dev             # Start server with auto-reload
+npm run dev:db # Reset database
+npm run dev # Start server with auto-reload
 
 # 2. Test user registration flow
 curl -c cookies.txt -X POST http://127.0.0.1:3000/api/register \
@@ -204,7 +204,7 @@ curl -b cookies.txt -X POST http://127.0.0.1:3000/api/todos \
 curl -c guest_cookies.txt -X POST http://127.0.0.1:3000/api/session/guest
 
 # 6. Verify session isolation
-curl -b guest_cookies.txt http://127.0.0.1:3000/api/todos  # Should be empty
+curl -b guest_cookies.txt http://127.0.0.1:3000/api/todos # Should be empty
 ```
 
 ### Frontend Integration Testing
@@ -288,7 +288,7 @@ curl -I http://127.0.0.1:3000/api/session/validate
 
 ---
 
-# 🚀 Production Deployment
+# Production Deployment
 
 ## Environment Overview
 
@@ -299,7 +299,7 @@ curl -I http://127.0.0.1:3000/api/session/validate
 | **Staging**     | `lets-todo-api-stage.dev2k.org` | 3004 | Pre-production testing        |
 | **Production**  | `lets-todo-api.dev2k.org`       | 3002 | Live production system        |
 
-## ⚡ Quick Deployment
+## Quick Deployment
 
 **3 Simple Steps:**
 
@@ -321,41 +321,41 @@ tar -xzf lets-todo-step-deployment_*.tar.gz -C step-by-step-package/
 cd step-by-step-package/
 
 # Deploy specific environment or all
-sudo ./deploy.sh prod    # → https://lets-todo-api.dev2k.org
-sudo ./deploy.sh feat    # → https://lets-todo-api-feat.dev2k.org
-sudo ./deploy.sh stage   # → https://lets-todo-api-stage.dev2k.org
-sudo ./deploy.sh all     # → All environments
+sudo ./deploy.sh prod # → https://lets-todo-api.dev2k.org
+sudo ./deploy.sh feat # → https://lets-todo-api-feat.dev2k.org
+sudo ./deploy.sh stage # → https://lets-todo-api-stage.dev2k.org
+sudo ./deploy.sh all # → All environments
 
 # Later cleanup (optional)
 cd .. && rm -rf step-by-step-package/
 ```
 
-**🎉 Done!** Your API is live with SSL certificates!
+**Done!** Your API is live with SSL certificates!
 
 ---
 
-## 🏗️ Modular System
+## Modular System
 
 ### Template Architecture
 
 ```
-deployment-templates/            (Source Templates)
-├── nginx-setup                 # HTTP-only Nginx for SSL certificates
-├── ssl-setup                   # SSL certificates + HTTPS configs
-├── project-files-copy          # Application files deployment
-├── nodejs-dependencies         # npm install + verification
-├── database-setup              # MySQL databases + schema
-├── pm2-setup                   # Process management
-├── create-user.sh              # System user creation
-├── firewall-cloud.sh           # Firewall setup for cloud
-├── firewall-selfhosted.sh      # Firewall setup for self-hosted
-└── transfer-keys.sh            # SSH key transfer utility
+deployment-templates/ (Source Templates)
+├── nginx-setup # HTTP-only Nginx for SSL certificates
+├── ssl-setup # SSL certificates + HTTPS configs
+├── project-files-copy # Application files deployment
+├── nodejs-dependencies # npm install + verification
+├── database-setup # MySQL databases + schema
+├── pm2-setup # Process management
+├── create-user.sh # System user creation
+├── firewall-cloud.sh # Firewall setup for cloud
+├── firewall-selfhosted.sh # Firewall setup for self-hosted
+└── transfer-keys.sh # SSH key transfer utility
 
-step-by-step-package/            (Generated Package)
-├── deploy.sh                   # Main deployment script
-├── [application files]         # Your app code
-├── scripts/                    # Node.js scripts (setup-dev-db.js)
-└── templates/                  # Generated from templates above
+step-by-step-package/ (Generated Package)
+├── deploy.sh # Main deployment script
+├── [application files] # Your app code
+├── scripts/ # Node.js scripts (setup-dev-db.js)
+└── templates/ # Generated from templates above
     ├── nginx-setup.sh
     ├── ssl-setup.sh
     ├── project-files-copy.sh
@@ -379,7 +379,7 @@ step-by-step-package/            (Generated Package)
 5. **Database Setup** - 🆕 **Fully automated** using existing `setup-dev-db.js` script with environment detection
 6. **PM2 Processes** - Starts and configures process management with `.cjs` config files
 
-**🔧 Smart Automation Features:**
+**Smart Automation Features:**
 
 - **Environment Detection**: Automatically maps `feat` → `feature`, `stage` → `staging` for correct `.env` file loading
 - **Interactive Template Skipping**: Templates like `create-user.sh`, `firewall-*.sh` are automatically skipped during deployment
@@ -392,11 +392,11 @@ step-by-step-package/            (Generated Package)
 - **firewall-selfhosted.sh** - Self-hosted firewall configuration
 - **transfer-keys.sh** - SSH key transfer utility
 
-> **💡 Note**: Interactive templates are automatically detected and skipped during deployment. They're shown as "run manually if needed" at the end of deployment.
+> **Note**: Interactive templates are automatically detected and skipped during deployment. They're shown as "run manually if needed" at the end of deployment.
 
 ---
 
-## 🎛️ Configuration
+## Configuration
 
 ### Before Deployment
 
@@ -417,7 +417,7 @@ DB_PASSWORD="your_db_password"
 
 ---
 
-## 🔧 Template Development
+## Template Development
 
 ### Adding New Deployment Steps
 
@@ -430,7 +430,7 @@ The main script auto-detects and executes any new templates you add.
 
 ---
 
-## 🔒 Security Features
+## Security Features
 
 - **Multi-domain SSL** (www support for production)
 - **Environment isolation** (separate databases and processes)
@@ -440,6 +440,6 @@ The main script auto-detects and executes any new templates you add.
 
 ---
 
-**🎉 Simple, Modular, Secure!**
+**Simple, Modular, Secure!**
 
 _Need the old complex deployment system? Check git history for the previous version._

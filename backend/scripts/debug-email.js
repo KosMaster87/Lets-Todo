@@ -10,7 +10,7 @@
 import { emailService } from "../services/emailService.js";
 import { ENV, ENVIRONMENT } from "../config/environment.js";
 
-console.log("🔧 E-Mail Debug Test");
+console.log("E-Mail Debug Test");
 console.log("==================");
 console.log(`Environment: ${ENVIRONMENT}`);
 console.log(`Email Provider: ${ENV.EMAIL_PROVIDER}`);
@@ -18,29 +18,29 @@ console.log(`Email User: ${ENV.EMAIL_USER}`);
 console.log(`Frontend URL: ${ENV.FRONTEND_URL}`);
 console.log("");
 
-console.log("📧 EmailService Status:");
-console.log(`  Transporter exists: ${!!emailService.transporter}`);
+console.log("EmailService Status:");
+console.log(` Transporter exists: ${!!emailService.transporter}`);
 
 if (emailService.transporter) {
-  console.log(`  Service: ${emailService.transporter.options?.service || "custom"}`);
-  console.log(`  Host: ${emailService.transporter.options?.host || "default"}`);
-  console.log(`  Port: ${emailService.transporter.options?.port || "default"}`);
-  console.log(`  Secure: ${emailService.transporter.options?.secure || false}`);
-  console.log(`  Auth User: ${emailService.transporter.options?.auth?.user || "not set"}`);
+  console.log(` Service: ${emailService.transporter.options?.service || "custom"}`);
+  console.log(` Host: ${emailService.transporter.options?.host || "default"}`);
+  console.log(` Port: ${emailService.transporter.options?.port || "default"}`);
+  console.log(` Secure: ${emailService.transporter.options?.secure || false}`);
+  console.log(` Auth User: ${emailService.transporter.options?.auth?.user || "not set"}`);
 } else {
-  console.log("  ❌ No transporter initialized!");
+  console.log(" No transporter initialized!");
 }
 
 console.log("");
-console.log("🔍 Testing SMTP Connection...");
+console.log("Testing SMTP Connection...");
 
 try {
   const result = await emailService.testConnection();
-  console.log("✅ Connection Test Result:", result);
+  console.log("Connection Test Result:", result);
 
   if (result.success) {
     console.log("");
-    console.log("📨 Testing actual email send...");
+    console.log("Testing actual email send...");
 
     // Test-E-Mail senden
     const testResult = await emailService.sendPasswordResetEmail(
@@ -49,18 +49,18 @@ try {
       "Test User"
     );
 
-    console.log("✅ Email Send Result:", testResult);
+    console.log("Email Send Result:", testResult);
   }
 } catch (error) {
-  console.log("❌ Test Failed:", error.message);
-  console.log("❌ Full Error:", error);
+  console.log("Test Failed:", error.message);
+  console.log("Full Error:", error);
 }
 
 console.log("");
-console.log("🔧 Additional Diagnostics:");
+console.log("Additional Diagnostics:");
 
 // Prüfe Netzwerk-Verbindung zu Gmail
-console.log("🌐 Testing network connectivity to Gmail SMTP...");
+console.log("Testing network connectivity to Gmail SMTP...");
 try {
   const net = await import("net");
   const socket = new net.default.Socket();
@@ -68,18 +68,18 @@ try {
   socket.setTimeout(5000);
 
   socket.connect(587, "smtp.gmail.com", () => {
-    console.log("✅ TCP connection to smtp.gmail.com:587 successful");
+    console.log("TCP connection to smtp.gmail.com:587 successful");
     socket.destroy();
   });
 
   socket.on("timeout", () => {
-    console.log("❌ TCP connection timeout (firewall issue?)");
+    console.log("TCP connection timeout (firewall issue?)");
     socket.destroy();
   });
 
   socket.on("error", (error) => {
-    console.log("❌ TCP connection failed:", error.message);
+    console.log("TCP connection failed:", error.message);
   });
 } catch (netError) {
-  console.log("❌ Network test error:", netError.message);
+  console.log("Network test error:", netError.message);
 }

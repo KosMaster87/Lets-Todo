@@ -1,14 +1,14 @@
 ```bash
-📁 SCRIPTS STRUCTURE
+SCRIPTS STRUCTURE
 ════════════════════
 
-🏠 LOCAL DEVELOPMENT (127.0.0.1):
-├── dev-clean-local-db.js                 - Deletes only local DBs
-└── setup-multi-env-db.js                 - NODE_ENV=development
+LOCAL DEVELOPMENT (127.0.0.1):
+├── dev-clean-local-db.js - Deletes only local DBs
+└── setup-multi-env-db.js - NODE_ENV=development
 
-🌐 SERVER (feat/stage/prod):
-├── cleanup-server-db.sh                  - Deletes server DBs (installed in /usr/local/bin/)
-└── setup-multi-env-db.js                 - NODE_ENV=feat|staging|production
+SERVER (feat/stage/prod):
+├── cleanup-server-db.sh - Deletes server DBs (installed in /usr/local/bin/)
+└── setup-multi-env-db.js - NODE_ENV=feat|staging|production
 ```
 
 ```bash

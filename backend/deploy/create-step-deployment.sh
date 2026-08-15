@@ -14,7 +14,7 @@ DEPLOY_DIR="$SCRIPT_DIR/step-by-step-package"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 PACKAGE_NAME="lets-todo-step-deployment_$TIMESTAMP.tar.gz"
 
-echo "🚀 Creating step-by-step deployment package..."
+echo "Creating step-by-step deployment package..."
 echo "Project root: $PROJECT_ROOT"
 echo "Deploy dir: $DEPLOY_DIR"
 
@@ -25,7 +25,7 @@ mkdir -p "$DEPLOY_DIR"
 # ============================================================================
 # 1. Copy application files
 # ============================================================================
-echo "📦 Copying application files..."
+echo "Copying application files..."
 
 # Copy main application files
 cp "$PROJECT_ROOT"/{server.js,db.js,package.json,package-lock.json} "$DEPLOY_DIR/"
@@ -34,7 +34,7 @@ cp "$PROJECT_ROOT"/{server.js,db.js,package.json,package-lock.json} "$DEPLOY_DIR
 cp -r "$PROJECT_ROOT"/{config,middleware,routing,scripts,services} "$DEPLOY_DIR/"
 
 # Remove example environment files from deployment package
-echo "🧹 Removing example environment files from deployment package..."
+echo "Removing example environment files from deployment package..."
 find "$DEPLOY_DIR/config/env" -name "*.example" -type f -delete 2>/dev/null || true
 
 # Copy Nginx configurations
@@ -46,7 +46,7 @@ cp "$PROJECT_ROOT/ecosystem.config.cjs" "$DEPLOY_DIR/"
 # ============================================================================
 # 2. Copy template files from deployment-templates directory
 # ============================================================================
-echo "📝 Copying modular template files from deployment-templates..."
+echo "Copying modular template files from deployment-templates..."
 
 # Create templates directory in deployment package
 mkdir -p "$DEPLOY_DIR/templates"
@@ -56,12 +56,12 @@ TEMPLATE_SRC="$SCRIPT_DIR/deployment-templates"
 
 # Check if deployment-templates directory exists
 if [ ! -d "$TEMPLATE_SRC" ]; then
-    echo "❌ Error: deployment-templates directory not found at $TEMPLATE_SRC"
+    echo "Error: deployment-templates directory not found at $TEMPLATE_SRC"
     exit 1
 fi
 
 # Copy all template files to deployment package
-echo "📋 Copying template files:"
+echo "Copying template files:"
 for template_file in "$TEMPLATE_SRC"/*; do
     if [ -f "$template_file" ]; then
         template_name=$(basename "$template_file")
@@ -75,18 +75,18 @@ for template_file in "$TEMPLATE_SRC"/*; do
             target_name="${template_name}.sh"
         fi
 
-        echo "  ✅ $template_name -> ${target_name}"
+        echo " $template_name -> ${target_name}"
         cp "$template_file" "$DEPLOY_DIR/templates/${target_name}"
         chmod +x "$DEPLOY_DIR/templates/${target_name}"
     fi
 done
 
-echo "✅ All template files copied and made executable"
+echo "All template files copied and made executable"
 
 # ============================================================================
 # 3. Create main deployment script with template integration
 # ============================================================================
-echo "📝 Creating main deployment script with template integration..."
+echo "Creating main deployment script with template integration..."
 
 cat > "$DEPLOY_DIR/deploy.sh" << 'EOF'
 #!/bin/bash
@@ -130,23 +130,23 @@ CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
 function log_info() {
-    echo -e "${BLUE}ℹ️  $1${NC}"
+    echo -e "${BLUE}ℹ $1${NC}"
 }
 
 function log_success() {
-    echo -e "${GREEN}✅ $1${NC}"
+    echo -e "${GREEN}$1${NC}"
 }
 
 function log_warning() {
-    echo -e "${YELLOW}⚠️  $1${NC}"
+    echo -e "${YELLOW} $1${NC}"
 }
 
 function log_error() {
-    echo -e "${RED}❌ $1${NC}"
+    echo -e "${RED}$1${NC}"
 }
 
 function log_step() {
-    echo -e "${CYAN}🚀 $1${NC}"
+    echo -e "${CYAN}$1${NC}"
 }
 
 # Helper function to get configuration for environment
@@ -181,10 +181,10 @@ if [[ -z "$ENVIRONMENT" ]]; then
     echo "Usage: sudo ./deploy.sh [ENVIRONMENT]"
     echo ""
     echo "Available environments:"
-    echo "  prod   - Production ($PROD_DOMAIN, Port $PROD_PORT)"
-    echo "  feat   - Feature ($FEAT_DOMAIN, Port $FEAT_PORT)"
-    echo "  stage  - Staging ($STAGE_DOMAIN, Port $STAGE_PORT)"
-    echo "  all    - Deploy all three environments"
+    echo " prod - Production ($PROD_DOMAIN, Port $PROD_PORT)"
+    echo " feat - Feature ($FEAT_DOMAIN, Port $FEAT_PORT)"
+    echo " stage - Staging ($STAGE_DOMAIN, Port $STAGE_PORT)"
+    echo " all - Deploy all three environments"
     exit 1
 fi
 
@@ -202,9 +202,9 @@ esac
 
 echo ""
 log_step "STARTING MODULAR DEPLOYMENT FOR: $ENVIRONMENT"
-echo "📍 Script directory: $SCRIPT_DIR"
-echo "📁 Templates directory: $SCRIPT_DIR/templates"
-echo "🎯 Target base: $BASE_PROJECT_DIR"
+echo "Script directory: $SCRIPT_DIR"
+echo "Templates directory: $SCRIPT_DIR/templates"
+echo "Target base: $BASE_PROJECT_DIR"
 echo ""
 
 # ============================================================================
@@ -250,9 +250,9 @@ deploy_single_environment() {
     local target_dir="$BASE_PROJECT_DIR/lets-todo-$env"
 
     log_step "DEPLOYING $env ENVIRONMENT"
-    echo "🌐 Domain: $domain"
-    echo "🔌 Port: $port"
-    echo "📁 Target: $target_dir"
+    echo "Domain: $domain"
+    echo "Port: $port"
+    echo "Target: $target_dir"
     echo ""
 
     # Step 1: Nginx HTTP Setup
@@ -345,18 +345,18 @@ else
     log_warning "setup_maintenance function not found in templates"
 fi
 
-log_success "🎉 MODULAR DEPLOYMENT COMPLETED FOR: $ENVIRONMENT"
+log_success "MODULAR DEPLOYMENT COMPLETED FOR: $ENVIRONMENT"
 echo ""
-echo "📋 Summary:"
-echo "✅ All deployment steps executed using modular templates"
-echo "✅ Templates loaded: $(ls -1 "$SCRIPT_DIR/templates" | grep -E '\.(sh)$' | wc -l) files"
-echo "✅ Environment(s) deployed: $ENVIRONMENT"
+echo "Summary:"
+echo "All deployment steps executed using modular templates"
+echo "Templates loaded: $(ls -1 "$SCRIPT_DIR/templates" | grep -E '\.(sh)$' | wc -l) files"
+echo "Environment(s) deployed: $ENVIRONMENT"
 echo ""
-echo "🔧 Optional Manual Steps (run if needed):"
-echo "   ./templates/create-user.sh         # Create system users"
-echo "   ./templates/firewall-cloud.sh      # Configure cloud firewall"
-echo "   ./templates/firewall-selfhosted.sh # Configure self-hosted firewall"
-echo "   ./templates/transfer-keys.sh       # Transfer SSH keys"
+echo "Optional Manual Steps (run if needed):"
+echo " ./templates/create-user.sh # Create system users"
+echo " ./templates/firewall-cloud.sh # Configure cloud firewall"
+echo " ./templates/firewall-selfhosted.sh # Configure self-hosted firewall"
+echo " ./templates/transfer-keys.sh # Transfer SSH keys"
 
 EOF
 
@@ -372,35 +372,35 @@ done
 # ============================================================================
 # 4. Create deployment package
 # ============================================================================
-echo "📦 Creating deployment package..."
+echo "Creating deployment package..."
 
 cd "$SCRIPT_DIR"
 tar -czf "$PACKAGE_NAME" -C step-by-step-package .
 
-echo "✅ Modular step-by-step deployment package created: $SCRIPT_DIR/$PACKAGE_NAME"
+echo "Modular step-by-step deployment package created: $SCRIPT_DIR/$PACKAGE_NAME"
 echo ""
-echo "🎯 FULLY MODULAR STRUCTURE READY!"
+echo "FULLY MODULAR STRUCTURE READY!"
 echo ""
-echo "📁 Template files included:"
-ls -la "$DEPLOY_DIR/templates/" | grep -E "\.sh$" | awk '{print "   ✅ " $NF}'
+echo "Template files included:"
+ls -la "$DEPLOY_DIR/templates/" | grep -E "\.sh$" | awk '{print " " $NF}'
 echo ""
-echo "🔧 All deployment steps implemented:"
-echo "1. ✅ Nginx HTTP-Setup (nginx-setup.sh)"
-echo "2. ✅ SSL Certificates (ssl-setup.sh)"
-echo "3. ✅ Project Files Copy (project-files-copy.sh)"
-echo "4. ✅ Node.js Dependencies (nodejs-dependencies.sh)"
-echo "5. ✅ Database Setup (database-setup.sh)"
-echo "6. ✅ PM2 Process Setup (pm2-setup.sh)"
-echo "7. ✅ Email Service Setup (email-service-setup.sh)"
-echo "8. ✅ Maintenance Setup (maintenance-setup.sh)"
+echo "All deployment steps implemented:"
+echo "1. Nginx HTTP-Setup (nginx-setup.sh)"
+echo "2. SSL Certificates (ssl-setup.sh)"
+echo "3. Project Files Copy (project-files-copy.sh)"
+echo "4. Node.js Dependencies (nodejs-dependencies.sh)"
+echo "5. Database Setup (database-setup.sh)"
+echo "6. PM2 Process Setup (pm2-setup.sh)"
+echo "7. Email Service Setup (email-service-setup.sh)"
+echo "8. Maintenance Setup (maintenance-setup.sh)"
 echo ""
-echo "📊 Package contents:"
+echo "Package contents:"
 tar -tzf "$PACKAGE_NAME" | head -20
 if [ $(tar -tzf "$PACKAGE_NAME" | wc -l) -gt 20 ]; then
     echo "..."
 fi
 echo "Total files: $(tar -tzf "$PACKAGE_NAME" | wc -l)"
 echo ""
-echo "🚀 Ready for deployment!"
-echo "   Extract: tar -xzf $PACKAGE_NAME"
-echo "   Deploy: cd extracted-dir && sudo ./deploy.sh [prod|feat|stage|all]"
+echo "Ready for deployment!"
+echo " Extract: tar -xzf $PACKAGE_NAME"
+echo " Deploy: cd extracted-dir && sudo ./deploy.sh [prod|feat|stage|all]"

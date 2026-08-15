@@ -6,13 +6,13 @@
  */
 
 /**
- * 🌐 MULTI-ENVIRONMENT Database Setup Script
+ * MULTI-ENVIRONMENT Database Setup Script
  * Creates databases for ALL environments based on NODE_ENV:
  *
- * 🏠 development  → Local DBs (127.0.0.1)
- * 🚀 feat         → Feature Server DBs
- * 🎭 staging      → Staging Server DBs
- * 🏭 production   → Production Server DBs
+ * development → Local DBs (127.0.0.1)
+ * feat → Feature Server DBs
+ * staging → Staging Server DBs
+ * production → Production Server DBs
  *
  * Usage: NODE_ENV=development node scripts/setup-multi-env-db.js
  */
@@ -169,7 +169,7 @@ async function setupDatabase() {
         await connection.execute(`FLUSH PRIVILEGES`);
 
         infoLog(
-          `✅ Database user '${ENV.DB_USER}' created with credentials from .env.${ENVIRONMENT} file`
+          `Database user '${ENV.DB_USER}' created with credentials from .env.${ENVIRONMENT} file`
         );
       } catch (err) {
         debugLog("Database user creation note:", err.message);
@@ -178,32 +178,32 @@ async function setupDatabase() {
     }
 
     await connection.end();
-    infoLog(`✅ ${ENVIRONMENT} Database Setup completed!`);
+    infoLog(`${ENVIRONMENT} Database Setup completed!`);
 
     // Environment-specific completion messages
-    console.log(`\n🎯 ${ENVIRONMENT.toUpperCase()} Database Setup completed!`);
+    console.log(`\n${ENVIRONMENT.toUpperCase()} Database Setup completed!`);
 
     if (ENVIRONMENT === "development") {
-      console.log("\n🚀 You can now start with:");
+      console.log("\nYou can now start with:");
       console.log("npm run dev");
-      console.log("\n👤 Test user credentials:");
+      console.log("\nTest user credentials:");
       console.log("Email: test@dev.local");
       console.log("Password: anything (dummy hash)");
     } else if (ENVIRONMENT === "feature") {
-      console.log("\n🚀 Feature environment is ready!");
-      console.log("👤 Test user: test@feature.local");
+      console.log("\nFeature environment is ready!");
+      console.log("Test user: test@feature.local");
       console.log("Port: 3003");
     } else if (ENVIRONMENT === "staging") {
-      console.log("\n🚀 Staging environment is ready!");
-      console.log("👤 Test user: test@staging.local");
+      console.log("\nStaging environment is ready!");
+      console.log("Test user: test@staging.local");
       console.log("Port: 3004");
     } else {
-      console.log("\n🚀 Production database is ready!");
-      console.log("⚠️  No test user created in production.");
+      console.log("\nProduction database is ready!");
+      console.log(" No test user created in production.");
     }
   } catch (error) {
-    errorLog("❌ Database Setup Error:", error);
-    console.log("\n💡 Possible solutions:");
+    errorLog("Database Setup Error:", error);
+    console.log("\nPossible solutions:");
     console.log("1. MariaDB/MySQL running: sudo systemctl start mariadb");
     console.log("2. Check credentials in .env");
     console.log("3. Check user permissions");

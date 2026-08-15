@@ -55,7 +55,7 @@ const createPasswordResetTokensTable = async () => {
   `;
 
   await userPool.query(createTableSQL);
-  debugLog("✅ Created password_reset_tokens table successfully");
+  debugLog("Created password_reset_tokens table successfully");
 };
 
 /**
@@ -99,10 +99,10 @@ const verifyTableCreation = async () => {
       throw new Error(`Missing columns: ${missingColumns.join(", ")}`);
     }
 
-    debugLog("✅ Table structure verification successful");
+    debugLog("Table structure verification successful");
     return true;
   } catch (error) {
-    errorLog("❌ Table verification failed:", error);
+    errorLog("Table verification failed:", error);
     return false;
   }
 };
@@ -127,7 +127,7 @@ const createTokenCleanupProcedure = async () => {
   `;
 
   await userPool.query(procedureSQL);
-  debugLog("✅ Created token cleanup procedure");
+  debugLog("Created token cleanup procedure");
 };
 
 /**
@@ -137,30 +137,30 @@ const createTokenCleanupProcedure = async () => {
  */
 const displayMigrationSummary = () => {
   console.log("\n" + "=".repeat(60));
-  console.log("🔐 PASSWORD RESET TOKENS TABLE MIGRATION COMPLETED");
+  console.log("PASSWORD RESET TOKENS TABLE MIGRATION COMPLETED");
   console.log("=".repeat(60));
   console.log("");
-  console.log("📋 What was created:");
-  console.log("   • password_reset_tokens table with security features");
-  console.log("   • Foreign key constraint to users table");
-  console.log("   • Optimized indexes for token lookups");
-  console.log("   • Token cleanup stored procedure");
+  console.log("What was created:");
+  console.log(" • password_reset_tokens table with security features");
+  console.log(" • Foreign key constraint to users table");
+  console.log(" • Optimized indexes for token lookups");
+  console.log(" • Token cleanup stored procedure");
   console.log("");
-  console.log("🔧 Features:");
-  console.log("   • Secure token storage with expiration");
-  console.log("   • Usage tracking to prevent token reuse");
-  console.log("   • Automatic cleanup capability");
-  console.log("   • Performance-optimized queries");
+  console.log("Features:");
+  console.log(" • Secure token storage with expiration");
+  console.log(" • Usage tracking to prevent token reuse");
+  console.log(" • Automatic cleanup capability");
+  console.log(" • Performance-optimized queries");
   console.log("");
-  console.log("⚠️  Security Notes:");
-  console.log("   • Tokens expire after 1 hour by default");
-  console.log("   • Used tokens cannot be reused");
-  console.log("   • Regular cleanup recommended via cron job");
+  console.log(" Security Notes:");
+  console.log(" • Tokens expire after 1 hour by default");
+  console.log(" • Used tokens cannot be reused");
+  console.log(" • Regular cleanup recommended via cron job");
   console.log("");
-  console.log("🚀 Next Steps:");
-  console.log("   • Update /api/forgot-password to generate tokens");
-  console.log("   • Implement token validation endpoint");
-  console.log("   • Configure email service for sending reset links");
+  console.log("Next Steps:");
+  console.log(" • Update /api/forgot-password to generate tokens");
+  console.log(" • Implement token validation endpoint");
+  console.log(" • Configure email service for sending reset links");
   console.log("=".repeat(60));
 };
 
@@ -173,7 +173,7 @@ const displayMigrationSummary = () => {
  */
 const runMigration = async () => {
   try {
-    console.log("🚀 Starting password reset tokens table migration...\n");
+    console.log("Starting password reset tokens table migration...\n");
 
     await createPasswordResetTokensTable();
     await createTokenCleanupProcedure();
@@ -185,10 +185,10 @@ const runMigration = async () => {
 
     displayMigrationSummary();
   } catch (error) {
-    errorLog("❌ Migration failed:", error);
-    console.log("\n🔄 Rollback Information:");
-    console.log("   To rollback, run: DROP TABLE IF EXISTS password_reset_tokens;");
-    console.log("   To rollback procedure: DROP PROCEDURE IF EXISTS CleanupExpiredResetTokens;");
+    errorLog("Migration failed:", error);
+    console.log("\nRollback Information:");
+    console.log(" To rollback, run: DROP TABLE IF EXISTS password_reset_tokens;");
+    console.log(" To rollback procedure: DROP PROCEDURE IF EXISTS CleanupExpiredResetTokens;");
     process.exit(1);
   }
 };
@@ -197,7 +197,7 @@ const runMigration = async () => {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runMigration()
     .then(() => {
-      console.log("\n✅ Migration completed successfully!");
+      console.log("\nMigration completed successfully!");
       process.exit(0);
     })
     .catch((error) => {
