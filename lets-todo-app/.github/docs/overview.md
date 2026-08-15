@@ -275,6 +275,7 @@
 ## 🎯 Development Patterns & Code Examples
 
 ### 🏗️ Component Pattern
+
 ES6 class-based component architecture with lifecycle management:
 
 ```javascript
@@ -306,38 +307,40 @@ class MyComponent {
 ```
 
 ### 🔄 State Management Pattern
+
 Subscribe/dispatch pattern for reactive state updates:
 
 ```javascript
 // Subscribe to state changes
-state.subscribe('todos', (newTodos) => {
+state.subscribe("todos", (newTodos) => {
   this.updateTodoList(newTodos);
 });
 
 // Dispatch state actions
-state.dispatch('ADD_TODO', {
-  text: 'New todo',
-  completed: false
+state.dispatch("ADD_TODO", {
+  text: "New todo",
+  completed: false,
 });
 
 // State with middleware support
-state.use('persistence', persistenceMiddleware);
-state.use('logging', loggingMiddleware);
+state.use("persistence", persistenceMiddleware);
+state.use("logging", loggingMiddleware);
 ```
 
 ### 📡 API Pattern
+
 Async/await with consistent error handling and retry logic:
 
 ```javascript
 // Async API calls with error handling
 const result = await api.todos.create({
-  text: 'New todo',
-  completed: false
+  text: "New todo",
+  completed: false,
 });
 
 if (result.success) {
-  state.dispatch('ADD_TODO', result.data);
-  ui.showSuccess('Todo created successfully');
+  state.dispatch("ADD_TODO", result.data);
+  ui.showSuccess("Todo created successfully");
 } else {
   ui.showError(result.error);
   // Optionally retry or queue for later
@@ -345,32 +348,33 @@ if (result.success) {
 
 // API client with interceptors
 api.interceptors.request.use((config) => {
-  config.headers['X-Request-ID'] = generateRequestId();
+  config.headers["X-Request-ID"] = generateRequestId();
   return config;
 });
 ```
 
 ### 🎨 Theme System Pattern
+
 Dynamic theme switching with CSS custom properties:
 
 ```javascript
 class ThemeManager {
   constructor() {
-    this.currentTheme = localStorage.getItem('theme') || 'light';
+    this.currentTheme = localStorage.getItem("theme") || "light";
     this.applyTheme(this.currentTheme);
   }
 
   applyTheme(themeName) {
-    document.documentElement.setAttribute('data-theme', themeName);
+    document.documentElement.setAttribute("data-theme", themeName);
     this.currentTheme = themeName;
-    localStorage.setItem('theme', themeName);
+    localStorage.setItem("theme", themeName);
 
     // Notify components of theme change
-    state.dispatch('THEME_CHANGED', { theme: themeName });
+    state.dispatch("THEME_CHANGED", { theme: themeName });
   }
 
   toggleTheme() {
-    const newTheme = this.currentTheme === 'light' ? 'dark' : 'light';
+    const newTheme = this.currentTheme === "light" ? "dark" : "light";
     this.applyTheme(newTheme);
   }
 }

@@ -2,3 +2,4 @@ node_modules/
 docs/
 coverage/
 pnpm-lock.yaml
+lets-todo-api/config/env/.env*

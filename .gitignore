@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+
+# Environment files (real secrets; only *.example is tracked)
+lets-todo-api/config/env/.env*
+!lets-todo-api/config/env/*.example
+
+# Generated documentation
+/lets-todo-api/docs/
+/lets-todo-app/docs/
+/coverage
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log
+
+# IDE / Editor
+.vscode/
+.idea/
+.project
+.classpath
+*.sublime-workspace
+.history/*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+/.directory
+
+# Temporary files
+*.tmp
+*.temp
+/tmp
+
+# SSL certificates
+csr.pem
+privateKey.pem
+certificate.pem
