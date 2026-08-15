@@ -35,7 +35,7 @@ const envFiles = {
 const envFile = envFiles[actualEnv] || "config/env/.env.development";
 dotenv.config({ path: envFile });
 
-console.log(`🔧 Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
+console.log(`Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
 
 function envBool(value, fallback = false) {
   if (value === undefined || value === null || value === "") {
@@ -242,18 +242,18 @@ const ENV = CONFIG[ENVIRONMENT];
  */
 function debugLog(message, data = null) {
   if (ENV.DEBUG) {
-    console.log(`🔧 [${ENVIRONMENT.toUpperCase()}] ${message}`, data || "");
+    console.log(`[${ENVIRONMENT.toUpperCase()}] ${message}`, data || "");
   }
 }
 
 function infoLog(message, data = null) {
   if (ENV.LOG_LEVEL === "verbose" || ENV.LOG_LEVEL === "info") {
-    console.log(`ℹ️ [${ENVIRONMENT.toUpperCase()}] ${message}`, data || "");
+    console.log(`ℹ[${ENVIRONMENT.toUpperCase()}] ${message}`, data || "");
   }
 }
 
 function errorLog(message, error = null) {
-  console.error(`❌ [${ENVIRONMENT.toUpperCase()}] ${message}`, error || "");
+  console.error(`[${ENVIRONMENT.toUpperCase()}] ${message}`, error || "");
 }
 
 // Initial log on loading

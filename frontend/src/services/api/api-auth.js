@@ -60,9 +60,9 @@ const logAuthStatus = (type, operation, data = null) => {
   if (!DEBUG_MODE) return;
 
   const messages = {
-    success: `✅ ${operation}`,
-    error: `❌ ${operation}`,
-    warning: `⚠️ ${operation}`,
+    success: `${operation}`,
+    error: `${operation}`,
+    warning: `${operation}`,
   };
 
   if (type === "error" && data) {

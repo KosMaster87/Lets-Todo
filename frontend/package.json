@@ -15,7 +15,7 @@
     "generate-docs": "jsdoc --configure jsdoc.config.json --verbose",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "staging:prepare": "git checkout -B feature/staging-prepare && node scripts/staging-cleanup.js && git add . && git commit -m 'chore: Prepare frontend for production staging' && git push -f origin feature/staging-prepare && git checkout staging && git reset --hard feature/staging-prepare && git push -f origin staging && echo '🎉 Everything synced!'",
+    "staging:prepare": "git checkout -B feature/staging-prepare && node scripts/staging-cleanup.js && git add . && git commit -m 'chore: Prepare frontend for production staging' && git push -f origin feature/staging-prepare && git checkout staging && git reset --hard feature/staging-prepare && git push -f origin staging && echo 'Everything synced!'",
     "release": "node scripts/release.js"
   },
   "dependencies": {

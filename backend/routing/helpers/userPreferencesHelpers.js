@@ -20,8 +20,8 @@ import { getUserDbName } from "./userAccountHelpers.js";
  * @function getUserPreferences
  * @param {string|number} userId - Identifier of the user whose preferences are requested.
  * @returns {Promise<Object|null>} A promise that resolves to the parsed preferences object,
- *                                 the default preferences object when none are found or parsable,
- *                                 or null if the user's database pool cannot be located or on error.
+ * the default preferences object when none are found or parsable,
+ * or null if the user's database pool cannot be located or on error.
  */
 export const getUserPreferences = async (userId) => {
   try {
@@ -158,7 +158,7 @@ const executePreferenceSaveOperation = async (pool, preferences, timestamp) => {
  * @param {Object} preferences - Saved preferences
  */
 const logPreferenceSaveSuccess = (userId, preferences) => {
-  console.log(`✅ User preferences saved for user ${userId}:`, preferences);
+  console.log(`User preferences saved for user ${userId}:`, preferences);
 };
 
 /**
@@ -166,7 +166,7 @@ const logPreferenceSaveSuccess = (userId, preferences) => {
  * @param {Error} err - Error object
  */
 const logPreferenceSaveError = (err) => {
-  console.error("❌ Error saving user preferences:", err.message);
+  console.error("Error saving user preferences:", err.message);
 };
 
 // #################################################
@@ -222,9 +222,9 @@ export const createUserPreferencesTable = async (pool) => {
   try {
     await createPreferencesTableStructure(pool);
     await insertDefaultPreferences(pool);
-    console.log("✅ User preferences table created with default values");
+    console.log("User preferences table created with default values");
   } catch (err) {
-    console.error("❌ Error creating user preferences table:", err);
+    console.error("Error creating user preferences table:", err);
     throw err;
   }
 };

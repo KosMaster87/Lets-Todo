@@ -40,7 +40,7 @@ class ReleaseManager {
       });
       return result?.toString().trim();
     } catch (error) {
-      console.error(`❌ Command failed: ${command}`);
+      console.error(`Command failed: ${command}`);
       console.error(`Error: ${error.message}`);
       process.exit(1);
     }
@@ -80,7 +80,7 @@ class ReleaseManager {
       this.currentVersion = packageJson.version;
       return this.currentVersion;
     } catch (error) {
-      console.error("❌ Could not read package.json");
+      console.error("Could not read package.json");
       process.exit(1);
     }
   }
@@ -93,9 +93,9 @@ class ReleaseManager {
       const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, "utf8"));
       packageJson.version = newVersion;
       fs.writeFileSync(this.packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
-      console.log(`✅ Updated package.json: ${this.currentVersion} → ${newVersion}`);
+      console.log(`Updated package.json: ${this.currentVersion} → ${newVersion}`);
     } catch (error) {
-      console.error("❌ Could not update package.json");
+      console.error("Could not update package.json");
       process.exit(1);
     }
   }
@@ -104,7 +104,7 @@ class ReleaseManager {
    * Generate changelog based on git commits
    */
   generateChangelog(fromVersion, toVersion) {
-    console.log(`📝 Generating changelog from last release to ${toVersion}...`);
+    console.log(`Generating changelog from last release to ${toVersion}...`);
 
     // Get the last git tag by version sorting instead of git describe
     let lastTag;
@@ -121,12 +121,12 @@ class ReleaseManager {
 
       if (tags.length > 0) {
         lastTag = tags[0]; // Most recent tag
-        console.log(`📋 Found last tag: ${lastTag}`);
+        console.log(`Found last tag: ${lastTag}`);
       } else {
         throw new Error("No tags found");
       }
     } catch (error) {
-      console.log("ℹ️  No previous tags found, limiting to recent commits");
+      console.log("ℹ No previous tags found, limiting to recent commits");
       lastTag = null;
     }
 
@@ -141,7 +141,7 @@ class ReleaseManager {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const dateFilter = thirtyDaysAgo.toISOString().split("T")[0];
 
-      console.log(`ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`);
+      console.log(`ℹ First release - limiting to commits since ${dateFilter} (last 30 days)`);
       gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
     }
 
@@ -156,12 +156,12 @@ class ReleaseManager {
         .trim();
     } catch (error) {
       // If command fails, fall back to recent commits only
-      console.log("ℹ️  Falling back to recent commits (last 10)");
+      console.log("ℹ Falling back to recent commits (last 10)");
       commits = this.execCommand(`git log --oneline --no-merges -n 10`, true);
     }
 
     if (!commits) {
-      console.log("ℹ️  No commits found for changelog");
+      console.log("ℹ No commits found for changelog");
       return [];
     }
 
@@ -277,7 +277,7 @@ class ReleaseManager {
 
     const updatedChangelog = lines.join("\n");
     fs.writeFileSync(this.changelogPath, updatedChangelog);
-    console.log(`✅ Updated CHANGELOG.md`);
+    console.log(`Updated CHANGELOG.md`);
 
     // Store release notes for GitHub release
     this.releaseNotes = newEntry.split("\n").slice(2); // Remove version header
@@ -287,36 +287,36 @@ class ReleaseManager {
    * Check if we're on the correct branch and it's clean
    */
   validateGitState() {
-    console.log("🔍 Validating git state...");
+    console.log("Validating git state...");
 
     // Check if we're on staging branch
     const currentBranch = this.execCommand("git branch --show-current", true);
     if (currentBranch !== "staging") {
-      console.error("❌ Must be on 'staging' branch to create release");
-      console.log("💡 Run: git checkout staging");
+      console.error("Must be on 'staging' branch to create release");
+      console.log("Run: git checkout staging");
       process.exit(1);
     }
 
     // Check if working directory is clean
     const status = this.execCommand("git status --porcelain", true);
     if (status) {
-      console.error("❌ Working directory must be clean");
-      console.log("💡 Commit or stash your changes first");
+      console.error("Working directory must be clean");
+      console.log("Commit or stash your changes first");
       process.exit(1);
     }
 
     // Ensure we have the latest staging
-    console.log("📡 Fetching latest changes...");
+    console.log("Fetching latest changes...");
     this.execCommand("git fetch origin");
 
     const behind = this.execCommand("git rev-list --count HEAD..origin/staging", true);
     if (parseInt(behind) > 0) {
-      console.error("❌ Your staging branch is behind origin/staging");
-      console.log("💡 Run: git pull origin staging");
+      console.error("Your staging branch is behind origin/staging");
+      console.log("Run: git pull origin staging");
       process.exit(1);
     }
 
-    console.log("✅ Git state is valid");
+    console.log("Git state is valid");
   }
 
   /**
@@ -325,7 +325,7 @@ class ReleaseManager {
   createReleaseBranch(version) {
     const releaseBranch = `release/v${version}`;
 
-    console.log(`🌿 Creating release branch: ${releaseBranch}`);
+    console.log(`Creating release branch: ${releaseBranch}`);
 
     // Create release branch from staging
     this.execCommand(`git checkout -b ${releaseBranch}`);
@@ -341,7 +341,7 @@ class ReleaseManager {
     this.execCommand(`git push origin ${releaseBranch}`);
     this.execCommand(`git push origin v${version}`);
 
-    console.log(`✅ Created and pushed release branch: ${releaseBranch}`);
+    console.log(`Created and pushed release branch: ${releaseBranch}`);
     return releaseBranch;
   }
 
@@ -349,7 +349,7 @@ class ReleaseManager {
    * Merge release to production
    */
   mergeToProduction(releaseBranch, version) {
-    console.log("🚀 Merging to production branch...");
+    console.log("Merging to production branch...");
 
     // Switch to production branch
     this.execCommand("git checkout production");
@@ -359,27 +359,27 @@ class ReleaseManager {
       // Merge release branch
       this.execCommandSafe(`git merge ${releaseBranch} --no-ff -m "Release v${version}"`);
     } catch (error) {
-      console.log("⚠️  Merge conflicts detected, resolving automatically...");
+      console.log(" Merge conflicts detected, resolving automatically...");
 
       // Check for conflicts
       const conflicts = this.execCommand("git diff --name-only --diff-filter=U", true);
 
       if (conflicts) {
         const conflictFiles = conflicts.split("\n").filter((f) => f.trim());
-        console.log(`📝 Resolving conflicts in: ${conflictFiles.join(", ")}`);
+        console.log(`Resolving conflicts in: ${conflictFiles.join(", ")}`);
 
         conflictFiles.forEach((file) => {
           if (file === "package.json" || file === "CHANGELOG.md" || file === "scripts/release.js") {
             // Use incoming changes (theirs) for these files
             this.execCommand(`git checkout --theirs ${file}`);
-            console.log(`✅ Resolved ${file} using incoming changes`);
+            console.log(`Resolved ${file} using incoming changes`);
           }
         });
 
         // Complete the merge
         this.execCommand("git add .");
         this.execCommand(`git commit -m "Release v${version}"`);
-        console.log("✅ Merge conflicts resolved automatically");
+        console.log("Merge conflicts resolved automatically");
       } else {
         throw error;
       }
@@ -388,14 +388,14 @@ class ReleaseManager {
     // Push to production
     this.execCommand("git push origin production");
 
-    console.log("✅ Successfully merged to production");
+    console.log("Successfully merged to production");
   }
 
   /**
    * Create GitHub release
    */
   createGitHubRelease(version) {
-    console.log("🐙 Creating GitHub release...");
+    console.log("Creating GitHub release...");
 
     try {
       // Check if GitHub CLI is available
@@ -408,11 +408,11 @@ class ReleaseManager {
       const releaseCommand = `gh release create v${version} --title "Release v${version}" --notes "${releaseBody}" --target production`;
       this.execCommand(releaseCommand);
 
-      console.log(`✅ Created GitHub release: v${version}`);
-      console.log(`🔗 View at: https://github.com/KosMaster87/lets-todo/releases/tag/v${version}`);
+      console.log(`Created GitHub release: v${version}`);
+      console.log(`View at: https://github.com/KosMaster87/lets-todo/releases/tag/v${version}`);
     } catch (error) {
-      console.warn("⚠️  Could not create GitHub release (gh CLI not available)");
-      console.log("💡 Install GitHub CLI or create release manually");
+      console.warn(" Could not create GitHub release (gh CLI not available)");
+      console.log("Install GitHub CLI or create release manually");
     }
   }
 
@@ -420,7 +420,7 @@ class ReleaseManager {
    * Cleanup: delete release branch (optional)
    */
   cleanup(releaseBranch) {
-    console.log("🧹 Cleaning up...");
+    console.log("Cleaning up...");
 
     try {
       // Stay on production branch instead of switching back to staging
@@ -431,12 +431,12 @@ class ReleaseManager {
         // Delete local release branch
         this.execCommand(`git branch -D ${releaseBranch}`);
         this.execCommand(`git push origin --delete ${releaseBranch}`);
-        console.log(`✅ Deleted release branch: ${releaseBranch}`);
+        console.log(`Deleted release branch: ${releaseBranch}`);
       } else {
-        console.log(`ℹ️  Keeping release branch: ${releaseBranch}`);
+        console.log(`ℹ Keeping release branch: ${releaseBranch}`);
       }
     } catch (error) {
-      console.warn("⚠️  Cleanup had issues, but release was successful");
+      console.warn(" Cleanup had issues, but release was successful");
     }
   }
 
@@ -444,13 +444,13 @@ class ReleaseManager {
    * Main release process
    */
   async release(version) {
-    console.log("🚀 Starting release process...\n");
-    console.log(`📦 Let's Todo Frontend Release v${version}`);
+    console.log("Starting release process...\n");
+    console.log(`Let's Todo Frontend Release v${version}`);
     console.log("=".repeat(50));
 
     // Validate input
     if (!this.isValidVersion(version)) {
-      console.error("❌ Invalid version format. Use semantic versioning (e.g., 1.2.3)");
+      console.error("Invalid version format. Use semantic versioning (e.g., 1.2.3)");
       process.exit(1);
     }
 
@@ -458,7 +458,7 @@ class ReleaseManager {
     this.getCurrentVersion();
     this.newVersion = version;
 
-    console.log(`📊 Version: ${this.currentVersion} → ${version}\n`);
+    console.log(`Version: ${this.currentVersion} → ${version}\n`);
 
     // Validate git state
     this.validateGitState();
@@ -483,16 +483,16 @@ class ReleaseManager {
     this.cleanup(releaseBranch);
 
     console.log("\n" + "=".repeat(50));
-    console.log("🎉 RELEASE COMPLETED SUCCESSFULLY! 🎉");
+    console.log("RELEASE COMPLETED SUCCESSFULLY!");
     console.log("=".repeat(50));
-    console.log(`✅ Version ${version} is now live on production`);
-    console.log(`🔗 GitHub: https://github.com/KosMaster87/lets-todo/releases/tag/v${version}`);
-    console.log(`🌿 Production branch updated`);
-    console.log(`📝 Changelog updated`);
-    console.log("\n💡 Next steps:");
-    console.log("   • Deploy to your hosting platform");
-    console.log("   • Announce the release to your team");
-    console.log("   • Continue development on feature/main-feature");
+    console.log(`Version ${version} is now live on production`);
+    console.log(`GitHub: https://github.com/KosMaster87/lets-todo/releases/tag/v${version}`);
+    console.log(`Production branch updated`);
+    console.log(`Changelog updated`);
+    console.log("\nNext steps:");
+    console.log(" • Deploy to your hosting platform");
+    console.log(" • Announce the release to your team");
+    console.log(" • Continue development on dev");
   }
 }
 
@@ -501,15 +501,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const version = process.argv[2];
 
   if (!version) {
-    console.error("❌ Please provide a version number");
-    console.log("💡 Usage: npm run release -- 1.2.3");
-    console.log("💡 Usage: node scripts/release.js 1.2.3");
+    console.error("Please provide a version number");
+    console.log("Usage: npm run release -- 1.2.3");
+    console.log("Usage: node scripts/release.js 1.2.3");
     process.exit(1);
   }
 
   const releaseManager = new ReleaseManager();
   releaseManager.release(version).catch((error) => {
-    console.error("❌ Release failed:", error.message);
+    console.error("Release failed:", error.message);
     process.exit(1);
   });
 }

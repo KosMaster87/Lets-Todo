@@ -148,9 +148,9 @@ export const SessionManager = {
       appState.todos = TodosPersistence.load(appState.sessionType);
       appState.trashedTodos = TrashPersistence.load(appState.sessionType);
 
-      // console.log(`✅ Data reloaded for ${appState.sessionType} session`);
+      // console.log(`Data reloaded for ${appState.sessionType} session`);
     } catch (error) {
-      console.error("❌ Error reloading session data:", error);
+      console.error("Error reloading session data:", error);
     }
   },
 
@@ -178,7 +178,7 @@ export const SessionManager = {
     try {
       this.performCompleteLogout(appState, notifyListeners);
     } catch (error) {
-      console.error("❌ Error during logout:", error);
+      console.error("Error during logout:", error);
     }
   },
 
@@ -208,7 +208,7 @@ export const SessionManager = {
     this.restoreGuestData(appState);
     notifyListeners();
 
-    console.log("✅ User logged out, user data cleared, guest data restored");
+    console.log("User logged out, user data cleared, guest data restored");
   },
 
   /**
@@ -219,9 +219,9 @@ export const SessionManager = {
       StorageManager.removeData("local", "todoapp-user-todos");
       StorageManager.removeData("local", "todoapp-user-trash");
 
-      console.log("🧹 User data cleared from localStorage");
+      console.log("User data cleared from localStorage");
     } catch (error) {
-      console.error("❌ Error clearing user data from storage:", error);
+      console.error("Error clearing user data from storage:", error);
     }
   },
 
@@ -235,7 +235,7 @@ export const SessionManager = {
       this.applyGuestDataToState(appState, guestData);
       TodosPersistence.saveGuestData(appState.todos, appState.trashedTodos);
     } catch (error) {
-      console.error("❌ Error restoring guest data:", error);
+      console.error("Error restoring guest data:", error);
       appState.todos = [];
       appState.trashedTodos = [];
     }
@@ -250,11 +250,11 @@ export const SessionManager = {
     if (this.hasExistingGuestData(guestData)) {
       appState.todos = guestData.todos;
       appState.trashedTodos = guestData.trashedTodos;
-      console.log("✅ Guest data restored from storage");
+      console.log("Guest data restored from storage");
     } else {
       appState.todos = [];
       appState.trashedTodos = [];
-      console.log("✅ Fresh guest session initialized");
+      console.log("Fresh guest session initialized");
     }
   },
 

@@ -19,7 +19,7 @@ import { hasAnyTodoContent, handleContentClear } from "./../../utils/ui-helpers/
  */
 const logMissingElementWarning = (elementId, actionType, suppressWarnings) => {
   if (!suppressWarnings) {
-    logActionStatus("warning", `⚠️ Action button element ${elementId} not found for ${actionType}`);
+    logActionStatus("warning", `Action button element ${elementId} not found for ${actionType}`);
   }
 };
 
@@ -88,10 +88,10 @@ const logSetupStatus = (configuredCount, totalCount) => {
   if (configuredCount > 0) {
     logActionStatus(
       "info",
-      `🎯 Action buttons setup complete: ${configuredCount}/${totalCount} configured`
+      `Action buttons setup complete: ${configuredCount}/${totalCount} configured`
     );
   } else {
-    logActionStatus("info", "📋 No action buttons found to configure");
+    logActionStatus("info", "No action buttons found to configure");
   }
 };
 

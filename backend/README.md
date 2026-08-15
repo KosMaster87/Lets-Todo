@@ -4,47 +4,47 @@
 [![Express](https://img.shields.io/badge/Express-4.x-blue.svg)](https://expressjs.com/)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0%2B-orange.svg)](https://mysql.com/)
 
-> **🚧 Developer Branch**: This is the main development branch containing the latest API features and improvements. For production deployment, use the `main` branch.
+> **Developer Branch**: This is the main development branch containing the latest API features and improvements. For production deployment, use the `main` branch.
 
 **Professional Node.js Express API** with multi-environment deployment, database-per-session architecture, and automated SSL setup. This developer branch serves as the integration point for new API features and the testing ground for database optimizations.
 
-## 🔗 **Quick Access Links**
+## **Quick Access Links**
 
-### 🌐 **Live API Endpoints**
+### **Live API Endpoints**
 
-| Environment           | API Base URL                                                           | Status             |
-| --------------------- | ---------------------------------------------------------------------- | ------------------ |
-| 🚀 **Production**     | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org)             | ✅ Stable          |
-| 🧪 **Feature Branch** | [lets-todo-api-feat.dev2k.org](https://lets-todo-api-feat.dev2k.org)   | 🔥 Latest Features |
-| 🔧 **Staging**        | [lets-todo-api-stage.dev2k.org](https://lets-todo-api-stage.dev2k.org) | 🧪 Testing         |
+| Environment        | API Base URL                                                           | Status          |
+| ------------------ | ---------------------------------------------------------------------- | --------------- |
+| **Production**     | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org)             | Stable          |
+| **Feature Branch** | [lets-todo-api-feat.dev2k.org](https://lets-todo-api-feat.dev2k.org)   | Latest Features |
+| **Staging**        | [lets-todo-api-stage.dev2k.org](https://lets-todo-api-stage.dev2k.org) | Testing         |
 
-### 📚 **Documentation Hub**
+### **Documentation Hub**
 
-| Type                     | Feature Branch                                                         | Topics                    |
-| ------------------------ | ---------------------------------------------------------------------- | ------------------------- |
-| 🔌 **API Documentation** | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
-| 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html) | Components, State, UI     |
-| 🏗️ **Architecture**      | [overview.md](.github/docs/overview.md)                                | System Design             |
-| 🚀 **Deployment Guide**  | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            | Production Setup          |
-| 👨‍💻 **Dev Guidelines**    | `copilot-instructions.md` (optional, local only)                       | Coding Standards          |
+| Type                  | Feature Branch                                                         | Topics                    |
+| --------------------- | ---------------------------------------------------------------------- | ------------------------- |
+| **API Documentation** | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
+| **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html) | Components, State, UI     |
+| **Architecture**      | [overview.md](.github/docs/overview.md)                                | System Design             |
+| **Deployment Guide**  | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            | Production Setup          |
+| **Dev Guidelines**    | `copilot-instructions.md` (optional, local only)                       | Coding Standards          |
 
-### 🔗 **Related Repositories**
+### **Related Repositories**
 
-- 📱 **Frontend App**: [frontend/](https://github.com/KosMaster87/lets-todo/tree/main/frontend)
-- 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
+- **Frontend App**: [frontend/](https://github.com/KosMaster87/lets-todo/tree/main/frontend)
+- **Complete Documentation**: Available in both repositories with JSDoc generation
 
-## 🌿 **Professional Branch Structure**
+## **Professional Branch Structure**
 
 This repository demonstrates a professional development workflow with automated staging preparation:
 
-| Branch                           | Purpose              | Content                                                                                                    | Audience                          |
-| -------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| 🚀 **`feature/main-feature`**    | **Development**      | • Full JSDoc documentation<br>• Development scripts & tools<br>• Detailed code comments<br>• Debug logging | **Developers & Code Reviewers**   |
-| 🔄 **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Automated build process<br>• DevOps pipeline example                   | **DevOps Engineers & Tech Leads** |
-| 🎯 **`staging`**                 | **Production-Ready** | • Clean, optimized code<br>• No debug output<br>• Deployment-ready<br>• Minimal comments                   | **Production Deployment**         |
-| 🏛️ **`main`**                    | **Stable Release**   | • Tested production code<br>• Release documentation<br>• Version tags                                      | **End Users & Deployments**       |
+| Branch                        | Purpose              | Content                                                                                                    | Audience                          |
+| ----------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| **`dev`**                     | **Development**      | • Full JSDoc documentation<br>• Development scripts & tools<br>• Detailed code comments<br>• Debug logging | **Developers & Code Reviewers**   |
+| **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Automated build process<br>• DevOps pipeline example                   | **DevOps Engineers & Tech Leads** |
+| **`staging`**                 | **Production-Ready** | • Clean, optimized code<br>• No debug output<br>• Deployment-ready<br>• Minimal comments                   | **Production Deployment**         |
+| **`main`**                    | **Stable Release**   | • Tested production code<br>• Release documentation<br>• Version tags                                      | **End Users & Deployments**       |
 
-### 🤖 **Automated Staging Workflow**
+### **Automated Staging Workflow**
 
 ```bash
 # One-command staging preparation
@@ -53,50 +53,50 @@ npm run staging:prepare
 
 **This automated workflow:**
 
-1. ✅ Creates temporary `feature/staging-prepare` branch
-2. ✅ Removes JSDoc documentation (2500+ lines)
-3. ✅ Eliminates debug logs and development comments
-4. ✅ Deletes development scripts and tools
-5. ✅ Merges clean code into `staging` branch
-6. ✅ Keeps demo branch for process transparency
+1. Creates temporary `feature/staging-prepare` branch
+2. Removes JSDoc documentation (2500+ lines)
+3. Eliminates debug logs and development comments
+4. Deletes development scripts and tools
+5. Merges clean code into `staging` branch
+6. Keeps demo branch for process transparency
 
-### **🔧 JSDoc Development**
+### **JSDoc Development**
 
 ```bash
 # Generate and serve API documentation
-npm run docs        # Generate JSDoc documentation
-npm run docs:serve  # Serve on http://localhost:8080
-npm run docs:clean  # Clean generated docs
+npm run docs # Generate JSDoc documentation
+npm run docs:serve # Serve on http://localhost:8080
+npm run docs:clean # Clean generated docs
 ```
 
 ---
 
-## ✨ Key Features
+## Key Features
 
-- 🏗️ **Multi-Environment Architecture**: Development, Feature, Staging, Production deployments
-- 🗄️ **Database-per-Session**: Isolated MySQL databases for each user/guest session
-- 🔒 **Secure Authentication**: Cookie-based sessions with bcrypt password hashing
-- ⚡ **Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
-- 🌐 **Production Ready**: Let's Encrypt SSL, rate limiting, security headers
-- 📊 **RESTful API**: Complete CRUD operations with full session isolation
-- 👥 **Multi-User Security**: Isolated server users with proper privilege separation
-- 🔥 **Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
-- 🛠️ **Development Tools**: Comprehensive debugging and testing utilities
-- 📚 **Comprehensive Docs**: Detailed guides for development, deployment, and security
+- **Multi-Environment Architecture**: Development, Feature, Staging, Production deployments
+- **Database-per-Session**: Isolated MySQL databases for each user/guest session
+- **Secure Authentication**: Cookie-based sessions with bcrypt password hashing
+- **Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
+- **Production Ready**: Let's Encrypt SSL, rate limiting, security headers
+- **RESTful API**: Complete CRUD operations with full session isolation
+- **Multi-User Security**: Isolated server users with proper privilege separation
+- **Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
+- **Development Tools**: Comprehensive debugging and testing utilities
+- **Comprehensive Docs**: Detailed guides for development, deployment, and security
 
-## 🏗️ Architecture Highlights
+## Architecture Highlights
 
 ```mermaid
 graph TD
-    A["🌐 Browser / SPA Frontend"] -->|HTTPS| B["🔀 Nginx Reverse Proxy\nlets-todo-api.dev2k.org"]
-    B -->|Proxy Pass :3002| C["⚙️ Node.js / Express API\nPM2 Process Manager"]
-    C -->|Cookie Session Check| D{"🔒 Auth Valid?"}
-    D -->|✅ Authenticated| E["📦 Pool Middleware\nSelects DB connection"]
-    D -->|❌ Unauthorized| F["401 Response"]
-    E --> G[("🗄️ todos_user_123\nUser Database")]
-    E --> H[("🗄️ todos_user_456\nUser Database")]
-    E --> I[("🗄️ todos_guest_uuid\nGuest DB · Auto-cleanup")]
-    E --> J[("🗄️ todos_users\nCentral User Registry")]
+    A["Browser / SPA Frontend"] -->|HTTPS| B["Nginx Reverse Proxy\nlets-todo-api.dev2k.org"]
+    B -->|Proxy Pass :3002| C["Node.js / Express API\nPM2 Process Manager"]
+    C -->|Cookie Session Check| D{"Auth Valid?"}
+    D -->|Authenticated| E["Pool Middleware\nSelects DB connection"]
+    D -->|Unauthorized| F["401 Response"]
+    E --> G[("todos_user_123\nUser Database")]
+    E --> H[("todos_user_456\nUser Database")]
+    E --> I[("todos_guest_uuid\nGuest DB · Auto-cleanup")]
+    E --> J[("todos_users\nCentral User Registry")]
 ```
 
 - **Framework**: Node.js with Express.js
@@ -106,7 +106,7 @@ graph TD
 - **Security**: Multi-layer protection with environment-specific configurations
 - **Monitoring**: Comprehensive logging and error handling
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 
@@ -129,9 +129,9 @@ cp config/env/.env.development.example config/env/.env.development
 cp ecosystem.config.cjs.example ecosystem.config.cjs
 
 # Setup development database (multi-environment support)
-npm run dev:db                    # Development setup (default)
-NODE_ENV=feature npm run dev:db   # Feature environment setup
-NODE_ENV=staging npm run dev:db   # Staging environment setup
+npm run dev:db # Development setup (default)
+NODE_ENV=feature npm run dev:db # Feature environment setup
+NODE_ENV=staging npm run dev:db # Staging environment setup
 
 # Start development server
 npm run dev
@@ -144,9 +144,9 @@ npm run dev
 - **Staging**: http://127.0.0.1:3004
 - **Production**: http://127.0.0.1:3002
 
-> **💡 Full-Stack Setup:** Use with [Let's Todo Frontend](../frontend) for complete development experience on http://127.0.0.1:5500
+> **Full-Stack Setup:** Use with [Let's Todo Frontend](../frontend) for complete development experience on http://127.0.0.1:5500
 
-## 📡 API Reference
+## API Reference
 
 ### Authentication Endpoints
 
@@ -197,10 +197,10 @@ curl -b cookies.txt http://127.0.0.1:3000/api/todos
 
 # Test guest session
 curl -c guest_cookies.txt -X POST http://127.0.0.1:3000/api/session/guest
-curl -b guest_cookies.txt http://127.0.0.1:3000/api/todos  # Should be empty
+curl -b guest_cookies.txt http://127.0.0.1:3000/api/todos # Should be empty
 ```
 
-## 🏗️ Architecture Deep Dive
+## Architecture Deep Dive
 
 ### Database-per-Session Architecture
 
@@ -208,18 +208,18 @@ Revolutionary session isolation with dedicated databases:
 
 ```
 Central Management:
-├── todos_users_dev          # User accounts & metadata (development)
-├── todos_users              # User accounts & metadata (feature/staging)
+├── todos_users_dev # User accounts & metadata (development)
+├── todos_users # User accounts & metadata (feature/staging)
 
 User Sessions (Persistent):
-├── todos_user_123           # Dedicated database for user ID 123
-├── todos_user_456           # Dedicated database for user ID 456
-└── todos_user_...           # Each user gets own database
+├── todos_user_123 # Dedicated database for user ID 123
+├── todos_user_456 # Dedicated database for user ID 456
+└── todos_user_... # Each user gets own database
 
 Guest Sessions (Temporary):
-├── todos_guest_uuid1        # Temporary database for guest session
-├── todos_guest_uuid2        # Automatically cleaned up on session end
-└── todos_guest_...          # Each guest gets own database
+├── todos_guest_uuid1 # Temporary database for guest session
+├── todos_guest_uuid2 # Automatically cleaned up on session end
+└── todos_guest_... # Each guest gets own database
 ```
 
 ### Multi-Environment Configuration
@@ -245,7 +245,7 @@ const pools = {
 app.use(poolMiddleware); // req.pool = appropriate pool
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Environment Setup
 
@@ -272,7 +272,7 @@ The system detects environment based on:
 - System paths (`/home/`, `/Users/` = development)
 - Database host (`127.0.0.1` = development)
 
-## 🚀 Production Deployment
+## Production Deployment
 
 ### Using PM2
 
@@ -309,7 +309,7 @@ The deployment package includes:
 - Let's Encrypt SSL certificate setup
 - Rate limiting and security headers
 
-## 🔒 Security Features
+## Security Features
 
 - **Password Hashing**: bcrypt with salt rounds
 - **SQL Injection Prevention**: Prepared statements only
@@ -317,7 +317,7 @@ The deployment package includes:
 - **CORS Protection**: Environment-specific allowed origins
 - **Environment-aware Cookies**: Secure settings per environment
 
-## 🛠️ Development Workflow
+## Development Workflow
 
 ### Available Scripts
 
@@ -332,10 +332,10 @@ The deployment package includes:
 
 ```bash
 # Test different environments locally
-NODE_ENV=development npm start    # Port 3000
-NODE_ENV=feature npm start        # Port 3003
-NODE_ENV=staging npm start        # Port 3004
-NODE_ENV=production npm start     # Port 3002
+NODE_ENV=development npm start # Port 3000
+NODE_ENV=feature npm start # Port 3003
+NODE_ENV=staging npm start # Port 3004
+NODE_ENV=production npm start # Port 3002
 ```
 
 ### Development Tools
@@ -358,7 +358,7 @@ mysql todos_user_123 -e "SELECT * FROM todos;"
 mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME LIKE 'todos_guest_%';"
 ```
 
-**⚠️ Development Note:** Always include cookies in requests for authenticated endpoints. Use `-c cookies.txt` and `-b cookies.txt` with curl.
+**Development Note:** Always include cookies in requests for authenticated endpoints. Use `-c cookies.txt` and `-b cookies.txt` with curl.
 
 ## � Security Architecture
 
@@ -383,7 +383,7 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 - **SSL/TLS**: Automated Let's Encrypt certificate management
 - **Firewall Integration**: UFW scripts for cloud and self-hosted setups
 
-## 📚 Documentation
+## Documentation
 
 - **[Complete Setup & Deployment Guide](.github/docs/DEPLOYMENT.md)** - Local development through production deployment
 - **Development Guidelines**: optional local `copilot-instructions.md` - architecture patterns and coding standards
@@ -400,7 +400,7 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 - **Development**: Live development server on `127.0.0.1:5500`
 - **Features**: Dark/light themes, PWA-ready, responsive design
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Development Issues
 
@@ -465,7 +465,7 @@ lsof -ti:3000 | xargs kill -9
 - **Production**: Restricted to `.dev2k.org` domain
 - **Security**: Modern browsers block insecure cookies in production
 
-## 🚀 Deployment
+## Deployment
 
 ### Quick Production Deployment
 
@@ -483,15 +483,15 @@ cd step-by-step-package && sudo ./deploy.sh prod
 ### Environment-Specific Deployment
 
 ```bash
-sudo ./deploy.sh feat    # Feature environment
-sudo ./deploy.sh stage   # Staging environment
-sudo ./deploy.sh prod    # Production environment
-sudo ./deploy.sh all     # All environments
+sudo ./deploy.sh feat # Feature environment
+sudo ./deploy.sh stage # Staging environment
+sudo ./deploy.sh prod # Production environment
+sudo ./deploy.sh all # All environments
 ```
 
-**📚 Complete deployment guide:** **[DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)**
+**Complete deployment guide:** **[DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)**
 
-## 🤝 Contributing
+## Contributing
 
 ### Development Guidelines
 
@@ -504,7 +504,7 @@ sudo ./deploy.sh all     # All environments
 
 ### Pull Request Process
 
-1. **Create feature branch** from `feature/main-feature`
+1. **Create feature branch** from `dev`
 2. **Implement feature** following the rules above and any optional local `copilot-instructions.md`
 3. **Test thoroughly** across development environments
 4. **Update documentation** for any new API endpoints
@@ -519,7 +519,7 @@ sudo ./deploy.sh all     # All environments
 - [ ] Cookie-based authentication functions correctly
 - [ ] Cross-environment compatibility verified
 
-## 🔮 Roadmap
+## Roadmap
 
 ### Planned Features
 
@@ -537,12 +537,12 @@ sudo ./deploy.sh all     # All environments
 - [ ] Automated security scanning
 - [ ] Advanced rate limiting strategies
 
-## 📄 License
+## License
 
 No project license file is currently included. `package.json` declares ISC, while an older
 README version advertised MIT; confirm the intended project license separately.
 
-## 🙋‍♂️ Support
+## Support
 
 For questions, issues, or contributions:
 
@@ -553,6 +553,6 @@ For questions, issues, or contributions:
 
 ---
 
-**Built with ❤️ for modern full-stack development**
+**Built with for modern full-stack development**
 
-**Happy coding! 🚀**
+**Happy coding!**

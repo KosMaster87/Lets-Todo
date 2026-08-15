@@ -26,7 +26,7 @@ import { ENV, debugLog, errorLog } from "../config/environment.js";
  */
 
 const addUserPreferencesTable = async () => {
-  console.log("🚀 Starting user_preferences table migration for all user databases...");
+  console.log("Starting user_preferences table migration for all user databases...");
 
   try {
     // Connect to database server (without selecting specific database)
@@ -37,11 +37,11 @@ const addUserPreferencesTable = async () => {
       password: ENV.DB_PASSWORD,
     };
 
-    console.log(`📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`);
+    console.log(`Connecting to database server: ${dbConfig.host}:${dbConfig.port}`);
     const connection = await mysql.createConnection(dbConfig);
 
     // Find all user databases
-    console.log("🔍 Looking for user databases...");
+    console.log("Looking for user databases...");
     const [databases] = await connection.query(`
       SELECT SCHEMA_NAME as db_name
       FROM INFORMATION_SCHEMA.SCHEMATA
@@ -50,12 +50,12 @@ const addUserPreferencesTable = async () => {
     `);
 
     if (databases.length === 0) {
-      console.log("❌ No user databases found matching 'todos_user_%' pattern");
+      console.log("No user databases found matching 'todos_user_%' pattern");
       await connection.end();
       return;
     }
 
-    console.log(`📋 Found ${databases.length} user databases to migrate`);
+    console.log(`Found ${databases.length} user databases to migrate`);
 
     // SQL to create user_preferences table
     const createTableSQL = `
@@ -74,7 +74,7 @@ const addUserPreferencesTable = async () => {
     // Process each user database
     for (const db of databases) {
       const dbName = db.db_name;
-      console.log(`\n🔄 Processing database: ${dbName}`);
+      console.log(`\nProcessing database: ${dbName}`);
 
       try {
         // Switch to this user database
@@ -91,14 +91,14 @@ const addUserPreferencesTable = async () => {
         );
 
         if (tables.length > 0) {
-          console.log(`⏭️  Table 'user_preferences' already exists in ${dbName}, skipping`);
+          console.log(`⏭ Table 'user_preferences' already exists in ${dbName}, skipping`);
           skipCount++;
           continue;
         }
 
         // Create user_preferences table
         await connection.query(createTableSQL);
-        console.log(`✅ Created 'user_preferences' table in ${dbName}`);
+        console.log(`Created 'user_preferences' table in ${dbName}`);
 
         // Add default preferences entry
         const defaultPreferences = {
@@ -118,21 +118,21 @@ const addUserPreferencesTable = async () => {
           [JSON.stringify(defaultPreferences), timestamp, timestamp]
         );
 
-        debugLog(`✅ Added default preferences to ${dbName}`);
+        debugLog(`Added default preferences to ${dbName}`);
         successCount++;
       } catch (error) {
-        errorLog(`❌ Error processing ${dbName}:`, error);
+        errorLog(`Error processing ${dbName}:`, error);
       }
     }
 
     await connection.end();
 
-    console.log("\n📊 Migration Summary:");
-    console.log(`✅ Successfully migrated: ${successCount} databases`);
-    console.log(`⏭️  Skipped (already exists): ${skipCount} databases`);
-    console.log("🎉 Migration completed!");
+    console.log("\nMigration Summary:");
+    console.log(`Successfully migrated: ${successCount} databases`);
+    console.log(`⏭ Skipped (already exists): ${skipCount} databases`);
+    console.log("Migration completed!");
   } catch (error) {
-    errorLog("❌ Migration failed:", error);
+    errorLog("Migration failed:", error);
     throw error;
   }
 };
@@ -141,11 +141,11 @@ const addUserPreferencesTable = async () => {
 if (import.meta.url === `file://${process.argv[1]}`) {
   addUserPreferencesTable()
     .then(() => {
-      console.log("✅ Migration script finished");
+      console.log("Migration script finished");
       process.exit(0);
     })
     .catch((error) => {
-      console.error("❌ Migration script failed:", error);
+      console.error("Migration script failed:", error);
       process.exit(1);
     });
 }

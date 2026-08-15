@@ -9,18 +9,18 @@ install_nodejs_dependencies() {
     local ENV_TYPE="$1"
     local TARGET_DIR="$2"
     
-    echo "📦 Installing Node.js dependencies for $ENV_TYPE environment..."
+    echo "Installing Node.js dependencies for $ENV_TYPE environment..."
     
     cd "$TARGET_DIR"
     
     # Check if package.json exists
     if [ ! -f "package.json" ]; then
-        echo "❌ package.json not found in $TARGET_DIR"
+        echo "package.json not found in $TARGET_DIR"
         return 1
     fi
     
     # Install dependencies as dev2k user
-    echo "🔧 Installing npm dependencies..."
+    echo "Installing npm dependencies..."
     sudo -u dev2k bash -c "
         cd '$TARGET_DIR'
         export NODE_ENV=$ENV_TYPE
@@ -28,14 +28,14 @@ install_nodejs_dependencies() {
     "
     
     if [ $? -eq 0 ]; then
-        echo "✅ Node.js dependencies installed successfully for $ENV_TYPE"
+        echo "Node.js dependencies installed successfully for $ENV_TYPE"
     else
-        echo "❌ Failed to install Node.js dependencies for $ENV_TYPE"
+        echo "Failed to install Node.js dependencies for $ENV_TYPE"
         return 1
     fi
     
     # Verify critical modules
-    echo "🔍 Verifying critical dependencies..."
+    echo "Verifying critical dependencies..."
     local missing_modules=()
     
     if [ ! -d "node_modules/express" ]; then
@@ -51,8 +51,8 @@ install_nodejs_dependencies() {
     fi
     
     if [ ${#missing_modules[@]} -gt 0 ]; then
-        echo "⚠️  Missing critical modules: ${missing_modules[*]}"
-        echo "🔧 Attempting to install missing modules..."
+        echo " Missing critical modules: ${missing_modules[*]}"
+        echo "Attempting to install missing modules..."
         
         sudo -u dev2k bash -c "
             cd '$TARGET_DIR'
@@ -61,5 +61,5 @@ install_nodejs_dependencies() {
         "
     fi
     
-    echo "✅ Dependencies verification completed for $ENV_TYPE"
+    echo "Dependencies verification completed for $ENV_TYPE"
 }

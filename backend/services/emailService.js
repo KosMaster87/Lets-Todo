@@ -28,13 +28,13 @@ class EmailService {
       } else if (ENV.EMAIL_PROVIDER === "smtp") {
         this.setupCustomSmtpTransporter();
       } else if (ENVIRONMENT === "development" && !ENV.EMAIL_PROVIDER) {
-        debugLog("📧 Development mode - Emails will be printed to console");
+        debugLog("Development mode - Emails will be printed to console");
         return;
       } else {
         throw new Error("No valid email provider configured");
       }
     } catch (error) {
-      errorLog("❌ Error initializing email transporter:", error.message);
+      errorLog("Error initializing email transporter:", error.message);
       this.transporter = null;
     }
   }
@@ -50,7 +50,7 @@ class EmailService {
         pass: ENV.EMAIL_PASSWORD, // App password, not a regular password!
       },
     });
-    debugLog("📧 Gmail SMTP Transporter initialized");
+    debugLog("Gmail SMTP Transporter initialized");
   }
 
   /**
@@ -64,7 +64,7 @@ class EmailService {
         pass: ENV.EMAIL_PASSWORD,
       },
     });
-    debugLog("📧 Outlook SMTP Transporter initialized");
+    debugLog("Outlook SMTP Transporter initialized");
   }
 
   /**
@@ -80,7 +80,7 @@ class EmailService {
         pass: ENV.EMAIL_PASSWORD,
       },
     });
-    debugLog(`📧 Custom SMTP Transporter initialized (${ENV.EMAIL_HOST})`);
+    debugLog(`Custom SMTP Transporter initialized (${ENV.EMAIL_HOST})`);
   }
 
   /**
@@ -111,7 +111,7 @@ class EmailService {
     try {
       // Development Modus - nur in Console ausgeben
       if (!this.transporter) {
-        console.log("\n📧 ===== EMAIL (DEVELOPMENT) =====");
+        console.log("\n===== EMAIL (DEVELOPMENT) =====");
         console.log("From:", mailOptions.from);
         console.log("To:", mailOptions.to);
         console.log("Subject:", mailOptions.subject);
@@ -122,7 +122,7 @@ class EmailService {
 
       // Echte E-Mail senden
       const info = await this.transporter.sendMail(mailOptions);
-      debugLog(`📧 Email sent successfully: ${info.messageId}`);
+      debugLog(`Email sent successfully: ${info.messageId}`);
 
       return {
         success: true,
@@ -130,7 +130,7 @@ class EmailService {
         mode: "production",
       };
     } catch (error) {
-      errorLog("❌ Error sending email:", error.message);
+      errorLog("Error sending email:", error.message);
       throw new Error(`Email sending failed: ${error.message}`);
     }
   }
@@ -171,7 +171,7 @@ class EmailService {
     <body>
         <div class="container">
             <div class="header">
-                <h1>🔐 Reset Password</h1>
+                <h1>Reset Password</h1>
             </div>
 
             <div class="content">
@@ -186,7 +186,7 @@ class EmailService {
                 </div>
 
                 <div class="warning">
-                    <strong>⚠️ Important Security Notice:</strong>
+                    <strong>Important Security Notice:</strong>
                     <ul>
                         <li>This link is valid for <strong>1 hour</strong> only</li>
                         <li>The link can be used <strong>only once</strong></li>

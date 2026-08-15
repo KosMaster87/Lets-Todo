@@ -62,7 +62,7 @@ export const StorageManager = {
     try {
       sessionStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
-      console.error(`❌ Failed to save session data: ${key}`, error);
+      console.error(`Failed to save session data: ${key}`, error);
     }
   },
 
@@ -76,7 +76,7 @@ export const StorageManager = {
       const data = sessionStorage.getItem(key);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error(`❌ Failed to load session data: ${key}`, error);
+      console.error(`Failed to load session data: ${key}`, error);
       return null;
     }
   },
@@ -93,7 +93,7 @@ export const StorageManager = {
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
-      console.error(`❌ Failed to save local data: ${key}`, error);
+      console.error(`Failed to save local data: ${key}`, error);
     }
   },
 
@@ -107,7 +107,7 @@ export const StorageManager = {
       const data = localStorage.getItem(key);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.error(`❌ Failed to load local data: ${key}`, error);
+      console.error(`Failed to load local data: ${key}`, error);
       return null;
     }
   },
@@ -122,7 +122,7 @@ export const StorageManager = {
    */
   setMemoryData(key, data) {
     memoryStorage.set(key, data);
-    console.log(`🧠 Memory data saved: ${key}`);
+    console.log(`Memory data saved: ${key}`);
   },
 
   /**
@@ -145,7 +145,7 @@ export const StorageManager = {
    */
   setAuthData(remember, key, data) {
     const storageType = remember ? StorageTypes.LOCAL : StorageTypes.SESSION;
-    // console.log(`💾 Saving auth data to ${storageType} storage (remember: ${remember})`);
+    // console.log(`Saving auth data to ${storageType} storage (remember: ${remember})`);
 
     if (remember) {
       this.setLocalData(key, data);
@@ -162,13 +162,13 @@ export const StorageManager = {
   getAuthData(key) {
     const localData = this.getLocalData(key);
     if (localData) {
-      console.log(`🔓 Auth data loaded from localStorage (persistent)`);
+      console.log(`Auth data loaded from localStorage (persistent)`);
       return localData;
     }
 
     const sessionData = this.getSessionData(key);
     if (sessionData) {
-      console.log(`🔓 Auth data loaded from sessionStorage (temporary)`);
+      console.log(`Auth data loaded from sessionStorage (temporary)`);
       return sessionData;
     }
 
@@ -182,7 +182,7 @@ export const StorageManager = {
   removeAuthData(key) {
     this.removeData(StorageTypes.LOCAL, key);
     this.removeData(StorageTypes.SESSION, key);
-    console.log(`🗑️ Auth data removed from both storage types`);
+    console.log(`Auth data removed from both storage types`);
   },
 
   /**
@@ -204,7 +204,7 @@ export const StorageManager = {
           break;
       }
     } catch (error) {
-      console.error(`❌ Failed to remove ${type} data: ${key}`, error);
+      console.error(`Failed to remove ${type} data: ${key}`, error);
     }
   },
 
@@ -226,7 +226,7 @@ export const StorageManager = {
           break;
       }
     } catch (error) {
-      console.error(`❌ Failed to clear ${type} storage`, error);
+      console.error(`Failed to clear ${type} storage`, error);
     }
   },
 };
@@ -248,7 +248,7 @@ export const PreferencesManager = {
       const savedPrefs = this.loadSavedPreferences();
       return this.processLoadedPreferences(savedPrefs, defaultPreferences);
     } catch (error) {
-      console.error("❌ Error loading user preferences:", error);
+      console.error("Error loading user preferences:", error);
       return defaultPreferences;
     }
   },
@@ -271,7 +271,7 @@ export const PreferencesManager = {
     if (savedPrefs) {
       return this.mergePreferences(defaultPrefs, savedPrefs);
     } else {
-      console.log("ℹ️ No saved preferences found, using defaults");
+      console.log("ℹNo saved preferences found, using defaults");
       return defaultPrefs;
     }
   },
@@ -295,7 +295,7 @@ export const PreferencesManager = {
     try {
       StorageManager.setLocalData(StorageKeys.LOCAL.USER_PREFERENCES, preferences);
     } catch (error) {
-      console.error("❌ Error saving user preferences:", error);
+      console.error("Error saving user preferences:", error);
     }
   },
 
@@ -305,9 +305,9 @@ export const PreferencesManager = {
   clear() {
     try {
       StorageManager.removeData(StorageTypes.LOCAL, StorageKeys.LOCAL.USER_PREFERENCES);
-      console.log("✅ User preferences cleared from storage");
+      console.log("User preferences cleared from storage");
     } catch (error) {
-      console.error("❌ Error clearing user preferences:", error);
+      console.error("Error clearing user preferences:", error);
     }
   },
 
@@ -323,7 +323,7 @@ export const PreferencesManager = {
       const response = await this.fetchPreferencesFromServer();
       return this.processServerResponse(response);
     } catch (error) {
-      console.error("❌ Error syncing preferences from server:", error);
+      console.error("Error syncing preferences from server:", error);
       return null;
     }
   },
@@ -375,7 +375,7 @@ export const PreferencesManager = {
   processServerPreferences(response) {
     const preferences = response.preferences;
     this.save(preferences);
-    console.log("✅ Preferences synced from server:", preferences);
+    console.log("Preferences synced from server:", preferences);
     return preferences;
   },
 
@@ -385,7 +385,7 @@ export const PreferencesManager = {
    * @returns {null}
    */
   handleServerSyncFailure(response) {
-    console.warn("⚠️ Server sync failed:", response.message || "Unknown error");
+    console.warn("Server sync failed:", response.message || "Unknown error");
     return null;
   },
 
@@ -404,7 +404,7 @@ export const PreferencesManager = {
       const response = await this.sendPreferencesToServer(preferences);
       return this.processSyncToServerResponse(response);
     } catch (error) {
-      console.error("❌ Error syncing preferences to server:", error);
+      console.error("Error syncing preferences to server:", error);
       return false;
     }
   },
@@ -414,7 +414,7 @@ export const PreferencesManager = {
    * @returns {boolean} Success status for guest sessions
    */
   handleGuestSync() {
-    console.log("ℹ️ Skipping server sync for guest session");
+    console.log("ℹSkipping server sync for guest session");
     return true;
   },
 
@@ -424,7 +424,7 @@ export const PreferencesManager = {
    * @returns {Promise<Object>} Server response
    */
   async sendPreferencesToServer(preferences) {
-    console.log("🔄 Syncing preferences to server...", preferences);
+    console.log("Syncing preferences to server...", preferences);
     const endpoint = this.createPreferencesEndpoint();
     return await apiHandler(endpoint, "PUT", preferences);
   },
@@ -446,7 +446,7 @@ export const PreferencesManager = {
    * @returns {boolean} Success status
    */
   handleSyncToServerSuccess() {
-    console.log("✅ Preferences synced to server successfully");
+    console.log("Preferences synced to server successfully");
     return true;
   },
 
@@ -456,7 +456,7 @@ export const PreferencesManager = {
    * @returns {boolean} Failure status
    */
   handleSyncToServerFailure(response) {
-    console.warn("⚠️ Server sync failed:", response.message || "Unknown error");
+    console.warn("Server sync failed:", response.message || "Unknown error");
     return false;
   },
 
@@ -494,7 +494,7 @@ export const PreferencesManager = {
       return serverPrefs;
     }
 
-    console.log("🔄 Server sync failed, using localStorage fallback");
+    console.log("Server sync failed, using localStorage fallback");
     return this.load(defaultPreferences);
   },
 };

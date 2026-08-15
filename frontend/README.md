@@ -1,4 +1,4 @@
-# 📝 Let's Todo - Complete Project Suite
+# Let's Todo - Complete Project Suite
 
 [![Node.js](https://img.shields.io/badge/Node.js-16%2B-green.svg)](https://nodejs.org/)
 [![ES Modules](https://img.shields.io/badge/ES-Modules-blue.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
@@ -6,42 +6,42 @@
 
 > Modern, lightweight Todo application with comprehensive documentation and multi-environment deployment strategy.
 
-## 🔗 **Quick Access Links**
+## **Quick Access Links**
 
-### 🌐 **Live Applications**
+### **Live Applications**
 
-| Environment           | Application                                                            | Status             |
-| --------------------- | ---------------------------------------------------------------------- | ------------------ |
-| 🚀 **Production**     | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)                     | ✅ Stable          |
-| 🧪 **Feature Branch** | [lets-todo-app-feat.dev2k.org](https://lets-todo-app-feat.dev2k.org)   | 🔥 Latest Features |
-| 🔧 **Staging**        | [lets-todo-app-stage.dev2k.org](https://lets-todo-app-stage.dev2k.org) | 🧪 Testing         |
+| Environment        | Application                                                            | Status          |
+| ------------------ | ---------------------------------------------------------------------- | --------------- |
+| **Production**     | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)                     | Stable          |
+| **Feature Branch** | [lets-todo-app-feat.dev2k.org](https://lets-todo-app-feat.dev2k.org)   | Latest Features |
+| **Staging**        | [lets-todo-app-stage.dev2k.org](https://lets-todo-app-stage.dev2k.org) | Testing         |
 
-### 📚 **Documentation Hub**
+### **Documentation Hub**
 
-| Type                     | Feature Branch                                                             | Topics                    |
-| ------------------------ | -------------------------------------------------------------------------- | ------------------------- |
-| 📱 **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html)     | Components, State, UI     |
-| 🔌 **API Documentation** | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
-| 🏗️ **Architecture**      | [overview.md](.github/docs/overview.md)                                    | System Design             |
-| 🔧 **Import/Export**     | [import-export.md](.github/docs/import-export.md)                          | Import/Export Utilities   |
+| Type                  | Feature Branch                                                             | Topics                    |
+| --------------------- | -------------------------------------------------------------------------- | ------------------------- |
+| **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html)     | Components, State, UI     |
+| **API Documentation** | [feat/docs-api/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
+| **Architecture**      | [overview.md](.github/docs/overview.md)                                    | System Design             |
+| **Import/Export**     | [import-export.md](.github/docs/import-export.md)                          | Import/Export Utilities   |
 
-### 🔗 **Related Repositories**
+### **Related Repositories**
 
-- 🖥️ **Backend API**: [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend)
-- 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
+- **Backend API**: [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend)
+- **Complete Documentation**: Available in both repositories with JSDoc generation
 
-## 🌿 **Professional Branch Structure**
+## **Professional Branch Structure**
 
 This repository demonstrates a professional frontend development workflow with automated staging preparation:
 
-| Branch                           | Purpose              | Content                                                                                                                     | Audience                            |
-| -------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| 🚀 **`feature/main-feature`**    | **Development**      | • Complete JSDoc documentation<br>• Development tools & scripts<br>• Detailed component comments<br>• Debug console outputs | **Frontend Developers & Reviewers** |
-| 🔄 **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Build process automation<br>• DevOps pipeline demonstration                             | **Tech Leads & DevOps Engineers**   |
-| 🎯 **`staging`**                 | **Production-Ready** | • Optimized component code<br>• No debug console logs<br>• Deployment-ready assets<br>• Minimal documentation               | **Production Deployment**           |
-| 🏛️ **`main`**                    | **Stable Release**   | • Production-tested code<br>• User-facing documentation<br>• Release version tags                                           | **End Users & Deployments**         |
+| Branch                        | Purpose              | Content                                                                                                                     | Audience                            |
+| ----------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| **`dev`**                     | **Development**      | • Complete JSDoc documentation<br>• Development tools & scripts<br>• Detailed component comments<br>• Debug console outputs | **Frontend Developers & Reviewers** |
+| **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Build process automation<br>• DevOps pipeline demonstration                             | **Tech Leads & DevOps Engineers**   |
+| **`staging`**                 | **Production-Ready** | • Optimized component code<br>• No debug console logs<br>• Deployment-ready assets<br>• Minimal documentation               | **Production Deployment**           |
+| **`main`**                    | **Stable Release**   | • Production-tested code<br>• User-facing documentation<br>• Release version tags                                           | **End Users & Deployments**         |
 
-### 🤖 **Automated Frontend Staging Workflow**
+### **Automated Frontend Staging Workflow**
 
 ```bash
 # One-command frontend staging preparation
@@ -50,66 +50,66 @@ npm run staging:prepare
 
 **This automated workflow:**
 
-1. ✅ Creates temporary `feature/staging-prepare` branch
-2. ✅ Removes JSDoc documentation (5300+ lines cleaned)
-3. ✅ Eliminates debug logs and development comments
-4. ✅ Deletes development scripts and build tools
-5. ✅ Merges optimized code into `staging` branch
-6. ✅ Preserves demo branch for workflow transparency
+1. Creates temporary `feature/staging-prepare` branch
+2. Removes JSDoc documentation (5300+ lines cleaned)
+3. Eliminates debug logs and development comments
+4. Deletes development scripts and build tools
+5. Merges optimized code into `staging` branch
+6. Preserves demo branch for workflow transparency
 
 **Portfolio Impact:** Demonstrates both comprehensive development practices (feature branch) and production deployment readiness (staging branch).
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 Let's Todo is a comprehensive task management solution featuring a modern vanilla JavaScript frontend and a robust Node.js backend API. Built with developer experience in mind, it showcases clean architecture patterns without heavy framework dependencies.
 
-## ✨ **Core Features**
+## **Core Features**
 
-### 📝 **Todo Management**
+### **Todo Management**
 
-- ✅ **CRUD Operations**: Create, read, update, delete with rich text support
-- 🏷️ **Smart Organization**: Categories, priorities, and custom sorting
-- 🗑️ **Trash System**: Soft delete with one-click restore functionality
+- **CRUD Operations**: Create, read, update, delete with rich text support
+- **Smart Organization**: Categories, priorities, and custom sorting
+- **Trash System**: Soft delete with one-click restore functionality
 - � **Data Portability**: JSON import/export with validation
 
 ### � **User Experience**
 
 - � **Secure Authentication**: Cookie-based sessions with password reset
-- 🌓 **Theme System**: Seamless dark/light mode with user preferences
-- 📱 **Responsive Design**: Mobile-first with touch-optimized interactions
-- ♿ **Accessibility**: WCAG compliant with screen reader support
+- **Theme System**: Seamless dark/light mode with user preferences
+- **Responsive Design**: Mobile-first with touch-optimized interactions
+- **Accessibility**: WCAG compliant with screen reader support
 
-### 🏗️ **Technical Architecture**
+### **Technical Architecture**
 
 ```mermaid
 graph TD
-    A["👤 User / Browser"] -->|Interacts with| B["📱 SPA - Vanilla JS\nNo Framework · ES6 Modules"]
-    B --> C["🧩 Components\nUI · Pages · Dialogs"]
-    B --> D["🔄 State Management\nmain-state.js · session-manager.js"]
-    B --> E["🔌 API Services\napi-client.js · CRUD"]
+    A["User / Browser"] -->|Interacts with| B["SPA - Vanilla JS\nNo Framework · ES6 Modules"]
+    B --> C["Components\nUI · Pages · Dialogs"]
+    B --> D["State Management\nmain-state.js · session-manager.js"]
+    B --> E["API Services\napi-client.js · CRUD"]
     D <-->|Reactive Updates| C
     C -->|User Actions| E
-    E -->|HTTPS / Cookie Auth| F["⚙️ Node.js / Express API\nlets-todo-api.dev2k.org"]
+    E -->|HTTPS / Cookie Auth| F["Node.js / Express API\nlets-todo-api.dev2k.org"]
     E <-->|Sync| D
 ```
 
-- 🚀 **Zero Bundle**: Vanilla JavaScript ES6+ modules (no webpack/rollup)
-- ⚡ **Performance**: Lazy loading and efficient state management
-- 🔄 **Real-time Sync**: LiveReload development + API synchronization
-- 📊 **Documentation**: Auto-generated JSDoc with clean theme
+- **Zero Bundle**: Vanilla JavaScript ES6+ modules (no webpack/rollup)
+- **Performance**: Lazy loading and efficient state management
+- **Real-time Sync**: LiveReload development + API synchronization
+- **Documentation**: Auto-generated JSDoc with clean theme
 
-### 🛠️ **Developer Features**
+### **Developer Features**
 
-- 🔧 **Hot Reload**: Instant updates without page refresh
-- 📋 **JSDoc Integration**: Professional documentation generation
-- 🧪 **Multi-Environment**: Development, feature, staging, production
-- 🔍 **Debug Tools**: Enhanced logging and state inspection
+- **Hot Reload**: Instant updates without page refresh
+- **JSDoc Integration**: Professional documentation generation
+- **Multi-Environment**: Development, feature, staging, production
+- **Debug Tools**: Enhanced logging and state inspection
 
-## 🚀 **Quick Start**
+## **Quick Start**
 
-### **🔧 Technology Stack**
+### **Technology Stack**
 
 | Layer        | Technology              | Purpose                      |
 | ------------ | ----------------------- | ---------------------------- |
@@ -119,7 +119,7 @@ graph TD
 | **State**    | Custom reactive system  | Centralized data flow        |
 | **Docs**     | JSDoc + Clean Theme     | Auto-generated documentation |
 
-### **⚡ Development Setup**
+### **Development Setup**
 
 ```bash
 # Clone the repository (monorepo)
@@ -131,21 +131,21 @@ npm install
 
 # Start development server with hot reload
 npm run dev
-# 🌐 Opens: http://localhost:3001
+# Opens: http://localhost:3001
 
 # Generate documentation
 npm run docs
 npm run docs:serve
-# 📚 Opens: http://localhost:8081
+# Opens: http://localhost:8081
 ```
 
-### **🌐 Development URLs**
+### **Development URLs**
 
 - **Frontend**: http://127.0.0.1:5500
 - **Backend API**: http://127.0.0.1:3000
 - **LiveReload**: Port 35729
 
-## 🛠️ Development Scripts
+## Development Scripts
 
 | Command              | Description                                        |
 | -------------------- | -------------------------------------------------- |
@@ -155,51 +155,51 @@ npm run docs:serve
 | `npm run livereload` | LiveReload service only                            |
 | `npm run docs`       | Generate JSDoc documentation                       |
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 frontend/
-├── 📄 index.html                # Main application entry point
-├── 🔧 dev-server.js             # Express development server
-├── 📦 package.json              # Dependencies and scripts
-├── 📋 .github/docs/DEPLOYMENT.md # Deployment instructions
-├── 📖 copilot-instructions.md   # Optional local guidelines (not versioned)
-├── 📂 src/                      # Source code
-│   ├── 📄 app.js                # Application initialization
-│   ├── 📂 components/           # UI components
-│   │   ├── action-view.js       # Todo action dialogs
-│   │   ├── main-content.js      # Main content wrapper
-│   │   └── pages/               # Page components
-│   ├── 📂 services/             # Business logic layer
-│   │   ├── api/                 # API communication
-│   │   ├── crud/                # CRUD operations
-│   │   └── navigation/          # Navigation services
-│   ├── 📂 state/                # State management
-│   │   ├── main-state.js        # Central state store
-│   │   ├── session-manager.js   # User session handling
-│   │   └── ui-state-manager.js  # UI state management
-│   ├── 📂 utils/                # Utility functions
-│   │   ├── import-export/       # Data import/export
-│   │   ├── ui-helpers/          # UI helper functions
-│   │   └── constants.js         # Application constants
-│   └── 📂 styles/               # Component styles
-│       ├── base.css             # Base styles
-│       ├── main.css             # Main application styles
-│       └── data-theme.css       # Theme definitions
+├── index.html # Main application entry point
+├── dev-server.js # Express development server
+├── package.json # Dependencies and scripts
+├── .github/docs/DEPLOYMENT.md # Deployment instructions
+├── copilot-instructions.md # Optional local guidelines (not versioned)
+├── src/ # Source code
+│ ├── app.js # Application initialization
+│ ├── components/ # UI components
+│ │ ├── action-view.js # Todo action dialogs
+│ │ ├── main-content.js # Main content wrapper
+│ │ └── pages/ # Page components
+│ ├── services/ # Business logic layer
+│ │ ├── api/ # API communication
+│ │ ├── crud/ # CRUD operations
+│ │ └── navigation/ # Navigation services
+│ ├── state/ # State management
+│ │ ├── main-state.js # Central state store
+│ │ ├── session-manager.js # User session handling
+│ │ └── ui-state-manager.js # UI state management
+│ ├── utils/ # Utility functions
+│ │ ├── import-export/ # Data import/export
+│ │ ├── ui-helpers/ # UI helper functions
+│ │ └── constants.js # Application constants
+│ └── styles/ # Component styles
+│ ├── base.css # Base styles
+│ ├── main.css # Main application styles
+│ └── data-theme.css # Theme definitions
 │
-├── 📂 assets/                   # Static assets
-│   ├── icons/                   # Application icons
-│   ├── img/                     # Images
-│   ├── fonts/                   # Custom fonts
-│   ├── styles/                  # Global styles
-│   │   └── comic.css            # Comic theme
-│   └── web-app/                 # PWA assets
-│       └── manifest.json        # Web app manifest
+├── assets/ # Static assets
+│ ├── icons/ # Application icons
+│ ├── img/ # Images
+│ ├── fonts/ # Custom fonts
+│ ├── styles/ # Global styles
+│ │ └── comic.css # Comic theme
+│ └── web-app/ # PWA assets
+│ └── manifest.json # Web app manifest
 │
-└── 🔧 .htaccess                 # Apache configuration
+└── .htaccess # Apache configuration
 ```
 
-## 🔧 Core Technologies
+## Core Technologies
 
 ### Frontend Stack
 
@@ -216,7 +216,7 @@ frontend/
 - **Concurrently**: Parallel script execution
 - **JSDoc**: Documentation generation
 
-## 🎨 Theming System
+## Theming System
 
 The application supports multiple themes with CSS custom properties:
 
@@ -240,7 +240,7 @@ The application supports multiple themes with CSS custom properties:
 }
 ```
 
-## 🔄 State Management
+## State Management
 
 Centralized reactive state system with:
 
@@ -257,7 +257,7 @@ import { getTodos, addTodo, updateTodo } from "./state/main-state.js";
 addTodo(newTodoData);
 ```
 
-## 🧩 Component Architecture
+## Component Architecture
 
 Modular component system with:
 
@@ -278,7 +278,7 @@ export const TodoItem = (todo) => {
 };
 ```
 
-## 🔌 API Integration
+## API Integration
 
 RESTful API communication with:
 
@@ -296,11 +296,11 @@ export const createTodo = async (todoData) => {
 };
 ```
 
-## 🧪 Development Workflow
+## Development Workflow
 
 ### Feature Development
 
-1. Create feature branch from `feature/main-feature`
+1. Create feature branch from `dev`
 2. Implement feature with tests
 3. Update documentation
 4. Submit pull request for review
@@ -319,7 +319,7 @@ export const createTodo = async (todoData) => {
 - **Accessibility Testing**: WCAG compliance checking
 - **Cross-Browser Testing**: Modern browser compatibility
 
-## 📱 Progressive Web App
+## Progressive Web App
 
 PWA features include:
 
@@ -328,14 +328,14 @@ PWA features include:
 - **Responsive Design**: Works on all device sizes
 - **Touch Support**: Mobile-optimized interactions
 
-## 🔒 Security Features
+## Security Features
 
 - **XSS Protection**: Content Security Policy headers
 - **CSRF Protection**: Secure cookie handling
 - **Input Validation**: Client and server-side validation
 - **Secure Communication**: HTTPS recommended for production
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Development Issues
 
@@ -367,38 +367,38 @@ npm run dev
 # Check browser network tab for errors
 ```
 
-## 🏗️ **Complete System Architecture**
+## **Complete System Architecture**
 
 This frontend works seamlessly with the backend API. For the complete development experience:
 
-### **🔗 Backend Repository**
+### **Backend Repository**
 
 - **Repository**: [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend)
 - **Technology**: Node.js + Express + MySQL
 - **Features**: Multi-environment deployment, database-per-session isolation
 - **Documentation**: Auto-generated API docs with JSDoc
 
-### **📋 Documentation Hub**
+### **Documentation Hub**
 
-| Document              | Purpose               | Location                                                               |
-| --------------------- | --------------------- | ---------------------------------------------------------------------- |
-| 📱 **Frontend Guide** | This README           | Current file                                                           |
-| 🔌 **API Reference**  | Backend documentation | [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend) |
-| 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            |
-| 🏗️ **Architecture**   | System overview       | [overview.md](.github/docs/overview.md)                                |
-| 🔧 **Import/Export**  | Utilities overview    | [import-export.md](.github/docs/import-export.md)                      |
-| 👨‍💻 **Dev Guidelines** | Coding standards      | `copilot-instructions.md` (optional, local only)                       |
+| Document           | Purpose               | Location                                                               |
+| ------------------ | --------------------- | ---------------------------------------------------------------------- |
+| **Frontend Guide** | This README           | Current file                                                           |
+| **API Reference**  | Backend documentation | [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend) |
+| **Deployment**     | Production setup      | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            |
+| **Architecture**   | System overview       | [overview.md](.github/docs/overview.md)                                |
+| **Import/Export**  | Utilities overview    | [import-export.md](.github/docs/import-export.md)                      |
+| **Dev Guidelines** | Coding standards      | `copilot-instructions.md` (optional, local only)                       |
 
-## 🤝 **Contributing & Development**
+## **Contributing & Development**
 
-### **🎯 Branch Strategy**
+### **Branch Strategy**
 
-- 🚀 **`main`**: Production-ready stable release
-- 🧪 **`feature/main-feature`**: Developer integration branch (current)
-- 🔧 **`staging`**: Pre-production testing
-- ⚡ **`feature/*`**: Individual feature development
+- **`main`**: Production-ready stable release
+- **`dev`**: Developer integration branch (current)
+- **`staging`**: Pre-production testing
+- **`feature/*`**: Individual feature development
 
-### **💻 Development Workflow**
+### **Development Workflow**
 
 ```bash
 # 1. Fork and clone the monorepo
@@ -415,7 +415,7 @@ pnpm run dev:frontend
 npm run docs && npm run docs:serve
 ```
 
-## 🔮 Roadmap
+## Roadmap
 
 ### Planned Features
 
@@ -432,11 +432,11 @@ npm run docs && npm run docs:serve
 - [ ] Enhanced accessibility features
 - [ ] Advanced PWA capabilities
 
-## 📄 License
+## License
 
 No project license file or package license metadata is currently included.
 
-## 🙋‍♂️ Support
+## Support
 
 For questions, issues, or contributions:
 
@@ -447,4 +447,4 @@ For questions, issues, or contributions:
 
 ---
 
-**Happy coding! 🚀**
+**Happy coding!**

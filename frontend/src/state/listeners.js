@@ -34,7 +34,7 @@ export const createListenerManager = (state) => {
     const index = state.listeners.indexOf(listener);
     if (index > -1) {
       state.listeners.splice(index, 1);
-      console.log(`🗑️ Removed state listener (${state.listeners.length} remaining)`);
+      console.log(`Removed state listener (${state.listeners.length} remaining)`);
     } else {
       console.warn("Listener not found, cannot remove");
     }
@@ -49,7 +49,7 @@ export const createListenerManager = (state) => {
       try {
         listener();
       } catch (error) {
-        console.error(`❌ Error in state listener ${index}:`, error);
+        console.error(`Error in state listener ${index}:`, error);
         // Continue with other listeners even if one fails
       }
     });
@@ -66,7 +66,7 @@ export const createListenerManager = (state) => {
   const clearAllListeners = () => {
     const count = state.listeners.length;
     state.listeners.length = 0; // Clear array while keeping the reference
-    console.log(`🧹 Cleared all ${count} listeners`);
+    console.log(`Cleared all ${count} listeners`);
   };
 
   return {

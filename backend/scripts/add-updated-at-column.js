@@ -22,7 +22,7 @@ const addUpdatedAtColumn = async () => {
   let connection;
 
   try {
-    infoLog("🔧 Starting migration: Add updated_at column to users table");
+    infoLog("Starting migration: Add updated_at column to users table");
 
     // Connect to database
     connection = await mysql.createConnection({
@@ -33,7 +33,7 @@ const addUpdatedAtColumn = async () => {
       database: ENV.DB_USERS,
     });
 
-    infoLog(`✅ Connected to database: ${ENV.DB_USERS}`);
+    infoLog(`Connected to database: ${ENV.DB_USERS}`);
 
     // Check if column already exists
     const [columns] = await connection.execute(
@@ -48,7 +48,7 @@ const addUpdatedAtColumn = async () => {
     );
 
     if (columns.length > 0) {
-      infoLog("⚠️  Column 'updated_at' already exists. Migration skipped.");
+      infoLog(" Column 'updated_at' already exists. Migration skipped.");
       return;
     }
 
@@ -60,7 +60,7 @@ const addUpdatedAtColumn = async () => {
       ON UPDATE CURRENT_TIMESTAMP
     `);
 
-    infoLog("✅ Migration completed: updated_at column added to users table");
+    infoLog("Migration completed: updated_at column added to users table");
 
     // Verify the column was added
     const [verification] = await connection.execute(
@@ -75,12 +75,12 @@ const addUpdatedAtColumn = async () => {
     );
 
     if (verification.length > 0) {
-      infoLog("✅ Verification successful:", verification[0]);
+      infoLog("Verification successful:", verification[0]);
     } else {
       throw new Error("Migration verification failed: updated_at column not found");
     }
   } catch (error) {
-    errorLog("❌ Migration failed:", error);
+    errorLog("Migration failed:", error);
     throw error;
   } finally {
     if (connection) {
@@ -99,10 +99,10 @@ const addUpdatedAtColumn = async () => {
 const main = async () => {
   try {
     await addUpdatedAtColumn();
-    infoLog("🎉 Migration script completed successfully");
+    infoLog("Migration script completed successfully");
     process.exit(0);
   } catch (error) {
-    errorLog("💥 Migration script failed:", error);
+    errorLog("Migration script failed:", error);
     process.exit(1);
   }
 };

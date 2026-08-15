@@ -57,9 +57,9 @@ export const findTodoById = (appState, todoId) => {
  * @returns {Object|undefined} Found trashed todo or undefined
  */
 export const findTrashedTodoById = (appState, todoId) => {
-  console.log(`🔍 Finding trashed todo with ID: ${todoId}, type: ${typeof todoId}`);
+  console.log(`Finding trashed todo with ID: ${todoId}, type: ${typeof todoId}`);
   const todo = appState.trashedTodos.find((t) => t.id == todoId);
-  console.log(`🔎 Found trashed todo:`, todo);
+  console.log(`Found trashed todo:`, todo);
   return todo;
 };
 
@@ -78,11 +78,11 @@ export const findUpdatedTodo = (appState, todoId) => appState.todos.find((t) => 
  * @returns {Object|null} Found todo or null if not found
  */
 export const findTodoToDelete = (appState, todoId) => {
-  console.log(`🔍 Finding todo to delete with ID: ${todoId}, type: ${typeof todoId}`);
+  console.log(`Finding todo to delete with ID: ${todoId}, type: ${typeof todoId}`);
   const todoToDelete = appState.trashedTodos.find((t) => t.id == todoId);
 
   if (!todoToDelete) {
-    console.warn(`⚠️ Todo with ID ${todoId} not found in trash`);
+    console.warn(`Todo with ID ${todoId} not found in trash`);
     return null;
   }
 
@@ -108,8 +108,8 @@ export const validateServerIdForTodo = (todo, todoId) => {
  * @param {string} todoId - Original todo ID
  */
 export const handleInvalidServerId = (todoId) => {
-  console.warn(`⚠️ Cannot trash todo on server: no valid server ID for client ID: ${todoId}`);
-  console.log("ℹ️ Todo has been trashed locally, but server sync was skipped");
+  console.warn(`Cannot trash todo on server: no valid server ID for client ID: ${todoId}`);
+  console.log("ℹTodo has been trashed locally, but server sync was skipped");
 };
 
 /**
@@ -117,8 +117,8 @@ export const handleInvalidServerId = (todoId) => {
  * @param {string} todoId - Original todo ID
  */
 export const handleInvalidRestoreServerId = (todoId) => {
-  console.warn(`⚠️ Cannot restore todo on server: no valid server ID for client ID: ${todoId}`);
-  console.log("ℹ️ Todo has been restored locally, but server sync was skipped");
+  console.warn(`Cannot restore todo on server: no valid server ID for client ID: ${todoId}`);
+  console.log("ℹTodo has been restored locally, but server sync was skipped");
 };
 
 /**
@@ -128,7 +128,7 @@ export const handleInvalidRestoreServerId = (todoId) => {
  */
 export const handleInvalidDeleteServerId = (todoId, serverIdToUse) => {
   console.warn(
-    `⚠️ Cannot delete todo on server: invalid server ID (${serverIdToUse}) for client ID: ${todoId}`
+    `Cannot delete todo on server: invalid server ID (${serverIdToUse}) for client ID: ${todoId}`
   );
-  console.log("ℹ️ Todo has been deleted locally, but server sync was skipped");
+  console.log("ℹTodo has been deleted locally, but server sync was skipped");
 };

@@ -17,9 +17,9 @@ const logApiStatus = (type, operation, data = null) => {
   if (!DEBUG_MODE) return;
 
   const messages = {
-    sync: `🔄 Syncing ${operation}...`,
-    success: `✅ ${operation} successful`,
-    error: `❌ Failed to ${operation}`,
+    sync: `Syncing ${operation}...`,
+    success: `${operation} successful`,
+    error: `Failed to ${operation}`,
   };
 
   if (type === "error" && data) {

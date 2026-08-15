@@ -44,9 +44,9 @@ app.use(
 );
 
 // Always log CORS configuration (even in production)
-console.log("🔧 CORS configured for origins:", ENV.CORS_ORIGINS);
-console.log("🔧 Environment:", ENVIRONMENT);
-console.log("🔧 HTTP_PORT:", ENV.HTTP_PORT);
+console.log("CORS configured for origins:", ENV.CORS_ORIGINS);
+console.log("Environment:", ENVIRONMENT);
+console.log("HTTP_PORT:", ENV.HTTP_PORT);
 
 // User table creation skipped (already created in setup)
 debugLog("Table creation skipped - already created in setup-dev-db.js");
@@ -76,7 +76,7 @@ app.use((req, res) => {
  */
 app.listen(ENV.HTTP_PORT, ENV.HTTP_HOST, () => {
   // Always log the port (even in production)
-  console.log(`✅ Server running on ${ENV.HTTP_HOST}:${ENV.HTTP_PORT} (${ENVIRONMENT})`);
+  console.log(`Server running on ${ENV.HTTP_HOST}:${ENV.HTTP_PORT} (${ENVIRONMENT})`);
 
   debugLog("Environment configuration:", {
     dbHost: ENV.DB_HOST,
