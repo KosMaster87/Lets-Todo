@@ -46,7 +46,7 @@ This document provides comprehensive deployment instructions for the Let's Todo 
 1. **Clone Repository**
 
    ```bash
-   git clone https://github.com/KosMaster87/lets-todo.git
+   git clone https://github.com/KosMaster87/Lets-Todo.git
    cd lets-todo/frontend
    ```
 

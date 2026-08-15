@@ -86,4 +86,4 @@ pnpm run format:check # nur prüfen, nicht schreiben
 ## Entwickler
 
 **Konstantin Aksenov**
-[GitHub](https://github.com/KosMaster87/lets-todo) · [konstantin@dev2ksoftware.com](mailto:konstantin@dev2ksoftware.com)
+[GitHub](https://github.com/KosMaster87/Lets-Todo) · [konstantin@dev2ksoftware.com](mailto:konstantin@dev2ksoftware.com)
