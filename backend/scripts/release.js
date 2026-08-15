@@ -492,7 +492,7 @@ class BackendReleaseManager {
     console.log("\nNext steps:");
     console.log(" • Deploy to your hosting platform");
     console.log(" • Update API documentation if needed");
-    console.log(" • Continue development on feature/main-feature");
+    console.log(" • Continue development on dev");
   }
 }
 

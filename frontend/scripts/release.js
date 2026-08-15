@@ -492,7 +492,7 @@ class ReleaseManager {
     console.log("\nNext steps:");
     console.log(" • Deploy to your hosting platform");
     console.log(" • Announce the release to your team");
-    console.log(" • Continue development on feature/main-feature");
+    console.log(" • Continue development on dev");
   }
 }
 

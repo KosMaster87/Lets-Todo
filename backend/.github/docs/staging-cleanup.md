@@ -39,7 +39,7 @@ node scripts/staging-cleanup.js
 
 ## Workflow
 
-1. **Development Branch (`feature/main-feature`)**
+1. **Development Branch (`dev`)**
 
    - Full JSDoc documentation
    - Debug logs and console outputs
@@ -151,19 +151,19 @@ const tax = calculateTax(amount, userLocation);
 - Always run on the `staging` branch
 - Use git to track changes: `git diff`
 - Test thoroughly before deployment
-- Keep `feature/main-feature` as your documented version
+- Keep `dev` as your documented version
 
 ## Update Workflow
 
 ```bash
 # 1. Develop on feature branch (with full documentation)
-git checkout feature/main-feature
+git checkout dev
 # ... make changes ...
 git commit -m "feat: Add new feature with documentation"
 
 # 2. Merge to staging and cleanup for production
 git checkout staging
-git merge feature/main-feature
+git merge dev
 npm run staging:cleanup
 
 # 3. Review and deploy

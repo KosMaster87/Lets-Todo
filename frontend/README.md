@@ -36,7 +36,7 @@ This repository demonstrates a professional frontend development workflow with a
 
 | Branch                        | Purpose              | Content                                                                                                                     | Audience                            |
 | ----------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| **`feature/main-feature`**    | **Development**      | • Complete JSDoc documentation<br>• Development tools & scripts<br>• Detailed component comments<br>• Debug console outputs | **Frontend Developers & Reviewers** |
+| **`dev`**                     | **Development**      | • Complete JSDoc documentation<br>• Development tools & scripts<br>• Detailed component comments<br>• Debug console outputs | **Frontend Developers & Reviewers** |
 | **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Build process automation<br>• DevOps pipeline demonstration                             | **Tech Leads & DevOps Engineers**   |
 | **`staging`**                 | **Production-Ready** | • Optimized component code<br>• No debug console logs<br>• Deployment-ready assets<br>• Minimal documentation               | **Production Deployment**           |
 | **`main`**                    | **Stable Release**   | • Production-tested code<br>• User-facing documentation<br>• Release version tags                                           | **End Users & Deployments**         |
@@ -300,7 +300,7 @@ export const createTodo = async (todoData) => {
 
 ### Feature Development
 
-1. Create feature branch from `feature/main-feature`
+1. Create feature branch from `dev`
 2. Implement feature with tests
 3. Update documentation
 4. Submit pull request for review
@@ -394,7 +394,7 @@ This frontend works seamlessly with the backend API. For the complete developmen
 ### **Branch Strategy**
 
 - **`main`**: Production-ready stable release
-- **`feature/main-feature`**: Developer integration branch (current)
+- **`dev`**: Developer integration branch (current)
 - **`staging`**: Pre-production testing
 - **`feature/*`**: Individual feature development
 

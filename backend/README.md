@@ -39,7 +39,7 @@ This repository demonstrates a professional development workflow with automated 
 
 | Branch                        | Purpose              | Content                                                                                                    | Audience                          |
 | ----------------------------- | -------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| **`feature/main-feature`**    | **Development**      | • Full JSDoc documentation<br>• Development scripts & tools<br>• Detailed code comments<br>• Debug logging | **Developers & Code Reviewers**   |
+| **`dev`**                     | **Development**      | • Full JSDoc documentation<br>• Development scripts & tools<br>• Detailed code comments<br>• Debug logging | **Developers & Code Reviewers**   |
 | **`feature/staging-prepare`** | **Demo/Process**     | • Shows cleanup transformation<br>• Automated build process<br>• DevOps pipeline example                   | **DevOps Engineers & Tech Leads** |
 | **`staging`**                 | **Production-Ready** | • Clean, optimized code<br>• No debug output<br>• Deployment-ready<br>• Minimal comments                   | **Production Deployment**         |
 | **`main`**                    | **Stable Release**   | • Tested production code<br>• Release documentation<br>• Version tags                                      | **End Users & Deployments**       |
@@ -504,7 +504,7 @@ sudo ./deploy.sh all # All environments
 
 ### Pull Request Process
 
-1. **Create feature branch** from `feature/main-feature`
+1. **Create feature branch** from `dev`
 2. **Implement feature** following the rules above and any optional local `copilot-instructions.md`
 3. **Test thoroughly** across development environments
 4. **Update documentation** for any new API endpoints
