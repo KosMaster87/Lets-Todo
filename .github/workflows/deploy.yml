@@ -20,45 +20,21 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm run format:check
 
-  deploy-frontend:
+  deploy-frontend-staging:
     needs: quality
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
+    environment: staging
     steps:
       - uses: actions/checkout@v4
-
       - name: Install cloudflared
         run: |
-          # ubuntu-latest is a GitHub-hosted cloud runner: it has no route to the
-          # Tower's private LAN address. The Cloudflare Tunnel's public hostname
-          # (gated by a Service Auth policy, not a human login) is the only way
-          # in - cloudflared acts as the SSH transport via ProxyCommand.
           curl -sSL -o cloudflared \
             https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/cloudflared
           mkdir -p ~/.ssh
-
-      - name: Deploy frontend to Production
-        if: github.ref == 'refs/heads/main'
-        run: |
-          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_FRONTEND }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          cat >> ~/.ssh/config <<EOF
-          Host deploy-lets-todo.dev2ksoftware.com
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null
-            IdentityFile ~/.ssh/id_ed25519
-            IdentitiesOnly yes
-            ProxyCommand cloudflared access ssh --hostname %h --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-          EOF
-          chmod 600 ~/.ssh/config
-
-          rsync -avz --delete \
-            frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo/
-
       - name: Deploy frontend to Staging
-        if: github.ref == 'refs/heads/staging'
         run: |
           echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_FRONTEND_STAGING }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
@@ -75,25 +51,27 @@ jobs:
           rsync -avz --delete \
             frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo-staging/
 
-  deploy-backend:
+  deploy-frontend-production:
     needs: quality
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    environment: production
     steps:
       - uses: actions/checkout@v4
-
       - name: Install cloudflared
         run: |
+          # ubuntu-latest is a GitHub-hosted cloud runner: it has no route to the
+          # Tower's private LAN address. The Cloudflare Tunnel's public hostname
+          # (gated by a Service Auth policy, not a human login) is the only way
+          # in - cloudflared acts as the SSH transport via ProxyCommand.
           curl -sSL -o cloudflared \
             https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/cloudflared
           mkdir -p ~/.ssh
-
-      - name: Deploy backend to Production
-        if: github.ref == 'refs/heads/main'
+      - name: Deploy frontend to Production
         run: |
-          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND }}" > ~/.ssh/id_ed25519
+          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_FRONTEND }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           cat >> ~/.ssh/config <<EOF
           Host deploy-lets-todo.dev2ksoftware.com
@@ -105,19 +83,64 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
 
-          # Real .env.* files live only on the server (gitignored) - never overwritten here.
-          # frontend/ is kept (minus node_modules) because the Docker build context needs
-          # frontend/package.json to resolve the pnpm workspace lockfile.
+          rsync -avz --delete \
+            frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo/
+
+  deploy-backend-staging:
+    needs: quality
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/staging'
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cloudflared
+        run: |
+          curl -sSL -o cloudflared \
+            https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+          chmod +x cloudflared
+          sudo mv cloudflared /usr/local/bin/cloudflared
+          mkdir -p ~/.ssh
+      - name: Deploy backend to Staging
+        run: |
+          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND_STAGING }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          cat >> ~/.ssh/config <<EOF
+          Host deploy-lets-todo.dev2ksoftware.com
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            ProxyCommand cloudflared access ssh --hostname %h --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          EOF
+          chmod 600 ~/.ssh/config
+
+          # Real .env.* files and docker-compose secrets (.env) live only on the server
+          # (gitignored) - never overwritten here. frontend/ is kept (minus node_modules)
+          # because the Docker build context needs frontend/package.json to resolve the
+          # pnpm workspace lockfile.
           rsync -avz --delete \
             --exclude='node_modules' --exclude='.git' --exclude='.husky' \
             --exclude='backend/config/env/.env*' --exclude='.env' \
             . root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/lets-todo-api/app/
           # Forced command on the server rebuilds and restarts the container after rsync.
 
-      - name: Deploy backend to Staging
-        if: github.ref == 'refs/heads/staging'
+  deploy-backend-production:
+    needs: quality
+    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install cloudflared
         run: |
-          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND_STAGING }}" > ~/.ssh/id_ed25519
+          curl -sSL -o cloudflared \
+            https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
+          chmod +x cloudflared
+          sudo mv cloudflared /usr/local/bin/cloudflared
+          mkdir -p ~/.ssh
+      - name: Deploy backend to Production
+        run: |
+          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           cat >> ~/.ssh/config <<EOF
           Host deploy-lets-todo.dev2ksoftware.com
