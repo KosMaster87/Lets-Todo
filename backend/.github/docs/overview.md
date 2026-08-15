@@ -9,7 +9,7 @@
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │ express → Web Framework (app, Router) │
  │ cors → Cross-Origin Resource Sharing │
- │ cookieParser → Cookie-Management für Auth │
+ │ cookieParser → Cookie management for auth │
  │ mysql2/promise → Database Connection Pools │
  │ dotenv → Environment Configuration │
  │ nodemon → Auto-restart on file changes (dev) │

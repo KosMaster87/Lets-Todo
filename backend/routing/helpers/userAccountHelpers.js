@@ -96,21 +96,21 @@ export const insertUser = async (email, passwordHash, dbName, created) => {
  * @returns {Promise<number>} - User ID
  */
 export const createCompleteUserSetup = async (email, password_hash, dbName, created) => {
-  // 1) User in zentrale User-Tabelle eintragen
+  // 1) Insert user into the central user table
   const userId = await insertUser(email, password_hash, dbName, created);
 
-  // 2) Dedicated User-Datenbank erstellen
+  // 2) Create dedicated user database
   await createUserDatabase(dbName);
 
-  // 3) Todos-Tabelle in User-DB initialisieren und Pool erstellen
+  // 3) Initialize the todos table in the user DB and create the pool
   const pool = createUserPool(dbName);
   await createTodosTable(pool);
   await createTodosIndex(pool);
 
-  // 4) User Preferences Tabelle erstellen
+  // 4) Create user preferences table
   await createUserPreferencesTable(pool);
 
-  // 5) Pool für zukünftige Requests speichern
+  // 5) Store pool for future requests
   userPools[`user_${userId}`] = pool;
 
   return userId;
@@ -142,7 +142,7 @@ export const processUserLogin = async (email, password) => {
  */
 const createInvalidCredentialsResponse = () => ({
   success: false,
-  error: "E-Mail oder Passwort ist falsch.",
+  error: "Email or password is incorrect.",
   code: "INVALID_CREDENTIALS",
 });
 
@@ -191,7 +191,7 @@ export const processPasswordChange = async (userId, currentPassword, newPassword
  */
 const createUserNotFoundResponse = () => ({
   success: false,
-  error: "User nicht gefunden",
+  error: "User not found",
   code: "USER_NOT_FOUND",
 });
 
@@ -201,7 +201,7 @@ const createUserNotFoundResponse = () => ({
  */
 const createInvalidCurrentPasswordResponse = () => ({
   success: false,
-  error: "Aktuelles Passwort ist falsch",
+  error: "Current password is incorrect",
   code: "INVALID_CURRENT_PASSWORD",
 });
 

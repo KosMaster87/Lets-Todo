@@ -71,7 +71,7 @@ export const sendValidationError = (res, message) => {
  * @param {string} message - Auth error message
  * @returns {Object} - Response
  */
-export const sendAuthError = (res, message = "Nicht authentifiziert") => {
+export const sendAuthError = (res, message = "Not authenticated") => {
   return sendError(res, message, "AUTH_ERROR", HTTP_STATUS.UNAUTHORIZED);
 };
 
@@ -81,6 +81,6 @@ export const sendAuthError = (res, message = "Nicht authentifiziert") => {
  * @param {string} message - Error message
  * @returns {Object} - Response
  */
-export const sendServerError = (res, message = "Interner Server-Fehler") => {
+export const sendServerError = (res, message = "Internal server error") => {
   return sendError(res, message, "SERVER_ERROR", HTTP_STATUS.INTERNAL_SERVER_ERROR);
 };

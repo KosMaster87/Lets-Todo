@@ -28,7 +28,7 @@ async function addLastLoginColumn() {
     const usersDB = ENV.DB_USERS;
     await connection.execute(`USE \`${usersDB}\``);
 
-    // Prüfe ob Spalte bereits existiert
+    // Check whether the column already exists
     const [columns] = await connection.execute(
       `
       SELECT COLUMN_NAME
@@ -39,28 +39,28 @@ async function addLastLoginColumn() {
     );
 
     if (columns.length > 0) {
-      infoLog("last_login Spalte existiert bereits!");
+      infoLog("last_login column already exists!");
     } else {
-      // Füge last_login Spalte hinzu
+      // Add the last_login column
       await connection.execute(`
         ALTER TABLE users
         ADD COLUMN last_login BIGINT DEFAULT NULL
         COMMENT 'Unix timestamp (ms) of last login activity'
       `);
-      infoLog("last_login Spalte hinzugefügt!");
+      infoLog("last_login column added!");
 
-      // Setze last_login für bestehende User auf created-Wert (Fallback)
+      // Set last_login for existing users to the created value (fallback)
       await connection.execute(`
         UPDATE users
         SET last_login = created
         WHERE last_login IS NULL AND created IS NOT NULL
       `);
-      infoLog("Bestehende User: last_login auf created-Wert gesetzt");
+      infoLog("Existing users: last_login set to created value");
     }
 
-    // Zeige aktuelle Tabellen-Struktur
+    // Show current table structure
     const [tableInfo] = await connection.execute(`DESCRIBE users`);
-    console.log("\nAktuelle users-Tabelle Struktur:");
+    console.log("\nCurrent users table structure:");
     tableInfo.forEach((row) => {
       console.log(
         ` ${row.Field}: ${row.Type} ${
@@ -70,14 +70,14 @@ async function addLastLoginColumn() {
     });
 
     await connection.end();
-    infoLog(`${ENVIRONMENT} Database Migration abgeschlossen!`);
+    infoLog(`${ENVIRONMENT} database migration complete!`);
   } catch (error) {
-    errorLog("Migration Fehler:", error);
+    errorLog("Migration error:", error);
     process.exit(1);
   }
 }
 
-// Script ausführen
+// Run script
 if (import.meta.url === `file://${process.argv[1]}`) {
   addLastLoginColumn();
 }

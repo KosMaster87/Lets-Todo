@@ -42,8 +42,8 @@ const router = Router();
 // #################################################
 
 /**
- * GET /api/validate-session - Session-Gültigkeit prüfen
- * Überprüft ob die aktuelle Session noch gültig ist
+ * GET /api/validate-session - Check session validity
+ * Checks whether the current session is still valid
  */
 router.get("/validate-session", async (req, res) => {
   const userId = req.cookies.userId;
@@ -59,11 +59,11 @@ router.get("/validate-session", async (req, res) => {
 // #################################################
 
 /**
- * POST /api/register - Neuen User registrieren
- * Erstellt automatisch eine eigene Datenbank für den User
- * @param {Object} req.body - Registrierungsdaten
- * @param {string} req.body.email - E-Mail-Adresse
- * @param {string} req.body.password - Passwort (wird gehasht)
+ * POST /api/register - Register a new user
+ * Automatically creates a dedicated database for the user
+ * @param {Object} req.body - Registration data
+ * @param {string} req.body.email - Email address
+ * @param {string} req.body.password - Password (will be hashed)
  */
 router.post("/register", async (req, res) => {
   const { email, password } = req.body;
@@ -89,7 +89,7 @@ router.post("/register", async (req, res) => {
 const handleDuplicateEmailError = (res) => {
   return sendError(
     res,
-    "Ein Account mit dieser E-Mail existiert bereits. Versuche dich anzumelden oder das Passwort zurückzusetzen.",
+    "An account with this email already exists. Try logging in or resetting your password.",
     "EMAIL_ALREADY_EXISTS",
     HTTP_STATUS.CONFLICT
   );
@@ -101,7 +101,7 @@ const handleDuplicateEmailError = (res) => {
  * @returns {Object} Error response
  */
 const handleRegistrationError = (res) => {
-  return sendServerError(res, "Registrierung fehlgeschlagen. Bitte versuche es später erneut.");
+  return sendServerError(res, "Registration failed. Please try again later.");
 };
 
 /**
@@ -110,12 +110,7 @@ const handleRegistrationError = (res) => {
  * @returns {Object} Success response
  */
 const createRegistrationSuccessResponse = (res) => {
-  return sendSuccess(
-    res,
-    "Registrierung erfolgreich. Du kannst dich jetzt anmelden.",
-    {},
-    HTTP_STATUS.CREATED
-  );
+  return sendSuccess(res, "Registration successful. You can now log in.", {}, HTTP_STATUS.CREATED);
 };
 
 /**
@@ -134,12 +129,12 @@ const processUserRegistration = async (email, password) => {
 // #################################################
 
 /**
- * POST /api/login - User einloggen
- * Setzt httpOnly Cookie für Session-Management
- * @param {Object} req.body - Login-Daten
- * @param {string} req.body.email - E-Mail-Adresse
- * @param {string} req.body.password - Passwort
- * @param {boolean} [req.body.remember] - "Remember Me" Option für persistenten Login
+ * POST /api/login - Log in a user
+ * Sets an httpOnly cookie for session management
+ * @param {Object} req.body - Login data
+ * @param {string} req.body.email - Email address
+ * @param {string} req.body.password - Password
+ * @param {boolean} [req.body.remember] - "Remember me" option for a persistent login
  */
 router.post("/login", async (req, res) => {
   const { email, password, remember = false } = req.body;
@@ -156,7 +151,7 @@ router.post("/login", async (req, res) => {
     }
     return handleSuccessfulLogin(req, res, result);
   } catch (err) {
-    return sendServerError(res, "Login-Fehler");
+    return sendServerError(res, "Login error");
   }
 });
 
@@ -191,7 +186,7 @@ const handleGuestCookieCleanup = (req, res) => {
  */
 const setUserAuthCookie = (res, userId) => {
   const cookieOptions = createCookieOptions();
-  debugLog(`User-Login Cookie-Optionen:`, cookieOptions);
+  debugLog(`User login cookie options:`, cookieOptions);
   res.cookie("userId", userId, cookieOptions);
 };
 
@@ -202,7 +197,7 @@ const setUserAuthCookie = (res, userId) => {
  * @returns {Object} Success response
  */
 const createLoginSuccessResponse = (res, userId) => {
-  return sendSuccess(res, "Login erfolgreich. Willkommen zurück!", {
+  return sendSuccess(res, "Login successful. Welcome back!", {
     userId: userId,
   });
 };
@@ -210,23 +205,23 @@ const createLoginSuccessResponse = (res, userId) => {
 // #################################################
 
 /**
- * POST /api/logout - User ausloggen
- * Löscht das userId Cookie
+ * POST /api/logout - Log out a user
+ * Clears the userId cookie
  */
 router.post("/logout", (req, res) => {
   const clearCookieOptions = createClearCookieOptions();
   res.clearCookie("userId", clearCookieOptions);
-  return sendSuccess(res, "Erfolgreich abgemeldet.");
+  return sendSuccess(res, "Successfully logged out.");
 });
 
 // #################################################
 
 /**
- * PUT /api/change-password - User Passwort ändern
- * Erfordert aktuelles Passwort zur Bestätigung
- * @param {Object} req.body - Password-Change-Daten
- * @param {string} req.body.currentPassword - Aktuelles Passwort zur Verifizierung
- * @param {string} req.body.newPassword - Neues Passwort (wird gehasht)
+ * PUT /api/change-password - Change a user's password
+ * Requires the current password for confirmation
+ * @param {Object} req.body - Password change data
+ * @param {string} req.body.currentPassword - Current password for verification
+ * @param {string} req.body.newPassword - New password (will be hashed)
  */
 router.put("/change-password", async (req, res) => {
   const { currentPassword, newPassword } = req.body;
@@ -246,7 +241,7 @@ router.put("/change-password", async (req, res) => {
       : handlePasswordChangeFailure(result, res);
   } catch (err) {
     errorLog(`Password change error for user ${userId}:`, err);
-    return sendServerError(res, "Server-Fehler beim Passwort-Update");
+    return sendServerError(res, "Server error while updating password");
   }
 });
 
@@ -277,7 +272,7 @@ const extractAndValidateUserId = (req, res) => {
 
   if (!userId) {
     errorLog("No userId found in cookies:", req.cookies);
-    return sendAuthError(res, "Nicht authentifiziert - Bitte einloggen");
+    return sendAuthError(res, "Not authenticated - please log in");
   }
   return userId;
 };
@@ -309,10 +304,10 @@ const handlePasswordChangeSuccess = (userId, result, res) => {
 // #################################################
 
 /**
- * POST /api/forgot-password - Passwort-Reset anfordern
- * Generiert einen Reset-Token und sendet ihn per E-Mail (aktuell nur Platzhalter)
- * @param {Object} req.body - Reset-Request-Daten
- * @param {string} req.body.email - E-Mail-Adresse für Reset-Link
+ * POST /api/forgot-password - Request a password reset
+ * Generates a reset token and sends it via email (currently a placeholder only)
+ * @param {Object} req.body - Reset request data
+ * @param {string} req.body.email - Email address for the reset link
  */
 router.post("/forgot-password", async (req, res) => {
   const { email } = req.body;
@@ -328,7 +323,7 @@ router.post("/forgot-password", async (req, res) => {
     return await handleSuccessfulResetRequest(email, result, res);
   } catch (err) {
     errorLog(`Forgot password error for email ${email}:`, err);
-    return sendServerError(res, "Server-Fehler beim Verarbeiten der Reset-Anfrage");
+    return sendServerError(res, "Server error while processing the reset request");
   }
 });
 
@@ -340,10 +335,10 @@ router.post("/forgot-password", async (req, res) => {
  */
 const validateForgotPasswordInput = (email, res) => {
   if (!email) {
-    return sendValidationError(res, "E-Mail-Adresse ist erforderlich");
+    return sendValidationError(res, "Email address is required");
   }
   if (!validateEmail(email)) {
-    return sendValidationError(res, "Ungültiges E-Mail-Format");
+    return sendValidationError(res, "Invalid email format");
   }
   return true;
 };
@@ -371,7 +366,7 @@ const createResetDebugData = (result, email) => ({
   email,
   resetToken: result.resetToken,
   resetLink: `${ENV.FRONTEND_URL}/reset-password/${result.resetToken}`,
-  expiresAt: new Date(result.expirationTime).toLocaleString("de-DE"),
+  expiresAt: new Date(result.expirationTime).toLocaleString("en-US"),
 });
 
 /**
@@ -392,7 +387,7 @@ const handleSuccessfulResetRequest = async (email, result, res) => {
 
   return sendSuccess(
     res,
-    "Reset-Link wurde an deine E-Mail-Adresse gesendet.",
+    "A reset link has been sent to your email address.",
     ENV.DEBUG ? { debug: createResetDebugData(result, email) } : undefined
   );
 };
@@ -400,11 +395,11 @@ const handleSuccessfulResetRequest = async (email, result, res) => {
 // #################################################
 
 /**
- * POST /api/reset-password - Passwort mit Reset-Token zurücksetzen
- * Setzt ein neues Passwort basierend auf einem gültigen Reset-Token
- * @param {Object} req.body - Reset-Daten
- * @param {string} req.body.token - Gültiger Reset-Token
- * @param {string} req.body.newPassword - Neues Passwort
+ * POST /api/reset-password - Reset password with a reset token
+ * Sets a new password based on a valid reset token
+ * @param {Object} req.body - Reset data
+ * @param {string} req.body.token - Valid reset token
+ * @param {string} req.body.newPassword - New password
  */
 router.post("/reset-password", async (req, res) => {
   const { token, newPassword } = req.body;
@@ -432,7 +427,7 @@ const handlePasswordResetSuccess = (result, res) => {
   debugLog(
     `Password reset successful for user: ${result.resetToken.user_id} (${result.resetToken.email})`
   );
-  return sendSuccess(res, "Passwort wurde erfolgreich zurückgesetzt");
+  return sendSuccess(res, "Password has been reset successfully");
 };
 
 /**
@@ -444,15 +439,15 @@ const handlePasswordResetSuccess = (result, res) => {
  */
 const handlePasswordResetError = (token, err, res) => {
   errorLog(`Password reset error for token ${token}:`, err);
-  return sendServerError(res, "Server-Fehler beim Passwort-Reset");
+  return sendServerError(res, "Server error during password reset");
 };
 
 // #################################################
 
 /**
- * GET /api/validate-reset-token/:token - Reset-Token validieren
- * Prüft ob ein Reset-Token gültig und nicht abgelaufen ist
- * @param {string} req.params.token - Der zu validierende Reset-Token
+ * GET /api/validate-reset-token/:token - Validate a reset token
+ * Checks whether a reset token is valid and not expired
+ * @param {string} req.params.token - The reset token to validate
  */
 router.get("/validate-reset-token/:token", async (req, res) => {
   const { token } = req.params;

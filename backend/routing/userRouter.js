@@ -46,7 +46,7 @@ router.use(async (req, res, next) => {
  */
 const validateUserIdFromCookies = (userId, res) => {
   if (!userId) {
-    return sendAuthError(res, "Authentifizierung erforderlich");
+    return sendAuthError(res, "Authentication required");
   }
   return true;
 };
@@ -59,7 +59,7 @@ const validateUserIdFromCookies = (userId, res) => {
  */
 const validateUserSessionResult = (sessionResult, res) => {
   if (!sessionResult.valid) {
-    return sendAuthError(res, sessionResult.reason || "Session ungültig");
+    return sendAuthError(res, sessionResult.reason || "Session invalid");
   }
   return true;
 };
@@ -107,7 +107,7 @@ const createDefaultPreferences = () => ({
  * @returns {Object} Success response
  */
 const handlePreferencesLoadSuccess = (preferences, res) => {
-  return sendSuccess(res, "Benutzereinstellungen geladen", {
+  return sendSuccess(res, "User preferences loaded", {
     preferences: preferences || createDefaultPreferences(),
   });
 };
@@ -120,7 +120,7 @@ const handlePreferencesLoadSuccess = (preferences, res) => {
  */
 const handlePreferencesLoadError = (err, res) => {
   errorLog("Error loading user preferences:", err);
-  return sendServerError(res, "Fehler beim Laden der Benutzereinstellungen");
+  return sendServerError(res, "Error loading user preferences");
 };
 
 /**
@@ -144,7 +144,7 @@ router.put("/preferences", async (req, res) => {
     const success = await saveUserPreferences(req.userId, preferences);
     return success
       ? handlePreferencesSaveSuccess(preferences, res)
-      : sendServerError(res, "Fehler beim Speichern der Benutzereinstellungen");
+      : sendServerError(res, "Error saving user preferences");
   } catch (err) {
     return handlePreferencesSaveError(err, res);
   }
@@ -158,7 +158,7 @@ router.put("/preferences", async (req, res) => {
  */
 const validatePreferencesObject = (preferences, res) => {
   if (!preferences || typeof preferences !== "object") {
-    return sendValidationError(res, "Gültige Benutzereinstellungen erforderlich");
+    return sendValidationError(res, "Valid user preferences are required");
   }
   return true;
 };
@@ -170,7 +170,7 @@ const validatePreferencesObject = (preferences, res) => {
  * @returns {Object} Success response
  */
 const handlePreferencesSaveSuccess = (preferences, res) => {
-  return sendSuccess(res, "Benutzereinstellungen gespeichert", {
+  return sendSuccess(res, "User preferences saved", {
     preferences: preferences,
   });
 };
@@ -183,7 +183,7 @@ const handlePreferencesSaveSuccess = (preferences, res) => {
  */
 const handlePreferencesSaveError = (err, res) => {
   errorLog("Error saving user preferences:", err);
-  return sendServerError(res, "Fehler beim Speichern der Benutzereinstellungen");
+  return sendServerError(res, "Error saving user preferences");
 };
 
 /**
@@ -195,7 +195,7 @@ router.get("/profile", async (req, res) => {
     debugLog(`Loading profile for user ${req.userId}`);
 
     const user = await findUserById(req.userId);
-    if (!user) return sendAuthError(res, "Benutzer nicht gefunden");
+    if (!user) return sendAuthError(res, "User not found");
 
     return handleProfileLoadSuccess(user, res);
   } catch (err) {
@@ -223,7 +223,7 @@ const createSafeProfileData = (user) => ({
  */
 const handleProfileLoadSuccess = (user, res) => {
   const profileData = createSafeProfileData(user);
-  return sendSuccess(res, "Benutzerprofil geladen", {
+  return sendSuccess(res, "User profile loaded", {
     profile: profileData,
   });
 };
@@ -236,7 +236,7 @@ const handleProfileLoadSuccess = (user, res) => {
  */
 const handleProfileLoadError = (err, res) => {
   errorLog("Error loading user profile:", err);
-  return sendServerError(res, "Fehler beim Laden des Benutzerprofils");
+  return sendServerError(res, "Error loading user profile");
 };
 
 export default router;

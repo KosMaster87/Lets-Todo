@@ -112,7 +112,7 @@ class EmailService {
    */
   async sendEmail(mailOptions) {
     try {
-      // Development Modus - nur in Console ausgeben
+      // Development mode - only print to console
       if (!this.transporter) {
         console.log("\n===== EMAIL (DEVELOPMENT) =====");
         console.log("From:", mailOptions.from);
@@ -123,7 +123,7 @@ class EmailService {
         return { success: true, messageId: "dev-mode", mode: "development" };
       }
 
-      // Echte E-Mail senden
+      // Send the actual email
       const info = await this.transporter.sendMail(mailOptions);
       debugLog(`Email sent successfully: ${info.messageId}`);
 

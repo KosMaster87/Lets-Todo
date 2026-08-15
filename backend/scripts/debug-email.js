@@ -10,7 +10,7 @@
 import { emailService } from "../services/emailService.js";
 import { ENV, ENVIRONMENT } from "../config/environment.js";
 
-console.log("E-Mail Debug Test");
+console.log("Email Debug Test");
 console.log("==================");
 console.log(`Environment: ${ENVIRONMENT}`);
 console.log(`Email Provider: ${ENV.EMAIL_PROVIDER}`);
@@ -42,9 +42,9 @@ try {
     console.log("");
     console.log("Testing actual email send...");
 
-    // Test-E-Mail senden
+    // Send test email
     const testResult = await emailService.sendPasswordResetEmail(
-      ENV.EMAIL_USER, // An dich selbst senden
+      ENV.EMAIL_USER, // Send to yourself
       "test-token-123",
       "Test User"
     );
@@ -59,7 +59,7 @@ try {
 console.log("");
 console.log("Additional Diagnostics:");
 
-// Prüfe Netzwerk-Verbindung zu Gmail
+// Check network connection to Gmail
 console.log("Testing network connectivity to Gmail SMTP...");
 try {
   const net = await import("net");
