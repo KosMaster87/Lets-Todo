@@ -30,7 +30,7 @@
 
 ### **Related Repositories**
 
-- **Frontend App**: [frontend/](https://github.com/KosMaster87/lets-todo/tree/main/frontend)
+- **Frontend App**: [frontend/](https://github.com/KosMaster87/Lets-Todo/tree/main/frontend)
 - **Complete Documentation**: Available in both repositories with JSDoc generation
 
 ## **Professional Branch Structure**
@@ -118,7 +118,7 @@ graph TD
 
 ```bash
 # Clone the repository (monorepo)
-git clone https://github.com/KosMaster87/lets-todo.git
+git clone https://github.com/KosMaster87/Lets-Todo.git
 cd lets-todo/backend
 
 # Install dependencies

@@ -60,7 +60,7 @@ brew services start mariadb
 
 ```bash
 # Clone repository (monorepo)
-git clone https://github.com/KosMaster87/lets-todo.git
+git clone https://github.com/KosMaster87/Lets-Todo.git
 cd lets-todo/backend
 
 # Install dependencies (from lets-todo/ root)
