@@ -28,7 +28,7 @@ services:
       NODE_ENV: staging
       DB_HOST: lets-todo-mariadb
     ports:
-      - "3004:3004"
+      - "3904:3004"
     depends_on:
       mariadb:
         condition: service_healthy
@@ -47,7 +47,7 @@ services:
       NODE_ENV: production
       DB_HOST: lets-todo-mariadb
     ports:
-      - "3002:3002"
+      - "3902:3002"
     depends_on:
       mariadb:
         condition: service_healthy
