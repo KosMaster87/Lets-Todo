@@ -32,7 +32,9 @@ const envFiles = {
 const envFile = envFiles[actualEnv] || "config/env/.env.development";
 dotenv.config({ path: envFile });
 
-console.log(`Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
+if (actualEnv === "development") {
+  console.log(`Loading environment from: ${envFile} (NODE_ENV: ${NODE_ENV})`);
+}
 
 function envBool(value, fallback = false) {
   if (value === undefined || value === null || value === "") {

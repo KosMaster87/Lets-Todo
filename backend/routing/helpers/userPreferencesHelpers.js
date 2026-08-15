@@ -5,6 +5,7 @@
  */
 
 import { userPools } from "./../../db.js";
+import { debugLog } from "./../../config/environment.js";
 import { createUserPool } from "./dbHelpers.js";
 import { getUserDbName } from "./userAccountHelpers.js";
 
@@ -158,7 +159,7 @@ const executePreferenceSaveOperation = async (pool, preferences, timestamp) => {
  * @param {Object} preferences - Saved preferences
  */
 const logPreferenceSaveSuccess = (userId, preferences) => {
-  console.log(`User preferences saved for user ${userId}:`, preferences);
+  debugLog(`User preferences saved for user ${userId}:`, preferences);
 };
 
 /**
@@ -222,7 +223,7 @@ export const createUserPreferencesTable = async (pool) => {
   try {
     await createPreferencesTableStructure(pool);
     await insertDefaultPreferences(pool);
-    console.log("User preferences table created with default values");
+    debugLog("User preferences table created with default values");
   } catch (err) {
     console.error("Error creating user preferences table:", err);
     throw err;
