@@ -12,21 +12,21 @@
 
 ### **Live API Endpoints**
 
-| Environment        | API Base URL                                                           | Status          |
-| ------------------ | ---------------------------------------------------------------------- | --------------- |
-| **Production**     | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org)             | Stable          |
-| **Feature Branch** | [lets-todo-api-feat.dev2k.org](https://lets-todo-api-feat.dev2k.org)   | Latest Features |
-| **Staging**        | [lets-todo-api-stage.dev2k.org](https://lets-todo-api-stage.dev2k.org) | Testing         |
+| Environment        | API Base URL                                                                           | Status          |
+| ------------------ | -------------------------------------------------------------------------------------- | --------------- |
+| **Production**     | [lets-todo-api.dev2ksoftware.com](https://lets-todo-api.dev2ksoftware.com)             | Stable          |
+| **Feature Branch** | [lets-todo-api-feat.dev2ksoftware.com](https://lets-todo-api-feat.dev2ksoftware.com)   | Latest Features |
+| **Staging**        | [lets-todo-api-stage.dev2ksoftware.com](https://lets-todo-api-stage.dev2ksoftware.com) | Testing         |
 
 ### **Documentation Hub**
 
-| Type                  | Feature Branch                                                         | Topics                    |
-| --------------------- | ---------------------------------------------------------------------- | ------------------------- |
-| **API Documentation** | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-api/index.html) | Endpoints, Database, Auth |
-| **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2k.org/docs-app/index.html) | Components, State, UI     |
-| **Architecture**      | [overview.md](.github/docs/overview.md)                                | System Design             |
-| **Deployment Guide**  | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            | Production Setup          |
-| **Dev Guidelines**    | `copilot-instructions.md` (optional, local only)                       | Coding Standards          |
+| Type                  | Feature Branch                                                                 | Topics                    |
+| --------------------- | ------------------------------------------------------------------------------ | ------------------------- |
+| **API Documentation** | [feat/docs/](https://lets-todo-app-feat.dev2ksoftware.com/docs-api/index.html) | Endpoints, Database, Auth |
+| **Frontend Docs**     | [feat/docs/](https://lets-todo-app-feat.dev2ksoftware.com/docs-app/index.html) | Components, State, UI     |
+| **Architecture**      | [overview.md](.github/docs/overview.md)                                        | System Design             |
+| **Deployment Guide**  | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                                    | Production Setup          |
+| **Dev Guidelines**    | `copilot-instructions.md` (optional, local only)                               | Coding Standards          |
 
 ### **Related Repositories**
 
@@ -88,7 +88,7 @@ npm run docs:clean # Clean generated docs
 
 ```mermaid
 graph TD
-    A["Browser / SPA Frontend"] -->|HTTPS| B["Nginx Reverse Proxy\nlets-todo-api.dev2k.org"]
+    A["Browser / SPA Frontend"] -->|HTTPS| B["Nginx Reverse Proxy\nlets-todo-api.dev2ksoftware.com"]
     B -->|Proxy Pass :3002| C["Node.js / Express API\nPM2 Process Manager"]
     C -->|Cookie Session Check| D{"Auth Valid?"}
     D -->|Authenticated| E["Pool Middleware\nSelects DB connection"]
@@ -224,12 +224,12 @@ Guest Sessions (Temporary):
 
 ### Multi-Environment Configuration
 
-| Environment     | Port | Domain                          | Database          | Purpose                              |
-| --------------- | ---- | ------------------------------- | ----------------- | ------------------------------------ |
-| **Development** | 3000 | `127.0.0.1:3000`                | `todos_users_dev` | Local development with debug logging |
-| **Feature**     | 3003 | `lets-todo-api-feat.dev2k.org`  | `todos_users`     | Feature testing environment          |
-| **Staging**     | 3004 | `lets-todo-api-stage.dev2k.org` | `todos_users`     | Pre-production testing               |
-| **Production**  | 3002 | `lets-todo-api.dev2k.org`       | `todos_users`     | Live production system               |
+| Environment     | Port | Domain                                  | Database          | Purpose                              |
+| --------------- | ---- | --------------------------------------- | ----------------- | ------------------------------------ |
+| **Development** | 3000 | `127.0.0.1:3000`                        | `todos_users_dev` | Local development with debug logging |
+| **Feature**     | 3003 | `lets-todo-api-feat.dev2ksoftware.com`  | `todos_users`     | Feature testing environment          |
+| **Staging**     | 3004 | `lets-todo-api-stage.dev2ksoftware.com` | `todos_users`     | Pre-production testing               |
+| **Production**  | 3002 | `lets-todo-api.dev2ksoftware.com`       | `todos_users`     | Live production system               |
 
 ### Connection Pool Strategy
 
@@ -462,7 +462,7 @@ lsof -ti:3000 | xargs kill -9
 ### Cookie Domain Rules
 
 - **Development**: `127.0.0.1:5500` ↔ `127.0.0.1:3000` (same domain)
-- **Production**: Restricted to `.dev2k.org` domain
+- **Production**: Restricted to `.dev2ksoftware.com` domain
 - **Security**: Modern browsers block insecure cookies in production
 
 ## Deployment

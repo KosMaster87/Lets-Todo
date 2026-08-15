@@ -40,7 +40,7 @@ export const renderImprintPage = () => {
         <div class="imprint-section">
           <h3>Contact</h3>
           <p>
-            E-Mail: konstantin.aksenov@dev2k.org
+            E-Mail: konstantin@dev2ksoftware.com
           </p>
         </div>
 
@@ -92,7 +92,7 @@ export const renderImprintPage = () => {
             <li>Object to data processing</li>
           </ul>
           <p>
-            If you have any questions, feel free to contact us at: konstantin.aksenov@dev2k.org
+            If you have any questions, feel free to contact us at: konstantin@dev2ksoftware.com
           </p>
         </div>
       </section>
