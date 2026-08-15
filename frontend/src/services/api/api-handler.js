@@ -7,23 +7,12 @@
 export const getApiBase = () => {
   const hostname = window.location.hostname;
 
-  if (hostname === "127.0.0.1" || hostname === "localhost") {
-    return "http://127.0.0.1:3000/api";
-  }
+  const apiBaseByHostname = {
+    "staging-lets-todo.dev2ksoftware.com": "https://staging-lets-todo-api.dev2ksoftware.com/api",
+    "lets-todo.dev2ksoftware.com": "https://lets-todo-api.dev2ksoftware.com/api",
+  };
 
-  if (hostname.includes("lets-todo-app-feat.dev2ksoftware.com")) {
-    return "https://lets-todo-api-feat.dev2ksoftware.com/api";
-  }
-
-  if (hostname.includes("lets-todo-app-stage.dev2ksoftware.com")) {
-    return "https://lets-todo-api-stage.dev2ksoftware.com/api";
-  }
-
-  if (hostname.includes("lets-todo.dev2ksoftware.com")) {
-    return "https://lets-todo-api.dev2ksoftware.com/api";
-  }
-
-  return "http://127.0.0.1:3000/api";
+  return apiBaseByHostname[hostname] || "http://127.0.0.1:3000/api";
 };
 
 export const apiHandler = (url, method, data = null) => {

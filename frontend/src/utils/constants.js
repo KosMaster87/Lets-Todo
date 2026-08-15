@@ -64,32 +64,6 @@ export const SESSION_TYPES = {
 
 /**
  * TODO: Update base URL as needed
- * API endpoints
- * @type {Object}
- */
-export const API_ENDPOINTS = {
-  BASE_URL: "https://lets-todo-api.dev2ksoftware.com/api",
-  AUTH: {
-    LOGIN: "/auth/login",
-    REGISTER: "/auth/register",
-    LOGOUT: "/auth/logout",
-    CHECK_SESSION: "/auth/check-session",
-  },
-  TODOS: {
-    GET_ALL: "/todos",
-    CREATE: "/todos",
-    UPDATE: "/todos",
-    DELETE: "/todos",
-  },
-  USER: {
-    PROFILE: "/user/profile",
-    CHANGE_PASSWORD: "/user/change-password",
-    DELETE_ACCOUNT: "/user/delete-account",
-  },
-};
-
-/**
- * TODO: Update base URL as needed
  * Local storage keys
  * @type {Object}
  */
