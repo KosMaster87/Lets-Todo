@@ -48,7 +48,7 @@ This repository demonstrates a professional development workflow with automated 
 
 ```bash
 # One-command staging preparation
-npm run staging:prepare
+pnpm run staging:prepare
 ```
 
 **This automated workflow:**
@@ -64,20 +64,20 @@ npm run staging:prepare
 
 ```bash
 # Generate and serve API documentation
-npm run docs # Generate JSDoc documentation
-npm run docs:serve # Serve on http://localhost:8080
-npm run docs:clean # Clean generated docs
+pnpm run docs # Generate JSDoc documentation
+pnpm run docs:serve # Serve on http://localhost:8080
+pnpm run docs:clean # Clean generated docs
 ```
 
 ---
 
 ## Key Features
 
-- **Multi-Environment Architecture**: Development, Feature, Staging, Production deployments
+- **Multi-Environment Architecture**: Development, Staging, Production deployments
 - **Database-per-Session**: Isolated MySQL databases for each user/guest session
 - **Secure Authentication**: Cookie-based sessions with bcrypt password hashing
-- **Auto-Deployment**: Complete PM2 + Nginx deployment packages with SSL
-- **Production Ready**: Let's Encrypt SSL, rate limiting, security headers
+- **Containerized Deployment**: Docker Compose (backend + dedicated MariaDB), TLS/SSL terminated upstream
+- **Production Ready**: Rate limiting, security headers
 - **RESTful API**: Complete CRUD operations with full session isolation
 - **Multi-User Security**: Isolated server users with proper privilege separation
 - **Advanced Security**: UFW firewall scripts for cloud and self-hosted setups
@@ -88,8 +88,8 @@ npm run docs:clean # Clean generated docs
 
 ```mermaid
 graph TD
-    A["Browser / SPA Frontend"] -->|HTTPS| B["Nginx Reverse Proxy\nlets-todo-api.dev2ksoftware.com"]
-    B -->|Proxy Pass :3002| C["Node.js / Express API\nPM2 Process Manager"]
+    A["Browser / SPA Frontend"] -->|HTTPS| B["NPMplus Reverse Proxy\nlets-todo-api.dev2ksoftware.com"]
+    B -->|Proxy Pass :3002| C["Node.js / Express API\nDocker Container"]
     C -->|Cookie Session Check| D{"Auth Valid?"}
     D -->|Authenticated| E["Pool Middleware\nSelects DB connection"]
     D -->|Unauthorized| F["401 Response"]
@@ -102,7 +102,7 @@ graph TD
 - **Framework**: Node.js with Express.js
 - **Database**: MySQL/MariaDB with dynamic database creation
 - **Authentication**: Session-based with secure HTTP-only cookies
-- **Deployment**: PM2 process management with Nginx reverse proxy
+- **Deployment**: Docker Compose container, reverse-proxied by NPMplus
 - **Security**: Multi-layer protection with environment-specific configurations
 - **Monitoring**: Comprehensive logging and error handling
 
@@ -119,30 +119,28 @@ graph TD
 ```bash
 # Clone the repository (monorepo)
 git clone https://github.com/KosMaster87/Lets-Todo.git
-cd lets-todo/backend
+cd lets-todo
 
-# Install dependencies
-npm install
+# Install dependencies (workspace root, covers backend + frontend)
+pnpm install
 
 # Copy environment files
-cp config/env/.env.development.example config/env/.env.development
-cp ecosystem.config.cjs.example ecosystem.config.cjs
+cp backend/config/env/.env.development.example backend/config/env/.env.development
 
 # Setup development database (multi-environment support)
-npm run dev:db # Development setup (default)
-NODE_ENV=feature npm run dev:db # Feature environment setup
-NODE_ENV=staging npm run dev:db # Staging environment setup
+cd backend
+NODE_ENV=development node scripts/setup-multi-env-db.js # Development setup (default)
+NODE_ENV=staging node scripts/setup-multi-env-db.js # Staging environment setup
 
 # Start development server
-npm run dev
+pnpm run dev
 ```
 
 ### Development URLs
 
 - **Development**: http://127.0.0.1:3000
-- **Feature**: http://127.0.0.1:3003
-- **Staging**: http://127.0.0.1:3004
-- **Production**: http://127.0.0.1:3002
+- **Staging**: http://127.0.0.1:3004 (via `docker compose up backend-staging`)
+- **Production**: http://127.0.0.1:3002 (via `docker compose up backend-production`)
 
 > **Full-Stack Setup:** Use with [Let's Todo Frontend](../frontend) for complete development experience on http://127.0.0.1:5500
 
@@ -209,7 +207,7 @@ Revolutionary session isolation with dedicated databases:
 ```
 Central Management:
 ├── todos_users_dev # User accounts & metadata (development)
-├── todos_users # User accounts & metadata (feature/staging)
+├── todos_users # User accounts & metadata (staging/production)
 
 User Sessions (Persistent):
 ├── todos_user_123 # Dedicated database for user ID 123
@@ -274,40 +272,37 @@ The system detects environment based on:
 
 ## Production Deployment
 
-### Using PM2
+### Using Docker Compose
+
+Backend and MariaDB run as containers, defined in `docker-compose.yml` at the `lets-todo/`
+workspace root (not inside `backend/`, since the build context spans the whole workspace).
 
 ```bash
-# Copy example config
-cp ecosystem.config.cjs.example ecosystem.config.cjs
+cd lets-todo
 
-# Start all environments
-pm2 start ecosystem.config.cjs
+# One-time: docker-compose secrets
+cp .env.example .env   # fill in MARIADB_ROOT_PASSWORD
 
-# Start specific environment
-pm2 start ecosystem.config.cjs --only lets-todo-api-prod
+# Start the dedicated MariaDB + staging backend
+docker compose up -d mariadb backend-staging
 
-# Monitor processes
-pm2 logs lets-todo-api-prod
-pm2 monit
+# Start the production backend
+docker compose up -d backend-production
+
+# Logs
+docker compose logs -f backend-production
 ```
 
-### Automated Deployment
+Each backend service reads its real environment file via `env_file:`
+(`backend/config/env/.env.staging` / `.env.production` - never baked into the image, see
+`.dockerignore`). `restart: unless-stopped` replaces PM2's process supervision; `db.js`
+still exits the process on a DB connection error by design, and Docker restarts it.
 
-```bash
-# Create deployment package
-./deploy/create-deployment-package.sh
+### TLS / Reverse Proxy
 
-# Deploy to server
-scp deploy/package/lets-todo-api-deployment.tar.gz server:/path/
-```
-
-### SSL Setup
-
-The deployment package includes:
-
-- Nginx reverse proxy configurations
-- Let's Encrypt SSL certificate setup
-- Rate limiting and security headers
+TLS termination and reverse proxying happen upstream via NPMplus + Cloudflare Tunnel, not
+inside this repository - see the Unraid infrastructure docs for the actual proxy host and
+tunnel configuration.
 
 ## Security Features
 
@@ -321,21 +316,20 @@ The deployment package includes:
 
 ### Available Scripts
 
-| Script           | Command                              | Description                         |
-| ---------------- | ------------------------------------ | ----------------------------------- |
-| `npm run dev`    | `nodemon server.js`                  | Development server with auto-reload |
-| `npm run dev:db` | `node scripts/setup-multi-env-db.js` | Setup/reset development database    |
-| `npm start`      | `node server.js`                     | Production server                   |
-| `npm run prod`   | `NODE_ENV=production npm start`      | Explicit production mode            |
+| Script            | Command                              | Description                         |
+| ----------------- | ------------------------------------ | ----------------------------------- |
+| `pnpm run dev`    | `nodemon server.js`                  | Development server with auto-reload |
+| `pnpm run dev:db` | `node scripts/setup-multi-env-db.js` | Setup/reset development database    |
+| `pnpm start`      | `node server.js`                     | Production server                   |
+| `pnpm run prod`   | `NODE_ENV=production pnpm start`     | Explicit production mode            |
 
 ### Multi-Environment Testing
 
 ```bash
 # Test different environments locally
-NODE_ENV=development npm start # Port 3000
-NODE_ENV=feature npm start # Port 3003
-NODE_ENV=staging npm start # Port 3004
-NODE_ENV=production npm start # Port 3002
+NODE_ENV=development pnpm start # Port 3000
+NODE_ENV=staging pnpm start # Port 3004
+NODE_ENV=production pnpm start # Port 3002
 ```
 
 ### Development Tools
@@ -378,10 +372,9 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 
 ### Network Security (Production)
 
-- **Reverse Proxy**: Nginx handles all external traffic
-- **Port Isolation**: App ports blocked from direct internet access
-- **SSL/TLS**: Automated Let's Encrypt certificate management
-- **Firewall Integration**: UFW scripts for cloud and self-hosted setups
+- **Reverse Proxy**: NPMplus handles all external traffic, TLS terminated at the Cloudflare Tunnel
+- **Port Isolation**: Backend containers only reachable via the Docker network and NPMplus
+- **Container Isolation**: Backend and MariaDB run in separate containers on a dedicated bridge network
 
 ## Documentation
 
@@ -424,11 +417,11 @@ mysql todos_user_123 -e "DESCRIBE todos;"
 
 ```bash
 # Force specific environment
-NODE_ENV=production npm start
-NODE_ENV=feature npm start
+NODE_ENV=production pnpm start
+NODE_ENV=staging pnpm start
 
 # Check detected environment (shows in startup logs)
-npm run dev
+pnpm run dev
 
 # Debug environment variables
 node -e "console.log('NODE_ENV:', process.env.NODE_ENV);"
@@ -467,27 +460,17 @@ lsof -ti:3000 | xargs kill -9
 
 ## Deployment
 
-### Quick Production Deployment
+### Docker Compose (current)
 
 ```bash
-# Create deployment package
-./deploy/create-step-deployment.sh
-
-# Upload and deploy to server
-scp lets-todo-step-deployment_*.tar.gz root@server:/tmp/
-ssh root@server
-cd /tmp && tar -xzf lets-todo-step-deployment_*.tar.gz
-cd step-by-step-package && sudo ./deploy.sh prod
+cd lets-todo
+docker compose up -d mariadb backend-staging   # staging
+docker compose up -d backend-production        # production
 ```
 
-### Environment-Specific Deployment
-
-```bash
-sudo ./deploy.sh feat # Feature environment
-sudo ./deploy.sh stage # Staging environment
-sudo ./deploy.sh prod # Production environment
-sudo ./deploy.sh all # All environments
-```
+CI (GitHub Actions) builds and redeploys automatically on push to `staging`/`main` via an
+SSH forced-command that triggers `docker compose up -d --build` on the Unraid host - see
+Phase 5 of the migration plan for details.
 
 **Complete deployment guide:** **[DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)**
 
@@ -499,7 +482,7 @@ sudo ./deploy.sh all # All environments
 - Write comprehensive **JSDoc comments in English**
 - Use **ES6+ modules** with proper imports/exports
 - Implement **parameterized queries** for all database operations
-- Test across **multiple environments** (dev, feature, staging)
+- Test across **multiple environments** (dev, staging)
 - Maintain **session isolation** in all new features
 
 ### Pull Request Process

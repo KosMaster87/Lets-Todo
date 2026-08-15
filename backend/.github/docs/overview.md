@@ -46,7 +46,7 @@
  │ CONFIG/ENVIRONMENT.JS (Dev Config) │
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │ │
- │ ENVIRONMENT → "development" | "feature" | "staging" | "production" │
+ │ ENVIRONMENT → "development" | "staging" | "production" │
  │ ENV → Dynamic config object with dev overrides │
  │ │ │
  │ Development Settings: │
@@ -234,11 +234,11 @@
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │ │
  │ Development Scripts (package.json): │
- │ ├── npm run dev → Start with nodemon (auto-reload) │
- │ ├── npm run debug → Start with --inspect flag │
- │ ├── npm run test → Run test suite (if available) │
- │ ├── npm run db:setup → Initialize development database │
- │ └── npm run db:reset → Reset & seed development data │
+ │ ├── pnpm run dev → Start with nodemon (auto-reload) │
+ │ ├── pnpm run debug → Start with --inspect flag │
+ │ ├── pnpm run test → Run test suite (if available) │
+ │ ├── pnpm run db:setup → Initialize development database │
+ │ └── pnpm run db:reset → Reset & seed development data │
  │ │
  │ Debugging Features: │
  │ ├── /api/debug/pools → View active connection pools │

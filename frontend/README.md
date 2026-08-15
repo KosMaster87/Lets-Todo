@@ -45,7 +45,7 @@ This repository demonstrates a professional frontend development workflow with a
 
 ```bash
 # One-command frontend staging preparation
-npm run staging:prepare
+pnpm run staging:prepare
 ```
 
 **This automated workflow:**
@@ -127,15 +127,15 @@ git clone https://github.com/KosMaster87/Lets-Todo.git
 cd lets-todo/frontend
 
 # Install dependencies
-npm install
+pnpm install
 
 # Start development server with hot reload
-npm run dev
+pnpm run dev
 # Opens: http://localhost:3001
 
 # Generate documentation
-npm run docs
-npm run docs:serve
+pnpm run docs
+pnpm run docs:serve
 # Opens: http://localhost:8081
 ```
 
@@ -147,13 +147,13 @@ npm run docs:serve
 
 ## Development Scripts
 
-| Command              | Description                                        |
-| -------------------- | -------------------------------------------------- |
-| `npm run dev`        | Start full development environment with hot reload |
-| `npm start`          | Start server without live reload                   |
-| `npm run watch`      | Server with file watching (no live reload)         |
-| `npm run livereload` | LiveReload service only                            |
-| `npm run docs`       | Generate JSDoc documentation                       |
+| Command               | Description                                        |
+| --------------------- | -------------------------------------------------- |
+| `pnpm run dev`        | Start full development environment with hot reload |
+| `pnpm start`          | Start server without live reload                   |
+| `pnpm run watch`      | Server with file watching (no live reload)         |
+| `pnpm run livereload` | LiveReload service only                            |
+| `pnpm run docs`       | Generate JSDoc documentation                       |
 
 ## Project Structure
 
@@ -357,7 +357,7 @@ import { function } from './module.js';
 
 ```bash
 # Restart development server
-npm run dev
+pnpm run dev
 ```
 
 **API Connection Problems**
@@ -412,7 +412,7 @@ pnpm run dev:backend
 pnpm run dev:frontend
 
 # 4. Generate documentation (Optional)
-npm run docs && npm run docs:serve
+pnpm run docs && pnpm run docs:serve
 ```
 
 ## Roadmap

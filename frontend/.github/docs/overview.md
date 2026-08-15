@@ -226,11 +226,11 @@
  ├─────────────────────────────────────────────────────────────────────────────────┤
  │ │
  │ Development Scripts (package.json): │
- │ ├── npm run dev → Start development server with LiveReload │
- │ ├── npm run build → Build for production (if needed) │
- │ ├── npm run serve → Serve production build locally │
- │ ├── npm run test → Run frontend tests │
- │ └── npm run lint → Code quality checks │
+ │ ├── pnpm run dev → Start development server with LiveReload │
+ │ ├── pnpm run build → Build for production (if needed) │
+ │ ├── pnpm run serve → Serve production build locally │
+ │ ├── pnpm run test → Run frontend tests │
+ │ └── pnpm run lint → Code quality checks │
  │ │
  │ Debugging Features: │
  │ ├── Debug Panel → Toggle-able development tools overlay │
