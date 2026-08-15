@@ -22,8 +22,7 @@ lets-todo/
 ├── backend/ # Backend (Node.js / Express)
 ├── pnpm-workspace.yaml # pnpm-Workspace-Definition
 ├── package.json # Root-Orchestrierung (dev:backend, dev:frontend, format)
-├── .prettierrc / .editorconfig # Geteilte Formatierung für beide Packages
-└── lets-todo-bewerbung-profil.md # Projektprofil für Bewerbungen
+└── .prettierrc / .editorconfig # Geteilte Formatierung für beide Packages
 ```
 
 Ein `pnpm install` an dieser Wurzel installiert beide Packages über ein gemeinsames
