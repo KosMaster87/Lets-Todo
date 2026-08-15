@@ -46,8 +46,8 @@ This document provides comprehensive deployment instructions for the Let's Todo 
 1. **Clone Repository**
 
    ```bash
-   git clone <repository-url>
-   cd lets-todo-app
+   git clone https://github.com/KosMaster87/lets-todo.git
+   cd lets-todo/frontend
    ```
 
 2. **Install Dependencies**
@@ -154,7 +154,7 @@ RewriteRule . /index.html [L]
 server {
     listen 80;
     server_name your-domain.com;
-    root /var/www/lets-todo-app;
+    root /var/www/lets-todo;
     index index.html;
 
     # SPA Routing
@@ -295,5 +295,5 @@ The application is PWA-ready with:
 ## 📚 Additional Resources
 
 - [Project Documentation](../../README.md)
-- [API Documentation](../../../lets-todo-api/README.md)
+- [API Documentation](../../../backend/README.md)
 - Development guidelines: optional local `copilot-instructions.md`

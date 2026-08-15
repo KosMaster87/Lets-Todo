@@ -65,7 +65,7 @@ const startServer = async () => {
   try {
     const port = await findAvailablePort(DEFAULT_PORT);
     app.listen(port, "127.0.0.1", () => {
-      console.log(`🚀 lets-todo-app running on http://127.0.0.1:${port}`);
+      console.log(`🚀 lets-todo frontend running on http://127.0.0.1:${port}`);
       if (port !== DEFAULT_PORT) {
         console.log(`⚠️  Port ${DEFAULT_PORT} occupied, using port ${port}`);
       }

@@ -7,10 +7,10 @@
 
 ## 🚀 Live
 
-| Umgebung                | URL                                                         |
-| ------------------------ | ------------------------------------------------------------ |
-| 🚀 **Production App**   | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)          |
-| 🚀 **Production API**   | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org)  |
+| Umgebung              | URL                                                        |
+| --------------------- | ---------------------------------------------------------- |
+| 🚀 **Production App** | [lets-todo.dev2k.org](https://lets-todo.dev2k.org)         |
+| 🚀 **Production API** | [lets-todo-api.dev2k.org](https://lets-todo-api.dev2k.org) |
 
 ---
 
@@ -18,10 +18,10 @@
 
 ```text
 lets-todo/
-├── lets-todo-app/                 # 📱 Frontend (Vanilla JS SPA)
-├── lets-todo-api/                 # 🖥️ Backend (Node.js / Express)
+├── frontend/                      # 📱 Frontend (Vanilla JS SPA)
+├── backend/                       # 🖥️ Backend (Node.js / Express)
 ├── pnpm-workspace.yaml            # pnpm-Workspace-Definition
-├── package.json                   # Root-Orchestrierung (dev:api, dev:app, format)
+├── package.json                   # Root-Orchestrierung (dev:backend, dev:frontend, format)
 ├── .prettierrc / .editorconfig    # Geteilte Formatierung für beide Packages
 └── lets-todo-bewerbung-profil.md  # Projektprofil für Bewerbungen
 ```
@@ -35,11 +35,11 @@ pnpm install
 
 ---
 
-## 📱 Frontend - lets-todo-app
+## 📱 Frontend
 
 Vanilla JavaScript SPA ohne Build-Schritt.
 
-👉 **[Frontend README](./lets-todo-app/README.md)**
+👉 **[Frontend README](./frontend/README.md)**
 
 - Vanilla JavaScript ES6+ Module · SPA-Routing · Reaktives State Management
 - Cookie-basierte Authentifizierung · Gast-Sessions
@@ -49,17 +49,17 @@ Vanilla JavaScript SPA ohne Build-Schritt.
 ### Schnellstart
 
 ```bash
-pnpm --filter lets-todo-app run dev
+pnpm run dev:frontend
 # → http://127.0.0.1:5500
 ```
 
 ---
 
-## 🖥️ Backend - lets-todo-api
+## 🖥️ Backend
 
 Node.js / Express REST API.
 
-👉 **[Backend README](./lets-todo-api/README.md)**
+👉 **[Backend README](./backend/README.md)**
 
 - Database-per-Session Architektur (MySQL/MariaDB)
 - Umgebungen: Development · Staging · Production
@@ -67,9 +67,9 @@ Node.js / Express REST API.
 ### Schnellstart
 
 ```bash
-cp lets-todo-api/config/env/.env.development.example lets-todo-api/config/env/.env.development
-pnpm --filter lets-todo-api run dev:db
-pnpm --filter lets-todo-api run dev
+cp backend/config/env/.env.development.example backend/config/env/.env.development
+pnpm --filter backend run dev:db
+pnpm run dev:backend
 # → http://127.0.0.1:3000
 ```
 
@@ -87,4 +87,4 @@ pnpm run format:check  # nur prüfen, nicht schreiben
 ## 👨‍💻 Entwickler
 
 **Konstantin Aksenov**
-🔗 [GitHub](https://github.com/KosMaster87) · 📧 [Konstantin.Aksenov@dev2k.org](mailto:Konstantin.Aksenov@dev2k.org)
+🔗 [GitHub](https://github.com/KosMaster87/lets-todo) · 📧 [Konstantin.Aksenov@dev2k.org](mailto:Konstantin.Aksenov@dev2k.org)

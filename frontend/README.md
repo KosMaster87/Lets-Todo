@@ -27,7 +27,7 @@
 
 ### 🔗 **Related Repositories**
 
-- 🖥️ **Backend API**: [lets-todo-api](https://github.com/KosMaster87/lets-todo-api)
+- 🖥️ **Backend API**: [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend)
 - 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
 
 ## 🌿 **Professional Branch Structure**
@@ -122,9 +122,9 @@ graph TD
 ### **⚡ Development Setup**
 
 ```bash
-# Clone the frontend repository
-git clone https://github.com/KosMaster87/lets-todo-app.git
-cd lets-todo-app
+# Clone the repository (monorepo)
+git clone https://github.com/KosMaster87/lets-todo.git
+cd lets-todo/frontend
 
 # Install dependencies
 npm install
@@ -158,7 +158,7 @@ npm run docs:serve
 ## 📁 Project Structure
 
 ```
-lets-todo-app/
+frontend/
 ├── 📄 index.html                # Main application entry point
 ├── 🔧 dev-server.js             # Express development server
 ├── 📦 package.json              # Dependencies and scripts
@@ -373,21 +373,21 @@ This frontend works seamlessly with the backend API. For the complete developmen
 
 ### **🔗 Backend Repository**
 
-- **Repository**: [lets-todo-api](https://github.com/KosMaster87/lets-todo-api)
+- **Repository**: [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend)
 - **Technology**: Node.js + Express + MySQL
 - **Features**: Multi-environment deployment, database-per-session isolation
 - **Documentation**: Auto-generated API docs with JSDoc
 
 ### **📋 Documentation Hub**
 
-| Document              | Purpose               | Location                                                      |
-| --------------------- | --------------------- | ------------------------------------------------------------- |
-| 📱 **Frontend Guide** | This README           | Current file                                                  |
-| 🔌 **API Reference**  | Backend documentation | [lets-todo-api](https://github.com/KosMaster87/lets-todo-api) |
-| 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                   |
-| 🏗️ **Architecture**   | System overview       | [overview.md](.github/docs/overview.md)                       |
-| 🔧 **Import/Export**  | Utilities overview    | [import-export.md](.github/docs/import-export.md)             |
-| 👨‍💻 **Dev Guidelines** | Coding standards      | `copilot-instructions.md` (optional, local only)              |
+| Document              | Purpose               | Location                                                               |
+| --------------------- | --------------------- | ---------------------------------------------------------------------- |
+| 📱 **Frontend Guide** | This README           | Current file                                                           |
+| 🔌 **API Reference**  | Backend documentation | [backend/](https://github.com/KosMaster87/lets-todo/tree/main/backend) |
+| 🚀 **Deployment**     | Production setup      | [DEPLOYMENT.md](.github/docs/DEPLOYMENT.md)                            |
+| 🏗️ **Architecture**   | System overview       | [overview.md](.github/docs/overview.md)                                |
+| 🔧 **Import/Export**  | Utilities overview    | [import-export.md](.github/docs/import-export.md)                      |
+| 👨‍💻 **Dev Guidelines** | Coding standards      | `copilot-instructions.md` (optional, local only)                       |
 
 ## 🤝 **Contributing & Development**
 
@@ -401,15 +401,15 @@ This frontend works seamlessly with the backend API. For the complete developmen
 ### **💻 Development Workflow**
 
 ```bash
-# 1. Fork and clone both repositories
-git clone https://github.com/KosMaster87/lets-todo-app.git
-git clone https://github.com/KosMaster87/lets-todo-api.git
+# 1. Fork and clone the monorepo
+git clone https://github.com/KosMaster87/lets-todo.git
+cd lets-todo && pnpm install
 
 # 2. Start backend API (Terminal 1)
-cd lets-todo-api && npm install && npm run dev
+pnpm run dev:backend
 
 # 3. Start frontend (Terminal 2)
-cd lets-todo-app && npm install && npm run dev
+pnpm run dev:frontend
 
 # 4. Generate documentation (Optional)
 npm run docs && npm run docs:serve

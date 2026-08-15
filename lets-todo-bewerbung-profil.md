@@ -8,7 +8,7 @@
 
 ## Technologie-Stack
 
-### Backend (`lets-todo-api`)
+### Backend (`backend/`)
 
 | Technologie     | Einsatz                                       |
 | --------------- | --------------------------------------------- |
@@ -24,7 +24,7 @@
 | Let's Encrypt   | Automatische SSL-Zertifikate                  |
 | JSDoc           | API-Dokumentation                             |
 
-### Frontend (`lets-todo-app`)
+### Frontend (`frontend/`)
 
 | Technologie              | Einsatz                             |
 | ------------------------ | ----------------------------------- |

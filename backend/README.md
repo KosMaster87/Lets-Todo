@@ -30,7 +30,7 @@
 
 ### 🔗 **Related Repositories**
 
-- 📱 **Frontend App**: [lets-todo-app](https://github.com/KosMaster87/lets-todo-app)
+- 📱 **Frontend App**: [frontend/](https://github.com/KosMaster87/lets-todo/tree/main/frontend)
 - 📖 **Complete Documentation**: Available in both repositories with JSDoc generation
 
 ## 🌿 **Professional Branch Structure**
@@ -117,9 +117,9 @@ graph TD
 ### Installation
 
 ```bash
-# Clone the repository
-git clone <repository-url>
-cd lets-todo-api
+# Clone the repository (monorepo)
+git clone https://github.com/KosMaster87/lets-todo.git
+cd lets-todo/backend
 
 # Install dependencies
 npm install
@@ -144,7 +144,7 @@ npm run dev
 - **Staging**: http://127.0.0.1:3004
 - **Production**: http://127.0.0.1:3002
 
-> **💡 Full-Stack Setup:** Use with [Let's Todo Frontend](../lets-todo-app) for complete development experience on http://127.0.0.1:5500
+> **💡 Full-Stack Setup:** Use with [Let's Todo Frontend](../frontend) for complete development experience on http://127.0.0.1:5500
 
 ## 📡 API Reference
 
@@ -392,7 +392,7 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 
 ## Related Projects
 
-### [Let's Todo Frontend →](../lets-todo-app)
+### [Let's Todo Frontend →](../frontend)
 
 - **Architecture**: Vanilla JavaScript ES6+ modules, no build step required
 - **Integration**: Automatic environment detection and API connection

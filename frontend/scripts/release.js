@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 /**
- * @fileoverview Production Release Script for Let's Todo API Backend
+ * @fileoverview Production Release Script for Let's Todo Frontend
  * @description Professional release script that handles version bumping, branch management,
- * changelog generation, and GitHub releases for the backend API.
+ * changelog generation, and GitHub releases.
  *
  * @module release-script
  * @version 1.0.0
@@ -18,7 +18,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-class BackendReleaseManager {
+class ReleaseManager {
   constructor() {
     this.projectRoot = path.resolve(__dirname, "..");
     this.packageJsonPath = path.join(this.projectRoot, "package.json");
@@ -260,7 +260,7 @@ class BackendReleaseManager {
       existingChangelog = fs.readFileSync(this.changelogPath, "utf8");
     } else {
       // Create new changelog with header
-      existingChangelog = `# Changelog - Let's Todo API\n\nAll notable changes to the Let's Todo API will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n`;
+      existingChangelog = `# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n`;
     }
 
     // Insert new entry after the header
@@ -332,10 +332,10 @@ class BackendReleaseManager {
 
     // Add and commit version changes
     this.execCommand("git add package.json CHANGELOG.md");
-    this.execCommand(`git commit -m "chore: Release API v${version}"`);
+    this.execCommand(`git commit -m "chore: Release v${version}"`);
 
     // Create git tag
-    this.execCommand(`git tag -a v${version} -m "Release API v${version}"`);
+    this.execCommand(`git tag -a v${version} -m "Release v${version}"`);
 
     // Push release branch and tag
     this.execCommand(`git push origin ${releaseBranch}`);
@@ -357,7 +357,7 @@ class BackendReleaseManager {
 
     try {
       // Merge release branch
-      this.execCommandSafe(`git merge ${releaseBranch} --no-ff -m "Release API v${version}"`);
+      this.execCommandSafe(`git merge ${releaseBranch} --no-ff -m "Release v${version}"`);
     } catch (error) {
       console.log("⚠️  Merge conflicts detected, resolving automatically...");
 
@@ -378,7 +378,7 @@ class BackendReleaseManager {
 
         // Complete the merge
         this.execCommand("git add .");
-        this.execCommand(`git commit -m "Release API v${version}"`);
+        this.execCommand(`git commit -m "Release v${version}"`);
         console.log("✅ Merge conflicts resolved automatically");
       } else {
         throw error;
@@ -405,13 +405,11 @@ class BackendReleaseManager {
       const releaseBody = this.releaseNotes.join("\n").trim();
 
       // Create GitHub release
-      const releaseCommand = `gh release create v${version} --title "API Release v${version}" --notes "${releaseBody}" --target production`;
+      const releaseCommand = `gh release create v${version} --title "Release v${version}" --notes "${releaseBody}" --target production`;
       this.execCommand(releaseCommand);
 
       console.log(`✅ Created GitHub release: v${version}`);
-      console.log(
-        `🔗 View at: https://github.com/KosMaster87/lets-todo-api/releases/tag/v${version}`
-      );
+      console.log(`🔗 View at: https://github.com/KosMaster87/lets-todo/releases/tag/v${version}`);
     } catch (error) {
       console.warn("⚠️  Could not create GitHub release (gh CLI not available)");
       console.log("💡 Install GitHub CLI or create release manually");
@@ -427,7 +425,7 @@ class BackendReleaseManager {
     try {
       // Stay on production branch instead of switching back to staging
 
-      // Keep release branches by default (like in the app)
+      // Keep release branches by default (like in the API)
       const keepReleaseBranches = process.env.KEEP_RELEASE_BRANCHES !== "false";
       if (!keepReleaseBranches) {
         // Delete local release branch
@@ -447,7 +445,7 @@ class BackendReleaseManager {
    */
   async release(version) {
     console.log("🚀 Starting release process...\n");
-    console.log(`📦 Let's Todo API Release v${version}`);
+    console.log(`📦 Let's Todo Frontend Release v${version}`);
     console.log("=".repeat(50));
 
     // Validate input
@@ -485,15 +483,15 @@ class BackendReleaseManager {
     this.cleanup(releaseBranch);
 
     console.log("\n" + "=".repeat(50));
-    console.log("🎉 API RELEASE COMPLETED SUCCESSFULLY! 🎉");
+    console.log("🎉 RELEASE COMPLETED SUCCESSFULLY! 🎉");
     console.log("=".repeat(50));
     console.log(`✅ Version ${version} is now live on production`);
-    console.log(`🔗 GitHub: https://github.com/KosMaster87/lets-todo-api/releases/tag/v${version}`);
+    console.log(`🔗 GitHub: https://github.com/KosMaster87/lets-todo/releases/tag/v${version}`);
     console.log(`🌿 Production branch updated`);
     console.log(`📝 Changelog updated`);
     console.log("\n💡 Next steps:");
     console.log("   • Deploy to your hosting platform");
-    console.log("   • Update API documentation if needed");
+    console.log("   • Announce the release to your team");
     console.log("   • Continue development on feature/main-feature");
   }
 }
@@ -509,11 +507,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   }
 
-  const releaseManager = new BackendReleaseManager();
+  const releaseManager = new ReleaseManager();
   releaseManager.release(version).catch((error) => {
     console.error("❌ Release failed:", error.message);
     process.exit(1);
   });
 }
 
-export default BackendReleaseManager;
+export default ReleaseManager;

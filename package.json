@@ -4,12 +4,20 @@
   "private": true,
   "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev:api": "pnpm --filter lets-todo-api run dev",
-    "dev:app": "pnpm --filter lets-todo-app run dev",
+    "dev:backend": "pnpm --filter backend run dev",
+    "dev:frontend": "pnpm --filter frontend run dev",
     "format": "pnpm -r run format",
-    "format:check": "pnpm -r run format:check"
+    "format:check": "pnpm -r run format:check",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.2",
+    "@commitlint/config-conventional": "^21.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.3.0",
     "prettier": "^3.9.6"
+  },
+  "lint-staged": {
+    "*.{js,cjs,mjs,json,md,css,html}": "prettier --write"
   }
 }

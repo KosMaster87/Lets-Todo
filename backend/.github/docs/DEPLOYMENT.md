@@ -59,12 +59,12 @@ brew services start mariadb
 ### Project Setup
 
 ```bash
-# Clone repository
-git clone https://github.com/KosMaster87/lets-todo-api.git
-cd lets-todo-api
+# Clone repository (monorepo)
+git clone https://github.com/KosMaster87/lets-todo.git
+cd lets-todo/backend
 
-# Install dependencies
-npm install
+# Install dependencies (from lets-todo/ root)
+pnpm install
 
 # Copy environment files from examples
 cp config/env/.env.development.example config/env/.env.development
@@ -214,7 +214,7 @@ curl -b guest_cookies.txt http://127.0.0.1:3000/api/todos  # Should be empty
 npm run dev
 
 # Start frontend (in separate terminal)
-cd ../lets-todo-app
+cd ../frontend
 # Use VS Code Live Server on 127.0.0.1:5500
 
 # Test cross-origin requests with browser dev tools
