@@ -31,15 +31,20 @@ const logLogoutStatus = (type, message, data = null) => {
 
 /**
  * @function showLogoutLoading
- * @description Shows logout loading state by updating logout button text and disabled state
+ * @description Shows logout loading state by updating the button's label text and disabled state,
+ * without touching the icon/description markup nested inside the button
  * @param {boolean} isLoading - Loading state flag to determine button appearance and functionality
  * @returns {void} No return value - performs DOM manipulation side effects on logout button
  */
 const showLogoutLoading = (isLoading) => {
   const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.disabled = isLoading;
-    logoutBtn.textContent = isLoading ? "Logging out..." : "Log Out";
+  if (!logoutBtn) return;
+
+  logoutBtn.disabled = isLoading;
+
+  const label = logoutBtn.querySelector("h3");
+  if (label) {
+    label.textContent = isLoading ? "Logging out..." : "Logout";
   }
 };
 

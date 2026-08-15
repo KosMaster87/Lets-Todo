@@ -40,12 +40,17 @@ const getSubmitButton = (buttonId) => {
 
 /**
  * Updates button loading appearance
+ * Only updates the label text so the icon/description markup stays intact
  * @param {HTMLElement} button - Button element
  * @param {boolean} isLoading - Loading state
  */
 const updateButtonAppearance = (button, isLoading) => {
   button.disabled = isLoading;
-  button.textContent = isLoading ? "Registrierung läuft..." : "Registrieren";
+
+  const label = button.querySelector("h3");
+  if (label) {
+    label.textContent = isLoading ? "Registering..." : "Register";
+  }
 };
 
 /**
