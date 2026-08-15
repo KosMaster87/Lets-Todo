@@ -34,6 +34,7 @@ services:
         condition: service_healthy
     networks:
       - lets-todo-net
+      - smtp-relay-net
 
   backend-production:
     build:
@@ -53,7 +54,10 @@ services:
         condition: service_healthy
     networks:
       - lets-todo-net
+      - smtp-relay-net
 
 networks:
   lets-todo-net:
     driver: bridge
+  smtp-relay-net:
+    external: true
