@@ -27,21 +27,22 @@ async function setupDatabase() {
   try {
     infoLog(`Starting ${ENVIRONMENT} Database Setup...`);
 
-    // For deployment environments (staging, production), use root access via /root/.my.cnf
-    // For development, use configured user credentials
-    const isDeploymentEnv = ["staging", "production"].includes(ENVIRONMENT);
+    // The app DB user (ENV.DB_USER) must already exist with CREATE DATABASE + ALL
+    // PRIVILEGES ON `todos_%`.* granted for its connecting host - provisioned once as
+    // part of the MariaDB container setup, not by this script. This used to connect as
+    // unauthenticated `root` via a `/root/.my.cnf` on the VPS (same host as MariaDB);
+    // that assumption no longer holds now that MariaDB runs in its own container,
+    // reached over the network.
     const dbConfig = {
       host: ENV.DB_HOST,
       port: ENV.DB_PORT,
-      user: isDeploymentEnv ? "root" : ENV.DB_USER,
-      // For deployment environments, don't specify password - mysql2 will use /root/.my.cnf
-      ...(isDeploymentEnv ? {} : { password: ENV.DB_PASSWORD }),
+      user: ENV.DB_USER,
+      password: ENV.DB_PASSWORD,
     };
 
     debugLog(`Database connection config:`, {
       ...dbConfig,
-      password: isDeploymentEnv ? "[FROM .my.cnf]" : "[HIDDEN]",
-      note: isDeploymentEnv ? "Using root access via /root/.my.cnf" : "Using .env credentials",
+      password: "[HIDDEN]",
     });
 
     // Connection without specific database
@@ -126,53 +127,6 @@ async function setupDatabase() {
         }
       } catch (err) {
         debugLog("Test user already exists or error:", err.message);
-      }
-    }
-
-    // Create application database user for deployment environments
-    if (isDeploymentEnv) {
-      try {
-        infoLog(`Creating application database user: ${ENV.DB_USER}`);
-
-        // Create the database user from .env credentials
-        await connection.execute(
-          `CREATE USER IF NOT EXISTS '${ENV.DB_USER}'@'localhost' IDENTIFIED BY '${ENV.DB_PASSWORD}'`
-        );
-        await connection.execute(
-          `CREATE USER IF NOT EXISTS '${ENV.DB_USER}'@'127.0.0.1' IDENTIFIED BY '${ENV.DB_PASSWORD}'`
-        );
-
-        // Grant all privileges on todos_* databases (wildcards)
-        await connection.execute(
-          `GRANT ALL PRIVILEGES ON \`todos_%\`.* TO '${ENV.DB_USER}'@'localhost'`
-        );
-        await connection.execute(
-          `GRANT ALL PRIVILEGES ON \`todos_%\`.* TO '${ENV.DB_USER}'@'127.0.0.1'`
-        );
-
-        // Grant specific privileges for the databases we created
-        await connection.execute(
-          `GRANT ALL PRIVILEGES ON \`${ENV.DB_USERS}\`.* TO '${ENV.DB_USER}'@'localhost'`
-        );
-        await connection.execute(
-          `GRANT ALL PRIVILEGES ON \`${ENV.DB_USERS}\`.* TO '${ENV.DB_USER}'@'127.0.0.1'`
-        );
-        await connection.execute(
-          `GRANT ALL PRIVILEGES ON \`${ENV.DB_MAIN}\`.* TO '${ENV.DB_USER}'@'localhost'`
-        );
-        await connection.execute(
-          `GRANT ALL PRIVILEGES ON \`${ENV.DB_MAIN}\`.* TO '${ENV.DB_USER}'@'127.0.0.1'`
-        );
-
-        // Flush privileges to ensure changes take effect
-        await connection.execute(`FLUSH PRIVILEGES`);
-
-        infoLog(
-          `Database user '${ENV.DB_USER}' created with credentials from .env.${ENVIRONMENT} file`
-        );
-      } catch (err) {
-        debugLog("Database user creation note:", err.message);
-        infoLog("Database user might already exist - continuing...");
       }
     }
 

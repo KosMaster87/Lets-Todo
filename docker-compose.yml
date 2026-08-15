@@ -6,7 +6,7 @@ services:
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
     volumes:
-      - lets-todo-mariadb-data:/var/lib/mysql
+      - /mnt/nvme/appdata/lets-todo-mariadb/data:/var/lib/mysql
     networks:
       - lets-todo-net
     healthcheck:
@@ -57,6 +57,3 @@ services:
 networks:
   lets-todo-net:
     driver: bridge
-
-volumes:
-  lets-todo-mariadb-data:
