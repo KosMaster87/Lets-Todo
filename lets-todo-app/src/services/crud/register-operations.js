@@ -71,10 +71,7 @@ const handleRegistrationError = (error, onError, onLoading) => {
  * @returns {boolean} True if logging should be suppressed
  */
 const shouldSuppressErrorLogging = (error) => {
-  return (
-    error.code &&
-    ["EMAIL_ALREADY_EXISTS", "MISSING_CREDENTIALS"].includes(error.code)
-  );
+  return error.code && ["EMAIL_ALREADY_EXISTS", "MISSING_CREDENTIALS"].includes(error.code);
 };
 
 /**
@@ -84,12 +81,7 @@ const shouldSuppressErrorLogging = (error) => {
  * @param {Function} onError - Error callback
  * @param {Function} onLoading - Loading state callback
  */
-export const handleUserRegistration = async (
-  userData,
-  onSuccess,
-  onError,
-  onLoading
-) => {
+export const handleUserRegistration = async (userData, onSuccess, onError, onLoading) => {
   try {
     onLoading?.(true);
     const result = await executeRegistration(userData);
@@ -182,9 +174,7 @@ const processGenericError = (error) => {
  * @returns {Object} Processed error with type and message
  */
 export const processRegistrationError = (error) => {
-  const errorInfo = error.code
-    ? processCodedError(error)
-    : processGenericError(error);
+  const errorInfo = error.code ? processCodedError(error) : processGenericError(error);
 
   return {
     ...errorInfo,
@@ -268,12 +258,7 @@ const executeDelayedNavigation = (targetView, delay) => {
  * @param {Function} onMessage - Message callback
  * @param {number} delay - Navigation delay in ms
  */
-export const processRegistrationSuccess = (
-  result,
-  userData,
-  onMessage,
-  delay = 2000
-) => {
+export const processRegistrationSuccess = (result, userData, onMessage, delay = 2000) => {
   const targetView = handleRegistrationSuccess(result, userData, onMessage);
   executeDelayedNavigation(targetView, delay);
 };

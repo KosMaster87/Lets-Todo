@@ -76,9 +76,7 @@ class BackendReleaseManager {
    */
   getCurrentVersion() {
     try {
-      const packageJson = JSON.parse(
-        fs.readFileSync(this.packageJsonPath, "utf8")
-      );
+      const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, "utf8"));
       this.currentVersion = packageJson.version;
       return this.currentVersion;
     } catch (error) {
@@ -92,17 +90,10 @@ class BackendReleaseManager {
    */
   updatePackageVersion(newVersion) {
     try {
-      const packageJson = JSON.parse(
-        fs.readFileSync(this.packageJsonPath, "utf8")
-      );
+      const packageJson = JSON.parse(fs.readFileSync(this.packageJsonPath, "utf8"));
       packageJson.version = newVersion;
-      fs.writeFileSync(
-        this.packageJsonPath,
-        JSON.stringify(packageJson, null, 2) + "\n"
-      );
-      console.log(
-        `✅ Updated package.json: ${this.currentVersion} → ${newVersion}`
-      );
+      fs.writeFileSync(this.packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");
+      console.log(`✅ Updated package.json: ${this.currentVersion} → ${newVersion}`);
     } catch (error) {
       console.error("❌ Could not update package.json");
       process.exit(1);
@@ -150,9 +141,7 @@ class BackendReleaseManager {
       thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
       const dateFilter = thirtyDaysAgo.toISOString().split("T")[0];
 
-      console.log(
-        `ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`
-      );
+      console.log(`ℹ️  First release - limiting to commits since ${dateFilter} (last 30 days)`);
       gitLogCommand = `git log --since="${dateFilter}" --oneline --no-merges -n 20`;
     }
 
@@ -195,9 +184,7 @@ class BackendReleaseManager {
       } else if (commit.match(/^fix[\(:]/i)) {
         changes.fixed.push(commit.replace(/^fix[\(:]\s*/i, ""));
       } else if (commit.match(/^(update|change|refactor)[\(:]/i)) {
-        changes.changed.push(
-          commit.replace(/^(update|change|refactor)[\(:]\s*/i, "")
-        );
+        changes.changed.push(commit.replace(/^(update|change|refactor)[\(:]\s*/i, ""));
       } else if (commit.match(/^(remove|delete)[\(:]/i)) {
         changes.removed.push(commit.replace(/^(remove|delete)[\(:]\s*/i, ""));
       } else if (commit.match(/^(security|sec)[\(:]/i)) {
@@ -279,9 +266,7 @@ class BackendReleaseManager {
     // Insert new entry after the header
     const lines = existingChangelog.split("\n");
     const headerEndIndex = lines.findIndex(
-      (line, index) =>
-        (index > 0 && line.startsWith("## ")) ||
-        (index > 5 && line.trim() === "")
+      (line, index) => (index > 0 && line.startsWith("## ")) || (index > 5 && line.trim() === "")
     );
 
     if (headerEndIndex > 0) {
@@ -324,10 +309,7 @@ class BackendReleaseManager {
     console.log("📡 Fetching latest changes...");
     this.execCommand("git fetch origin");
 
-    const behind = this.execCommand(
-      "git rev-list --count HEAD..origin/staging",
-      true
-    );
+    const behind = this.execCommand("git rev-list --count HEAD..origin/staging", true);
     if (parseInt(behind) > 0) {
       console.error("❌ Your staging branch is behind origin/staging");
       console.log("💡 Run: git pull origin staging");
@@ -375,28 +357,19 @@ class BackendReleaseManager {
 
     try {
       // Merge release branch
-      this.execCommandSafe(
-        `git merge ${releaseBranch} --no-ff -m "Release API v${version}"`
-      );
+      this.execCommandSafe(`git merge ${releaseBranch} --no-ff -m "Release API v${version}"`);
     } catch (error) {
       console.log("⚠️  Merge conflicts detected, resolving automatically...");
 
       // Check for conflicts
-      const conflicts = this.execCommand(
-        "git diff --name-only --diff-filter=U",
-        true
-      );
+      const conflicts = this.execCommand("git diff --name-only --diff-filter=U", true);
 
       if (conflicts) {
         const conflictFiles = conflicts.split("\n").filter((f) => f.trim());
         console.log(`📝 Resolving conflicts in: ${conflictFiles.join(", ")}`);
 
         conflictFiles.forEach((file) => {
-          if (
-            file === "package.json" ||
-            file === "CHANGELOG.md" ||
-            file === "scripts/release.js"
-          ) {
+          if (file === "package.json" || file === "CHANGELOG.md" || file === "scripts/release.js") {
             // Use incoming changes (theirs) for these files
             this.execCommand(`git checkout --theirs ${file}`);
             console.log(`✅ Resolved ${file} using incoming changes`);
@@ -440,9 +413,7 @@ class BackendReleaseManager {
         `🔗 View at: https://github.com/KosMaster87/lets-todo-api/releases/tag/v${version}`
       );
     } catch (error) {
-      console.warn(
-        "⚠️  Could not create GitHub release (gh CLI not available)"
-      );
+      console.warn("⚠️  Could not create GitHub release (gh CLI not available)");
       console.log("💡 Install GitHub CLI or create release manually");
     }
   }
@@ -481,9 +452,7 @@ class BackendReleaseManager {
 
     // Validate input
     if (!this.isValidVersion(version)) {
-      console.error(
-        "❌ Invalid version format. Use semantic versioning (e.g., 1.2.3)"
-      );
+      console.error("❌ Invalid version format. Use semantic versioning (e.g., 1.2.3)");
       process.exit(1);
     }
 
@@ -519,9 +488,7 @@ class BackendReleaseManager {
     console.log("🎉 API RELEASE COMPLETED SUCCESSFULLY! 🎉");
     console.log("=".repeat(50));
     console.log(`✅ Version ${version} is now live on production`);
-    console.log(
-      `🔗 GitHub: https://github.com/KosMaster87/lets-todo-api/releases/tag/v${version}`
-    );
+    console.log(`🔗 GitHub: https://github.com/KosMaster87/lets-todo-api/releases/tag/v${version}`);
     console.log(`🌿 Production branch updated`);
     console.log(`📝 Changelog updated`);
     console.log("\n💡 Next steps:");

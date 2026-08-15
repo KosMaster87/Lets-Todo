@@ -43,9 +43,7 @@ const setupResetPasswordNavigation = () => {
  * @returns {void}
  */
 const setupCancelButton = () => {
-  const resetPasswordLinks = [
-    { id: "resetPasswordCancelBtn", view: VIEWS.LOGIN },
-  ];
+  const resetPasswordLinks = [{ id: "resetPasswordCancelBtn", view: VIEWS.LOGIN }];
 
   resetPasswordLinks.forEach(({ id, view }) => {
     const element = document.getElementById(id);
@@ -61,9 +59,7 @@ const setupCancelButton = () => {
  * @returns {void}
  */
 const setupSubmitButton = () => {
-  const resetPasswordSubmitBtn = document.getElementById(
-    "resetPasswordSubmitBtn"
-  );
+  const resetPasswordSubmitBtn = document.getElementById("resetPasswordSubmitBtn");
   if (resetPasswordSubmitBtn) {
     resetPasswordSubmitBtn.onclick = (e) => handleResetPasswordSubmit(e);
   }
@@ -135,12 +131,7 @@ const getResetPasswordFormInputs = () => {
  * @returns {void}
  */
 const setResetPasswordButtonState = (isLoading) => {
-  setSubmitButtonState(
-    isLoading,
-    "resetPasswordSubmitBtn",
-    "Sending Email...",
-    "Send Reset Link"
-  );
+  setSubmitButtonState(isLoading, "resetPasswordSubmitBtn", "Sending Email...", "Send Reset Link");
 };
 
 /**
@@ -207,9 +198,7 @@ const processResetPasswordRequest = async (email) => {
   if (result.success) {
     return { success: true, email, message: result.message };
   } else {
-    throw new Error(
-      result.message || "Failed to send reset email. Please try again."
-    );
+    throw new Error(result.message || "Failed to send reset email. Please try again.");
   }
 };
 
@@ -280,10 +269,7 @@ const validateResetPasswordInputs = (email) => {
   }
 
   if (!isValidEmail(email)) {
-    showErrorMessage(
-      "Please enter a valid email address.",
-      "resetPasswordError"
-    );
+    showErrorMessage("Please enter a valid email address.", "resetPasswordError");
     focusEmailInput();
     return false;
   }

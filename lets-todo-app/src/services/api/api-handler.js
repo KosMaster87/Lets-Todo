@@ -66,15 +66,10 @@ const handleError = (error) => {
 };
 
 const isUserFacingError = (error) => {
-  const userFacingCodes = [
-    "INVALID_CREDENTIALS",
-    "EMAIL_ALREADY_EXISTS",
-    "MISSING_CREDENTIALS",
-  ];
+  const userFacingCodes = ["INVALID_CREDENTIALS", "EMAIL_ALREADY_EXISTS", "MISSING_CREDENTIALS"];
 
   return (
     (error.code && userFacingCodes.includes(error.code)) ||
-    (error.error &&
-      error.error.includes("Server error processing reset request"))
+    (error.error && error.error.includes("Server error processing reset request"))
   );
 };

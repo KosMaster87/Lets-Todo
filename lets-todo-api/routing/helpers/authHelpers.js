@@ -94,9 +94,7 @@ export const validateChangePasswordInput = (currentPassword, newPassword) => {
   }
 
   if (!isValidPasswordLength(newPassword)) {
-    return createValidationError(
-      "New password must be at least 6 characters long"
-    );
+    return createValidationError("New password must be at least 6 characters long");
   }
 
   return createValidationSuccess();
@@ -114,9 +112,7 @@ export const validateResetPasswordInput = (token, newPassword) => {
   }
 
   if (!isValidPasswordLength(newPassword)) {
-    return createValidationError(
-      "New password must be at least 6 characters long"
-    );
+    return createValidationError("New password must be at least 6 characters long");
   }
 
   return createValidationSuccess();

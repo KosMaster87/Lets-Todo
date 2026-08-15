@@ -78,8 +78,7 @@ export const renderTodosList = (todos) => {
       </div>
 
       <div class="todo-content-display">${(() => {
-        const rawContent =
-          todo.content || todo.title || "No content available...";
+        const rawContent = todo.content || todo.title || "No content available...";
         const truncated = rawContent.substring(0, 150);
         const hasMore = rawContent.length > 150;
         return escapeHtml(truncated) + (hasMore ? "..." : "");
@@ -88,12 +87,8 @@ export const renderTodosList = (todos) => {
       ${renderListActionButtons(todo)}
 
       <div class="todo-meta-info">
-        <span class="todo-creation-date">Created: ${formatDate(
-          todo.created || new Date()
-        )}</span>
-        <span class="todo-status-badge ${
-          todo.completed ? "completed" : "pending"
-        }">
+        <span class="todo-creation-date">Created: ${formatDate(todo.created || new Date())}</span>
+        <span class="todo-status-badge ${todo.completed ? "completed" : "pending"}">
           ${todo.completed ? "Completed" : "Pending"}
         </span>
       </div>

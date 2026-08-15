@@ -119,11 +119,7 @@ const clearConfirmPasswordInput = (confirmPasswordInput) => {
  * @param {Function} handleNavigationClick - Navigation function to use
  * @returns {void} No return value - performs success handling and navigation
  */
-export const handlePasswordChangeSuccess = (
-  e,
-  inputs,
-  handleNavigationClick
-) => {
+export const handlePasswordChangeSuccess = (e, inputs, handleNavigationClick) => {
   displaySuccessMessage();
   clearPasswordFormInputs(inputs);
   scheduleNavigationToPersonalData(e, handleNavigationClick);

@@ -4,11 +4,7 @@
  * @module session-manager
  */
 
-import {
-  SessionPersistence,
-  TodosPersistence,
-  TrashPersistence,
-} from "./data-persistence.js";
+import { SessionPersistence, TodosPersistence, TrashPersistence } from "./data-persistence.js";
 import { StorageManager } from "./storage.js";
 import { VIEWS } from "./../utils/constants.js";
 

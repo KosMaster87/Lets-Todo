@@ -19,10 +19,7 @@ export const initializeAllSampleData = (
   existingTrashedTodos = []
 ) => {
   const addedTodos = initializeSampleTodos(addTodoFn, existingTodos);
-  const addedTrash = initializeSampleTrashedTodos(
-    setTrashedTodosFn,
-    existingTrashedTodos
-  );
+  const addedTrash = initializeSampleTrashedTodos(setTrashedTodosFn, existingTrashedTodos);
   return { addedTodos, addedTrash };
 };
 
@@ -47,10 +44,7 @@ const initializeSampleTodos = (addTodoFn, existingTodos) => {
  * @param {Array} existingTrashedTodos - Current trashed todos array
  * @returns {boolean} Whether sample trashed todos were added
  */
-const initializeSampleTrashedTodos = (
-  setTrashedTodosFn,
-  existingTrashedTodos
-) => {
+const initializeSampleTrashedTodos = (setTrashedTodosFn, existingTrashedTodos) => {
   if (existingTrashedTodos.length > 0) return false;
 
   const sampleTrashedTodos = createSampleTrashedTodos();
@@ -63,8 +57,7 @@ const initializeSampleTrashedTodos = (
  * Generates a unique ID
  * @returns {string} Unique ID
  */
-const generateId = () =>
-  Date.now().toString(36) + Math.random().toString(36).substr(2);
+const generateId = () => Date.now().toString(36) + Math.random().toString(36).substr(2);
 
 /**
  * Creates sample todos for demo purposes

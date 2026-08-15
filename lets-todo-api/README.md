@@ -386,7 +386,7 @@ mysql -e "SELECT SCHEMA_NAME FROM information_schema.SCHEMATA WHERE SCHEMA_NAME 
 ## 📚 Documentation
 
 - **[Complete Setup & Deployment Guide](.github/docs/DEPLOYMENT.md)** - Local development through production deployment
-- **Development Guidelines**: optional local `copilot-instructions.md` — architecture patterns and coding standards
+- **Development Guidelines**: optional local `copilot-instructions.md` - architecture patterns and coding standards
 - **[Scripts Overview](.github/docs/scripts-overview.md)** - Database management and utilities
 - **[Staging Cleanup Guide](.github/docs/staging-cleanup.md)** - Automated staging preparation workflow
 

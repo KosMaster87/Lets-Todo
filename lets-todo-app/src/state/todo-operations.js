@@ -23,11 +23,7 @@ export const TodoOperations = {
   async add(appState, todo, notifyListeners) {
     const todoWithId = createTodoWithId(todo);
     this.addTodoLocally(appState, todoWithId, notifyListeners);
-    await TodoServerSync.syncTodoToServer(
-      appState,
-      todoWithId,
-      notifyListeners
-    );
+    await TodoServerSync.syncTodoToServer(appState, todoWithId, notifyListeners);
   },
 
   /**
@@ -51,11 +47,7 @@ export const TodoOperations = {
    */
   async update(appState, todoId, updates, notifyListeners) {
     this.updateTodoLocally(appState, todoId, updates, notifyListeners);
-    await TodoServerSync.handleUpdateServerSync(
-      appState,
-      todoId,
-      appState.sessionType
-    );
+    await TodoServerSync.handleUpdateServerSync(appState, todoId, appState.sessionType);
   },
 
   /**
@@ -92,19 +84,13 @@ export const TodoOperations = {
    * @param {Function} notifyListeners - Function to notify state listeners
    */
   async trash(appState, todoId, notifyListeners) {
-    console.log(
-      `🔍 trashTodo called with ID: ${todoId}, type: ${typeof todoId}`
-    );
+    console.log(`🔍 trashTodo called with ID: ${todoId}, type: ${typeof todoId}`);
     const todo = findTodoById(appState, todoId);
     console.log(`🔎 Found todo:`, todo);
 
     if (todo) {
       this.moveTodoToTrashLocally(appState, todoId, todo, notifyListeners);
-      await TodoServerSync.handleTrashServerSync(
-        todo,
-        todoId,
-        appState.sessionType
-      );
+      await TodoServerSync.handleTrashServerSync(todo, todoId, appState.sessionType);
     }
   },
 
@@ -117,18 +103,13 @@ export const TodoOperations = {
    */
   moveTodoToTrashLocally(appState, todoId, todo, notifyListeners) {
     appState.todos = appState.todos.filter((t) => t.id != todoId);
-    appState.trashedTodos = [
-      ...appState.trashedTodos,
-      { ...todo, trashedAt: Date.now() },
-    ];
+    appState.trashedTodos = [...appState.trashedTodos, { ...todo, trashedAt: Date.now() }];
 
     TodosPersistence.save(appState.todos, appState.sessionType);
     TrashPersistence.save(appState.trashedTodos, appState.sessionType);
 
     console.log(
-      `🗑️ Todo ${todoId} moved to trash, notifying ${
-        appState.listeners?.length || 0
-      } listeners`
+      `🗑️ Todo ${todoId} moved to trash, notifying ${appState.listeners?.length || 0} listeners`
     );
     notifyListeners();
   },
@@ -144,11 +125,7 @@ export const TodoOperations = {
 
     if (todo) {
       this.restoreTodoLocally(appState, todoId, todo, notifyListeners);
-      await TodoServerSync.handleRestoreServerSync(
-        todo,
-        todoId,
-        appState.sessionType
-      );
+      await TodoServerSync.handleRestoreServerSync(todo, todoId, appState.sessionType);
     }
   },
 
@@ -180,11 +157,7 @@ export const TodoOperations = {
     if (!todoToDelete) return;
 
     this.deleteTodoLocally(appState, todoId, notifyListeners);
-    await TodoServerSync.handleDeleteServerSync(
-      todoToDelete,
-      todoId,
-      appState.sessionType
-    );
+    await TodoServerSync.handleDeleteServerSync(todoToDelete, todoId, appState.sessionType);
   },
 
   /**

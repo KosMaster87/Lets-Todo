@@ -12,10 +12,7 @@ import {
   handleRestoreTodo,
   handleDeleteForever,
 } from "./../crud/trash-operations.js";
-import {
-  renderTrashWithFilter,
-  TRASH_FILTER_MODES,
-} from "./../crud/trash-filter.js";
+import { renderTrashWithFilter, TRASH_FILTER_MODES } from "./../crud/trash-filter.js";
 import { showTrashSuccess, showTrashError } from "./../crud/trash-messages.js";
 import {
   toggleTrashFilter,
@@ -94,10 +91,7 @@ function setupTrashActionButtons() {
   const trashContainer = document.getElementById("trashTodosList");
   if (!trashContainer) return;
 
-  const actionHandler = createTrashActionHandler(
-    handleRestoreAction,
-    handleDeleteForeverAction
-  );
+  const actionHandler = createTrashActionHandler(handleRestoreAction, handleDeleteForeverAction);
 
   trashContainer.addEventListener("click", actionHandler);
 }

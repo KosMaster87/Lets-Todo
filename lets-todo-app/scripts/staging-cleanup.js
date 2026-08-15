@@ -105,9 +105,7 @@ class StagingCleanup {
 
     // This would be implemented with a proper backup strategy
     // For now, we rely on git for version control
-    console.log(
-      `💡 Use 'git stash' or create a backup branch before running cleanup`
-    );
+    console.log(`💡 Use 'git stash' or create a backup branch before running cleanup`);
   }
 
   run() {
@@ -146,30 +144,26 @@ class StagingCleanup {
    */
   removeDevelopmentScripts() {
     try {
-      console.log(
-        "\n🧹 Removing development files and directories from staging branch..."
-      );
+      console.log("\n🧹 Removing development files and directories from staging branch...");
 
       let removedCount = 0;
 
       // Remove development/deployment directories
-      ["deploy", "nginx", "docs", "docs-api", "docs-app"].forEach(
-        (dir) => {
-          if (fs.existsSync(dir)) {
-            fs.rmSync(dir, { recursive: true, force: true });
-            console.log(`✅ Removed directory: ${dir}/`);
-            removedCount++;
-          }
+      ["deploy", "nginx", "docs", "docs-api", "docs-app"].forEach((dir) => {
+        if (fs.existsSync(dir)) {
+          fs.rmSync(dir, { recursive: true, force: true });
+          console.log(`✅ Removed directory: ${dir}/`);
+          removedCount++;
         }
-      );
+      });
 
       // Remove specific development scripts but keep release.js
       const scriptsToRemove = [
         "scripts/staging-cleanup.js",
         "scripts/README.md",
-        "scripts/script-overview.md"
+        "scripts/script-overview.md",
       ];
-      
+
       scriptsToRemove.forEach((scriptPath) => {
         if (fs.existsSync(scriptPath)) {
           fs.unlinkSync(scriptPath);
@@ -201,10 +195,7 @@ class StagingCleanup {
         console.log("🎯 No development files found - already clean!");
       }
     } catch (error) {
-      console.error(
-        "⚠️  Warning: Could not remove development files:",
-        error.message
-      );
+      console.error("⚠️  Warning: Could not remove development files:", error.message);
       console.log("💡 You may need to remove them manually");
     }
   }

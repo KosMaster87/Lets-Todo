@@ -15,9 +15,7 @@ import { DEBUG_MODE } from "./constants.js";
  */
 const logPasswordValidation = (action, details = "") => {
   if (DEBUG_MODE) {
-    console.log(
-      `[Password Validation] ${action}${details ? ": " + details : ""}`
-    );
+    console.log(`[Password Validation] ${action}${details ? ": " + details : ""}`);
   }
 };
 

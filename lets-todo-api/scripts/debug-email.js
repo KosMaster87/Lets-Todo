@@ -22,15 +22,11 @@ console.log("📧 EmailService Status:");
 console.log(`  Transporter exists: ${!!emailService.transporter}`);
 
 if (emailService.transporter) {
-  console.log(
-    `  Service: ${emailService.transporter.options?.service || "custom"}`
-  );
+  console.log(`  Service: ${emailService.transporter.options?.service || "custom"}`);
   console.log(`  Host: ${emailService.transporter.options?.host || "default"}`);
   console.log(`  Port: ${emailService.transporter.options?.port || "default"}`);
   console.log(`  Secure: ${emailService.transporter.options?.secure || false}`);
-  console.log(
-    `  Auth User: ${emailService.transporter.options?.auth?.user || "not set"}`
-  );
+  console.log(`  Auth User: ${emailService.transporter.options?.auth?.user || "not set"}`);
 } else {
   console.log("  ❌ No transporter initialized!");
 }

@@ -12,10 +12,7 @@ import {
   clearErrorMessages,
   showErrorMessage,
 } from "./../../utils/ui-state-helpers.js";
-import {
-  processPasswordChange,
-  handlePasswordChangeError,
-} from "../api/api-password.js";
+import { processPasswordChange, handlePasswordChangeError } from "../api/api-password.js";
 import {
   getPasswordFormInputs,
   handlePasswordChangeSuccess,

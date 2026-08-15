@@ -26,9 +26,7 @@ import { ENV, debugLog, errorLog } from "../config/environment.js";
  */
 
 const addUserPreferencesTable = async () => {
-  console.log(
-    "🚀 Starting user_preferences table migration for all user databases..."
-  );
+  console.log("🚀 Starting user_preferences table migration for all user databases...");
 
   try {
     // Connect to database server (without selecting specific database)
@@ -39,9 +37,7 @@ const addUserPreferencesTable = async () => {
       password: ENV.DB_PASSWORD,
     };
 
-    console.log(
-      `📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`
-    );
+    console.log(`📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`);
     const connection = await mysql.createConnection(dbConfig);
 
     // Find all user databases
@@ -95,9 +91,7 @@ const addUserPreferencesTable = async () => {
         );
 
         if (tables.length > 0) {
-          console.log(
-            `⏭️  Table 'user_preferences' already exists in ${dbName}, skipping`
-          );
+          console.log(`⏭️  Table 'user_preferences' already exists in ${dbName}, skipping`);
           skipCount++;
           continue;
         }

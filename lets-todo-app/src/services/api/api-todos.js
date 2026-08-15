@@ -182,10 +182,8 @@ export const updateTodoOnServer = async (todoId, updates) => {
 const transformUpdatesForServer = (updates) => {
   const serverUpdates = {};
   if (updates.title !== undefined) serverUpdates.title = updates.title;
-  if (updates.content !== undefined)
-    serverUpdates.description = updates.content;
-  if (updates.completed !== undefined)
-    serverUpdates.completed = updates.completed ? 1 : 0;
+  if (updates.content !== undefined) serverUpdates.description = updates.content;
+  if (updates.completed !== undefined) serverUpdates.completed = updates.completed ? 1 : 0;
   return serverUpdates;
 };
 

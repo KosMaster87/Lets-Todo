@@ -5,22 +5,10 @@
  */
 
 import { getTodoElements } from "./../../utils/dom-selectors.js";
-import {
-  logActionStatus,
-  showMessage,
-} from "./../../utils/ui-helpers/message-helpers.js";
-import {
-  updateBookmarkButton,
-  updateCompletedButton,
-} from "./../../utils/ui-state-helpers.js";
-import {
-  fallbackCopy,
-  fallbackShare,
-} from "./../../utils/ui-helpers/clipboard-helpers.js";
-import {
-  hasAnyTodoContent,
-  handleContentClear,
-} from "./../../utils/ui-helpers/content-helpers.js";
+import { logActionStatus, showMessage } from "./../../utils/ui-helpers/message-helpers.js";
+import { updateBookmarkButton, updateCompletedButton } from "./../../utils/ui-state-helpers.js";
+import { fallbackCopy, fallbackShare } from "./../../utils/ui-helpers/clipboard-helpers.js";
+import { hasAnyTodoContent, handleContentClear } from "./../../utils/ui-helpers/content-helpers.js";
 
 /**
  * Logs missing element warning if not suppressed
@@ -31,10 +19,7 @@ import {
  */
 const logMissingElementWarning = (elementId, actionType, suppressWarnings) => {
   if (!suppressWarnings) {
-    logActionStatus(
-      "warning",
-      `⚠️ Action button element ${elementId} not found for ${actionType}`
-    );
+    logActionStatus("warning", `⚠️ Action button element ${elementId} not found for ${actionType}`);
   }
 };
 
@@ -69,12 +54,7 @@ const addEventHandler = (element, handler) => {
  * @param {boolean} suppressWarnings - Whether to suppress warnings
  * @returns {boolean} True if configured successfully
  */
-const configureActionButton = (
-  actionType,
-  elementId,
-  handler,
-  suppressWarnings
-) => {
+const configureActionButton = (actionType, elementId, handler, suppressWarnings) => {
   const element = document.getElementById(elementId);
   if (!element) {
     logMissingElementWarning(elementId, actionType, suppressWarnings);
@@ -95,12 +75,7 @@ const configureActionButton = (
  */
 const configureSingleButton = (actionType, buttonConfig, suppressWarnings) => {
   const { elementId, handler } = buttonConfig;
-  return configureActionButton(
-    actionType,
-    elementId,
-    handler,
-    suppressWarnings
-  );
+  return configureActionButton(actionType, elementId, handler, suppressWarnings);
 };
 
 /**
@@ -266,12 +241,7 @@ export const createContentClearHandler =
       return;
     }
 
-    const hasContent = hasAnyTodoContent(
-      title,
-      content,
-      titleElement,
-      contentElement
-    );
+    const hasContent = hasAnyTodoContent(title, content, titleElement, contentElement);
     handleContentClear(clearContentCallback, onDeleteCallback, hasContent);
   };
 

@@ -177,9 +177,7 @@ const logPreferenceSaveError = (err) => {
  * @returns {Promise<Object|null>} Existing preference row or null
  */
 const checkExistingPreferences = async (pool) => {
-  const [existing] = await pool.query(
-    `SELECT id FROM user_preferences LIMIT 1`
-  );
+  const [existing] = await pool.query(`SELECT id FROM user_preferences LIMIT 1`);
   return existing.length > 0 ? existing[0] : null;
 };
 
@@ -191,12 +189,7 @@ const checkExistingPreferences = async (pool) => {
  * @param {number} existingId - ID of existing preference row
  * @returns {Promise<void>}
  */
-const updateExistingPreferences = async (
-  pool,
-  preferences,
-  timestamp,
-  existingId
-) => {
+const updateExistingPreferences = async (pool, preferences, timestamp, existingId) => {
   await pool.query(
     `UPDATE user_preferences
      SET preferences = ?, updated_at = ?

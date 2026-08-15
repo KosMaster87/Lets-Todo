@@ -7,10 +7,7 @@
 import { handleNavigationClick, navigateToView } from "./navigation.js";
 import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
 import { loginUser } from "./../api/api-auth.js";
-import {
-  showSuccessToast,
-  showErrorToast,
-} from "./../../utils/toast-notifications.js";
+import { showSuccessToast, showErrorToast } from "./../../utils/toast-notifications.js";
 
 /**
  * @function logLoginStatus
@@ -149,8 +146,7 @@ const handleLoginSubmit = (event) => {
  */
 const validateEmail = (event) => {
   const email = event.target.value;
-  const errorMessage =
-    email && !isValidEmail(email) ? "Invalid email address" : "";
+  const errorMessage = email && !isValidEmail(email) ? "Invalid email address" : "";
   event.target.setCustomValidity(errorMessage);
 };
 
@@ -164,9 +160,7 @@ const validateEmail = (event) => {
 const validatePassword = (event) => {
   const password = event.target.value;
   const errorMessage =
-    password && password.length < 6
-      ? "Password must be at least 6 characters long"
-      : "";
+    password && password.length < 6 ? "Password must be at least 6 characters long" : "";
   event.target.setCustomValidity(errorMessage);
 };
 

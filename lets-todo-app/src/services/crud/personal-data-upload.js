@@ -5,12 +5,7 @@
  * @module personal-data-upload
  */
 
-import {
-  addTodo,
-  getTodos,
-  getTrashedTodos,
-  trashTodo,
-} from "./../../state/main-state.js";
+import { addTodo, getTodos, getTrashedTodos, trashTodo } from "./../../state/main-state.js";
 
 import {
   validateFileExists,
@@ -108,9 +103,7 @@ const createLegacyMetadata = (data) => ({
  * @returns {Object} Error result object
  */
 const handleParseError = (error) =>
-  error.name === "SyntaxError"
-    ? createParseError()
-    : createUnknownFormatError();
+  error.name === "SyntaxError" ? createParseError() : createUnknownFormatError();
 
 /**
  * Parses JSON content and determines format type
@@ -208,12 +201,7 @@ export const findDuplicates = (importedTodos, existingTodos) => {
   const result = createEmptyAnalysisResult();
 
   importedTodos.forEach((importedTodo) => {
-    categorizeTodo(
-      importedTodo,
-      existingTodos,
-      result.duplicates,
-      result.unique
-    );
+    categorizeTodo(importedTodo, existingTodos, result.duplicates, result.unique);
   });
 
   return result;
@@ -257,20 +245,12 @@ const prepareActiveImportData = (activeTodos, options) => {
  * @returns {Object} Import result
  */
 export const importActiveTodos = (activeTodos, options = {}) => {
-  const { duplicates, todosToImport } = prepareActiveImportData(
-    activeTodos,
-    options
-  );
+  const { duplicates, todosToImport } = prepareActiveImportData(activeTodos, options);
   const counters = { imported: 0, errors: [] };
 
   todosToImport.forEach((todo) => processActiveTodoSafely(todo, counters));
 
-  return createActiveImportResult(
-    counters.imported,
-    duplicates,
-    counters.errors,
-    options
-  );
+  return createActiveImportResult(counters.imported, duplicates, counters.errors, options);
 };
 
 // ###############################################################
@@ -284,14 +264,7 @@ export const importActiveTodos = (activeTodos, options = {}) => {
  */
 const processTrashedTodoSafely = async (todo, counters) => {
   try {
-    await processSingleTrashedTodo(
-      todo,
-      counters,
-      ensureString,
-      addTodo,
-      getTodos,
-      trashTodo
-    );
+    await processSingleTrashedTodo(todo, counters, ensureString, addTodo, getTodos, trashTodo);
   } catch (error) {
     handleTrashedTodoError(error, todo, counters.errors, ensureString);
   }
@@ -305,15 +278,8 @@ const processTrashedTodoSafely = async (todo, counters) => {
  */
 const prepareTrashImportData = (trashedTodos, options) => {
   const existingTrashedTodos = getTrashedTodos();
-  const { duplicates, unique } = findDuplicates(
-    trashedTodos,
-    existingTrashedTodos
-  );
-  const todosToImport = selectTrashedTodosToImport(
-    trashedTodos,
-    unique,
-    options
-  );
+  const { duplicates, unique } = findDuplicates(trashedTodos, existingTrashedTodos);
+  const todosToImport = selectTrashedTodosToImport(trashedTodos, unique, options);
 
   return { duplicates, todosToImport };
 };
@@ -326,20 +292,12 @@ const prepareTrashImportData = (trashedTodos, options) => {
  * @returns {Promise<Object>} Import result
  */
 export const importTrashedTodos = async (trashedTodos, options = {}) => {
-  const { duplicates, todosToImport } = prepareTrashImportData(
-    trashedTodos,
-    options
-  );
+  const { duplicates, todosToImport } = prepareTrashImportData(trashedTodos, options);
   const counters = { imported: 0, errors: [] };
 
   for (const todo of todosToImport) {
     await processTrashedTodoSafely(todo, counters);
   }
 
-  return createTrashImportResult(
-    counters.imported,
-    duplicates,
-    counters.errors,
-    options
-  );
+  return createTrashImportResult(counters.imported, duplicates, counters.errors, options);
 };

@@ -5,11 +5,7 @@
  * @module trash-operations
  */
 
-import {
-  emptyTrash,
-  restoreTodo,
-  deleteTodo,
-} from "./../../state/main-state.js";
+import { emptyTrash, restoreTodo, deleteTodo } from "./../../state/main-state.js";
 
 // ###############################################################
 // User Confirmation Utilities
@@ -39,9 +35,7 @@ const confirmRestoreTodo = () => {
  * @returns {boolean} True if user confirms
  */
 const confirmDeleteForever = () => {
-  const message =
-    "Do you want to permanently delete this todo? " +
-    "This action cannot be undone.";
+  const message = "Do you want to permanently delete this todo? " + "This action cannot be undone.";
   return confirm(message);
 };
 

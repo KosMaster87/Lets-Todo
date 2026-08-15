@@ -18,13 +18,7 @@
  */
 
 import mysql from "mysql2/promise";
-import {
-  ENV,
-  debugLog,
-  infoLog,
-  errorLog,
-  ENVIRONMENT,
-} from "../config/environment.js";
+import { ENV, debugLog, infoLog, errorLog, ENVIRONMENT } from "../config/environment.js";
 
 /**
  * Database setup (Multi-Environment Support)
@@ -36,9 +30,7 @@ async function setupDatabase() {
 
     // For deployment environments (feature, staging, production), use root access via /root/.my.cnf
     // For development, use configured user credentials
-    const isDeploymentEnv = ["feature", "staging", "production"].includes(
-      ENVIRONMENT
-    );
+    const isDeploymentEnv = ["feature", "staging", "production"].includes(ENVIRONMENT);
     const dbConfig = {
       host: ENV.DB_HOST,
       port: ENV.DB_PORT,
@@ -50,9 +42,7 @@ async function setupDatabase() {
     debugLog(`Database connection config:`, {
       ...dbConfig,
       password: isDeploymentEnv ? "[FROM .my.cnf]" : "[HIDDEN]",
-      note: isDeploymentEnv
-        ? "Using root access via /root/.my.cnf"
-        : "Using .env credentials",
+      note: isDeploymentEnv ? "Using root access via /root/.my.cnf" : "Using .env credentials",
     });
 
     // Connection without specific database
@@ -111,9 +101,7 @@ async function setupDatabase() {
         infoLog(`Test user created: ${testEmail}`);
 
         // Create test user database
-        await connection.execute(
-          `CREATE DATABASE IF NOT EXISTS \`${testDBName}\``
-        );
+        await connection.execute(`CREATE DATABASE IF NOT EXISTS \`${testDBName}\``);
         await connection.execute(`USE \`${testDBName}\``);
         await connection.execute(`
           CREATE TABLE IF NOT EXISTS todos (

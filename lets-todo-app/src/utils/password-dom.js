@@ -33,11 +33,7 @@ export const updateStrengthDisplay = (strength) => {
  * @param {Function} hideElement - Function to hide DOM elements
  * @returns {void} No return value - performs UI update side effect
  */
-export const checkPasswordStrength = (
-  getPasswordInputs,
-  showElement,
-  hideElement
-) => {
+export const checkPasswordStrength = (getPasswordInputs, showElement, hideElement) => {
   const { newPassword } = getPasswordInputs();
 
   if (!newPassword) {

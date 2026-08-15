@@ -34,9 +34,7 @@ export const createListenerManager = (state) => {
     const index = state.listeners.indexOf(listener);
     if (index > -1) {
       state.listeners.splice(index, 1);
-      console.log(
-        `🗑️ Removed state listener (${state.listeners.length} remaining)`
-      );
+      console.log(`🗑️ Removed state listener (${state.listeners.length} remaining)`);
     } else {
       console.warn("Listener not found, cannot remove");
     }

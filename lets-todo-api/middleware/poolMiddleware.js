@@ -173,10 +173,7 @@ function getOrCreateUserPool(userId, dbName) {
  * @returns {Promise<string|null>} Database name or null
  */
 async function getUserDbName(userId) {
-  const [rows] = await userPool.query(
-    `SELECT db_name FROM users WHERE id = ?`,
-    [userId]
-  );
+  const [rows] = await userPool.query(`SELECT db_name FROM users WHERE id = ?`, [userId]);
   return rows.length ? rows[0].db_name : null;
 }
 

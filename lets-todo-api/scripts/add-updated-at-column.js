@@ -77,9 +77,7 @@ const addUpdatedAtColumn = async () => {
     if (verification.length > 0) {
       infoLog("✅ Verification successful:", verification[0]);
     } else {
-      throw new Error(
-        "Migration verification failed: updated_at column not found"
-      );
+      throw new Error("Migration verification failed: updated_at column not found");
     }
   } catch (error) {
     errorLog("❌ Migration failed:", error);

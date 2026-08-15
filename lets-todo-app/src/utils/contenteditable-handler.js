@@ -5,10 +5,7 @@
  */
 
 import { getTodoElements } from "./dom-selectors.js";
-import {
-  validateTodoTitle,
-  validateTodoContent,
-} from "./../services/crud/todo-validation.js";
+import { validateTodoTitle, validateTodoContent } from "./../services/crud/todo-validation.js";
 import { DEBUG_MODE } from "./constants.js";
 
 /**
@@ -26,10 +23,7 @@ export function setupContentEditableHandlers(options = {}) {
   }
 
   const titleSetupCount = setupTitleElementIfExists(titleElement, options);
-  const contentSetupCount = setupContentElementIfExists(
-    contentElement,
-    options
-  );
+  const contentSetupCount = setupContentElementIfExists(contentElement, options);
   const totalSetupCount = titleSetupCount + contentSetupCount;
 
   logSetupCompletion(totalSetupCount);
@@ -96,9 +90,7 @@ const setupContentElementIfExists = (contentElement, options) => {
  */
 const logSetupCompletion = (setupCount) => {
   if (DEBUG_MODE) {
-    console.log(
-      `ContentEditable Handler: Setup complete for ${setupCount} elements`
-    );
+    console.log(`ContentEditable Handler: Setup complete for ${setupCount} elements`);
   }
 };
 
@@ -201,9 +193,7 @@ const setupKeyHandlingListeners = (element, options) => {
  */
 const logElementSetup = (elementType) => {
   if (DEBUG_MODE) {
-    console.log(
-      `ContentEditable Handler: Setting up ${elementType || "unknown"} element`
-    );
+    console.log(`ContentEditable Handler: Setting up ${elementType || "unknown"} element`);
   }
 };
 
@@ -288,10 +278,7 @@ function handlePlaceholderInput(event) {
   const placeholder = element.getAttribute("data-placeholder");
 
   // Remove placeholder styling when user types
-  if (
-    element.textContent !== placeholder &&
-    element.textContent.trim() !== ""
-  ) {
+  if (element.textContent !== placeholder && element.textContent.trim() !== "") {
     element.classList.remove("placeholder-active");
   }
 }

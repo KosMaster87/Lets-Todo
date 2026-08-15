@@ -33,12 +33,7 @@ export const TodoServerSync = {
 
     try {
       const serverResponse = await this.saveTodoToServerApi(todoWithId);
-      this.processServerResponse(
-        appState,
-        todoWithId,
-        serverResponse,
-        notifyListeners
-      );
+      this.processServerResponse(appState, todoWithId, serverResponse, notifyListeners);
     } catch (error) {
       console.warn("⚠️ Failed to sync todo to server:", error);
     }
@@ -62,12 +57,7 @@ export const TodoServerSync = {
    */
   processServerResponse(appState, todoWithId, serverResponse, notifyListeners) {
     if (serverResponse && serverResponse.id) {
-      this.updateTodoWithServerId(
-        appState,
-        todoWithId.id,
-        serverResponse.id,
-        notifyListeners
-      );
+      this.updateTodoWithServerId(appState, todoWithId.id, serverResponse.id, notifyListeners);
     }
   },
 
@@ -115,9 +105,7 @@ export const TodoServerSync = {
   async syncUpdatedTodoToServer(updatedTodo) {
     if (updatedTodo && updatedTodo.serverId) {
       await updateTodoOnServer(updatedTodo.serverId, updatedTodo);
-      console.log(
-        `✅ Todo updated on server (server ID: ${updatedTodo.serverId})`
-      );
+      console.log(`✅ Todo updated on server (server ID: ${updatedTodo.serverId})`);
     }
   },
 
@@ -196,10 +184,7 @@ export const TodoServerSync = {
     }
 
     try {
-      const { isValid, serverId } = validateServerIdForTodo(
-        todoToDelete,
-        todoId
-      );
+      const { isValid, serverId } = validateServerIdForTodo(todoToDelete, todoId);
 
       if (!isValid) {
         handleInvalidDeleteServerId(todoId, serverId);

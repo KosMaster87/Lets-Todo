@@ -20,9 +20,7 @@ import { createUserPreferencesTable } from "./userPreferencesHelpers.js";
  * @returns {Promise<Object|null>} User object or null
  */
 export const findUserByEmail = async (email) => {
-  const [rows] = await userPool.query(`SELECT * FROM users WHERE email = ?`, [
-    email,
-  ]);
+  const [rows] = await userPool.query(`SELECT * FROM users WHERE email = ?`, [email]);
   return rows.length > 0 ? rows[0] : null;
 };
 
@@ -32,10 +30,7 @@ export const findUserByEmail = async (email) => {
  * @returns {Promise<Object|null>} User object with limited fields or null
  */
 export const findUserById = async (userId) => {
-  const [rows] = await userPool.query(
-    `SELECT id, email FROM users WHERE id = ?`,
-    [userId]
-  );
+  const [rows] = await userPool.query(`SELECT id, email FROM users WHERE id = ?`, [userId]);
   return rows.length > 0 ? rows[0] : null;
 };
 
@@ -45,10 +40,9 @@ export const findUserById = async (userId) => {
  * @returns {Promise<Object|null>} User object with password hash or null
  */
 export const findUserByIdWithPassword = async (userId) => {
-  const [rows] = await userPool.query(
-    `SELECT id, email, password_hash FROM users WHERE id = ?`,
-    [userId]
-  );
+  const [rows] = await userPool.query(`SELECT id, email, password_hash FROM users WHERE id = ?`, [
+    userId,
+  ]);
   return rows.length > 0 ? rows[0] : null;
 };
 
@@ -68,10 +62,7 @@ export const createUserDbName = (email) => {
  */
 export const getUserDbName = async (userId) => {
   try {
-    const [rows] = await userPool.query(
-      `SELECT db_name FROM users WHERE id = ?`,
-      [userId]
-    );
+    const [rows] = await userPool.query(`SELECT db_name FROM users WHERE id = ?`, [userId]);
     return rows.length > 0 ? rows[0].db_name : null;
   } catch (err) {
     console.error("Error getting user database name:", err);
@@ -104,12 +95,7 @@ export const insertUser = async (email, passwordHash, dbName, created) => {
  * @param {number} created - Creation timestamp
  * @returns {Promise<number>} - User ID
  */
-export const createCompleteUserSetup = async (
-  email,
-  password_hash,
-  dbName,
-  created
-) => {
+export const createCompleteUserSetup = async (email, password_hash, dbName, created) => {
   // 1) User in zentrale User-Tabelle eintragen
   const userId = await insertUser(email, password_hash, dbName, created);
 
@@ -176,10 +162,7 @@ const createLoginSuccessResponse = (user) => ({
  * @param {string} passwordHash - New hashed password
  */
 export const updateUserPassword = async (userId, passwordHash) => {
-  await userPool.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [
-    passwordHash,
-    userId,
-  ]);
+  await userPool.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [passwordHash, userId]);
 };
 
 /**
@@ -189,18 +172,11 @@ export const updateUserPassword = async (userId, passwordHash) => {
  * @param {string} newPassword - New password
  * @returns {Promise<Object>} - Process result
  */
-export const processPasswordChange = async (
-  userId,
-  currentPassword,
-  newPassword
-) => {
+export const processPasswordChange = async (userId, currentPassword, newPassword) => {
   const user = await findUserByIdWithPassword(userId);
   if (!user) return createUserNotFoundResponse();
 
-  const isCurrentPasswordValid = await validateCurrentPassword(
-    currentPassword,
-    user
-  );
+  const isCurrentPasswordValid = await validateCurrentPassword(currentPassword, user);
   if (!isCurrentPasswordValid) return createInvalidCurrentPasswordResponse();
 
   const newPasswordHash = await hashPassword(newPassword);

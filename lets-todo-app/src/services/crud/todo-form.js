@@ -74,8 +74,7 @@ export const resetFormState = () => ({
 export const updateTodoStatusBadge = (completed) => {
   const statusBadge = document.querySelector(".todo-status-badge");
   if (statusBadge) {
-    statusBadge.className =
-      "todo-status-badge " + (completed ? "completed" : "pending");
+    statusBadge.className = "todo-status-badge " + (completed ? "completed" : "pending");
     statusBadge.textContent = completed ? "Erledigt" : "Neu";
   }
 };

@@ -27,10 +27,7 @@ import {
   processPasswordReset,
   processForgotPassword,
 } from "./helpers/passwordResetHelpers.js";
-import {
-  createCookieOptions,
-  createClearCookieOptions,
-} from "./helpers/cookieHelpers.js";
+import { createCookieOptions, createClearCookieOptions } from "./helpers/cookieHelpers.js";
 import {
   sendSuccess,
   sendError,
@@ -104,10 +101,7 @@ const handleDuplicateEmailError = (res) => {
  * @returns {Object} Error response
  */
 const handleRegistrationError = (res) => {
-  return sendServerError(
-    res,
-    "Registrierung fehlgeschlagen. Bitte versuche es später erneut."
-  );
+  return sendServerError(res, "Registrierung fehlgeschlagen. Bitte versuche es später erneut.");
 };
 
 /**
@@ -158,12 +152,7 @@ router.post("/login", async (req, res) => {
   try {
     const result = await processUserLogin(email, password);
     if (!result.success) {
-      return sendError(
-        res,
-        result.error,
-        result.code,
-        HTTP_STATUS.UNAUTHORIZED
-      );
+      return sendError(res, result.error, result.code, HTTP_STATUS.UNAUTHORIZED);
     }
     return handleSuccessfulLogin(req, res, result);
   } catch (err) {
@@ -251,11 +240,7 @@ router.put("/change-password", async (req, res) => {
   if (typeof userId !== "string") return userId;
 
   try {
-    const result = await processPasswordChange(
-      userId,
-      currentPassword,
-      newPassword
-    );
+    const result = await processPasswordChange(userId, currentPassword, newPassword);
     return result.success
       ? handlePasswordChangeSuccess(userId, result, res)
       : handlePasswordChangeFailure(result, res);
@@ -317,9 +302,7 @@ const handlePasswordChangeFailure = (result, res) => {
  * @returns {Object} Success response
  */
 const handlePasswordChangeSuccess = (userId, result, res) => {
-  debugLog(
-    `Password changed successfully for user ${userId} (${result.user.email})`
-  );
+  debugLog(`Password changed successfully for user ${userId} (${result.user.email})`);
   return sendSuccess(res, "Simon says... Password successfully changed");
 };
 
@@ -345,10 +328,7 @@ router.post("/forgot-password", async (req, res) => {
     return await handleSuccessfulResetRequest(email, result, res);
   } catch (err) {
     errorLog(`Forgot password error for email ${email}:`, err);
-    return sendServerError(
-      res,
-      "Server-Fehler beim Verarbeiten der Reset-Anfrage"
-    );
+    return sendServerError(res, "Server-Fehler beim Verarbeiten der Reset-Anfrage");
   }
 });
 
@@ -410,13 +390,9 @@ const handleSuccessfulResetRequest = async (email, result, res) => {
     } (${email}) - Token: ${result.resetToken.substring(0, 8)}...`
   );
 
-  return sendSuccess(
-    res,
-    "Reset-Link wurde an deine E-Mail-Adresse gesendet.",
-    {
-      debug: createResetDebugData(result, email),
-    }
-  );
+  return sendSuccess(res, "Reset-Link wurde an deine E-Mail-Adresse gesendet.", {
+    debug: createResetDebugData(result, email),
+  });
 };
 
 // #################################################
@@ -481,9 +457,7 @@ router.get("/validate-reset-token/:token", async (req, res) => {
   const result = await validateResetTokenResponse(token);
 
   if (result.logData) {
-    debugLog(
-      `Valid reset token for user: ${result.logData.user_id} (${result.logData.email})`
-    );
+    debugLog(`Valid reset token for user: ${result.logData.user_id} (${result.logData.email})`);
   }
 
   if (result.error) {

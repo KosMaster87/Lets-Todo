@@ -14,10 +14,7 @@ import { hashPassword } from "./authHelpers.js";
  * @returns {Promise<Object|null>} User object with limited fields or null
  */
 export const findUserForPasswordReset = async (email) => {
-  const [rows] = await userPool.query(
-    `SELECT id, email FROM users WHERE email = ?`,
-    [email]
-  );
+  const [rows] = await userPool.query(`SELECT id, email FROM users WHERE email = ?`, [email]);
   return rows.length > 0 ? rows[0] : null;
 };
 
@@ -42,9 +39,7 @@ export const calculateExpirationTime = () => {
  * @param {number} userId - User ID
  */
 export const clearOldResetTokens = async (userId) => {
-  await userPool.query(`DELETE FROM password_reset_tokens WHERE user_id = ?`, [
-    userId,
-  ]);
+  await userPool.query(`DELETE FROM password_reset_tokens WHERE user_id = ?`, [userId]);
 };
 
 /**
@@ -98,18 +93,9 @@ const executePasswordResetOperations = async (
   newPasswordHash,
   currentTime
 ) => {
-  await updateUserPasswordInTransaction(
-    connection,
-    newPasswordHash,
-    resetToken.user_id
-  );
+  await updateUserPasswordInTransaction(connection, newPasswordHash, resetToken.user_id);
   await markTokenAsUsed(connection, currentTime, resetToken.id);
-  await invalidateOtherTokens(
-    connection,
-    currentTime,
-    resetToken.user_id,
-    resetToken.id
-  );
+  await invalidateOtherTokens(connection, currentTime, resetToken.user_id, resetToken.id);
 };
 
 /**
@@ -128,21 +114,12 @@ const handleTransactionError = async (connection, error) => {
  * @param {string} newPasswordHash - New hashed password
  * @param {Date} currentTime - Current timestamp
  */
-export const executePasswordResetTransaction = async (
-  resetToken,
-  newPasswordHash,
-  currentTime
-) => {
+export const executePasswordResetTransaction = async (resetToken, newPasswordHash, currentTime) => {
   const connection = await userPool.getConnection();
 
   try {
     await connection.beginTransaction();
-    await executePasswordResetOperations(
-      connection,
-      resetToken,
-      newPasswordHash,
-      currentTime
-    );
+    await executePasswordResetOperations(connection, resetToken, newPasswordHash, currentTime);
     await connection.commit();
   } catch (error) {
     await handleTransactionError(connection, error);
@@ -158,11 +135,7 @@ export const executePasswordResetTransaction = async (
  * @param {number} userId - User ID
  * @returns {Promise<void>}
  */
-const updateUserPasswordInTransaction = async (
-  connection,
-  newPasswordHash,
-  userId
-) => {
+const updateUserPasswordInTransaction = async (connection, newPasswordHash, userId) => {
   await connection.query(`UPDATE users SET password_hash = ? WHERE id = ?`, [
     newPasswordHash,
     userId,
@@ -177,10 +150,10 @@ const updateUserPasswordInTransaction = async (
  * @returns {Promise<void>}
  */
 const markTokenAsUsed = async (connection, currentTime, tokenId) => {
-  await connection.query(
-    `UPDATE password_reset_tokens SET is_used = 1, used_at = ? WHERE id = ?`,
-    [currentTime, tokenId]
-  );
+  await connection.query(`UPDATE password_reset_tokens SET is_used = 1, used_at = ? WHERE id = ?`, [
+    currentTime,
+    tokenId,
+  ]);
 };
 
 /**
@@ -191,12 +164,7 @@ const markTokenAsUsed = async (connection, currentTime, tokenId) => {
  * @param {number} currentTokenId - Current token ID to exclude
  * @returns {Promise<void>}
  */
-const invalidateOtherTokens = async (
-  connection,
-  currentTime,
-  userId,
-  currentTokenId
-) => {
+const invalidateOtherTokens = async (connection, currentTime, userId, currentTokenId) => {
   await connection.query(
     `UPDATE password_reset_tokens SET is_used = 1, used_at = ?
      WHERE user_id = ? AND id != ? AND is_used = 0`,
@@ -297,11 +265,7 @@ export const processPasswordReset = async (token, newPassword) => {
   const newPasswordHash = await hashPassword(newPassword);
   const currentTime = new Date();
 
-  await executePasswordResetTransaction(
-    resetToken,
-    newPasswordHash,
-    currentTime
-  );
+  await executePasswordResetTransaction(resetToken, newPasswordHash, currentTime);
 
   return createPasswordResetSuccessResponse(resetToken);
 };
@@ -338,10 +302,7 @@ export const processForgotPassword = async (email) => {
     return createUserNotFoundSecurityResponse();
   }
 
-  const { resetToken, expirationTime } = await generateAndSaveResetToken(
-    user,
-    email
-  );
+  const { resetToken, expirationTime } = await generateAndSaveResetToken(user, email);
 
   return createForgotPasswordSuccessResponse(user, resetToken, expirationTime);
 };
@@ -379,11 +340,7 @@ const generateAndSaveResetToken = async (user, email) => {
  * @param {Date} expirationTime - Token expiration time
  * @returns {Object} Success response object
  */
-const createForgotPasswordSuccessResponse = (
-  user,
-  resetToken,
-  expirationTime
-) => ({
+const createForgotPasswordSuccessResponse = (user, resetToken, expirationTime) => ({
   success: true,
   userExists: true,
   user: user,

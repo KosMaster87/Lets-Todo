@@ -14,8 +14,7 @@
  * @returns {Function} Success callback function
  */
 export const createBookmarkSuccessHandler =
-  (todoId, shouldRestoreFocus, renderFunction, restoreFocusFunction) =>
-  (newState) => {
+  (todoId, shouldRestoreFocus, renderFunction, restoreFocusFunction) => (newState) => {
     renderFunction();
     if (shouldRestoreFocus) {
       restoreFocusFunction(todoId);
@@ -31,8 +30,7 @@ export const createBookmarkSuccessHandler =
  * @returns {Function} Success callback function
  */
 export const createDoneSuccessHandler =
-  (todoId, shouldRestoreFocus, renderFunction, restoreFocusFunction) =>
-  (newState) => {
+  (todoId, shouldRestoreFocus, renderFunction, restoreFocusFunction) => (newState) => {
     renderFunction();
     if (shouldRestoreFocus) {
       restoreFocusFunction(todoId);
@@ -48,8 +46,7 @@ export const createDoneSuccessHandler =
  * @returns {Function} Generic success callback function
  */
 export const createGenericSuccessHandler =
-  (todoId, shouldRestoreFocus, renderFunction, restoreFocusFunction) =>
-  (newState) => {
+  (todoId, shouldRestoreFocus, renderFunction, restoreFocusFunction) => (newState) => {
     renderFunction();
     if (shouldRestoreFocus && restoreFocusFunction) {
       restoreFocusFunction(todoId);

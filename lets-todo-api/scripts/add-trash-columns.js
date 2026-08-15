@@ -21,9 +21,7 @@ async function addTrashColumns() {
       password: ENV.DB_PASSWORD,
     };
 
-    console.log(
-      `📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`
-    );
+    console.log(`📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`);
 
     // Connect to database server
     const connection = await mysql.createConnection(dbConfig);
@@ -115,9 +113,7 @@ async function addTrashColumns() {
         SET trashed = 0
         WHERE trashed IS NULL
       `);
-      console.log(
-        `✅ Updated ${updateResult.affectedRows} existing todos in ${dbName}`
-      );
+      console.log(`✅ Updated ${updateResult.affectedRows} existing todos in ${dbName}`);
 
       // Add index for better performance on trash queries
       try {
@@ -130,10 +126,7 @@ async function addTrashColumns() {
         if (indexError.code === "ER_DUP_KEYNAME") {
           console.log(`⏭️  Index already exists in ${dbName}`);
         } else {
-          console.warn(
-            `⚠️ Could not create index in ${dbName}:`,
-            indexError.message
-          );
+          console.warn(`⚠️ Could not create index in ${dbName}:`, indexError.message);
         }
       }
 

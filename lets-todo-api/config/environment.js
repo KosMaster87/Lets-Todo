@@ -158,8 +158,7 @@ const CONFIG = {
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
     EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, false),
     APP_NAME: process.env.APP_NAME || "Let's Todo",
-    FRONTEND_URL:
-      process.env.FRONTEND_URL || "https://lets-todo-app-feat.dev2k.org",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo-app-feat.dev2k.org",
   },
 
   staging: {
@@ -194,8 +193,7 @@ const CONFIG = {
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
     EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true), // Production should use SSL
     APP_NAME: process.env.APP_NAME || "Let's Todo",
-    FRONTEND_URL:
-      process.env.FRONTEND_URL || "https://lets-todo-app-stage.dev2k.org",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo-app-stage.dev2k.org",
   },
 
   production: {

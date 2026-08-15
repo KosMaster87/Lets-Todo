@@ -11,6 +11,3 @@
 - createTodosIndex     ← MOVE von dbHelpers
 - buildPatchQuery      ← BLEIBT in todosRouter
 ```
-
-
-

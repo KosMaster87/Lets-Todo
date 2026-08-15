@@ -87,9 +87,7 @@ export const moveToTrashWithRetry = async (createdTodo, title, trashTodo) => {
     await trashTodo(createdTodo.id);
     return true;
   } catch (trashError) {
-    console.warn(
-      `⚠️ Trash sync failed for "${title}", but todo is trashed locally`
-    );
+    console.warn(`⚠️ Trash sync failed for "${title}", but todo is trashed locally`);
     return true; // Still count as success since it's in correct local state
   }
 };
@@ -132,9 +130,7 @@ export const processSingleTrashedTodo = async (
     const success = await moveToTrashWithRetry(createdTodo, title, trashTodo);
     if (success) counters.imported++;
   } else {
-    counters.errors.push(
-      `Todo "${title}" was created but could not be found for trash move`
-    );
+    counters.errors.push(`Todo "${title}" was created but could not be found for trash move`);
   }
 };
 
@@ -160,12 +156,7 @@ export const handleTrashedTodoError = (error, todo, errors, ensureString) => {
  * @param {Object} options - Import options
  * @returns {Object} Import result
  */
-export const createTrashImportResult = (
-  imported,
-  duplicates,
-  errors,
-  options
-) => ({
+export const createTrashImportResult = (imported, duplicates, errors, options) => ({
   imported,
   duplicatesFound: duplicates.length,
   errors,

@@ -6,7 +6,7 @@
 # 🚀 Für regelmäßige Cronjob-Ausführung (monatlich)
 # ⚠️  Löscht nur INAKTIVE User, nicht alle!
 
-# —————— Konfiguration ——————
+# ------ Konfiguration ------
 # Option 1: Environment Variable (empfohlen für CI/CD)
 if [[ -n "$MYSQL_ROOT_PASSWORD" ]]; then
   MYSQL="mysql -u root -p'${MYSQL_ROOT_PASSWORD}'"
@@ -20,7 +20,7 @@ else
   exit 1
 fi
 
-# —————— Inactivity Configuration ——————
+# ------ Inactivity Configuration ------
 DAYS_INACTIVE=${DAYS_INACTIVE:-30}  # Default: 30 days inactive
 DRY_RUN=${DRY_RUN:-false}           # Default: Real deletion
 
@@ -30,7 +30,7 @@ echo "🗓️  Delete users inactive for: $DAYS_INACTIVE days"
 echo "🔍 Dry Run Mode: $DRY_RUN"
 echo ""
 
-# —————— Find Inactive Users ——————
+# ------ Find Inactive Users ------
 echo "🔍 Searching for inactive users..."
 
 # Unix timestamp for X days ago
@@ -78,7 +78,7 @@ if [[ "$confirm" != "yes" ]]; then
   exit 0
 fi
 
-# —————— Deletion Logic ——————
+# ------ Deletion Logic ------
 deleted_count=0
 failed_count=0
 

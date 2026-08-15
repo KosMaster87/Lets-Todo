@@ -57,9 +57,7 @@ export const findTodoById = (appState, todoId) => {
  * @returns {Object|undefined} Found trashed todo or undefined
  */
 export const findTrashedTodoById = (appState, todoId) => {
-  console.log(
-    `🔍 Finding trashed todo with ID: ${todoId}, type: ${typeof todoId}`
-  );
+  console.log(`🔍 Finding trashed todo with ID: ${todoId}, type: ${typeof todoId}`);
   const todo = appState.trashedTodos.find((t) => t.id == todoId);
   console.log(`🔎 Found trashed todo:`, todo);
   return todo;
@@ -71,8 +69,7 @@ export const findTrashedTodoById = (appState, todoId) => {
  * @param {string} todoId - Todo ID to find
  * @returns {Object|undefined} Found todo or undefined
  */
-export const findUpdatedTodo = (appState, todoId) =>
-  appState.todos.find((t) => t.id === todoId);
+export const findUpdatedTodo = (appState, todoId) => appState.todos.find((t) => t.id === todoId);
 
 /**
  * Finds todo to delete and validates it exists
@@ -81,9 +78,7 @@ export const findUpdatedTodo = (appState, todoId) =>
  * @returns {Object|null} Found todo or null if not found
  */
 export const findTodoToDelete = (appState, todoId) => {
-  console.log(
-    `🔍 Finding todo to delete with ID: ${todoId}, type: ${typeof todoId}`
-  );
+  console.log(`🔍 Finding todo to delete with ID: ${todoId}, type: ${typeof todoId}`);
   const todoToDelete = appState.trashedTodos.find((t) => t.id == todoId);
 
   if (!todoToDelete) {
@@ -101,9 +96,7 @@ export const findTodoToDelete = (appState, todoId) => {
  * @returns {Object} Object with isValid flag and serverId
  */
 export const validateServerIdForTodo = (todo, todoId) => {
-  const serverId =
-    todo.serverId ||
-    (typeof todoId === "string" ? parseInt(todoId, 10) : todoId);
+  const serverId = todo.serverId || (typeof todoId === "string" ? parseInt(todoId, 10) : todoId);
   return {
     isValid: !isNaN(serverId),
     serverId: serverId,
@@ -115,9 +108,7 @@ export const validateServerIdForTodo = (todo, todoId) => {
  * @param {string} todoId - Original todo ID
  */
 export const handleInvalidServerId = (todoId) => {
-  console.warn(
-    `⚠️ Cannot trash todo on server: no valid server ID for client ID: ${todoId}`
-  );
+  console.warn(`⚠️ Cannot trash todo on server: no valid server ID for client ID: ${todoId}`);
   console.log("ℹ️ Todo has been trashed locally, but server sync was skipped");
 };
 
@@ -126,9 +117,7 @@ export const handleInvalidServerId = (todoId) => {
  * @param {string} todoId - Original todo ID
  */
 export const handleInvalidRestoreServerId = (todoId) => {
-  console.warn(
-    `⚠️ Cannot restore todo on server: no valid server ID for client ID: ${todoId}`
-  );
+  console.warn(`⚠️ Cannot restore todo on server: no valid server ID for client ID: ${todoId}`);
   console.log("ℹ️ Todo has been restored locally, but server sync was skipped");
 };
 

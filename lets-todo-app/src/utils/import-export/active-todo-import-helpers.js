@@ -46,12 +46,7 @@ export const createImportTodoObject = (todo, title, content) => ({
  * @param {Function} addTodo - Todo creation function
  * @returns {void}
  */
-export const processSingleActiveTodo = (
-  todo,
-  counters,
-  ensureString,
-  addTodo
-) => {
+export const processSingleActiveTodo = (todo, counters, ensureString, addTodo) => {
   console.log(`🔍 Raw active todo object:`, todo);
 
   const title = ensureString(todo.title).trim() || "Importiertes Todo";
@@ -92,12 +87,7 @@ export const handleActiveTodoError = (error, todo, errors, ensureString) => {
  * @param {Object} options - Import options
  * @returns {Object} Import result
  */
-export const createActiveImportResult = (
-  imported,
-  duplicates,
-  errors,
-  options
-) => ({
+export const createActiveImportResult = (imported, duplicates, errors, options) => ({
   imported,
   duplicatesFound: duplicates.length,
   errors,

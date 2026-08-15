@@ -65,10 +65,7 @@ export const createDoneButtonConfig = (
  * @param {Function} createShareHandler - Handler creator function
  * @returns {Object} Share button configuration
  */
-export const createShareButtonConfig = (
-  getContentForActions,
-  createShareHandler
-) => ({
+export const createShareButtonConfig = (getContentForActions, createShareHandler) => ({
   elementId: "shareTodoBtn",
   handler: createShareHandler(getContentForActions),
 });
@@ -79,10 +76,7 @@ export const createShareButtonConfig = (
  * @param {Function} createCopyHandler - Handler creator function
  * @returns {Object} Copy button configuration
  */
-export const createCopyButtonConfig = (
-  getContentForActions,
-  createCopyHandler
-) => ({
+export const createCopyButtonConfig = (getContentForActions, createCopyHandler) => ({
   elementId: "copyTodoBtn",
   handler: createCopyHandler(getContentForActions),
 });
@@ -105,12 +99,7 @@ export const createDeleteButtonConfig = (deleteHandler) => ({
  * @param {Function} deleteHandler - Pre-configured delete handler
  * @returns {Object} Complete action button configuration
  */
-export const createActionButtonConfig = (
-  handlers,
-  stateGetters,
-  stateSetters,
-  deleteHandler
-) => ({
+export const createActionButtonConfig = (handlers, stateGetters, stateSetters, deleteHandler) => ({
   bookmark: createBookmarkButtonConfig(
     stateGetters.getBookmarkStateFromDOM,
     stateSetters.setBookmarkState,
@@ -122,13 +111,7 @@ export const createActionButtonConfig = (
     handlers.createCompletedToggleHandler,
     handlers.updateTodoStatusBadge
   ),
-  share: createShareButtonConfig(
-    handlers.getContentForActions,
-    handlers.createShareHandler
-  ),
-  copy: createCopyButtonConfig(
-    handlers.getContentForActions,
-    handlers.createCopyHandler
-  ),
+  share: createShareButtonConfig(handlers.getContentForActions, handlers.createShareHandler),
+  copy: createCopyButtonConfig(handlers.getContentForActions, handlers.createCopyHandler),
   delete: createDeleteButtonConfig(deleteHandler),
 });

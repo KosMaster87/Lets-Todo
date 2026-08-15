@@ -149,11 +149,7 @@ const syncUserPreferences = async () => {
 
   if (serverPreferences) {
     await setUserPreferences(serverPreferences);
-    logAuthStatus(
-      "success",
-      "User preferences synced from server:",
-      serverPreferences
-    );
+    logAuthStatus("success", "User preferences synced from server:", serverPreferences);
   }
 
   return serverPreferences;
@@ -187,11 +183,7 @@ const notifyServerLogout = async () => {
       credentials: "include",
     });
   } catch (error) {
-    logAuthStatus(
-      "warning",
-      "Server logout failed, continuing with local logout:",
-      error
-    );
+    logAuthStatus("warning", "Server logout failed, continuing with local logout:", error);
   }
 };
 

@@ -71,12 +71,8 @@ export const TodosPersistence = {
    */
   loadGuestData() {
     try {
-      const savedGuestTodos = StorageManager.getLocalData(
-        StorageKeys.LOCAL.GUEST_TODOS
-      );
-      const savedGuestTrash = StorageManager.getLocalData(
-        StorageKeys.LOCAL.GUEST_TRASH
-      );
+      const savedGuestTodos = StorageManager.getLocalData(StorageKeys.LOCAL.GUEST_TODOS);
+      const savedGuestTrash = StorageManager.getLocalData(StorageKeys.LOCAL.GUEST_TRASH);
 
       return {
         todos: savedGuestTodos || [],
@@ -158,11 +154,7 @@ export const SessionPersistence = {
         StorageManager.removeData("local", StorageKeys.SESSION.AUTH_DATA);
       }
 
-      StorageManager.setAuthData(
-        remember,
-        StorageKeys.SESSION.AUTH_DATA,
-        sessionData
-      );
+      StorageManager.setAuthData(remember, StorageKeys.SESSION.AUTH_DATA, sessionData);
     } catch (error) {
       console.error("Error saving session:", error);
     }

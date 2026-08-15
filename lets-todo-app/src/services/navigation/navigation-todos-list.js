@@ -19,14 +19,8 @@ import {
   handleToggleDone,
   handleDeleteTodo,
 } from "./../crud/todos-list-operations.js";
-import {
-  handleShareTodo,
-  handleCopyTodo,
-} from "./../crud/todos-list-sharing.js";
-import {
-  setupTodoActionsNavigation,
-  TODO_ACTIONS,
-} from "./../crud/todos-list-events.js";
+import { handleShareTodo, handleCopyTodo } from "./../crud/todos-list-sharing.js";
+import { setupTodoActionsNavigation, TODO_ACTIONS } from "./../crud/todos-list-events.js";
 import {
   shouldRestoreBookmarkFocus,
   shouldRestoreDoneFocus,

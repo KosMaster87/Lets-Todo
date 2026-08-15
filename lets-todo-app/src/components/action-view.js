@@ -31,12 +31,8 @@ export const renderActionButtons = (options = {}) => {
     return baseId;
   };
 
-  const bookmarkClass = `action-btn bookmark-view-btn${
-    isBookmarked ? " bookmarked" : ""
-  }`;
-  const doneClass = `action-btn done-todo-btn${
-    isCompleted ? " completed" : ""
-  }`;
+  const bookmarkClass = `action-btn bookmark-view-btn${isBookmarked ? " bookmarked" : ""}`;
+  const doneClass = `action-btn done-todo-btn${isCompleted ? " completed" : ""}`;
 
   return `
     <div class="todo-view-actions">

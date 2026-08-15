@@ -85,7 +85,7 @@ Let's Todo is a comprehensive task management solution featuring a modern vanill
 
 ```mermaid
 graph TD
-    A["👤 User / Browser"] -->|Interacts with| B["📱 SPA – Vanilla JS\nNo Framework · ES6 Modules"]
+    A["👤 User / Browser"] -->|Interacts with| B["📱 SPA - Vanilla JS\nNo Framework · ES6 Modules"]
     B --> C["🧩 Components\nUI · Pages · Dialogs"]
     B --> D["🔄 State Management\nmain-state.js · session-manager.js"]
     B --> E["🔌 API Services\napi-client.js · CRUD"]

@@ -71,11 +71,7 @@ const createExistingTodoDeleteHandler = () => {
  * @returns {Function} Content clear handler
  */
 const createNewTodoDeleteHandler = (resetBookmarkState) => {
-  return createContentClearHandler(
-    getContentForActions,
-    clearTodoContent,
-    resetBookmarkState
-  );
+  return createContentClearHandler(getContentForActions, clearTodoContent, resetBookmarkState);
 };
 
 /**
@@ -131,10 +127,7 @@ export const setupTodosActionButtons = (
     deleteHandler
   );
 
-  const currentStates = getCurrentDOMStates(
-    getBookmarkStateFromDOM,
-    getCompletedStateFromDOM
-  );
+  const currentStates = getCurrentDOMStates(getBookmarkStateFromDOM, getCompletedStateFromDOM);
 
   initializeActionButtons(
     actionButtonConfig,

@@ -47,9 +47,7 @@ const handleQueryError = (res, err) => {
  */
 router.get("/", async (req, res) => {
   const sql = createActiveTodosQuery();
-  await executeQuery(req.pool, res, sql, [], (rows) =>
-    handleTodosResponse(rows, res)
-  );
+  await executeQuery(req.pool, res, sql, [], (rows) => handleTodosResponse(rows, res));
 });
 
 /**
@@ -87,9 +85,7 @@ const handleTodosResponse = (rows, res) => {
  */
 router.get("/trash", async (req, res) => {
   const sql = createTrashedTodosQuery();
-  await executeQuery(req.pool, res, sql, [], (rows) =>
-    handleTodosResponse(rows, res)
-  );
+  await executeQuery(req.pool, res, sql, [], (rows) => handleTodosResponse(rows, res));
 });
 
 /**
@@ -329,10 +325,7 @@ router.patch("/:id", async (req, res) => {
   const validation = validatePatchData({ title, description, completed }, res);
   if (validation !== true) return validation;
 
-  const { sql, params } = buildPatchQuery(
-    { title, description, completed },
-    req.params.id
-  );
+  const { sql, params } = buildPatchQuery({ title, description, completed }, req.params.id);
 
   await executeQuery(req.pool, res, sql, params, (result) => {
     return handlePatchSuccess(result, res);
@@ -347,8 +340,7 @@ router.patch("/:id", async (req, res) => {
  */
 const validatePatchData = (updateData, res) => {
   const { title, description, completed } = updateData;
-  const hasUpdates =
-    title !== undefined || description !== undefined || completed !== undefined;
+  const hasUpdates = title !== undefined || description !== undefined || completed !== undefined;
 
   if (!hasUpdates) {
     return res.status(400).json({ error: "No update data" });

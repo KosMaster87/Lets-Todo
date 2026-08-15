@@ -6,10 +6,7 @@
 
 import { handleNavigationClick } from "./navigation.js";
 import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
-import {
-  setUserPreferences,
-  getUserPreferences,
-} from "./../../state/main-state.js";
+import { setUserPreferences, getUserPreferences } from "./../../state/main-state.js";
 
 /**
  * @function logOptionsStatus

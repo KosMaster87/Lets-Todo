@@ -5,11 +5,7 @@
  * @module trash-ui-state
  */
 
-import {
-  getFilterButtonConfig,
-  getNextFilterMode,
-  TRASH_FILTER_MODES,
-} from "./trash-filter.js";
+import { getFilterButtonConfig, getNextFilterMode, TRASH_FILTER_MODES } from "./trash-filter.js";
 
 // ###############################################################
 // Filter Button UI Management
@@ -43,10 +39,7 @@ const updateButtonContent = (button, config) => {
  * @param {string} buttonId - ID of the filter button
  * @returns {boolean} True if button was found and updated
  */
-export const updateTrashFilterButtonText = (
-  filterMode,
-  buttonId = "trashFilterBtn"
-) => {
+export const updateTrashFilterButtonText = (filterMode, buttonId = "trashFilterBtn") => {
   const filterBtn = getFilterButton(buttonId);
   if (!filterBtn) return false; // Silent fail - button not available yet
 

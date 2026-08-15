@@ -53,10 +53,7 @@ const updateButtonAppearance = (button, isLoading) => {
  * @param {boolean} isLoading - Loading state
  * @param {string} buttonId - ID of submit button
  */
-export const updateRegisterLoadingState = (
-  isLoading,
-  buttonId = "registerSubmitBtn"
-) => {
+export const updateRegisterLoadingState = (isLoading, buttonId = "registerSubmitBtn") => {
   const submitBtn = getSubmitButton(buttonId);
   if (!submitBtn) return false;
 
@@ -154,8 +151,7 @@ const clearElementValidation = (elementId) => {
  * @param {Array} elementIds - Array of input element IDs to clear
  */
 export const clearFormValidation = (elementIds = []) => {
-  const idsToProcess =
-    elementIds.length > 0 ? elementIds : getDefaultElementIds();
+  const idsToProcess = elementIds.length > 0 ? elementIds : getDefaultElementIds();
   idsToProcess.forEach(clearElementValidation);
 };
 

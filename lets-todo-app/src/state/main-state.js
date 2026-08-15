@@ -45,13 +45,8 @@ const appState = {
 };
 
 const listenerManager = createListenerManager(appState);
-const {
-  addListener,
-  removeListener,
-  notifyListeners,
-  getListenerCount,
-  clearAllListeners,
-} = listenerManager;
+const { addListener, removeListener, notifyListeners, getListenerCount, clearAllListeners } =
+  listenerManager;
 
 // === GETTER FUNCTIONS ===
 
@@ -71,8 +66,7 @@ export const getTrashedTodos = () => [...appState.trashedTodos];
  * Returns the current todo.
  * @returns {Object|null} Current todo
  */
-export const getCurrentTodo = () =>
-  appState.currentTodo ? { ...appState.currentTodo } : null;
+export const getCurrentTodo = () => (appState.currentTodo ? { ...appState.currentTodo } : null);
 
 /**
  * Returns a copy of the notifications.
@@ -147,12 +141,7 @@ export const getError = () => appState.error;
  * @param {string} view - View name
  */
 export const setCurrentView = (view) => {
-  UIStateManager.setCurrentView(
-    appState,
-    view,
-    getCurrentView,
-    notifyListeners
-  );
+  UIStateManager.setCurrentView(appState, view, getCurrentView, notifyListeners);
 };
 
 /**
@@ -169,11 +158,7 @@ export const setLoading = (loading) => {
  * @returns {Promise<void>}
  */
 export const setUserPreferences = async (preferences) => {
-  await UIStateManager.setUserPreferences(
-    appState,
-    preferences,
-    notifyListeners
-  );
+  await UIStateManager.setUserPreferences(appState, preferences, notifyListeners);
 };
 
 /**
@@ -191,12 +176,7 @@ export const setError = (error) => {
  * @param {Object} sessionData - Session data object
  */
 export const setSession = (sessionData) => {
-  SessionManager.setSession(
-    appState,
-    sessionData,
-    notifyListeners,
-    getCurrentView
-  );
+  SessionManager.setSession(appState, sessionData, notifyListeners, getCurrentView);
 };
 
 /**

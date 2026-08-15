@@ -5,10 +5,7 @@
  */
 
 import { getTrashedTodos } from "./../../state/main-state.js";
-import {
-  renderTrashPlaceholder,
-  renderSingleTrashTodo,
-} from "./../../components/pages/trash.js";
+import { renderTrashPlaceholder, renderSingleTrashTodo } from "./../../components/pages/trash.js";
 
 // ###############################################################
 // Filter Configuration Constants
@@ -55,9 +52,7 @@ export const getNextFilterMode = (currentMode) => {
  * @returns {Array} Sorted todos (newest first)
  */
 const sortByRecentDeletion = (todos) => {
-  return todos.sort(
-    (a, b) => new Date(b.deletedAt || 0) - new Date(a.deletedAt || 0)
-  );
+  return todos.sort((a, b) => new Date(b.deletedAt || 0) - new Date(a.deletedAt || 0));
 };
 
 /**
@@ -66,9 +61,7 @@ const sortByRecentDeletion = (todos) => {
  * @returns {Array} Sorted todos (oldest first)
  */
 const sortByOldDeletion = (todos) => {
-  return todos.sort(
-    (a, b) => new Date(a.deletedAt || 0) - new Date(b.deletedAt || 0)
-  );
+  return todos.sort((a, b) => new Date(a.deletedAt || 0) - new Date(b.deletedAt || 0));
 };
 
 /**
@@ -130,10 +123,7 @@ const renderTrashTodos = (container, todos) => {
  * @param {string} filterMode - Filter mode to apply
  * @param {string} containerId - ID of the container element
  */
-export const renderTrashWithFilter = (
-  filterMode,
-  containerId = "trashTodosList"
-) => {
+export const renderTrashWithFilter = (filterMode, containerId = "trashTodosList") => {
   const trashContainer = getTrashContainer(containerId);
   if (!trashContainer) return;
 

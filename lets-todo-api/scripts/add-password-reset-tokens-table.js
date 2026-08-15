@@ -93,9 +93,7 @@ const verifyTableCreation = async () => {
     ];
 
     const actualColumns = columns.map((col) => col.Field);
-    const missingColumns = expectedColumns.filter(
-      (col) => !actualColumns.includes(col)
-    );
+    const missingColumns = expectedColumns.filter((col) => !actualColumns.includes(col));
 
     if (missingColumns.length > 0) {
       throw new Error(`Missing columns: ${missingColumns.join(", ")}`);
@@ -189,12 +187,8 @@ const runMigration = async () => {
   } catch (error) {
     errorLog("❌ Migration failed:", error);
     console.log("\n🔄 Rollback Information:");
-    console.log(
-      "   To rollback, run: DROP TABLE IF EXISTS password_reset_tokens;"
-    );
-    console.log(
-      "   To rollback procedure: DROP PROCEDURE IF EXISTS CleanupExpiredResetTokens;"
-    );
+    console.log("   To rollback, run: DROP TABLE IF EXISTS password_reset_tokens;");
+    console.log("   To rollback procedure: DROP PROCEDURE IF EXISTS CleanupExpiredResetTokens;");
     process.exit(1);
   }
 };

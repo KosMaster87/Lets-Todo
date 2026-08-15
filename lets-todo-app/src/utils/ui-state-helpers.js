@@ -80,10 +80,7 @@ export const setSubmitButtonState = (
  * @param {string} errorElementId - ID of the error element to display message in
  * @returns {void} No return value - performs DOM manipulation for error display
  */
-export const showErrorMessage = (
-  message,
-  errorElementId = "changePasswordError"
-) => {
+export const showErrorMessage = (message, errorElementId = "changePasswordError") => {
   const errorElement = getErrorElement(errorElementId);
   if (errorElement) {
     displayErrorMessage(errorElement, message);
@@ -130,10 +127,7 @@ const scrollToElement = (element) => {
  * @param {string} successElementId - ID of the success element to display message in
  * @returns {void} No return value - performs DOM manipulation for success display
  */
-export const showSuccessMessage = (
-  message,
-  successElementId = "changePasswordSuccess"
-) => {
+export const showSuccessMessage = (message, successElementId = "changePasswordSuccess") => {
   const successElement = getSuccessElement(successElementId);
   if (successElement) {
     displaySuccessMessage(successElement, message);
@@ -302,10 +296,7 @@ const getButtonTexts = (isLoading) => {
  * @param {string} buttonId - Download button ID
  * @returns {void} No return value - performs button state updates
  */
-export const setDownloadButtonState = (
-  isLoading,
-  buttonId = "downloadTodosBtn"
-) => {
+export const setDownloadButtonState = (isLoading, buttonId = "downloadTodosBtn") => {
   const button = document.getElementById(buttonId);
   if (!button) return;
 
@@ -347,10 +338,7 @@ const updateDownloadButtonContent = (btnContent, isLoading) => {
  * @param {string} buttonId - Upload button ID
  * @returns {void} No return value - performs button state updates
  */
-export const setUploadButtonState = (
-  isLoading,
-  buttonId = "uploadTodosBtn"
-) => {
+export const setUploadButtonState = (isLoading, buttonId = "uploadTodosBtn") => {
   const button = document.getElementById(buttonId);
   if (!button) return;
 
@@ -395,10 +383,7 @@ const updateUploadButtonContent = (btnContent, isLoading) => {
  * @param {Function} areActionButtonsAvailable - Function to check button availability
  * @returns {boolean} True if setup can proceed
  */
-export const canSetupActionButtons = (
-  isInTodoView,
-  areActionButtonsAvailable
-) => {
+export const canSetupActionButtons = (isInTodoView, areActionButtonsAvailable) => {
   if (!isInTodoView()) return false;
   if (!areActionButtonsAvailable()) return false;
   return true;
@@ -410,10 +395,7 @@ export const canSetupActionButtons = (
  * @param {Function} getCompletedStateFromDOM - Function to get completed state
  * @returns {Object} Current bookmark and completed states
  */
-export const getCurrentDOMStates = (
-  getBookmarkStateFromDOM,
-  getCompletedStateFromDOM
-) => ({
+export const getCurrentDOMStates = (getBookmarkStateFromDOM, getCompletedStateFromDOM) => ({
   bookmarkState: getBookmarkStateFromDOM(),
   completedState: getCompletedStateFromDOM(),
 });
@@ -442,9 +424,7 @@ export const initializeActionButtons = (
  * @returns {boolean} True if focus should be restored
  */
 export const shouldRestoreBookmarkFocus = (focusedElement) => {
-  return (
-    focusedElement && focusedElement.classList.contains("bookmark-view-btn")
-  );
+  return focusedElement && focusedElement.classList.contains("bookmark-view-btn");
 };
 
 /**

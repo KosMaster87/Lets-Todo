@@ -14,12 +14,7 @@ import { showMessage } from "./message-helpers.js";
  * @param {HTMLElement} contentElement - Content DOM element
  * @returns {boolean} True if todo has content
  */
-export const hasAnyTodoContent = (
-  title,
-  content,
-  titleElement,
-  contentElement
-) => {
+export const hasAnyTodoContent = (title, content, titleElement, contentElement) => {
   return (
     title ||
     content ||
@@ -55,11 +50,7 @@ const getSuccessMessage = (hasContent) => {
  * @param {boolean} hasContent - Whether todo has content
  * @returns {void}
  */
-const executeContentClear = (
-  clearContentCallback,
-  onDeleteCallback,
-  hasContent
-) => {
+const executeContentClear = (clearContentCallback, onDeleteCallback, hasContent) => {
   clearContentCallback();
   showMessage(getSuccessMessage(hasContent));
 
@@ -75,11 +66,7 @@ const executeContentClear = (
  * @param {boolean} hasContent - Whether todo has content
  * @returns {void}
  */
-export const handleContentClear = (
-  clearContentCallback,
-  onDeleteCallback,
-  hasContent
-) => {
+export const handleContentClear = (clearContentCallback, onDeleteCallback, hasContent) => {
   const confirmMessage = getConfirmationMessage(hasContent);
 
   if (confirm(confirmMessage)) {

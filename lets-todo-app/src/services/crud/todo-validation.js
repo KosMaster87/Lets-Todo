@@ -5,10 +5,7 @@
  */
 
 import { showMessage } from "./../../utils/ui-helpers/message-helpers.js";
-import {
-  getTodoTitleElement,
-  getTodoContentElement,
-} from "./../../utils/dom-selectors.js";
+import { getTodoTitleElement, getTodoContentElement } from "./../../utils/dom-selectors.js";
 
 // ###############################################################
 // DOM Element Validation
@@ -92,12 +89,7 @@ const validateContentNotPlaceholder = (content, contentPlaceholder) => {
  * @param {string} contentPlaceholder - Content placeholder text
  * @returns {boolean} True if valid, false otherwise
  */
-export const validateTodoContentValues = (
-  title,
-  content,
-  titlePlaceholder,
-  contentPlaceholder
-) => {
+export const validateTodoContentValues = (title, content, titlePlaceholder, contentPlaceholder) => {
   if (!validateContentExists(title, content)) return false;
   if (!validateTitleNotPlaceholder(title, titlePlaceholder)) return false;
   if (!validateContentNotPlaceholder(content, contentPlaceholder)) return false;
@@ -138,10 +130,7 @@ const isPlaceholderText = (text, placeholder) => {
   if (!text) return false;
 
   const trimmedText = text.trim();
-  return (
-    isStaticPlaceholder(trimmedText) ||
-    isProvidedPlaceholder(trimmedText, placeholder)
-  );
+  return isStaticPlaceholder(trimmedText) || isProvidedPlaceholder(trimmedText, placeholder);
 };
 
 // ###############################################################

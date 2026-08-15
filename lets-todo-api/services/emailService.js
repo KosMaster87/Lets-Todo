@@ -5,12 +5,7 @@
  */
 
 import nodemailer from "nodemailer";
-import {
-  ENV,
-  ENVIRONMENT,
-  debugLog,
-  errorLog,
-} from "./../config/environment.js";
+import { ENV, ENVIRONMENT, debugLog, errorLog } from "./../config/environment.js";
 
 /**
  * Email service for password reset and other notifications

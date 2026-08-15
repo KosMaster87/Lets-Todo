@@ -36,9 +36,7 @@ const PASSWORD_CONFIG = {
  */
 const logPasswordValidation = (action, details = "") => {
   if (DEBUG_MODE) {
-    console.log(
-      `[Password Validation] ${action}${details ? ": " + details : ""}`
-    );
+    console.log(`[Password Validation] ${action}${details ? ": " + details : ""}`);
   }
 };
 
@@ -50,11 +48,7 @@ const logPasswordValidation = (action, details = "") => {
  * @param {Function} showErrorMessage - Function to display error messages
  * @returns {boolean} True if validation passes, false otherwise
  */
-export const validatePasswordInputs = (
-  newPassword,
-  confirmPassword,
-  showErrorMessage
-) => {
+export const validatePasswordInputs = (newPassword, confirmPassword, showErrorMessage) => {
   if (!newPassword || !confirmPassword) {
     showErrorMessage(PASSWORD_CONFIG.MESSAGES.BOTH_FIELDS_REQUIRED);
     return false;
@@ -160,11 +154,7 @@ const validateConfirmPasswordPresence = (confirmPassword, showErrorMessage) => {
  * @param {Function} showErrorMessage - Function to display error messages
  * @returns {boolean} True if passwords match, false if they don't match
  */
-const validatePasswordsMatch = (
-  confirmPassword,
-  newPassword,
-  showErrorMessage
-) => {
+const validatePasswordsMatch = (confirmPassword, newPassword, showErrorMessage) => {
   if (newPassword !== confirmPassword) {
     showErrorMessage(PASSWORD_CONFIG.MESSAGES.NO_MATCH);
     focusConfirmPasswordInput();
@@ -181,11 +171,7 @@ const validatePasswordsMatch = (
  * @param {Function} showErrorMessage - Function to display error messages
  * @returns {boolean} True if confirmation is valid, false if invalid
  */
-export const validatePasswordConfirmation = (
-  confirmPassword,
-  newPassword,
-  showErrorMessage
-) => {
+export const validatePasswordConfirmation = (confirmPassword, newPassword, showErrorMessage) => {
   return (
     validateConfirmPasswordPresence(confirmPassword, showErrorMessage) &&
     validatePasswordsMatch(confirmPassword, newPassword, showErrorMessage)
@@ -200,11 +186,7 @@ export const validatePasswordConfirmation = (
  * @param {Function} showErrorMessage - Function to display error messages
  * @returns {boolean} True if passwords are different, false if identical
  */
-export const validatePasswordUniqueness = (
-  currentPassword,
-  newPassword,
-  showErrorMessage
-) => {
+export const validatePasswordUniqueness = (currentPassword, newPassword, showErrorMessage) => {
   if (currentPassword === newPassword) {
     showErrorMessage(PASSWORD_CONFIG.MESSAGES.MUST_BE_DIFFERENT);
     focusNewPasswordInput();
@@ -231,11 +213,7 @@ export const validatePasswordChangeInputs = (
   return (
     validateCurrentPassword(currentPassword, showErrorMessage) &&
     validateNewPasswordEnhanced(newPassword, showErrorMessage) &&
-    validatePasswordConfirmation(
-      confirmPassword,
-      newPassword,
-      showErrorMessage
-    ) &&
+    validatePasswordConfirmation(confirmPassword, newPassword, showErrorMessage) &&
     validatePasswordUniqueness(currentPassword, newPassword, showErrorMessage)
   );
 };

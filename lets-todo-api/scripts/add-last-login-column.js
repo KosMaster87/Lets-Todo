@@ -12,13 +12,7 @@
  */
 
 import mysql from "mysql2/promise";
-import {
-  ENV,
-  debugLog,
-  infoLog,
-  errorLog,
-  ENVIRONMENT,
-} from "../config/environment.js";
+import { ENV, debugLog, infoLog, errorLog, ENVIRONMENT } from "../config/environment.js";
 
 async function addLastLoginColumn() {
   try {

@@ -21,9 +21,7 @@ async function cleanDatabase() {
       password: ENV.DB_PASSWORD,
     };
 
-    console.log(
-      `📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`
-    );
+    console.log(`📡 Connecting to database server: ${dbConfig.host}:${dbConfig.port}`);
 
     // Connect to database server
     const connection = await mysql.createConnection(dbConfig);

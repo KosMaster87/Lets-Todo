@@ -89,10 +89,7 @@ export const createEmptyAnalysisResult = () => ({
  * @returns {boolean} True if todos match
  */
 export const isTodoMatch = (importedTodo, existingTodo) => {
-  return (
-    existingTodo.title === importedTodo.title &&
-    existingTodo.content === importedTodo.content
-  );
+  return existingTodo.title === importedTodo.title && existingTodo.content === importedTodo.content;
 };
 
 /**
@@ -113,12 +110,7 @@ export const isDuplicateTodo = (importedTodo, existingTodos) => {
  * @param {Array} unique - Unique collection
  * @returns {void}
  */
-export const categorizeTodo = (
-  importedTodo,
-  existingTodos,
-  duplicates,
-  unique
-) => {
+export const categorizeTodo = (importedTodo, existingTodos, duplicates, unique) => {
   if (isDuplicateTodo(importedTodo, existingTodos)) {
     duplicates.push(importedTodo);
   } else {

@@ -14,11 +14,7 @@ import { validateTodoContentValues } from "./../crud/todo-validation.js";
 import { getTodoContentFromDOM } from "./../crud/todo-content.js";
 import { processTodoSave } from "./../crud/todo-save.js";
 import { setupTodosActionButtons } from "./../crud/todo-action-setup.js";
-import {
-  initializeFormState,
-  resetFormState,
-  resetBookmarkUI,
-} from "./../crud/todo-form.js";
+import { initializeFormState, resetFormState, resetBookmarkUI } from "./../crud/todo-form.js";
 
 let currentBookmarkState = false;
 let currentCompletedState = false;

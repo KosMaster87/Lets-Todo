@@ -1,0 +1,5 @@
+node_modules/
+docs/
+coverage/
+config/env/.env*
+pnpm-lock.yaml

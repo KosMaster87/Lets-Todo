@@ -63,9 +63,7 @@ export const createDefaultImportOptions = () => ({
  */
 export const isFileTypeSupported = (fileName) => {
   const supportedTypes = getSupportedFileTypes();
-  const fileExtension = fileName
-    .toLowerCase()
-    .substring(fileName.lastIndexOf("."));
+  const fileExtension = fileName.toLowerCase().substring(fileName.lastIndexOf("."));
   return supportedTypes.includes(fileExtension);
 };
 

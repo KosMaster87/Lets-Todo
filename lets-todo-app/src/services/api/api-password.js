@@ -165,10 +165,7 @@ const executePasswordChangeRequest = async (currentPassword, newPassword) => {
  * @throws {Error} Thrown when password change fails or returns unsuccessful result
  */
 export const processPasswordChange = async (inputs) => {
-  const result = await callChangePasswordAPI(
-    inputs.currentPassword,
-    inputs.newPassword
-  );
+  const result = await callChangePasswordAPI(inputs.currentPassword, inputs.newPassword);
 
   validatePasswordChangeResult(result);
   return { success: true, inputs };
@@ -185,8 +182,7 @@ export const processPasswordChange = async (inputs) => {
  */
 const validatePasswordChangeResult = (result) => {
   if (!result.success) {
-    const errorMessage =
-      result.message || "Failed to change password. Please try again.";
+    const errorMessage = result.message || "Failed to change password. Please try again.";
     throw new Error(errorMessage);
   }
 };
@@ -239,9 +235,7 @@ export const callPasswordResetAPI = async (token, newPassword) => {
  */
 export const handlePasswordChangeError = (error, showErrorMessage) => {
   logPasswordOperation("error", "Error changing password:", error);
-  const message =
-    error.message ||
-    "An error occurred while changing password. Please try again.";
+  const message = error.message || "An error occurred while changing password. Please try again.";
   showErrorMessage(message);
 };
 
@@ -254,8 +248,6 @@ export const handlePasswordChangeError = (error, showErrorMessage) => {
  */
 export const handlePasswordResetError = (error, showErrorMessage) => {
   logPasswordOperation("error", "Error resetting password:", error);
-  const message =
-    error.message ||
-    "An error occurred while resetting password. Please try again.";
+  const message = error.message || "An error occurred while resetting password. Please try again.";
   showErrorMessage(message);
 };

@@ -91,18 +91,9 @@ const initializeTheme = () => {
  * @param {Array} currentTodos - Current todos array
  * @param {Array} currentTrashedTodos - Current trashed todos array
  */
-const initializeSampleDataIfNeeded = (
-  sessionType,
-  currentTodos,
-  currentTrashedTodos
-) => {
+const initializeSampleDataIfNeeded = (sessionType, currentTodos, currentTrashedTodos) => {
   if (sessionType !== "user") {
-    initializeAllSampleData(
-      addTodo,
-      setTrashedTodos,
-      currentTodos,
-      currentTrashedTodos
-    );
+    initializeAllSampleData(addTodo, setTrashedTodos, currentTodos, currentTrashedTodos);
   } else {
     // console.log(
     //   `👤 User session detected - skipping sample data initialization`

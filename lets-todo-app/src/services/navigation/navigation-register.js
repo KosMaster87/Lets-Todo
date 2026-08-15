@@ -168,8 +168,7 @@ const processUserRegistration = (userData) => {
 
   handleUserRegistration(
     userData,
-    (result, userData) =>
-      handleRegistrationSuccess(result, userData, messageHandler),
+    (result, userData) => handleRegistrationSuccess(result, userData, messageHandler),
     handleRegistrationError,
     updateRegisterLoadingState
   );

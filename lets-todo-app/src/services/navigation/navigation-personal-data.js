@@ -8,14 +8,8 @@ import { handleNavigationClick } from "./navigation.js";
 import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
 import { downloadTodos } from "./../crud/personal-data-download.js";
 import { triggerFileUpload } from "./../crud/personal-data-upload-handler.js";
-import {
-  showSuccessNotification,
-  showErrorNotification,
-} from "./../../utils/notifications.js";
-import {
-  setDownloadButtonState,
-  setUploadButtonState,
-} from "./../../utils/ui-state-helpers.js";
+import { showSuccessNotification, showErrorNotification } from "./../../utils/notifications.js";
+import { setDownloadButtonState, setUploadButtonState } from "./../../utils/ui-state-helpers.js";
 
 /**
  * Logs personal data operation status for debugging
@@ -197,9 +191,7 @@ const handleUploadSuccess = (result) => {
   logPersonalDataStatus("success", "Upload successful:", result);
 
   if (result && result.totalFound) {
-    showSuccessNotification(
-      `📁 Total ${result.totalFound} todos found and processed`
-    );
+    showSuccessNotification(`📁 Total ${result.totalFound} todos found and processed`);
   }
 };
 

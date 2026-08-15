@@ -58,10 +58,7 @@ const createEnterKeyHandler = (onSubmit) => {
  * @param {Function} onSubmit - Form submission callback
  * @param {string} formSelector - CSS selector for form
  */
-export const setupRegisterFormHandlers = (
-  onSubmit,
-  formSelector = ".register-menu"
-) => {
+export const setupRegisterFormHandlers = (onSubmit, formSelector = ".register-menu") => {
   const form = getFormElement(formSelector);
   if (!form) return false;
 
@@ -102,10 +99,7 @@ const setupPasswordValidation = (fieldId) => {
 const setupPasswordConfirmValidation = (fieldId) => {
   const passwordConfirmInput = document.getElementById(fieldId);
   if (passwordConfirmInput) {
-    passwordConfirmInput.addEventListener(
-      "blur",
-      handlePasswordConfirmValidation
-    );
+    passwordConfirmInput.addEventListener("blur", handlePasswordConfirmValidation);
   }
 };
 
@@ -193,8 +187,7 @@ const extractFieldValues = (fieldIds) => {
   return {
     email: document.getElementById(fieldIds.EMAIL)?.value || "",
     password: document.getElementById(fieldIds.PASSWORD)?.value || "",
-    passwordConfirm:
-      document.getElementById(fieldIds.PASSWORD_CONFIRM)?.value || "",
+    passwordConfirm: document.getElementById(fieldIds.PASSWORD_CONFIRM)?.value || "",
     termsAccepted: document.getElementById(fieldIds.TERMS)?.checked || false,
   };
 };
@@ -233,10 +226,7 @@ const createSubmitClickHandler = (onSubmit) => {
  * @param {Function} onSubmit - Submit callback function
  * @param {string} buttonId - Submit button ID
  */
-export const setupSubmitHandler = (
-  onSubmit,
-  buttonId = FORM_FIELD_IDS.SUBMIT_BTN
-) => {
+export const setupSubmitHandler = (onSubmit, buttonId = FORM_FIELD_IDS.SUBMIT_BTN) => {
   const submitBtn = document.getElementById(buttonId);
   if (!submitBtn) return false;
 

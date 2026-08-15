@@ -4,11 +4,7 @@
  * @module todo-save
  */
 
-import {
-  addTodo,
-  updateTodo,
-  getCurrentTodo,
-} from "./../../state/main-state.js";
+import { addTodo, updateTodo, getCurrentTodo } from "./../../state/main-state.js";
 import { navigateToView } from "./../navigation/navigation.js";
 import { VIEWS } from "./../../utils/constants.js";
 import { showMessage } from "./../../utils/ui-helpers/message-helpers.js";
@@ -26,12 +22,7 @@ import { clearFormAfterNewTodo } from "./todo-form.js";
  * @param {boolean} currentBookmarkState - Current bookmark state
  * @returns {Object} Update object
  */
-export const createTodoUpdate = (
-  title,
-  content,
-  currentCompletedState,
-  currentBookmarkState
-) => ({
+export const createTodoUpdate = (title, content, currentCompletedState, currentBookmarkState) => ({
   title: title || "Neue Todo",
   content: content,
   lastModified: new Date().toISOString(),
@@ -47,12 +38,7 @@ export const createTodoUpdate = (
  * @param {boolean} currentBookmarkState - Current bookmark state
  * @returns {Object} New todo object
  */
-export const createNewTodo = (
-  title,
-  content,
-  currentCompletedState,
-  currentBookmarkState
-) => ({
+export const createNewTodo = (title, content, currentCompletedState, currentBookmarkState) => ({
   title: title || "Neue Todo",
   content: content,
   created: new Date(),
@@ -82,17 +68,8 @@ export const handleSuccessfulSave = () => {
  * @param {boolean} bookmarkState - Bookmark state
  * @returns {void}
  */
-const handleTodoUpdate = (
-  currentTodo,
-  title,
-  content,
-  completedState,
-  bookmarkState
-) => {
-  updateTodo(
-    currentTodo.id,
-    createTodoUpdate(title, content, completedState, bookmarkState)
-  );
+const handleTodoUpdate = (currentTodo, title, content, completedState, bookmarkState) => {
+  updateTodo(currentTodo.id, createTodoUpdate(title, content, completedState, bookmarkState));
   showMessage("Todo erfolgreich aktualisiert!");
 };
 
@@ -137,31 +114,13 @@ const handleSaveError = (error) => {
  * @param {boolean} bookmarkState - Bookmark state
  * @returns {void}
  */
-const executeSaveOperation = (
-  currentTodo,
-  domContent,
-  completedState,
-  bookmarkState
-) => {
+const executeSaveOperation = (currentTodo, domContent, completedState, bookmarkState) => {
   const { titleElement, contentElement, title, content } = domContent;
 
   if (currentTodo && currentTodo.id) {
-    handleTodoUpdate(
-      currentTodo,
-      title,
-      content,
-      completedState,
-      bookmarkState
-    );
+    handleTodoUpdate(currentTodo, title, content, completedState, bookmarkState);
   } else {
-    handleTodoCreation(
-      title,
-      content,
-      completedState,
-      bookmarkState,
-      titleElement,
-      contentElement
-    );
+    handleTodoCreation(title, content, completedState, bookmarkState, titleElement, contentElement);
   }
 };
 
@@ -172,20 +131,11 @@ const executeSaveOperation = (
  * @param {boolean} currentBookmarkState - Current bookmark state
  * @returns {void}
  */
-export const processTodoSave = (
-  domContent,
-  currentCompletedState,
-  currentBookmarkState
-) => {
+export const processTodoSave = (domContent, currentCompletedState, currentBookmarkState) => {
   const currentTodo = getCurrentTodo();
 
   try {
-    executeSaveOperation(
-      currentTodo,
-      domContent,
-      currentCompletedState,
-      currentBookmarkState
-    );
+    executeSaveOperation(currentTodo, domContent, currentCompletedState, currentBookmarkState);
     handleSuccessfulSave();
   } catch (error) {
     handleSaveError(error);

@@ -5,7 +5,7 @@
 # 🚀 For SERVER environments: feat/staging/production
 # ⚠️  WARNING: Deletes all user data irreversibly!
 
-# —————— Configuration ——————
+# ------ Configuration ------
 # Option 1: Environment Variable (recommended for CI/CD)
 if [[ -n "$MYSQL_ROOT_PASSWORD" ]]; then
   MYSQL="mysql -u root -p'${MYSQL_ROOT_PASSWORD}'"
@@ -19,14 +19,14 @@ else
   exit 1
 fi
 
-# —————— Datenbankmuster ——————
+# ------ Datenbankmuster ------
 PATTERNS=("todos_guest_" "todos_user_")
 EXCLUDE_DBS=("todos_users" "todos_main")
 
 echo "🧹 TODOS DATABASE CLEANUP"
 echo "=========================="
 
-# —————— Löschlogik ——————
+# ------ Löschlogik ------
 total_deleted=0
 
 for pattern in "${PATTERNS[@]}"; do
@@ -77,7 +77,7 @@ for exclude_db in "${EXCLUDE_DBS[@]}"; do
   echo "     • $exclude_db"
 done
 
-# —————— User-Daten bereinigen ——————
+# ------ User-Daten bereinigen ------
 echo ""
 echo "🧹 Leere zentrale User-Tabelle..."
 ${MYSQL} -e "DELETE FROM todos_users.users;" 2>/dev/null

@@ -13,8 +13,7 @@
  * @param {boolean} options.closeable - Whether toast can be manually closed
  */
 export const showToast = (message, type = "info", options = {}) => {
-  const { duration = type === "success" ? 5000 : 8000, closeable = true } =
-    options;
+  const { duration = type === "success" ? 5000 : 8000, closeable = true } = options;
 
   removeExistingToasts(type);
 

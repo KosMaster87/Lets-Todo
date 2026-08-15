@@ -85,10 +85,7 @@ const getValidatedContainer = (containerId) => {
  * @param {string} containerId - ID of the container element
  * @returns {void}
  */
-export const renderTodosListWithFilter = (
-  filterMode,
-  containerId = "todosList"
-) => {
+export const renderTodosListWithFilter = (filterMode, containerId = "todosList") => {
   const todosContainer = getValidatedContainer(containerId);
   if (!todosContainer) return;
 

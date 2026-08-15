@@ -4,11 +4,7 @@
  * @module navigation
  */
 
-import {
-  setCurrentView,
-  saveSessionToStorage,
-  setSession,
-} from "./../../state/main-state.js";
+import { setCurrentView, saveSessionToStorage, setSession } from "./../../state/main-state.js";
 import { VIEWS, PAGE_TITLES, SESSION_TYPES } from "./../../utils/constants.js";
 import { setupDashboardEventListeners } from "./navigation-dashboard.js";
 import { setupRegisterEventListeners } from "./navigation-register.js";
@@ -104,9 +100,7 @@ const loadInitialView = () => {
     setCurrentView(urlInfo.view);
     updateDocumentTitle(urlInfo.view);
   } else {
-    console.warn(
-      `Invalid view "${urlInfo.view}" detected, redirecting to main menu`
-    );
+    console.warn(`Invalid view "${urlInfo.view}" detected, redirecting to main menu`);
     navigateToView(VIEWS.MAIN_MENU);
   }
 };

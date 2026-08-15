@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -10,9 +11,11 @@
     "dev:db": "NODE_ENV=development node scripts/setup-dev-db.js",
     "prod": "NODE_ENV=production node server.js",
     "docs": "jsdoc -c jsdoc.config.json",
-    "docs:serve": "npx http-server docs -p 8080 -o",
-    "docs:clean": "rm -rf docs/ && npm run docs",
+    "docs:serve": "pnpm dlx http-server docs -p 8080 -o",
+    "docs:clean": "rm -rf docs/ && pnpm run docs",
     "generate-docs": "jsdoc --configure jsdoc.config.json --verbose",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "staging:prepare": "git checkout -B feature/staging-prepare && node scripts/staging-cleanup.js && git add . && git commit -m 'chore: Prepare code for production staging' && git push -f origin feature/staging-prepare && git checkout staging && git reset --hard feature/staging-prepare && git push -f origin staging && echo '🎉 Everything synced!'",
     "release": "node scripts/release.js"
   },
@@ -34,6 +37,7 @@
     "clean-jsdoc-theme": "^4.3.0",
     "concurrently": "^9.2.1",
     "jsdoc": "^4.0.5",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
   }
 }

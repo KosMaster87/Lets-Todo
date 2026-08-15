@@ -50,9 +50,7 @@ export const renderTodosPage = () => {
         ${renderSingleActionButtons()}
 
         <div class="todo-meta-info">
-          <span class="todo-creation-date">Will be created: ${formatDate(
-            new Date()
-          )}</span>
+          <span class="todo-creation-date">Will be created: ${formatDate(new Date())}</span>
           <span class="todo-status-badge pending">New</span>
         </div>
       </section>

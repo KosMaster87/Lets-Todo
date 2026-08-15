@@ -51,10 +51,7 @@ export const UIStateManager = {
     PreferencesManager.save(appState.userPreferences);
 
     // Background server sync for registered users
-    UIStateManager.handleServerSync(
-      appState.userPreferences,
-      appState.sessionType
-    );
+    UIStateManager.handleServerSync(appState.userPreferences, appState.sessionType);
 
     notifyListeners();
   },
@@ -114,10 +111,7 @@ export const UIStateManager = {
     UIStateManager.logServerSyncStatus("start");
 
     try {
-      const syncSuccess = await PreferencesManager.syncToServer(
-        preferences,
-        sessionType
-      );
+      const syncSuccess = await PreferencesManager.syncToServer(preferences, sessionType);
 
       if (syncSuccess) {
         UIStateManager.logServerSyncStatus("success");
@@ -154,8 +148,7 @@ export const UIStateManager = {
    * @param {Function} notifyListeners - Function to notify state listeners
    */
   addNotification: (appState, notification, notifyListeners) => {
-    const newNotification =
-      UIStateManager.createNotificationObject(notification);
+    const newNotification = UIStateManager.createNotificationObject(notification);
     appState.notifications = [...appState.notifications, newNotification];
     notifyListeners();
   },

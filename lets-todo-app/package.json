@@ -4,15 +4,18 @@
   "description": "Lets Todo Frontend MPA/SPA Dev Server",
   "main": "dev-server.js",
   "type": "module",
+  "packageManager": "pnpm@10.33.0",
   "scripts": {
-    "dev": "concurrently -n SERVER,RELOAD \"nodemon dev-server.js\" \"npm run livereload\"",
+    "dev": "concurrently -n SERVER,RELOAD \"nodemon dev-server.js\" \"pnpm run livereload\"",
     "livereload": "livereload . --wait 500 --debug --extraExts js,css,html",
     "start": "node dev-server.js",
     "watch": "nodemon dev-server.js --watch src --watch assets/styles",
     "docs": "jsdoc -c jsdoc.config.json",
-    "docs:serve": "npx http-server docs -p 8081 -o",
-    "docs:clean": "rm -rf docs/ && npm run docs",
+    "docs:serve": "pnpm dlx http-server docs -p 8081 -o",
+    "docs:clean": "rm -rf docs/ && pnpm run docs",
     "generate-docs": "jsdoc --configure jsdoc.config.json --verbose",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "staging:prepare": "git checkout -B feature/staging-prepare && node scripts/staging-cleanup.js && git add . && git commit -m 'chore: Prepare frontend for production staging' && git push -f origin feature/staging-prepare && git checkout staging && git reset --hard feature/staging-prepare && git push -f origin staging && echo '🎉 Everything synced!'",
     "release": "node scripts/release.js"
   },
@@ -25,6 +28,7 @@
     "connect-livereload": "^0.6.1",
     "jsdoc": "^4.0.5",
     "livereload": "^0.9.3",
-    "nodemon": "^3.1.10"
+    "nodemon": "^3.1.10",
+    "prettier": "^3.6.2"
   }
 }

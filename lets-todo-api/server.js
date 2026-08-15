@@ -19,10 +19,7 @@ import { ENV, ENVIRONMENT, debugLog } from "./config/environment.js";
 import authRouter from "./routing/authRouter.js";
 import todosRouter from "./routing/todosRouter.js";
 import userRouter from "./routing/userRouter.js";
-import {
-  assignPoolMiddleware,
-  enhancedPoolMiddleware,
-} from "./middleware/poolMiddleware.js"; // assign and enhance
+import { assignPoolMiddleware, enhancedPoolMiddleware } from "./middleware/poolMiddleware.js"; // assign and enhance
 
 const app = express();
 
@@ -79,9 +76,7 @@ app.use((req, res) => {
  */
 app.listen(ENV.HTTP_PORT, ENV.HTTP_HOST, () => {
   // Always log the port (even in production)
-  console.log(
-    `✅ Server running on ${ENV.HTTP_HOST}:${ENV.HTTP_PORT} (${ENVIRONMENT})`
-  );
+  console.log(`✅ Server running on ${ENV.HTTP_HOST}:${ENV.HTTP_PORT} (${ENVIRONMENT})`);
 
   debugLog("Environment configuration:", {
     dbHost: ENV.DB_HOST,

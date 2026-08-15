@@ -9,10 +9,7 @@ import { Router } from "express";
 import { debugLog, errorLog } from "./../config/environment.js";
 import { validateUserSession } from "./helpers/dbHelpers.js";
 import { findUserById } from "./helpers/userAccountHelpers.js";
-import {
-  getUserPreferences,
-  saveUserPreferences,
-} from "./helpers/userPreferencesHelpers.js";
+import { getUserPreferences, saveUserPreferences } from "./helpers/userPreferencesHelpers.js";
 import {
   sendSuccess,
   sendError,
@@ -161,10 +158,7 @@ router.put("/preferences", async (req, res) => {
  */
 const validatePreferencesObject = (preferences, res) => {
   if (!preferences || typeof preferences !== "object") {
-    return sendValidationError(
-      res,
-      "Gültige Benutzereinstellungen erforderlich"
-    );
+    return sendValidationError(res, "Gültige Benutzereinstellungen erforderlich");
   }
   return true;
 };
@@ -189,10 +183,7 @@ const handlePreferencesSaveSuccess = (preferences, res) => {
  */
 const handlePreferencesSaveError = (err, res) => {
   errorLog("Error saving user preferences:", err);
-  return sendServerError(
-    res,
-    "Fehler beim Speichern der Benutzereinstellungen"
-  );
+  return sendServerError(res, "Fehler beim Speichern der Benutzereinstellungen");
 };
 
 /**

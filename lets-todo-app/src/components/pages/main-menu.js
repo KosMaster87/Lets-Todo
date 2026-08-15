@@ -50,9 +50,7 @@ const createMenuButton = (
   navigateTo = null,
   isGuestBtn = false
 ) => {
-  const attributes = isGuestBtn
-    ? "data-guest-login"
-    : `data-navigate="${navigateTo}"`;
+  const attributes = isGuestBtn ? "data-guest-login" : `data-navigate="${navigateTo}"`;
 
   return `
     <button class="menu-btn ${className}" id="${id}" ${attributes}>
@@ -86,20 +84,8 @@ const renderGuestMenu = () => {
       "Create a new account",
       "register"
     )}
-    ${createMenuButton(
-      "login-btn",
-      "loginBtn",
-      "Login",
-      "Login with existing account",
-      "login"
-    )}
-    ${createMenuButton(
-      "options-btn",
-      "optionsBtn",
-      "Options",
-      "Manage user settings",
-      "options"
-    )}
+    ${createMenuButton("login-btn", "loginBtn", "Login", "Login with existing account", "login")}
+    ${createMenuButton("options-btn", "optionsBtn", "Options", "Manage user settings", "options")}
   `;
 };
 
@@ -119,19 +105,7 @@ const renderLoggedInMenu = (session) => {
       `Welcome back, ${username}!`,
       "dashboard"
     )}
-    ${createMenuButton(
-      "options-btn",
-      "optionsBtn",
-      "Options",
-      "Manage user settings",
-      "options"
-    )}
-    ${createMenuButton(
-      "logout-btn",
-      "logoutBtn",
-      "Logout",
-      "End session and logout",
-      "logout"
-    )}
+    ${createMenuButton("options-btn", "optionsBtn", "Options", "Manage user settings", "options")}
+    ${createMenuButton("logout-btn", "logoutBtn", "Logout", "End session and logout", "logout")}
   `;
 };

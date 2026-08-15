@@ -4,18 +4,10 @@
  * @module todos-list-operations
  */
 
-import {
-  setCurrentTodo,
-  updateTodo,
-  trashTodo,
-} from "./../../state/main-state.js";
+import { setCurrentTodo, updateTodo, trashTodo } from "./../../state/main-state.js";
 import { VIEWS } from "./../../utils/constants.js";
 import { navigateToView } from "./../navigation/navigation.js";
-import {
-  findTodoById,
-  isValidTodoId,
-  logTodoAction,
-} from "./todos-list-utils.js";
+import { findTodoById, isValidTodoId, logTodoAction } from "./todos-list-utils.js";
 
 // ###############################################################
 // Todo Navigation Operations

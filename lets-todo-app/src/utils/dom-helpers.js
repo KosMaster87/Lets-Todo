@@ -27,10 +27,7 @@ export const hideElement = (elementId) => {
 /**
  * Shows error message
  */
-export const showErrorMessage = (
-  message,
-  errorElementId = "resetPasswordConfirmError"
-) => {
+export const showErrorMessage = (message, errorElementId = "resetPasswordConfirmError") => {
   const errorElement = document.getElementById(errorElementId);
   if (errorElement) {
     errorElement.textContent = message;
@@ -42,10 +39,7 @@ export const showErrorMessage = (
 /**
  * Shows success message
  */
-export const showSuccessMessage = (
-  message,
-  successElementId = "resetPasswordConfirmSuccess"
-) => {
+export const showSuccessMessage = (message, successElementId = "resetPasswordConfirmSuccess") => {
   const successElement = document.getElementById(successElementId);
   if (successElement) {
     successElement.textContent = message;

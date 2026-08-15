@@ -4,11 +4,7 @@
  * @module dashboard-page
  */
 
-import {
-  getTodos,
-  getTrashedTodos,
-  getSessionType,
-} from "./../../state/main-state.js";
+import { getTodos, getTrashedTodos, getSessionType } from "./../../state/main-state.js";
 
 /**
  * Renders the dashboard page.
@@ -76,15 +72,11 @@ export const renderDashboardPage = () => {
           <div class="stat-label">Total Todos</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number dashboard-completed-todos">${getCompletedCount(
-            todos
-          )}</div>
+          <div class="stat-number dashboard-completed-todos">${getCompletedCount(todos)}</div>
           <div class="stat-label">Completed</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number dashboard-trash-count">${
-            trashedTodos.length
-          }</div>
+          <div class="stat-number dashboard-trash-count">${trashedTodos.length}</div>
           <div class="stat-label">In Trash</div>
         </div>
       </section>

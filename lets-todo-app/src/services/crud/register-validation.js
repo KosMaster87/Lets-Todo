@@ -86,10 +86,7 @@ export const validatePasswordField = (password) => {
   }
 
   if (password.length < 6) {
-    return createValidationResult(
-      false,
-      VALIDATION_MESSAGES.PASSWORD_TOO_SHORT
-    );
+    return createValidationResult(false, VALIDATION_MESSAGES.PASSWORD_TOO_SHORT);
   }
 
   return createValidationResult(true);
@@ -103,10 +100,7 @@ export const validatePasswordField = (password) => {
  */
 export const validatePasswordConfirmField = (password, passwordConfirm) => {
   if (isEmpty(passwordConfirm)) {
-    return createValidationResult(
-      false,
-      VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED
-    );
+    return createValidationResult(false, VALIDATION_MESSAGES.PASSWORD_CONFIRM_REQUIRED);
   }
 
   if (password !== passwordConfirm) {
@@ -123,10 +117,7 @@ export const validatePasswordConfirmField = (password, passwordConfirm) => {
  */
 export const validateTermsAcceptance = (termsAccepted) => {
   if (!termsAccepted) {
-    return createValidationResult(
-      false,
-      VALIDATION_MESSAGES.TERMS_NOT_ACCEPTED
-    );
+    return createValidationResult(false, VALIDATION_MESSAGES.TERMS_NOT_ACCEPTED);
   }
 
   return createValidationResult(true);
@@ -161,8 +152,7 @@ const buildFieldErrors = (validations) => {
   const fieldErrors = {};
 
   if (!validations.email.isValid) fieldErrors.email = validations.email.message;
-  if (!validations.password.isValid)
-    fieldErrors.password = validations.password.message;
+  if (!validations.password.isValid) fieldErrors.password = validations.password.message;
   if (!validations.passwordConfirm.isValid)
     fieldErrors.passwordConfirm = validations.passwordConfirm.message;
   if (!validations.terms.isValid) fieldErrors.terms = validations.terms.message;

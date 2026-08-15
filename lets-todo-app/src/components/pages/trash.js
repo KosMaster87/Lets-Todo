@@ -78,9 +78,7 @@ export const renderSingleTrashTodo = (todo) => {
   return `
     <div class="trash-todo-item" data-todo-id="${todo.id}">
       <div class="trash-todo-header">
-        <h4 class="trash-todo-title">${escapeHtml(
-          todo.title || "Untitled"
-        )}</h4>
+        <h4 class="trash-todo-title">${escapeHtml(todo.title || "Untitled")}</h4>
 
         <div class="trash-todo-actions">
           <button class="action-btn restore-todo-btn" title="Restore todo" data-todo-id="${
@@ -98,15 +96,11 @@ export const renderSingleTrashTodo = (todo) => {
       </div>
 
       <div class="trash-todo-content">
-        <p class="trash-todo-text">${escapeHtml(
-          todo.content || todo.title || ""
-        )}</p>
+        <p class="trash-todo-text">${escapeHtml(todo.content || todo.title || "")}</p>
       </div>
 
       <div class="trash-todo-meta">
-        <span class="trash-todo-date">Deleted: ${formatDate(
-          todo.deletedAt || new Date()
-        )}</span>
+        <span class="trash-todo-date">Deleted: ${formatDate(todo.deletedAt || new Date())}</span>
 
         <span class="trash-todo-original-date">Created: ${formatDate(
           todo.created || new Date()

@@ -88,9 +88,7 @@ export const formatTodoForExport = (todo, status) => ({
 export const todosToJSON = (todos, trashedTodos) => {
   const metadata = createExportMetadata(todos, trashedTodos);
   const activeTodos = todos.map((todo) => formatTodoForExport(todo, "active"));
-  const trashedItems = trashedTodos.map((todo) =>
-    formatTodoForExport(todo, "trashed")
-  );
+  const trashedItems = trashedTodos.map((todo) => formatTodoForExport(todo, "trashed"));
 
   const exportData = {
     ...metadata,
@@ -109,12 +107,7 @@ export const todosToJSON = (todos, trashedTodos) => {
  * @param {string} filename - Export filename
  * @returns {string} Success message
  */
-export const createExportSuccessMessage = (
-  totalCount,
-  activeCount,
-  trashedCount,
-  filename
-) =>
+export const createExportSuccessMessage = (totalCount, activeCount, trashedCount, filename) =>
   `${totalCount} todos (${activeCount} active, ${trashedCount} trashed) exported as JSON: ${filename}`;
 
 /**

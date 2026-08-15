@@ -293,10 +293,7 @@ export const PreferencesManager = {
    */
   save(preferences) {
     try {
-      StorageManager.setLocalData(
-        StorageKeys.LOCAL.USER_PREFERENCES,
-        preferences
-      );
+      StorageManager.setLocalData(StorageKeys.LOCAL.USER_PREFERENCES, preferences);
     } catch (error) {
       console.error("❌ Error saving user preferences:", error);
     }
@@ -307,10 +304,7 @@ export const PreferencesManager = {
    */
   clear() {
     try {
-      StorageManager.removeData(
-        StorageTypes.LOCAL,
-        StorageKeys.LOCAL.USER_PREFERENCES
-      );
+      StorageManager.removeData(StorageTypes.LOCAL, StorageKeys.LOCAL.USER_PREFERENCES);
       console.log("✅ User preferences cleared from storage");
     } catch (error) {
       console.error("❌ Error clearing user preferences:", error);

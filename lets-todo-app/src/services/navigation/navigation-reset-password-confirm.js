@@ -7,15 +7,9 @@
 
 import { handleNavigationClick } from "./navigation.js";
 import { VIEWS, DEBUG_MODE } from "./../../utils/constants.js";
-import {
-  callTokenValidationAPI,
-  callPasswordResetAPI,
-} from "../api/api-password.js";
+import { callTokenValidationAPI, callPasswordResetAPI } from "../api/api-password.js";
 import { validatePasswordInputs } from "./../../utils/password-validation.js";
-import {
-  checkPasswordStrength,
-  checkPasswordMatch,
-} from "./../../utils/password-dom.js";
+import { checkPasswordStrength, checkPasswordMatch } from "./../../utils/password-dom.js";
 import {
   showElement,
   hideElement,
@@ -37,9 +31,7 @@ let tokenValidationResult = null; // Variable to store token validation result
  */
 const logResetPasswordStatus = (action, details = "") => {
   if (DEBUG_MODE) {
-    console.log(
-      `[Reset Password Confirm] ${action}${details ? ": " + details : ""}`
-    );
+    console.log(`[Reset Password Confirm] ${action}${details ? ": " + details : ""}`);
   }
 };
 
@@ -52,10 +44,7 @@ const logResetPasswordStatus = (action, details = "") => {
  * @exports
  */
 export const initializeResetPasswordConfirm = (token) => {
-  logResetPasswordStatus(
-    "Initialize",
-    `Token: ${token ? "Present" : "Missing"}`
-  );
+  logResetPasswordStatus("Initialize", `Token: ${token ? "Present" : "Missing"}`);
   currentToken = token;
 
   if (!token) {
@@ -213,10 +202,7 @@ const callTokenValidationAPIWrapper = async () => {
  * @returns {void}
  */
 const handleTokenValidationResult = (result) => {
-  logResetPasswordStatus(
-    "Token validation result",
-    result.valid ? "Valid" : "Invalid"
-  );
+  logResetPasswordStatus("Token validation result", result.valid ? "Valid" : "Invalid");
 
   if (result.valid) {
     tokenValidationResult = result;
@@ -310,9 +296,7 @@ const getPasswordInputs = () => {
 
   return {
     newPassword: newPasswordInput ? newPasswordInput.value.trim() : "",
-    confirmPassword: confirmPasswordInput
-      ? confirmPasswordInput.value.trim()
-      : "",
+    confirmPassword: confirmPasswordInput ? confirmPasswordInput.value.trim() : "",
   };
 };
 
@@ -364,8 +348,7 @@ const handlePasswordResetSubmit = async (e) => {
     clearErrorMessages();
     const { newPassword, confirmPassword } = getPasswordInputs();
 
-    if (!validatePasswordInputs(newPassword, confirmPassword, showErrorMessage))
-      return;
+    if (!validatePasswordInputs(newPassword, confirmPassword, showErrorMessage)) return;
 
     await processPasswordReset(newPassword);
   } catch (error) {

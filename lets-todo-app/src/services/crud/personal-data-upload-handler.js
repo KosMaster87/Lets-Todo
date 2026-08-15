@@ -20,10 +20,7 @@ import {
   createProgressIndicator,
   removeProgressIndicator,
 } from "./../../utils/ui-helpers/progress-indicators.js";
-import {
-  createFileInput,
-  executeFileInputClick,
-} from "./../../utils/import-export/index.js";
+import { createFileInput, executeFileInputClick } from "./../../utils/import-export/index.js";
 import { setUploadButtonState } from "./../../utils/ui-state-helpers.js";
 
 /**
@@ -83,11 +80,7 @@ export const handleFileUpload = async (file, onComplete, options = {}) => {
     const parseResult = processFileContent(content, containerId, onComplete);
     if (!parseResult) return;
 
-    const importResult = await executeImportProcess(
-      parseResult,
-      options,
-      containerId
-    );
+    const importResult = await executeImportProcess(parseResult, options, containerId);
     removeProgressIndicator(containerId);
 
     importResult.success
@@ -364,9 +357,7 @@ const buildSuccessMessage = (result) => {
   addSkippedMessage(parts, result);
   addErrorsMessage(parts, result);
 
-  return parts.length > 0
-    ? parts.join(", ")
-    : "Import erfolgreich abgeschlossen";
+  return parts.length > 0 ? parts.join(", ") : "Import erfolgreich abgeschlossen";
 };
 
 /**

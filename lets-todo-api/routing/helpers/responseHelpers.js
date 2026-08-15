@@ -25,12 +25,7 @@ export const HTTP_STATUS = {
  * @param {number} status - HTTP status code (default: 200)
  * @returns {Object} - Response
  */
-export const sendSuccess = (
-  res,
-  message,
-  data = {},
-  status = HTTP_STATUS.OK
-) => {
+export const sendSuccess = (res, message, data = {}, status = HTTP_STATUS.OK) => {
   const response = {
     success: true,
     message,
@@ -47,12 +42,7 @@ export const sendSuccess = (
  * @param {number} status - HTTP status code
  * @returns {Object} - Response
  */
-export const sendError = (
-  res,
-  message,
-  code = null,
-  status = HTTP_STATUS.BAD_REQUEST
-) => {
+export const sendError = (res, message, code = null, status = HTTP_STATUS.BAD_REQUEST) => {
   const response = {
     success: false,
     error: message,
@@ -92,10 +82,5 @@ export const sendAuthError = (res, message = "Nicht authentifiziert") => {
  * @returns {Object} - Response
  */
 export const sendServerError = (res, message = "Interner Server-Fehler") => {
-  return sendError(
-    res,
-    message,
-    "SERVER_ERROR",
-    HTTP_STATUS.INTERNAL_SERVER_ERROR
-  );
+  return sendError(res, message, "SERVER_ERROR", HTTP_STATUS.INTERNAL_SERVER_ERROR);
 };

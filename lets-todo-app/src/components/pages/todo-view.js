@@ -63,9 +63,7 @@ export const renderTodoViewPage = () => {
           <span class="todo-creation-date">Created: ${formatDate(
             currentTodo.created || new Date()
           )}</span>
-          <span class="todo-status-badge ${
-            currentTodo.completed ? "completed" : "pending"
-          }">
+          <span class="todo-status-badge ${currentTodo.completed ? "completed" : "pending"}">
             ${currentTodo.completed ? "Completed" : "Pending"}
           </span>
         </div>

@@ -17,11 +17,7 @@ import { debugLog, errorLog } from "./../../config/environment.js";
 export const sendPasswordResetEmail = async (email, resetToken, user) => {
   try {
     const fullName = constructFullName(user);
-    const emailResult = await emailService.sendPasswordResetEmail(
-      email,
-      resetToken,
-      fullName
-    );
+    const emailResult = await emailService.sendPasswordResetEmail(email, resetToken, fullName);
 
     logEmailSuccess(emailResult);
     return createEmailSuccessResponse(emailResult);
@@ -46,9 +42,7 @@ const constructFullName = (user) => {
  * @param {Object} emailResult - Email result object
  */
 const logEmailSuccess = (emailResult) => {
-  debugLog(
-    `📧 Password reset email sent: ${emailResult.messageId} (${emailResult.mode})`
-  );
+  debugLog(`📧 Password reset email sent: ${emailResult.messageId} (${emailResult.mode})`);
 };
 
 /**
