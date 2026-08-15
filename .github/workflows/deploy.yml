@@ -110,7 +110,7 @@ jobs:
           # frontend/package.json to resolve the pnpm workspace lockfile.
           rsync -avz --delete \
             --exclude='node_modules' --exclude='.git' --exclude='.husky' \
-            --exclude='backend/config/env/.env*' \
+            --exclude='backend/config/env/.env*' --exclude='.env' \
             . root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/lets-todo-api/app/
           # Forced command on the server rebuilds and restarts the container after rsync.
 
@@ -131,5 +131,5 @@ jobs:
 
           rsync -avz --delete \
             --exclude='node_modules' --exclude='.git' --exclude='.husky' \
-            --exclude='backend/config/env/.env*' \
+            --exclude='backend/config/env/.env*' --exclude='.env' \
             . root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/lets-todo-api/app/
