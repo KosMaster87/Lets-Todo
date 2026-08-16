@@ -3,6 +3,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
+    image: local/lets-todo-api-staging:latest
     container_name: lets-todo-api-staging
     restart: unless-stopped
     env_file:
@@ -20,6 +21,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile
+    image: local/lets-todo-api:latest
     container_name: lets-todo-api
     restart: unless-stopped
     env_file:
