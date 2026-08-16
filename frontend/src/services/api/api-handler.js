@@ -8,7 +8,7 @@ export const getApiBase = () => {
   const hostname = window.location.hostname;
 
   const apiBaseByHostname = {
-    "staging-lets-todo.dev2ksoftware.com": "https://staging-lets-todo-api.dev2ksoftware.com/api",
+    "staging-lets-todo.dev2ksoftware.com": "https://lets-todo-api-staging.dev2ksoftware.com/api",
     "lets-todo.dev2ksoftware.com": "https://lets-todo-api.dev2ksoftware.com/api",
   };
 

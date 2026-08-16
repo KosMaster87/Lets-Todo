@@ -296,7 +296,7 @@ curl -I http://127.0.0.1:3000/api/session/validate
 | Environment     | Domain                                    | Port | Purpose                |
 | --------------- | ----------------------------------------- | ---- | ---------------------- |
 | **Development** | `127.0.0.1:3000`                          | 3000 | Local development      |
-| **Staging**     | `staging-lets-todo-api.dev2ksoftware.com` | 3004 | Pre-production testing |
+| **Staging**     | `lets-todo-api-staging.dev2ksoftware.com` | 3004 | Pre-production testing |
 | **Production**  | `lets-todo-api.dev2ksoftware.com`         | 3002 | Live production system |
 
 ## Architecture
