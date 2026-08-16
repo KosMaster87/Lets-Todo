@@ -1,12 +1,11 @@
 /**
- * Database connection management for the Todo app
- * Manages three different pool types:
- * - Core pool: for DDL operations (database creation)
- * - User pool: central user management
- * - Guest pools: dynamic pools per guest session
+ * @fileoverview Database connection pool management
+ * @description Manages three different pool types: a core pool for DDL operations
+ * (database creation), a user pool for central user management, and dynamically
+ * created per-user/per-guest pools for session-specific data.
+ * @module db
  */
 
-// db.js
 import mysql from "mysql2/promise";
 import { ENV, debugLog, errorLog } from "./config/environment.js";
 
