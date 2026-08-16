@@ -1,21 +1,4 @@
 services:
-  mariadb:
-    image: mariadb:11
-    container_name: lets-todo-mariadb
-    restart: unless-stopped
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-    volumes:
-      - /mnt/nvme/appdata/lets-todo-mariadb/data:/var/lib/mysql
-    networks:
-      - lets-todo-net
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
-
   backend-staging:
     build:
       context: .
@@ -29,9 +12,6 @@ services:
       DB_HOST: lets-todo-mariadb
     ports:
       - "3904:3004"
-    depends_on:
-      mariadb:
-        condition: service_healthy
     networks:
       - lets-todo-net
       - smtp-relay-net
@@ -49,9 +29,6 @@ services:
       DB_HOST: lets-todo-mariadb
     ports:
       - "3902:3002"
-    depends_on:
-      mariadb:
-        condition: service_healthy
     networks:
       - lets-todo-net
       - smtp-relay-net
