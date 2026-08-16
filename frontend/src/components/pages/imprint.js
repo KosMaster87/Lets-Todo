@@ -45,44 +45,66 @@ export const renderImprintPage = () => {
 
         <div class="imprint-section">
           <h3>Privacy Policy</h3>
-          <h4>1. Privacy at a Glance</h4>
+
+          <h4>1. Overview</h4>
           <p>
-            <strong>General Notes:</strong><br>
-            The following notes provide a simple overview of what happens to your personal data when you visit this website. Personal data is any data by which you can be personally identified.
+            Let's Todo lets you use the app in two modes: as a <strong>guest</strong>, or with a
+            <strong>registered account</strong>. What data is processed, and where it is stored,
+            depends entirely on which mode you use.
           </p>
 
-          <h4>2. Data Collection on this Website</h4>
+          <h4>2. Guest Mode</h4>
           <p>
-            <strong>Who is responsible for data collection on this website?</strong><br>
-            Data processing on this website is carried out by the website operator. You can find the contact details in the imprint of this website.
-          </p>
-          <p>
-            <strong>How do we collect your data?</strong><br>
-            Your data is collected by you providing it to us. This can be, for example, data that you enter in a contact form.
+            As a guest, your todos are stored only in your browser's local storage. Nothing is
+            transmitted to or stored on our servers. Clearing your browser data or switching
+            devices means your guest data is gone - there is no server-side backup for guest
+            sessions.
           </p>
 
-          <h4>3. How do we use your data?</h4>
+          <h4>3. Registered Accounts</h4>
           <p>
-            Part of the data is collected to ensure the error-free provision of the website. Other data can be used to analyze your user behavior.
-          </p>
-          <p>
-            <strong>What rights do you have regarding your data?</strong><br>
-            You have the right at any time to receive information free of charge about the origin, recipient, and purpose of your stored personal data.
-          </p>
-
-          <h4>4. Your Rights</h4>
-          <p>
-            You have the right to:
+            If you register, we store the following data on our own server, in a database we
+            operate ourselves (not a third-party cloud provider):
           </p>
           <ul>
-            <li>Request information about your data stored with us</li>
-            <li>Request correction of incorrect data</li>
-            <li>Request deletion of your data</li>
-            <li>Request restriction of data processing</li>
-            <li>Object to data processing</li>
+            <li>Your e-mail address (used for login and password reset)</li>
+            <li>Your password - never in plain text, only as a one-way bcrypt hash that cannot be reversed to recover the original password</li>
+            <li>Your todos (titles and content)</li>
+            <li>Optional preferences you set (e.g. theme, language)</li>
           </ul>
           <p>
-            If you have any questions, feel free to contact us at: konstantin@dev2ksoftware.com
+            Each registered account gets its own dedicated database, isolated from other users'
+            data.
+          </p>
+
+          <h4>4. Cookies</h4>
+          <p>
+            We set exactly one cookie, used solely to keep you logged in (an <code>httpOnly</code>,
+            secure session cookie). It is not used for tracking, advertising, or analytics. We do
+            not use any third-party analytics or tracking scripts on this site.
+          </p>
+
+          <h4>5. E-Mail</h4>
+          <p>
+            We send e-mail only for password-reset requests you initiate yourself, via our own
+            mail relay. We do not send marketing e-mail and do not share your address with third
+            parties.
+          </p>
+
+          <h4>6. Your Rights</h4>
+          <p>You have the right to:</p>
+          <ul>
+            <li>Request a copy of the data we hold about you - you can also export your own todos as JSON at any time from within the app</li>
+            <li>Request correction of incorrect data</li>
+            <li>Request deletion of your account and all associated data</li>
+            <li>Request restriction of processing, or object to it</li>
+          </ul>
+          <p>
+            Account deletion is currently handled manually: contact us at the address below and
+            we will delete your account, your database, and all associated data.
+          </p>
+          <p>
+            For any privacy request or question, contact: konstantin@dev2ksoftware.com
           </p>
         </div>
       </section>
