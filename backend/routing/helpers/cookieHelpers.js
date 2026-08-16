@@ -12,7 +12,7 @@ import { ENV } from "./../../config/environment.js";
  */
 export const createCookieOptions = () => {
   const cookieOptions = {
-    httpOnly: false,
+    httpOnly: true,
     secure: ENV.COOKIE_SECURE,
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     path: "/",
