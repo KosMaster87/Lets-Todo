@@ -136,7 +136,7 @@ const CONFIG = {
     HTTP_HOST: "0.0.0.0",
 
     // CORS - Staging Environment
-    CORS_ORIGINS: ["https://staging-lets-todo.dev2ksoftware.com"],
+    CORS_ORIGINS: ["https://lets-todo-staging.dev2ksoftware.com"],
 
     // Cookies
     COOKIE_DOMAIN: ".dev2ksoftware.com",
@@ -154,7 +154,7 @@ const CONFIG = {
     EMAIL_PORT: Number(process.env.EMAIL_PORT) || 587,
     EMAIL_SECURE: envBool(process.env.EMAIL_SECURE, true),
     APP_NAME: process.env.APP_NAME || "Let's Todo",
-    FRONTEND_URL: process.env.FRONTEND_URL || "https://staging-lets-todo.dev2ksoftware.com",
+    FRONTEND_URL: process.env.FRONTEND_URL || "https://lets-todo-staging.dev2ksoftware.com",
   },
 
   production: {
