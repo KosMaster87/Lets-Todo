@@ -6,6 +6,8 @@ services:
     image: local/lets-todo-api-staging:latest
     container_name: lets-todo-api-staging
     restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: "http://192.168.88.237:8888/todo-icon.png"
     env_file:
       - backend/config/env/.env.staging
     environment:
@@ -24,6 +26,8 @@ services:
     image: local/lets-todo-api:latest
     container_name: lets-todo-api
     restart: unless-stopped
+    labels:
+      net.unraid.docker.icon: "http://192.168.88.237:8888/todo-icon.png"
     env_file:
       - backend/config/env/.env.production
     environment:
