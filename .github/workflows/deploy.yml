@@ -126,7 +126,7 @@ jobs:
             frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo/
 
   deploy-backend-staging:
-    needs: quality
+    needs: [quality, publish-backend-image]
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     environment: staging
@@ -139,7 +139,7 @@ jobs:
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/cloudflared
           mkdir -p ~/.ssh
-      - name: Deploy backend to Staging
+      - name: Deploy backend image to Staging
         run: |
           echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND_STAGING }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
@@ -153,18 +153,11 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
 
-          # Real .env.* files and docker-compose secrets (.env) live only on the server
-          # (gitignored) - never overwritten here. frontend/ is kept (minus node_modules)
-          # because the Docker build context needs frontend/package.json to resolve the
-          # pnpm workspace lockfile.
-          rsync -avz --delete \
-            --exclude='node_modules' --exclude='.git' --exclude='.husky' \
-            --exclude='backend/config/env/.env*' --exclude='.env' \
-            . root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/lets-todo-api/app/
-          # Forced command on the server rebuilds and restarts the container after rsync.
+          ssh root@deploy-lets-todo.dev2ksoftware.com \
+            staging "${{ needs.publish-backend-image.outputs.digest }}"
 
   deploy-backend-production:
-    needs: quality
+    needs: [quality, publish-backend-image]
     if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
@@ -177,7 +170,7 @@ jobs:
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/cloudflared
           mkdir -p ~/.ssh
-      - name: Deploy backend to Production
+      - name: Deploy backend image to Production
         run: |
           echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
@@ -191,7 +184,5 @@ jobs:
           EOF
           chmod 600 ~/.ssh/config
 
-          rsync -avz --delete \
-            --exclude='node_modules' --exclude='.git' --exclude='.husky' \
-            --exclude='backend/config/env/.env*' --exclude='.env' \
-            . root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/lets-todo-api/app/
+          ssh root@deploy-lets-todo.dev2ksoftware.com \
+            production "${{ needs.publish-backend-image.outputs.digest }}"
