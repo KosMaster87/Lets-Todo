@@ -2,7 +2,7 @@ name: Validate, publish image & deploy
 
 on:
   push:
-    branches: [main, staging]
+    branches: [dev, staging, main]
   pull_request:
     branches: [main, staging, dev]
   workflow_dispatch:
@@ -23,7 +23,7 @@ jobs:
   publish-backend-image:
     name: Publish immutable Let's Todo API image
     needs: quality
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/staging')
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -60,8 +60,8 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
   deploy-frontend-staging:
-    needs: quality
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/staging'
+    needs: deploy-backend-staging
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     environment: staging
     steps:
@@ -91,12 +91,14 @@ jobs:
             frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo-staging/
 
   deploy-frontend-production:
-    needs: quality
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    needs: [resolve-production-image, deploy-backend-production]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-production-image.outputs.source_sha }}
       - name: Install cloudflared
         run: |
           # ubuntu-latest is a GitHub-hosted cloud runner: it has no route to the
@@ -127,7 +129,7 @@ jobs:
 
   deploy-backend-staging:
     needs: [quality, publish-backend-image]
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/staging'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     environment: staging
     steps:
@@ -156,9 +158,66 @@ jobs:
           ssh root@deploy-lets-todo.dev2ksoftware.com \
             staging "${{ needs.publish-backend-image.outputs.digest }}"
 
+  resolve-production-image:
+    name: Resolve the exact staged API image
+    needs: quality
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      digest: ${{ steps.resolve.outputs.digest }}
+      source_sha: ${{ steps.resolve.outputs.source_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: docker/setup-buildx-action@v3
+      - name: Sign in to the private GitLab Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.GITLAB_REGISTRY_HOST }}
+          username: ${{ secrets.GITLAB_REGISTRY_USERNAME }}
+          password: ${{ secrets.GITLAB_REGISTRY_PASSWORD }}
+      - name: Verify the merge and resolve its staged digest
+        id: resolve
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          fail() {
+            printf '::error::%s\n' "$*" >&2
+            exit 1
+          }
+
+          read -r merged_sha main_parent staging_sha extra_parent < <(
+            git rev-list --parents -n 1 HEAD
+          )
+          [[ -n ${main_parent:-} && -n ${staging_sha:-} && -z ${extra_parent:-} ]] || \
+            fail 'Production requires a normal two-parent merge from staging into main.'
+
+          git diff --quiet "${staging_sha}" "${merged_sha}" -- \
+            backend frontend package.json pnpm-lock.yaml pnpm-workspace.yaml || \
+            fail 'The main merge changes deployable files. Promote the unchanged staging commit.'
+
+          image="${{ vars.GITLAB_REGISTRY_HOST }}/${{ vars.LETS_TODO_API_IMAGE }}:staging-${staging_sha}"
+          digest=$(docker buildx imagetools inspect "${image}" --format '{{.Digest}}') || \
+            fail "No staged registry image exists for ${staging_sha}."
+          [[ ${digest} =~ ^sha256:[a-f0-9]{64}$ ]] || fail 'Registry returned an invalid image digest.'
+
+          printf 'digest=%s\n' "${digest}" >> "$GITHUB_OUTPUT"
+          printf 'source_sha=%s\n' "${staging_sha}" >> "$GITHUB_OUTPUT"
+          {
+            printf '%s\n' '## Production promotion source'
+            printf '\n'
+            printf '%s\n' "- Staging commit: \`${staging_sha}\`"
+            printf '%s\n' "- API image: \`${image%@*}@${digest}\`"
+            printf '%s\n' 'No production image is built in this workflow.'
+          } >> "$GITHUB_STEP_SUMMARY"
+
   deploy-backend-production:
-    needs: [quality, publish-backend-image]
-    if: (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main'
+    needs: resolve-production-image
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -185,4 +244,4 @@ jobs:
           chmod 600 ~/.ssh/config
 
           ssh root@deploy-lets-todo.dev2ksoftware.com \
-            production "${{ needs.publish-backend-image.outputs.digest }}"
+            production "${{ needs.resolve-production-image.outputs.digest }}"
