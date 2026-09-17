@@ -5,7 +5,9 @@
  */
 
 import { userPool, userPools } from "./../../db.js";
+import { ENV } from "./../../config/environment.js";
 import { hashPassword, verifyPassword } from "./authHelpers.js";
+import { createUserDbName as createNamespacedUserDbName } from "./databaseNameHelpers.js";
 import {
   createUserDatabase,
   createUserPool,
@@ -52,7 +54,7 @@ export const findUserByIdWithPassword = async (userId) => {
  * @returns {string} Database name
  */
 export const createUserDbName = (email) => {
-  return `todos_user_${Buffer.from(email).toString("hex").slice(0, 24)}`;
+  return createNamespacedUserDbName(ENV.DB_NAMESPACE, email);
 };
 
 /**

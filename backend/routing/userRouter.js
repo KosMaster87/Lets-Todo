@@ -6,8 +6,8 @@
  */
 
 import { Router } from "express";
-import { debugLog, errorLog } from "./../config/environment.js";
-import { validateUserSession } from "./helpers/dbHelpers.js";
+import { ENV, debugLog, errorLog } from "./../config/environment.js";
+import { validateUserSession } from "./helpers/sessionHelpers.js";
 import { findUserById } from "./helpers/userAccountHelpers.js";
 import { getUserPreferences, saveUserPreferences } from "./helpers/userPreferencesHelpers.js";
 import {
@@ -25,16 +25,12 @@ const router = Router();
  * Ensures only authenticated users can access these endpoints
  */
 router.use(async (req, res, next) => {
-  const userId = req.cookies.userId;
-
-  const userIdValidation = validateUserIdFromCookies(userId, res);
-  if (userIdValidation !== true) return userIdValidation;
-
-  const sessionResult = await validateUserSession(userId);
+  const sessionToken = req.cookies[ENV.SESSION_COOKIE_NAME];
+  const sessionResult = await validateUserSession(sessionToken);
   const sessionValidation = validateUserSessionResult(sessionResult, res);
   if (sessionValidation !== true) return sessionValidation;
 
-  addUserInfoToRequest(req, userId, sessionResult);
+  addUserInfoToRequest(req, sessionResult);
   next();
 });
 
@@ -44,13 +40,6 @@ router.use(async (req, res, next) => {
  * @param {Object} res - Express response object
  * @returns {boolean|Object} Returns true if valid, or error response if invalid
  */
-const validateUserIdFromCookies = (userId, res) => {
-  if (!userId) {
-    return sendAuthError(res, "Authentication required");
-  }
-  return true;
-};
-
 /**
  * Validates user session and returns result
  * @param {Object} sessionResult - Session validation result
@@ -70,8 +59,8 @@ const validateUserSessionResult = (sessionResult, res) => {
  * @param {string} userId - User ID
  * @param {Object} sessionResult - Session validation result
  */
-const addUserInfoToRequest = (req, userId, sessionResult) => {
-  req.userId = userId;
+const addUserInfoToRequest = (req, sessionResult) => {
+  req.userId = sessionResult.userId;
   req.userEmail = sessionResult.email;
 };
 

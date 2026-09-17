@@ -85,6 +85,20 @@ async function setupDatabase() {
     `);
     infoLog("Password reset tokens table created");
 
+    await connection.execute(`
+      CREATE TABLE IF NOT EXISTS sessions (
+        id BIGINT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        token_hash CHAR(64) NOT NULL UNIQUE,
+        expires_at BIGINT NOT NULL,
+        created BIGINT NOT NULL,
+        INDEX idx_sessions_token (token_hash),
+        INDEX idx_sessions_expiry (expires_at),
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+    infoLog("Sessions table created");
+
     // 3. Create test user (for all non-production environments)
     if (ENVIRONMENT !== "production") {
       try {
@@ -92,7 +106,7 @@ async function setupDatabase() {
         const envSuffix = ENVIRONMENT === "development" ? "dev" : ENVIRONMENT;
         const testEmail = `test@${envSuffix}.local`;
         const testPasswordHash = "$2b$10$abcdefghijklmnopqrstuvwxyz123456"; // Dummy hash
-        const testDBName = `todos_user_1_${envSuffix}`;
+        const testDBName = `todos_${ENV.DB_NAMESPACE}_user_1`;
 
         await connection.execute(
           `INSERT IGNORE INTO users (email, password_hash, db_name, created) VALUES (?, ?, ?, ?)`,

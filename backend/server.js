@@ -19,7 +19,8 @@ import { ENV, ENVIRONMENT, debugLog } from "./config/environment.js";
 import authRouter from "./routing/authRouter.js";
 import todosRouter from "./routing/todosRouter.js";
 import userRouter from "./routing/userRouter.js";
-import { assignPoolMiddleware, enhancedPoolMiddleware } from "./middleware/poolMiddleware.js"; // assign and enhance
+import { assignPoolMiddleware } from "./middleware/poolMiddleware.js";
+import { ensureSessionsTable } from "./routing/helpers/sessionHelpers.js";
 
 const app = express();
 
@@ -57,7 +58,6 @@ app.use("/api/user", userRouter);
 
 // Pool middleware for all following routes
 app.use(assignPoolMiddleware);
-app.use(enhancedPoolMiddleware);
 
 // Todos router (requires req.pool from middleware)
 app.use("/api/todos", todosRouter);
@@ -73,7 +73,12 @@ app.use((req, res) => {
  * Start server and listen for incoming connections
  * Binds to all available network interfaces (0.0.0.0)
  */
-app.listen(ENV.HTTP_PORT, ENV.HTTP_HOST, () => {
+const startServer = async () => {
+  await ensureSessionsTable();
+  app.listen(ENV.HTTP_PORT, ENV.HTTP_HOST, logServerStart);
+};
+
+const logServerStart = () => {
   debugLog(`Server running on ${ENV.HTTP_HOST}:${ENV.HTTP_PORT} (${ENVIRONMENT})`);
 
   debugLog("Environment configuration:", {
@@ -81,4 +86,9 @@ app.listen(ENV.HTTP_PORT, ENV.HTTP_HOST, () => {
     corsOrigins: ENV.CORS_ORIGINS,
     cookieDomain: ENV.COOKIE_DOMAIN,
   });
+};
+
+startServer().catch((error) => {
+  console.error("Session table initialization failed:", error);
+  process.exit(1);
 });

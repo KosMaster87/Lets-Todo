@@ -89,6 +89,7 @@ const CONFIG = {
     DB_PASSWORD: process.env.DB_PASSWORD || "",
     DB_NAME: process.env.DB_NAME || "todos_dev",
     DB_USERS: process.env.DB_USERS || "todos_users_dev",
+    DB_NAMESPACE: process.env.DB_NAMESPACE || "development",
 
     // Server
     HTTP_PORT: Number(process.env.PORT) || 3000,
@@ -106,6 +107,7 @@ const CONFIG = {
     // Cookies
     COOKIE_DOMAIN: undefined, // No domain for localhost
     COOKIE_SECURE: false,
+    SESSION_COOKIE_NAME: "lets_todo_development_session",
 
     // Logging
     DEBUG: envBool(process.env.DEBUG, true),
@@ -130,6 +132,7 @@ const CONFIG = {
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_NAME: process.env.DB_NAME || "todos_main",
     DB_USERS: process.env.DB_USERS || "todos_users",
+    DB_NAMESPACE: process.env.DB_NAMESPACE || "staging",
 
     // Server
     HTTP_PORT: Number(process.env.PORT) || 3004,
@@ -139,8 +142,9 @@ const CONFIG = {
     CORS_ORIGINS: ["https://lets-todo-staging.dev2ksoftware.com"],
 
     // Cookies
-    COOKIE_DOMAIN: ".dev2ksoftware.com",
+    COOKIE_DOMAIN: undefined,
     COOKIE_SECURE: true,
+    SESSION_COOKIE_NAME: "__Host-lets_todo_staging_session",
 
     // Logging
     DEBUG: envBool(process.env.DEBUG, false),
@@ -165,6 +169,7 @@ const CONFIG = {
     DB_PASSWORD: process.env.DB_PASSWORD,
     DB_NAME: process.env.DB_NAME || "todos_main",
     DB_USERS: process.env.DB_USERS || "todos_users",
+    DB_NAMESPACE: process.env.DB_NAMESPACE || "production",
 
     // Server
     HTTP_PORT: Number(process.env.PORT) || 3002,
@@ -174,8 +179,9 @@ const CONFIG = {
     CORS_ORIGINS: ["https://lets-todo.dev2ksoftware.com"],
 
     // Cookies
-    COOKIE_DOMAIN: ".dev2ksoftware.com",
+    COOKIE_DOMAIN: undefined,
     COOKIE_SECURE: true,
+    SESSION_COOKIE_NAME: "__Host-lets_todo_session",
 
     // Logging
     DEBUG: envBool(process.env.DEBUG, false),

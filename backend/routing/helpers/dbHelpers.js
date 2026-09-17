@@ -6,7 +6,6 @@
 
 import mysql from "mysql2/promise";
 import { corePool } from "./../../db.js";
-import { findUserById } from "./userAccountHelpers.js";
 
 /**
  * Creates user database
@@ -63,31 +62,4 @@ export const createTodosIndex = async (pool) => {
   await pool.query(`
     CREATE INDEX IF NOT EXISTS idx_todos_trashed ON todos (trashed, trashed_at)
   `);
-};
-
-/**
- * Validates user session and returns session data
- * @param {string} userId - User ID from cookie
- * @returns {Promise<Object>} - Session validation result
- */
-export const validateUserSession = async (userId) => {
-  if (!userId) {
-    return { valid: false, reason: "No session cookie found" };
-  }
-
-  try {
-    const user = await findUserById(userId);
-
-    if (!user) {
-      return { valid: false, reason: "User not found" };
-    }
-
-    return {
-      valid: true,
-      userId: userId,
-      email: user.email,
-    };
-  } catch (err) {
-    return { valid: false, reason: "Database error", error: err };
-  }
 };

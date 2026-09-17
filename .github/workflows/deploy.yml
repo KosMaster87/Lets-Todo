@@ -90,43 +90,6 @@ jobs:
           rsync -avz --delete \
             frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo-staging/
 
-  deploy-frontend-production:
-    needs: [resolve-production-image, deploy-backend-production]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.resolve-production-image.outputs.source_sha }}
-      - name: Install cloudflared
-        run: |
-          # ubuntu-latest is a GitHub-hosted cloud runner: it has no route to the
-          # Tower's private LAN address. The Cloudflare Tunnel's public hostname
-          # (gated by a Service Auth policy, not a human login) is the only way
-          # in - cloudflared acts as the SSH transport via ProxyCommand.
-          curl -sSL -o cloudflared \
-            https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-          chmod +x cloudflared
-          sudo mv cloudflared /usr/local/bin/cloudflared
-          mkdir -p ~/.ssh
-      - name: Deploy frontend to Production
-        run: |
-          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_FRONTEND }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          cat >> ~/.ssh/config <<EOF
-          Host deploy-lets-todo.dev2ksoftware.com
-            StrictHostKeyChecking no
-            UserKnownHostsFile /dev/null
-            IdentityFile ~/.ssh/id_ed25519
-            IdentitiesOnly yes
-            ProxyCommand cloudflared access ssh --hostname %h --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-          EOF
-          chmod 600 ~/.ssh/config
-
-          rsync -avz --delete \
-            frontend/ root@deploy-lets-todo.dev2ksoftware.com:/mnt/nvme/appdata/static-sites/www/lets-todo/
-
   deploy-backend-staging:
     needs: [quality, publish-backend-image]
     if: github.event_name == 'push' && github.ref == 'refs/heads/staging'
@@ -215,13 +178,16 @@ jobs:
             printf '%s\n' 'No production image is built in this workflow.'
           } >> "$GITHUB_STEP_SUMMARY"
 
-  deploy-backend-production:
+  promote-production:
+    name: Promote tested API and frontend to Production
     needs: resolve-production-image
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve-production-image.outputs.source_sha }}
       - name: Install cloudflared
         run: |
           curl -sSL -o cloudflared \
@@ -229,19 +195,33 @@ jobs:
           chmod +x cloudflared
           sudo mv cloudflared /usr/local/bin/cloudflared
           mkdir -p ~/.ssh
-      - name: Deploy backend image to Production
+      - name: Configure restricted deployment access
         run: |
-          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_BACKEND }}" > ~/.ssh/backend
+          echo "${{ secrets.UNRAID_DEPLOY_SSH_KEY_FRONTEND }}" > ~/.ssh/frontend
+          chmod 600 ~/.ssh/backend ~/.ssh/frontend
           cat >> ~/.ssh/config <<EOF
-          Host deploy-lets-todo.dev2ksoftware.com
+          Host deploy-lets-todo-backend
+            HostName deploy-lets-todo.dev2ksoftware.com
             StrictHostKeyChecking no
             UserKnownHostsFile /dev/null
-            IdentityFile ~/.ssh/id_ed25519
+            IdentityFile ~/.ssh/backend
+            IdentitiesOnly yes
+            ProxyCommand cloudflared access ssh --hostname %h --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+          Host deploy-lets-todo-frontend
+            HostName deploy-lets-todo.dev2ksoftware.com
+            StrictHostKeyChecking no
+            UserKnownHostsFile /dev/null
+            IdentityFile ~/.ssh/frontend
             IdentitiesOnly yes
             ProxyCommand cloudflared access ssh --hostname %h --id ${{ secrets.CF_ACCESS_CLIENT_ID }} --secret ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
           EOF
           chmod 600 ~/.ssh/config
-
-          ssh root@deploy-lets-todo.dev2ksoftware.com \
+      - name: Deploy backend image to Production
+        run: |
+          ssh root@deploy-lets-todo-backend \
             production "${{ needs.resolve-production-image.outputs.digest }}"
+      - name: Deploy frontend to Production
+        run: |
+          rsync -avz --delete \
+            frontend/ root@deploy-lets-todo-frontend:/mnt/nvme/appdata/static-sites/www/lets-todo/

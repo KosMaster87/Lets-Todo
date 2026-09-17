@@ -15,7 +15,12 @@ import {
   validateChangePasswordInput,
   validateResetPasswordInput,
 } from "./helpers/authHelpers.js";
-import { validateUserSession } from "./helpers/dbHelpers.js";
+import {
+  createUserSession,
+  revokeAllUserSessions,
+  revokeUserSession,
+  validateUserSession,
+} from "./helpers/sessionHelpers.js";
 import {
   createUserDbName,
   createCompleteUserSetup,
@@ -46,8 +51,8 @@ const router = Router();
  * Checks whether the current session is still valid
  */
 router.get("/validate-session", async (req, res) => {
-  const userId = req.cookies.userId;
-  const sessionResult = await validateUserSession(userId);
+  const sessionToken = req.cookies[ENV.SESSION_COOKIE_NAME];
+  const sessionResult = await validateUserSession(sessionToken);
 
   if (!sessionResult.valid && sessionResult.error) {
     errorLog("Session validation error:", sessionResult.error);
@@ -149,7 +154,7 @@ router.post("/login", async (req, res) => {
     if (!result.success) {
       return sendError(res, result.error, result.code, HTTP_STATUS.UNAUTHORIZED);
     }
-    return handleSuccessfulLogin(req, res, result);
+    return await handleSuccessfulLogin(req, res, result);
   } catch (err) {
     return sendServerError(res, "Login error");
   }
@@ -162,9 +167,10 @@ router.post("/login", async (req, res) => {
  * @param {Object} result - Login result from processUserLogin
  * @returns {Object} Success response
  */
-const handleSuccessfulLogin = (req, res, result) => {
+const handleSuccessfulLogin = async (req, res, result) => {
   handleGuestCookieCleanup(req, res);
-  setUserAuthCookie(res, result.user.id);
+  const sessionToken = await createUserSession(result.user.id);
+  setUserAuthCookie(res, sessionToken);
   return createLoginSuccessResponse(res, result.user.id);
 };
 
@@ -182,12 +188,12 @@ const handleGuestCookieCleanup = (req, res) => {
 /**
  * Sets user authentication cookie
  * @param {Object} res - Express response object
- * @param {number} userId - User ID to set in cookie
+ * @param {string} sessionToken - Opaque session token to set in cookie
  */
-const setUserAuthCookie = (res, userId) => {
+const setUserAuthCookie = (res, sessionToken) => {
   const cookieOptions = createCookieOptions();
   debugLog(`User login cookie options:`, cookieOptions);
-  res.cookie("userId", userId, cookieOptions);
+  res.cookie(ENV.SESSION_COOKIE_NAME, sessionToken, cookieOptions);
 };
 
 /**
@@ -206,11 +212,12 @@ const createLoginSuccessResponse = (res, userId) => {
 
 /**
  * POST /api/logout - Log out a user
- * Clears the userId cookie
+ * Revokes and clears the session cookie
  */
-router.post("/logout", (req, res) => {
+router.post("/logout", async (req, res) => {
+  await revokeUserSession(req.cookies[ENV.SESSION_COOKIE_NAME]);
   const clearCookieOptions = createClearCookieOptions();
-  res.clearCookie("userId", clearCookieOptions);
+  res.clearCookie(ENV.SESSION_COOKIE_NAME, clearCookieOptions);
   return sendSuccess(res, "Successfully logged out.");
 });
 
@@ -231,11 +238,13 @@ router.put("/change-password", async (req, res) => {
   const validation = validateChangePasswordInput(currentPassword, newPassword);
   if (!validation.valid) return sendValidationError(res, validation.error);
 
-  const userId = extractAndValidateUserId(req, res);
-  if (typeof userId !== "string") return userId;
+  const sessionResult = await validateUserSession(req.cookies[ENV.SESSION_COOKIE_NAME]);
+  if (!sessionResult.valid) return sendAuthError(res, sessionResult.reason);
+  const userId = sessionResult.userId;
 
   try {
     const result = await processPasswordChange(userId, currentPassword, newPassword);
+    if (result.success) await revokeAllUserSessions(userId);
     return result.success
       ? handlePasswordChangeSuccess(userId, result, res)
       : handlePasswordChangeFailure(result, res);
@@ -252,29 +261,10 @@ router.put("/change-password", async (req, res) => {
 const logPasswordChangeRequest = (req) => {
   debugLog("Password change request:", {
     body: { currentPassword: "***", newPassword: "***" },
-    cookies: req.cookies,
     headers: {
       "content-type": req.headers["content-type"],
-      cookie: req.headers.cookie || "NO COOKIE HEADER",
     },
   });
-};
-
-/**
- * Extracts and validates user ID from cookies
- * @param {Object} req - Express request object
- * @param {Object} res - Express response object
- * @returns {string|Object} User ID or error response
- */
-const extractAndValidateUserId = (req, res) => {
-  const userId = req.cookies.userId;
-  debugLog(`Extracted userId from cookies: ${userId}`);
-
-  if (!userId) {
-    errorLog("No userId found in cookies:", req.cookies);
-    return sendAuthError(res, "Not authenticated - please log in");
-  }
-  return userId;
 };
 
 /**
@@ -409,9 +399,9 @@ router.post("/reset-password", async (req, res) => {
 
   try {
     const result = await processPasswordReset(token, newPassword);
-    return result.success
-      ? handlePasswordResetSuccess(result, res)
-      : sendValidationError(res, result.error);
+    if (!result.success) return sendValidationError(res, result.error);
+    await revokeAllUserSessions(result.resetToken.user_id);
+    return handlePasswordResetSuccess(result, res);
   } catch (err) {
     return handlePasswordResetError(token, err, res);
   }
