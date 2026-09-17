@@ -201,7 +201,7 @@ jobs:
             fail 'The main merge changes deployable files. Promote the unchanged staging commit.'
 
           image="${{ vars.GITLAB_REGISTRY_HOST }}/${{ vars.LETS_TODO_API_IMAGE }}:staging-${staging_sha}"
-          digest=$(docker buildx imagetools inspect "${image}" --format '{{.Digest}}') || \
+          digest=$(docker buildx imagetools inspect "${image}" --format '{{json .Manifest}}' | jq -er '.digest') || \
             fail "No staged registry image exists for ${staging_sha}."
           [[ ${digest} =~ ^sha256:[a-f0-9]{64}$ ]] || fail 'Registry returned an invalid image digest.'
 
